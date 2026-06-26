@@ -1,7 +1,7 @@
 # Plan: Base Project Setup
 
 Date: 2026-06-26
-Status: In Progress
+Status: Implemented
 Project: ls_slides
 
 ## Context
@@ -287,7 +287,7 @@ Confirm:
 ## Implementation notes
 
 - `lint` and `lint:fix` include `--no-error-on-unmatched-pattern` because this phase intentionally has no JavaScript/TypeScript source files yet; otherwise Oxlint exits non-zero on an empty codebase.
-- `.oxfmtrc.json` ignores `PROJECT.md` and the generated `.plans/*.html` preview so formatting validation does not rewrite pre-existing agent/project metadata or generated plan artifacts.
+- `.oxfmtrc.json` ignores `PROJECT.md` so formatting validation does not rewrite pre-existing agent/project metadata.
 
 Validation run on 2026-06-26:
 
@@ -328,7 +328,7 @@ find . -maxdepth 3 -type d | sort
 
 ## Peer review summary
 
-A Claude review agreed with the structure and tooling choices but recommended these changes, which are incorporated above:
+Initial planning peer review agreed with the structure and tooling choices and recommended these changes, which are incorporated above:
 
 - Do not add `packages: ["docs"]` before `docs/package.json` exists.
 - Do not restate every pnpm v11 default; keep only intentional settings.
@@ -336,3 +336,9 @@ A Claude review agreed with the structure and tooling choices but recommended th
 - Use concise README files instead of empty folders or `.gitkeep`.
 - Do not add GSAP as a root dependency.
 - Add `pnpm config list` to validation to catch config mistakes.
+
+## Implementation peer review
+
+Claude reviewed commit `e5d977e` and accepted the setup as matching the plan. It suggested considering whether the generated `.plans/*.html` preview should be tracked. Follow-up commit removes that generated preview and keeps only the source plan Markdown.
+
+Follow-up validation: `pnpm fmt` and `pnpm check` passed after removing the generated HTML preview.

@@ -1,4 +1,4 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "ignorePatterns": ["PROJECT.md", ".plans/**/*.html"]
+  "ignorePatterns": ["PROJECT.md"]
 }
