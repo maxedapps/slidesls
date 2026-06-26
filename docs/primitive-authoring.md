@@ -15,7 +15,7 @@ Use data attributes for public layout alignment when a primitive needs it:
 - `data-ls-align="start|center|end|stretch"` for inline placement and related text alignment.
 - `data-ls-valign="start|center|end|space-between|stretch"` for block-axis placement.
 
-If a layout exposes block-axis alignment, it must have explicit height propagation so the attribute does not silently no-op.
+If a layout exposes block-axis alignment, it must have explicit height propagation so the attribute does not silently no-op. Prefer explicit `data-ls-valign` values over top-packing dense structured slides by accident; use `start` for dense scans, `center` for compact compositions, `space-between` for narrative distribution, and `stretch` only when equal-height regions are intentional.
 
 ## Sizing API
 
@@ -39,6 +39,12 @@ Modern CSS is encouraged when it improves copyability, but baseline correctness 
 - `:has()` is fine for optional child-aware styling.
 - `color-mix()` is fine for token-derived surfaces.
 - Anchor positioning, absolute positioning, and other out-of-flow enhancements must not create overlap or hide essential content. Prefer a separate explicit primitive for floating annotations.
+
+## Reveal sequencing
+
+Reveal primitives keep authoring simple with `.ls-reveal` and `data-step`. The core runtime may add internal `data-ls-reveal-state="future|current|past"` attributes so CSS recipes can support arbitrary step counts without hard-coded selectors.
+
+Use `data-ls-reveal-sequence` on a group when direct `.ls-reveal` children should receive missing `data-step` values in DOM order. This is useful for timelines and process lists where forgotten step numbers would otherwise expose items too early.
 
 ## Visual QA
 

@@ -6,29 +6,45 @@
     grid-template-columns: minmax(0, var(--ls-metric-dashboard-hero-size, 0.95fr)) minmax(0, 1.35fr);
     grid-template-areas: "hero metrics" "panel metrics" "footer footer";
     gap: var(--ls-metric-dashboard-gap, var(--ls-space-5));
-    align-items: var(--ls-metric-dashboard-valign, stretch);
+    align-content: var(--ls-metric-dashboard-content, start);
+    align-items: var(--ls-metric-dashboard-valign, start);
     block-size: 100%;
     min-block-size: 0;
   }
+
   .ls-metric-dashboard[data-ls-variant="hero-top"] {
     grid-template-columns: 1fr;
     grid-template-areas: "hero" "metrics" "panel" "footer";
   }
+
   .ls-metric-dashboard[data-ls-variant="balanced"] {
     --ls-metric-dashboard-hero-size: 1fr;
   }
+
   .ls-metric-dashboard[data-ls-density="compact"] {
     --ls-metric-dashboard-gap: var(--ls-space-3);
   }
+
   .ls-metric-dashboard[data-ls-valign="start"] {
+    --ls-metric-dashboard-content: start;
     --ls-metric-dashboard-valign: start;
   }
+
   .ls-metric-dashboard[data-ls-valign="center"] {
-    --ls-metric-dashboard-valign: center;
+    --ls-metric-dashboard-content: center;
+    --ls-metric-dashboard-valign: start;
   }
+
+  .ls-metric-dashboard[data-ls-valign="space-between"] {
+    --ls-metric-dashboard-content: space-between;
+    --ls-metric-dashboard-valign: start;
+  }
+
   .ls-metric-dashboard[data-ls-valign="stretch"] {
+    --ls-metric-dashboard-content: stretch;
     --ls-metric-dashboard-valign: stretch;
   }
+
   .ls-metric-dashboard__hero {
     grid-area: hero;
     display: grid;
@@ -36,6 +52,7 @@
     gap: var(--ls-space-3);
     min-inline-size: 0;
   }
+
   .ls-metric-dashboard__metrics {
     grid-area: metrics;
     display: grid;
@@ -44,19 +61,28 @@
       minmax(var(--ls-metric-dashboard-metric-min-inline, 240px), 1fr)
     );
     gap: var(--ls-space-3);
+    align-content: start;
+    align-items: start;
     min-inline-size: 0;
     min-block-size: 0;
   }
+
+  .ls-metric-dashboard[data-ls-valign="stretch"] .ls-metric-dashboard__metrics {
+    align-items: stretch;
+  }
+
   .ls-metric-dashboard__panel {
     grid-area: panel;
     min-inline-size: 0;
   }
+
   .ls-metric-dashboard__footer {
     grid-area: footer;
     min-inline-size: 0;
     color: var(--ls-subtle);
     font-size: var(--ls-text-xs);
   }
+
   .ls-metric-dashboard__headline {
     font-family: var(--ls-font-heading);
     font-size: clamp(56px, 9cqi, 96px);
@@ -64,11 +90,13 @@
     letter-spacing: -0.055em;
     line-height: 0.95;
   }
+
   .ls-metric-dashboard__text {
     color: var(--ls-muted);
     font-size: var(--ls-text-md);
     line-height: 1.3;
   }
+
   @container ls-metric-dashboard (width < 900px) {
     .ls-metric-dashboard {
       grid-template-columns: 1fr;

@@ -7,12 +7,18 @@
       transform var(--ls-scale-in-duration, var(--ls-duration))
         var(--ls-scale-in-ease, var(--ls-ease)) var(--ls-delay, 0ms);
   }
-  .ls-deck[data-ls-ready="true"] .ls-slide[data-active="true"] .ls-reveal-scale-in[data-step] {
+
+  .ls-deck[data-ls-ready="true"]
+    .ls-slide[data-active="true"]
+    .ls-reveal-scale-in[data-ls-reveal-state="future"] {
     transform: scale(var(--ls-scale-in-start));
     transform-origin: center;
   }
+
   @media (prefers-reduced-motion: reduce) {
-    .ls-deck[data-ls-ready="true"] .ls-slide[data-active="true"] .ls-reveal-scale-in[data-step] {
+    .ls-deck[data-ls-ready="true"]
+      .ls-slide[data-active="true"]
+      .ls-reveal-scale-in[data-ls-reveal-state="future"] {
       transform: none;
     }
   }

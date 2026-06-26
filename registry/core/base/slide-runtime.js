@@ -11,13 +11,53 @@ function getSlides() {
   return deck ? [...deck.querySelectorAll(".ls-slide")] : [];
 }
 
+function getSteppedElements(slide) {
+  return [...slide.querySelectorAll("[data-step]")];
+}
+
+function parseStep(element) {
+  const value = Number.parseInt(element.dataset.step || "0", 10);
+  return Number.isFinite(value) ? value : 0;
+}
+
+function assignRevealSequences(root = document) {
+  for (const group of root.querySelectorAll("[data-ls-reveal-sequence]")) {
+    const revealChildren = [...group.children].filter(
+      (child) =>
+        child.classList.contains("ls-reveal") && !child.hasAttribute("data-ls-sequence-skip"),
+    );
+
+    for (const [index, child] of revealChildren.entries()) {
+      if (!child.hasAttribute("data-step")) {
+        child.dataset.step = String(index + 1);
+      }
+    }
+  }
+}
+
 function getMaxStep(slide) {
-  const revealSteps = [...slide.querySelectorAll("[data-step]")].map((element) => {
-    const value = Number.parseInt(element.dataset.step || "0", 10);
-    return Number.isFinite(value) ? value : 0;
-  });
+  const revealSteps = getSteppedElements(slide).map(parseStep);
 
   return Math.max(0, ...revealSteps);
+}
+
+function updateRevealState(slide, currentStep, exportMode = false) {
+  for (const element of getSteppedElements(slide)) {
+    if (exportMode) {
+      element.dataset.lsRevealState = "past";
+      continue;
+    }
+
+    const elementStep = parseStep(element);
+
+    if (elementStep > currentStep) {
+      element.dataset.lsRevealState = "future";
+    } else if (elementStep === currentStep) {
+      element.dataset.lsRevealState = "current";
+    } else {
+      element.dataset.lsRevealState = "past";
+    }
+  }
 }
 
 function updateScale() {
@@ -50,9 +90,11 @@ function setSlideState(slides, activeIndex, step) {
     if (isActive) {
       slide.removeAttribute("inert");
       slide.dataset.lsStep = String(step);
+      updateRevealState(slide, step);
     } else {
       slide.setAttribute("inert", "");
       slide.dataset.lsStep = "0";
+      updateRevealState(slide, 0);
     }
   }
 
@@ -76,6 +118,7 @@ function initializeDeck() {
   }
 
   initializeLucide();
+  assignRevealSequences(deck);
 
   const slides = getSlides();
   if (slides.length === 0) {
@@ -96,6 +139,7 @@ function initializeDeck() {
       slide.dataset.lsStep = String(getMaxStep(slide));
       slide.setAttribute("aria-hidden", "false");
       slide.removeAttribute("inert");
+      updateRevealState(slide, getMaxStep(slide), true);
     }
   } else {
     updateScale();

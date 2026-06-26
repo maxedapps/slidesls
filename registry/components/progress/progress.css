@@ -3,6 +3,7 @@
     --ls-progress-accent: var(--ls-accent);
     --ls-progress-thickness: 14px;
     display: grid;
+    align-content: start;
     gap: var(--ls-space-1);
     min-inline-size: 0;
     color: var(--ls-text);
@@ -38,6 +39,19 @@
     block-size: 100%;
     border-radius: inherit;
     background: linear-gradient(90deg, var(--ls-progress-accent), var(--ls-accent-2));
+    transform-origin: left center;
+  }
+
+  .ls-progress[data-ls-animate="fill"] .ls-progress__bar {
+    transform: scaleX(0);
+    transition: transform var(--ls-duration-slow) var(--ls-ease) var(--ls-delay, 0ms);
+  }
+
+  .ls-progress[data-ls-animate="fill"][data-ls-reveal-state="current"] .ls-progress__bar,
+  .ls-progress[data-ls-animate="fill"][data-ls-reveal-state="past"] .ls-progress__bar,
+  .ls-deck[data-ls-export="true"] .ls-progress[data-ls-animate="fill"] .ls-progress__bar,
+  .ls-deck:not([data-ls-ready]) .ls-progress[data-ls-animate="fill"] .ls-progress__bar {
+    transform: scaleX(1);
   }
   .ls-progress__label {
     display: flex;
@@ -66,5 +80,11 @@
   }
   .ls-progress[data-ls-tone="warning"] {
     --ls-progress-accent: #f59e0b;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ls-progress[data-ls-animate="fill"] .ls-progress__bar {
+      transition: none;
+    }
   }
 }

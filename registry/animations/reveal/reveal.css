@@ -1,5 +1,4 @@
 @layer animations {
-  /* The initial recipe supports up to three reveal steps; extend selectors when a deck needs more. */
   .ls-reveal {
     opacity: 1;
     transform: translateY(0);
@@ -8,29 +7,19 @@
       transform var(--ls-duration) var(--ls-ease) var(--ls-delay, 0ms);
   }
 
-  .ls-deck[data-ls-ready="true"] .ls-slide[data-active="true"] .ls-reveal[data-step] {
+  .ls-deck[data-ls-ready="true"]
+    .ls-slide[data-active="true"]
+    .ls-reveal[data-ls-reveal-state="future"] {
     opacity: 0;
     transform: translateY(18px);
   }
 
   .ls-deck[data-ls-ready="true"]
-    .ls-slide[data-active="true"][data-ls-step="1"]
-    .ls-reveal[data-step="1"],
+    .ls-slide[data-active="true"]
+    .ls-reveal[data-ls-reveal-state="current"],
   .ls-deck[data-ls-ready="true"]
-    .ls-slide[data-active="true"][data-ls-step="2"]
-    .ls-reveal[data-step="1"],
-  .ls-deck[data-ls-ready="true"]
-    .ls-slide[data-active="true"][data-ls-step="2"]
-    .ls-reveal[data-step="2"],
-  .ls-deck[data-ls-ready="true"]
-    .ls-slide[data-active="true"][data-ls-step="3"]
-    .ls-reveal[data-step="1"],
-  .ls-deck[data-ls-ready="true"]
-    .ls-slide[data-active="true"][data-ls-step="3"]
-    .ls-reveal[data-step="2"],
-  .ls-deck[data-ls-ready="true"]
-    .ls-slide[data-active="true"][data-ls-step="3"]
-    .ls-reveal[data-step="3"] {
+    .ls-slide[data-active="true"]
+    .ls-reveal[data-ls-reveal-state="past"] {
     opacity: 1;
     transform: translateY(0);
   }
@@ -48,7 +37,9 @@
       transition: opacity 1ms linear;
     }
 
-    .ls-deck[data-ls-ready="true"] .ls-slide[data-active="true"] .ls-reveal[data-step] {
+    .ls-deck[data-ls-ready="true"]
+      .ls-slide[data-active="true"]
+      .ls-reveal[data-ls-reveal-state="future"] {
       transform: none;
     }
   }

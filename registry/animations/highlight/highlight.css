@@ -5,41 +5,37 @@
     --ls-highlight-animation-spread: 0.22em;
     animation: ls-highlight-pulse var(--ls-highlight-animation-duration, 1200ms) var(--ls-ease) both;
   }
-  .ls-deck[data-ls-ready="true"] .ls-slide[data-active="true"] .ls-reveal-highlight[data-step] {
+
+  .ls-deck[data-ls-ready="true"]
+    .ls-slide[data-active="true"]
+    .ls-reveal-highlight[data-ls-reveal-state="future"] {
     animation-play-state: paused;
   }
+
   .ls-deck[data-ls-ready="true"]
-    .ls-slide[data-active="true"][data-ls-step="1"]
-    .ls-reveal-highlight[data-step="1"],
+    .ls-slide[data-active="true"]
+    .ls-reveal-highlight[data-ls-reveal-state="current"],
   .ls-deck[data-ls-ready="true"]
-    .ls-slide[data-active="true"][data-ls-step="2"]
-    .ls-reveal-highlight[data-step="1"],
-  .ls-deck[data-ls-ready="true"]
-    .ls-slide[data-active="true"][data-ls-step="2"]
-    .ls-reveal-highlight[data-step="2"],
-  .ls-deck[data-ls-ready="true"]
-    .ls-slide[data-active="true"][data-ls-step="3"]
-    .ls-reveal-highlight[data-step="1"],
-  .ls-deck[data-ls-ready="true"]
-    .ls-slide[data-active="true"][data-ls-step="3"]
-    .ls-reveal-highlight[data-step="2"],
-  .ls-deck[data-ls-ready="true"]
-    .ls-slide[data-active="true"][data-ls-step="3"]
-    .ls-reveal-highlight[data-step="3"] {
+    .ls-slide[data-active="true"]
+    .ls-reveal-highlight[data-ls-reveal-state="past"] {
     animation-play-state: running;
   }
+
   @keyframes ls-highlight-pulse {
     0% {
       box-shadow: 0 0 0 0 color-mix(in srgb, var(--ls-highlight-animation-accent) 0%, transparent);
     }
+
     35% {
       box-shadow: 0 0 0 var(--ls-highlight-animation-spread)
         color-mix(in srgb, var(--ls-highlight-animation-accent) 28%, transparent);
     }
+
     100% {
       box-shadow: 0 0 0 0 color-mix(in srgb, var(--ls-highlight-animation-accent) 0%, transparent);
     }
   }
+
   @media (prefers-reduced-motion: reduce) {
     .ls-highlight,
     .ls-reveal-highlight {

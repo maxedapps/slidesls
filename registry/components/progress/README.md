@@ -4,8 +4,39 @@ Native progress or custom accessible progress bar.
 
 ## Usage
 
-Use `.ls-progress` on `<progress>` or a wrapper with `.ls-progress__track`, `__bar`, `__label`, `__value`. Attributes: `data-ls-density`, `data-ls-tone`, `data-ls-variant`. Variables: `--ls-progress-value`, `--ls-progress-accent`, `--ls-progress-thickness`, `--ls-progress-label-size`.
+Use native `<progress class="ls-progress">` for the simplest accessible static bar:
+
+```html
+<progress class="ls-progress" value="62" max="100" aria-label="Rollout progress">62%</progress>
+```
+
+Use custom markup when you need labels, card-like composition, or reveal-aware fill animation:
+
+```html
+<div
+  class="ls-progress ls-reveal"
+  data-ls-animate="fill"
+  data-step="2"
+  style="--ls-progress-value: 62%"
+  role="progressbar"
+  aria-label="Rollout progress"
+  aria-valuenow="62"
+  aria-valuemin="0"
+  aria-valuemax="100"
+>
+  <div class="ls-progress__label">
+    <span>Rollout</span><span class="ls-progress__value">62%</span>
+  </div>
+  <div class="ls-progress__track"><div class="ls-progress__bar"></div></div>
+</div>
+```
+
+Classes: `.ls-progress__track`, `.ls-progress__bar`, `.ls-progress__label`, `.ls-progress__value`.
+
+Attributes: `data-ls-density="compact|comfortable|spacious"`, `data-ls-tone="accent|success|warning"`, `data-ls-animate="fill"`.
+
+Variables: `--ls-progress-value`, `--ls-progress-accent`, `--ls-progress-thickness`, `--ls-progress-label-size`.
 
 ## Copy
 
-Copy this item CSS after `registry/core/base` styles. Animation variants should load after `registry/animations/reveal`.
+Copy `progress.css` after `core/base` styles. Animated fills pair with `animations/reveal`.

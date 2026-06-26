@@ -7,6 +7,7 @@
         var(--ls-two-column-aside, 1fr)
       );
     gap: var(--ls-two-column-gap, var(--ls-space-6));
+    align-content: var(--ls-two-column-align-content, start);
     align-items: var(--ls-two-column-align, start);
     block-size: 100%;
   }
@@ -33,6 +34,23 @@
   .ls-two-column[data-ls-ratio="wide-aside"] {
     --ls-two-column-main: 0.75fr;
     --ls-two-column-aside: 1.25fr;
+  }
+
+  .ls-two-column[data-ls-valign="start"] {
+    --ls-two-column-align-content: start;
+  }
+
+  .ls-two-column[data-ls-valign="center"] {
+    --ls-two-column-align-content: center;
+  }
+
+  .ls-two-column[data-ls-valign="space-between"] {
+    --ls-two-column-align-content: space-between;
+  }
+
+  .ls-two-column[data-ls-valign="stretch"] {
+    --ls-two-column-align-content: stretch;
+    --ls-two-column-align: stretch;
   }
 
   @container ls-two-column (width < 820px) {

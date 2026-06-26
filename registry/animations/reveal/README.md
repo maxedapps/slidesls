@@ -2,6 +2,29 @@
 
 Vanilla CSS reveal transitions for slide content.
 
-Requires `core/base`. Add `.ls-reveal` and `data-step="1"` to elements that should reveal during the first deck advance. Use `--ls-delay` for subtle staggered builds.
+## Usage
 
-The core runtime controls each slide's active step. This initial recipe includes selectors for up to three reveal steps; extend it when a deck needs deeper sequencing. `?export=1` or `?export=pdf` reveals all content when JavaScript is available.
+Add `.ls-reveal` and `data-step="1"` to elements that should reveal during the first deck advance:
+
+```html
+<p class="ls-reveal" data-step="1">Shown on the first advance</p>
+```
+
+The core runtime keeps the public `data-step` API and adds runtime state:
+
+- `data-ls-reveal-state="future"` — hidden.
+- `data-ls-reveal-state="current"` — the active reveal step.
+- `data-ls-reveal-state="past"` — already revealed.
+
+This supports arbitrary positive step counts; copied decks no longer need to extend hard-coded CSS selectors for step 4+.
+
+Use `data-ls-reveal-sequence` on a group to auto-assign missing `data-step` values to direct `.ls-reveal` children in DOM order while respecting explicit steps.
+
+```html
+<ol data-ls-reveal-sequence>
+  <li class="ls-reveal">First</li>
+  <li class="ls-reveal">Second</li>
+</ol>
+```
+
+`?export=1` or `?export=pdf` reveals all stepped content when JavaScript is available.

@@ -112,3 +112,5 @@ A new primitive should only be added if it is:
 Batch 1 follow-up tightened this bar for layout primitives: defaults should look product-quality in the gallery, decoration should be opt-in, and modern CSS enhancements must not alter normal flow in ways that can overlap essential content.
 
 Batch 2 reinforced the structured-content bar: dense tables, timelines, progress, code explainers, and dashboards need semantic markup, explicit labels/values, and conservative overflow handling before visual flourish.
+
+Batch 2 polish added four reusable lessons: avoid stretch defaults for sparse metric content, reveal sequencing must support realistic item counts without hard-coded CSS ceilings, captions should not be clipped by decorative table surfaces, and safe-area utilization should be controlled through explicit layout APIs.

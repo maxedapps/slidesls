@@ -2,6 +2,7 @@
   .ls-metric {
     container: ls-metric / inline-size;
     display: grid;
+    align-content: start;
     gap: var(--ls-space-2);
     min-inline-size: 0;
     padding: 24px;
