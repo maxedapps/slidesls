@@ -1,0 +1,10 @@
+{
+  "name": "components/badge",
+  "type": "ls:component",
+  "description": "Compact labels for slide metadata and short attributes.",
+  "files": [{ "path": "registry/components/badge/badge.css", "type": "registry:style" }],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/badge/README.md"
+}

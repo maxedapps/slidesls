@@ -1,3 +1,9 @@
 # Core
 
-Mandatory base assets for downstream slide projects, such as reset styles, cascade layers, tokens, and shared slide CSS contracts.
+Mandatory foundation items for ls_slides decks.
+
+Current items:
+
+- `base/` — reset, tokens, slide shell, icon contracts, and runtime.
+
+Copy/load `base/reset.css` first. It establishes the cascade layer order used by every other registry item.

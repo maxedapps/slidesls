@@ -1,0 +1,10 @@
+{
+  "name": "components/card",
+  "type": "ls:component",
+  "description": "Flat feature and explanation cards for slide content.",
+  "files": [{ "path": "registry/components/card/card.css", "type": "registry:style" }],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/card/README.md"
+}

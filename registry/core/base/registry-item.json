@@ -1,0 +1,16 @@
+{
+  "name": "core/base",
+  "type": "ls:core",
+  "description": "Mandatory base styles and runtime for ls_slides decks.",
+  "files": [
+    { "path": "registry/core/base/reset.css", "type": "registry:style" },
+    { "path": "registry/core/base/tokens.css", "type": "registry:style" },
+    { "path": "registry/core/base/slide.css", "type": "registry:style" },
+    { "path": "registry/core/base/icons.css", "type": "registry:style" },
+    { "path": "registry/core/base/slide-runtime.js", "type": "registry:script" }
+  ],
+  "registryDependencies": [],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/core/base/README.md"
+}

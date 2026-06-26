@@ -1,0 +1,10 @@
+{
+  "name": "layouts/title-hero",
+  "type": "ls:layout",
+  "description": "Opening slide layout with large title, subtitle, badges, and visual mark area.",
+  "files": [{ "path": "registry/layouts/title-hero/title-hero.css", "type": "registry:style" }],
+  "registryDependencies": ["core/base", "components/badge"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/layouts/title-hero/README.md"
+}

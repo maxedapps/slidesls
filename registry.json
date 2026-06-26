@@ -1,0 +1,15 @@
+{
+  "name": "ls-slides",
+  "description": "Copyable vanilla HTML, CSS, and JavaScript slide-building blocks.",
+  "schema": "https://ls-slides.local/registry.schema.json",
+  "schemaStatus": "shadcn-inspired, not shadcn-cli-compatible",
+  "items": [
+    "registry/core/base/registry-item.json",
+    "registry/animations/reveal/registry-item.json",
+    "registry/layouts/title-hero/registry-item.json",
+    "registry/layouts/detail-split/registry-item.json",
+    "registry/components/badge/registry-item.json",
+    "registry/components/card/registry-item.json",
+    "registry/components/diagram/registry-item.json"
+  ]
+}

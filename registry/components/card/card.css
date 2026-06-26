@@ -1,0 +1,37 @@
+@layer components {
+  .ls-card {
+    display: grid;
+    gap: var(--ls-space-2);
+    padding: 24px;
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background: var(--ls-surface);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 4%) inset;
+  }
+
+  .ls-card--row {
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    column-gap: var(--ls-space-3);
+  }
+
+  .ls-card__body {
+    display: grid;
+    gap: 6px;
+    min-inline-size: 0;
+  }
+
+  .ls-card__title {
+    color: var(--ls-text);
+    font-size: 28px;
+    font-weight: 740;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  .ls-card__text {
+    color: var(--ls-muted);
+    font-size: 21px;
+    line-height: 1.32;
+  }
+}

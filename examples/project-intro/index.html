@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ls_slides intro</title>
+    <link rel="stylesheet" href="../../registry/core/base/reset.css" />
+    <link rel="stylesheet" href="../../registry/core/base/tokens.css" />
+    <link rel="stylesheet" href="../../registry/core/base/slide.css" />
+    <link rel="stylesheet" href="../../registry/core/base/icons.css" />
+    <link rel="stylesheet" href="../../registry/animations/reveal/reveal.css" />
+    <link rel="stylesheet" href="../../registry/layouts/title-hero/title-hero.css" />
+    <link rel="stylesheet" href="../../registry/layouts/detail-split/detail-split.css" />
+    <link rel="stylesheet" href="../../registry/components/badge/badge.css" />
+    <link rel="stylesheet" href="../../registry/components/card/card.css" />
+    <link rel="stylesheet" href="../../registry/components/diagram/diagram.css" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/lucide@0.468.0/dist/umd/lucide.min.js"
+      integrity="sha384-uTYyvsSSUZeaPhb5RbKlQa0zY/WpX/QHfvg2mczXyBQOpkWPEDy9lczyp+w7SKXu"
+      crossorigin="anonymous"
+    ></script>
+    <script type="module" src="../../registry/core/base/slide-runtime.js"></script>
+  </head>
+  <body class="ls-page">
+    <main class="ls-stage" aria-label="ls_slides intro deck">
+      <div class="ls-deck" data-ls-deck>
+        <section class="ls-slide ls-layout-title-hero" aria-label="Title slide">
+          <div class="ls-slide__inner">
+            <div class="ls-title-hero__content">
+              <p class="ls-eyebrow ls-reveal" data-step="1" style="--ls-delay: 0ms">
+                Copyable Web Slides
+              </p>
+              <h1 class="ls-title ls-reveal" data-step="1" style="--ls-delay: 90ms">ls_slides</h1>
+              <p class="ls-subtitle ls-reveal" data-step="1" style="--ls-delay: 180ms">
+                Vanilla HTML, CSS, and JavaScript building blocks for presentation decks.
+              </p>
+              <div
+                class="ls-title-hero__badges ls-reveal"
+                data-step="1"
+                style="--ls-delay: 270ms"
+                aria-label="Project traits"
+              >
+                <span class="ls-badge ls-badge--accent">vanilla</span>
+                <span class="ls-badge">copyable</span>
+                <span class="ls-badge">agent-friendly</span>
+              </div>
+            </div>
+            <aside
+              class="ls-title-hero__visual ls-reveal"
+              data-step="1"
+              style="--ls-delay: 360ms"
+              aria-label="Slide registry visual"
+            >
+              <div class="ls-title-hero__mark-stack">
+                <span class="ls-icon-mark" aria-hidden="true"
+                  ><i data-lucide="panels-top-left"></i
+                ></span>
+                <p class="ls-title-hero__caption">registry/core + layouts + components</p>
+              </div>
+            </aside>
+          </div>
+        </section>
+
+        <section class="ls-slide ls-layout-detail-split" aria-label="Project idea slide">
+          <div class="ls-slide__inner">
+            <header class="ls-slide__header ls-reveal" data-step="1" style="--ls-delay: 0ms">
+              <p class="ls-eyebrow">The idea</p>
+              <h2 class="ls-title">A registry, not a framework</h2>
+              <p class="ls-subtitle">
+                Pick the building blocks you need, copy them into your deck, then customize freely.
+              </p>
+            </header>
+            <div class="ls-slide__body">
+              <div class="ls-detail-split__visual">
+                <article
+                  class="ls-diagram ls-reveal"
+                  data-step="1"
+                  style="--ls-delay: 120ms"
+                  aria-label="Registry copy flow"
+                >
+                  <div class="ls-diagram__flow">
+                    <div class="ls-diagram__node">
+                      <span class="ls-icon-badge" aria-hidden="true"
+                        ><i data-lucide="boxes"></i
+                      ></span>
+                      <strong>Registry</strong>
+                      <span>source items</span>
+                    </div>
+                    <div class="ls-diagram__arrow" aria-hidden="true">→</div>
+                    <div class="ls-diagram__node">
+                      <span class="ls-icon-badge" aria-hidden="true"
+                        ><i data-lucide="copy"></i
+                      ></span>
+                      <strong>Copy</strong>
+                      <span>files + deps</span>
+                    </div>
+                    <div class="ls-diagram__arrow" aria-hidden="true">→</div>
+                    <div class="ls-diagram__node">
+                      <span class="ls-icon-badge" aria-hidden="true"
+                        ><i data-lucide="wand-sparkles"></i
+                      ></span>
+                      <strong>Customize</strong>
+                      <span>own the code</span>
+                    </div>
+                  </div>
+                  <div class="ls-diagram__tree" aria-label="Registry folders">
+                    <span>registry/</span>
+                    <span data-depth="1">core/base</span>
+                    <span data-depth="1">layouts/title-hero</span>
+                    <span data-depth="1">components/card</span>
+                    <span data-depth="1">animations/reveal</span>
+                  </div>
+                </article>
+              </div>
+              <div class="ls-detail-split__stack" aria-label="Project principles">
+                <article
+                  class="ls-card ls-card--row ls-reveal"
+                  data-step="1"
+                  style="--ls-delay: 240ms"
+                >
+                  <span class="ls-icon-badge" aria-hidden="true"
+                    ><i data-lucide="copy-check"></i
+                  ></span>
+                  <div class="ls-card__body">
+                    <h3 class="ls-card__title">Copyable</h3>
+                    <p class="ls-card__text">
+                      Files move into your deck instead of hiding behind a runtime.
+                    </p>
+                  </div>
+                </article>
+                <article
+                  class="ls-card ls-card--row ls-reveal"
+                  data-step="1"
+                  style="--ls-delay: 330ms"
+                >
+                  <span class="ls-icon-badge" aria-hidden="true"><i data-lucide="code-2"></i></span>
+                  <div class="ls-card__body">
+                    <h3 class="ls-card__title">Vanilla</h3>
+                    <p class="ls-card__text">
+                      Modern HTML, CSS, and JavaScript with no framework lock-in.
+                    </p>
+                  </div>
+                </article>
+                <article
+                  class="ls-card ls-card--row ls-reveal"
+                  data-step="1"
+                  style="--ls-delay: 420ms"
+                >
+                  <span class="ls-icon-badge" aria-hidden="true"
+                    ><i data-lucide="layout-template"></i
+                  ></span>
+                  <div class="ls-card__body">
+                    <h3 class="ls-card__title">Composable</h3>
+                    <p class="ls-card__text">
+                      Layouts, components, tokens, and reveals combine through metadata.
+                    </p>
+                  </div>
+                </article>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>

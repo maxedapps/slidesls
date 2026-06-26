@@ -6,6 +6,7 @@
   },
   "rules": {},
   "env": {
+    "browser": true,
     "builtin": true
   }
 }

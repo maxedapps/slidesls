@@ -1,0 +1,46 @@
+@layer base {
+  .ls-icon,
+  .ls-icon-mark,
+  .ls-icon-badge {
+    display: inline-grid;
+    place-items: center;
+    flex: 0 0 auto;
+    color: var(--ls-accent-text);
+  }
+
+  .ls-icon > svg,
+  .ls-icon .lucide,
+  .ls-icon-mark > svg,
+  .ls-icon-mark .lucide,
+  .ls-icon-badge > svg,
+  .ls-icon-badge .lucide {
+    inline-size: 1em;
+    block-size: 1em;
+    stroke-width: 1.8;
+  }
+
+  .ls-icon {
+    inline-size: 1.1em;
+    block-size: 1.1em;
+  }
+
+  .ls-icon-badge {
+    inline-size: 54px;
+    block-size: 54px;
+    border: 1px solid var(--ls-accent-border);
+    border-radius: var(--ls-radius-md);
+    background: var(--ls-accent-bg);
+    font-size: 29px;
+  }
+
+  .ls-icon-mark {
+    inline-size: 176px;
+    block-size: 176px;
+    border: 1px solid var(--ls-border-strong);
+    border-radius: 36px;
+    background:
+      linear-gradient(135deg, rgb(59 130 246 / 18%), rgb(34 211 238 / 8%)), var(--ls-surface);
+    box-shadow: var(--ls-shadow-sm);
+    font-size: 84px;
+  }
+}
