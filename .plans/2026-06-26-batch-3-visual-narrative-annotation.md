@@ -1,7 +1,7 @@
 # Plan: Batch 3 Visual Narrative & Annotation
 
 Date: 2026-06-26
-Status: In Progress
+Status: Implemented
 Project: ls_slides
 
 ## Context
@@ -538,10 +538,10 @@ Browser/visual review:
   - whether any primitive is too demo-specific,
   - whether modern CSS/SVG enhancements are baseline-safe.
 - [x] Address blocking feedback.
-- [ ] Ensure working tree contains no generated screenshots, server logs, or temporary files unless intentionally tracked.
-- [ ] Update this plan status to `Implemented` when complete.
-- [ ] Add implementation notes, validation results, peer review outcome, and commit hash(es) to this plan.
-- [ ] Commit with a concise message such as `Add visual narrative primitive batch`.
+- [x] Ensure working tree contains no generated screenshots, server logs, or temporary files unless intentionally tracked.
+- [x] Update this plan status to `Implemented` when complete.
+- [x] Add implementation notes, validation results, peer review outcome, and commit hash(es) to this plan.
+- [x] Commit with a concise message such as `Add visual narrative primitive batch`.
 
 ## Validation commands
 
@@ -608,7 +608,7 @@ registry/README.md     # only if copy/dependency guidance changes
 - [x] Phase 8 — Documentation updates completed.
 - [x] Phase 9 — Accessibility and semantics pass completed.
 - [x] Phase 10 — Validation and visual review completed.
-- [ ] Phase 11 — Peer review, cleanup, and commit completed.
+- [x] Phase 11 — Peer review, cleanup, and commit completed.
 
 ## Implementation notes
 
@@ -635,6 +635,12 @@ registry/README.md     # only if copy/dependency guidance changes
 - Updated `pulse` README to document HTML/SVG support.
 - Added connector README guidance that the arrow variant requires a copied SVG marker definition.
 - Post-fix `pnpm fmt` and `pnpm check` passed.
+- Follow-up review accepted the pulse fix and found no remaining blockers.
+
+## Commits
+
+- `e5580de` — `Add visual narrative primitive batch`
+- `07af8bd` — `Polish visual narrative animation docs`
 
 ## Peer review summary
 
