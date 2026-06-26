@@ -1,14 +1,64 @@
-This project aims to become a respository / directory of HTML components that can be used to build "slides" (as web pages).
+# ls_slides Project Vision
 
-It is NOT a library that generates slides or anything like that. It's just about visual and layout building blocks. Like shadcn for UI components.
+`ls_slides` is a copyable registry of vanilla HTML, CSS, and JavaScript building blocks for creating slide decks as web pages.
 
-The goal is to allow users (and especially also AI agents) to reach out to this repository to get pre-built, customizeable (obviously, since it's just code that can be tweaked) "components" / blueprints that can be used in other projects to build slide decks / presentations.
+It is not a slide generator, framework, runtime package, or component-library package. It should stay closer to a shadcn-style registry: users and AI agents copy code from this repository into downstream slide projects, then customize it directly.
 
-This repository will therefore provide:
-- layouts (title slide, centered title, 2 column, 3 column, 3 column where right most column consts of 3 rows, etc.)
-- individual building blocks / components (like badge, bar chart, highlighted text, bullet list, infobox etc)
-- style presets (different styles for the same components)
-- JavaScript based animations and transitions (using GSAP)
-- agent skills with detailed usage instructions and best practices
+## Core goals
 
-The goal is to focus on vanilla HTML + modern CSS (no Tailwind). Vanilla JavaScript (with GSAP) for all interactivity.
+- Provide reusable visual and layout building blocks for web-based presentations.
+- Keep every registry item copyable, readable, and easy to modify.
+- Make the repository useful for both humans and AI agents.
+- Prefer modern platform features over framework abstractions.
+- Avoid implying that consumers must install this repository as a runtime dependency.
+
+## Registry model
+
+Copyable registry items live under `registry/`:
+
+- `registry/core/` — mandatory base assets such as reset styles, cascade layers, tokens, and shared slide CSS contracts.
+- `registry/layouts/` — slide layout patterns such as title slides, centered titles, two-column layouts, three-column layouts, and asymmetric content grids.
+- `registry/components/` — individual slide building blocks such as badges, charts, highlighted text, bullet lists, callouts, infoboxes, code blocks, and media frames.
+- `registry/presets/` — optional token remaps and presentation-style presets for the same underlying components.
+- `registry/animations/` — copyable animation and transition recipes, expected to use vanilla JavaScript and GSAP where useful.
+
+Supporting folders are intentionally top-level and are not registry items:
+
+- `docs/` — future Astro documentation/discovery site.
+- `examples/` — example slide projects and demos.
+- `skills/` — agent-facing usage instructions and best practices.
+- `scripts/` — project automation scripts when a concrete workflow exists.
+- `.plans/` — implementation and architecture plans.
+
+## Technical direction
+
+- Package manager: `pnpm` only.
+- Workspace tooling: pnpm workspaces only; no Turborepo, Nx, Rush, Changesets, or other monorepo tooling.
+- Root project: private pnpm-managed project, currently not a publishable package.
+- Runtime/build philosophy: vanilla HTML, modern CSS, and vanilla JavaScript.
+- CSS philosophy: no Tailwind; prefer semantic classes, CSS custom properties, cascade layers, and reusable tokens.
+- Animation direction: GSAP may be used by future animation recipes, but it should not be added as a root dependency until a concrete registry item needs it.
+- Documentation direction: Astro docs site later, only once `docs/` is initialized with its own package manifest.
+- Linting: Oxlint.
+- Formatting: Oxfmt.
+- Config style: JSON configs for Oxlint/Oxfmt initially.
+
+## Current setup details
+
+- Root `package.json` is private, ESM, and pins `packageManager` to `pnpm@11.1.1`.
+- Node engine is `>=22.18.0`.
+- `pnpm-workspace.yaml` stores project-level pnpm settings, but intentionally has no `packages` list yet.
+- Conservative pnpm settings:
+  - `minimumReleaseAge: 1440`
+  - `trustPolicy: no-downgrade`
+  - `pmOnFail: error`
+- `pnpm-lock.yaml` should be committed.
+- Generated/dependency output such as `node_modules/`, `dist/`, `.astro/`, and temporary pnpm lock files should stay ignored.
+
+## Important constraints
+
+- Do not add actual registry components, metadata formats, docs pages, or scripts without an explicit plan.
+- Do not add framework dependencies for registry items by default.
+- Do not add `docs` to workspace packages until `docs/package.json` exists.
+- Do not use `.gitkeep` placeholders; prefer concise README files when a directory must be tracked.
+- Keep the copyable-registry model central in all future architecture decisions.
