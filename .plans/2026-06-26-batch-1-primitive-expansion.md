@@ -577,6 +577,7 @@ Recommended visual validation:
 - Wired the `asymmetric-feature` anchor-positioning enhancement instead of leaving a no-op hook.
 - Removed a non-functional `comparison-grid` subgrid enhancement.
 - Commits: `a8e1e84`; follow-up fixes are included in the final docs/layout polish commit.
+- Follow-up: `.plans/2026-06-26-batch-1-layout-api-polish.md` tracks the corrective layout API pass for the three user-flagged Batch 1 layouts.
 
 ## Peer review summary
 

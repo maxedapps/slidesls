@@ -54,7 +54,7 @@ The current registry foundation is implemented:
 - Workspace tooling: pnpm workspaces only; no Turborepo, Nx, Rush, Changesets, or other monorepo tooling.
 - Root project: private pnpm-managed project, currently not a publishable package.
 - Runtime/build philosophy: vanilla HTML, modern CSS, and vanilla JavaScript.
-- CSS philosophy: no Tailwind; prefer semantic classes, CSS custom properties, cascade layers, reusable tokens, container queries, `:has()`, subgrid, anchor positioning, typed custom properties, and modern color functions where useful.
+- CSS philosophy: no Tailwind; prefer semantic classes, CSS custom properties, cascade layers, reusable tokens, container queries, `:has()`, subgrid, anchor positioning, typed custom properties, and modern color functions where useful. Layout primitives should expose clear `ls-` class/attribute APIs, opt-in decoration, variable-driven sizing, and baseline-safe progressive enhancement.
 - Typography direction: core exposes semantic font role tokens; optional scoped presets remap those roles via `data-ls-font` without global side effects.
 - Animation direction: prefer CSS animations, scroll-driven animations, View Transitions, and Web Animations API where they fit; GSAP may be used by future animation recipes, but it should not be added as a root dependency until a concrete registry item needs it.
 - Documentation direction: Astro docs site later, only once `docs/` is initialized with its own package manifest.

@@ -40,17 +40,13 @@
     <main class="ls-stage" aria-label="Primitive gallery deck">
       <div class="ls-deck" data-ls-deck>
         <section class="ls-slide ls-layout-centered-statement" aria-label="Centered statement">
-          <div class="ls-slide__inner ls-centered-statement">
+          <div class="ls-slide__inner ls-centered-statement" data-ls-size="hero">
             <div class="ls-centered-statement__content">
-              <p class="ls-eyebrow ls-reveal ls-reveal-fade" data-step="1">Batch 1 primitives</p>
-              <h1
-                class="ls-centered-statement__statement ls-reveal ls-reveal-slide-up"
-                data-step="1"
-              >
-                More slides, less ceremony.
-              </h1>
-              <p class="ls-centered-statement__support ls-reveal ls-reveal-slide-up" data-step="1">
-                Six layouts, seven components, and three reveal-compatible animation utilities.
+              <p class="ls-eyebrow">Batch 1 primitives</p>
+              <h1 class="ls-centered-statement__statement">More slides, less ceremony.</h1>
+              <p class="ls-centered-statement__support">
+                Six layouts, seven components, and three reveal-compatible animation utilities —
+                copyable as plain HTML and CSS.
               </p>
               <div class="ls-centered-statement__actions ls-reveal ls-reveal-fade" data-step="1">
                 <span class="ls-badge ls-badge--accent">vanilla</span>
@@ -62,20 +58,16 @@
         </section>
 
         <section class="ls-slide" aria-label="Section divider">
-          <div class="ls-slide__inner ls-section-divider" data-ls-align="center">
+          <div class="ls-slide__inner ls-section-divider">
             <div class="ls-section-divider__content">
-              <p class="ls-section-divider__number ls-reveal ls-reveal-fade" data-step="1">
-                01 / Workhorse
-              </p>
-              <h2 class="ls-section-divider__title ls-reveal ls-reveal-slide-up" data-step="1">
-                Professional slide primitives
-              </h2>
-              <p class="ls-section-divider__text ls-reveal ls-reveal-slide-up" data-step="1">
+              <p class="ls-section-divider__number">01 / Workhorse</p>
+              <h2 class="ls-section-divider__title">Professional slide primitives</h2>
+              <p class="ls-section-divider__text">
                 Structured enough for business decks, flexible enough to remix.
               </p>
             </div>
             <p class="ls-section-divider__footer ls-reveal ls-reveal-fade" data-step="1">
-              Layouts and components stay small, scoped, and dependency-free.
+              Clean by default; ambience is an explicit opt-in.
             </p>
           </div>
         </section>
@@ -172,11 +164,8 @@
 
         <section class="ls-slide" aria-label="Asymmetric feature">
           <div class="ls-slide__inner">
-            <div class="ls-slide__body ls-asymmetric-feature">
-              <div
-                class="ls-asymmetric-feature__statement ls-reveal ls-reveal-slide-up"
-                data-step="1"
-              >
+            <div class="ls-slide__body ls-asymmetric-feature" data-ls-ratio="statement-wide">
+              <div class="ls-asymmetric-feature__statement">
                 <p class="ls-eyebrow">Editorial mode</p>
                 <h2 class="ls-asymmetric-feature__headline">A bold side and a useful stack.</h2>
                 <p class="ls-subtitle">
@@ -196,12 +185,8 @@
                     Cards, callouts, diagrams, or metrics can live beside it.
                   </p>
                 </article>
-                <aside
-                  class="ls-asymmetric-feature__annotation ls-reveal"
-                  data-step="1"
-                  data-ls-anchor="statement"
-                >
-                  Progressive anchor-positioning hook; baseline remains grid-based.
+                <aside class="ls-asymmetric-feature__annotation ls-reveal" data-step="1">
+                  Annotation content stays in normal flow, so it cannot overlap supporting cards.
                 </aside>
               </div>
             </div>

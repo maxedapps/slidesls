@@ -13,6 +13,8 @@ The registry should provide structure without trapping users in rigid templates.
 
 ## Primitive design rules
 
+See also [Primitive authoring contract](./primitive-authoring.md) for the shared layout API, sizing, decoration, progressive-enhancement, and visual QA contract.
+
 - Prefer **slots and regions** over content-specific templates.
 - Keep class names `ls-` prefixed and readable.
 - Use semantic tokens from `core/base` before introducing item-local variables.
@@ -98,3 +100,5 @@ A new primitive should only be added if it is:
 - designed modern-first but progressively enhanced when browser support is uneven,
 - documented with concise usage guidance and any notable platform requirements,
 - validated in an example before commit.
+
+Batch 1 follow-up tightened this bar for layout primitives: defaults should look product-quality in the gallery, decoration should be opt-in, and modern CSS enhancements must not alter normal flow in ways that can overlap essential content.
