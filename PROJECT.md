@@ -9,7 +9,7 @@ It is not a slide generator, framework, runtime package, or component-library pa
 - Provide reusable visual and layout building blocks for web-based presentations.
 - Keep every registry item copyable, readable, and easy to modify.
 - Make the repository useful for both humans and AI agents.
-- Prefer modern platform features over framework abstractions.
+- Prefer modern platform features over framework abstractions, including modern CSS and browser APIs when they improve copyability or expressiveness.
 - Avoid implying that consumers must install this repository as a runtime dependency.
 
 ## Registry model
@@ -41,8 +41,10 @@ The first registry slice is implemented:
 - `registry/animations/reveal` — vanilla reveal-step transitions.
 - `registry/layouts/title-hero` and `registry/layouts/detail-split` — initial slide layout patterns.
 - `registry/components/badge`, `registry/components/card`, and `registry/components/diagram` — initial reusable slide components.
+- `registry/presets/fonts/editorial-serif`, `registry/presets/fonts/technical-mono`, and `registry/presets/fonts/system-humanist` — scoped font-family role remaps activated with `data-ls-font`.
 - `examples/project-intro` — two-slide validation deck.
 - `scripts/serve-examples.mjs` and `pnpm serve:examples` — dependency-free examples server with automatic example discovery.
+- `scripts/validate-registry.mjs` and `pnpm validate:registry` — registry metadata, path, and dependency validation included in `pnpm check`.
 
 ## Technical direction
 
@@ -50,13 +52,14 @@ The first registry slice is implemented:
 - Workspace tooling: pnpm workspaces only; no Turborepo, Nx, Rush, Changesets, or other monorepo tooling.
 - Root project: private pnpm-managed project, currently not a publishable package.
 - Runtime/build philosophy: vanilla HTML, modern CSS, and vanilla JavaScript.
-- CSS philosophy: no Tailwind; prefer semantic classes, CSS custom properties, cascade layers, and reusable tokens.
+- CSS philosophy: no Tailwind; prefer semantic classes, CSS custom properties, cascade layers, reusable tokens, container queries, `:has()`, subgrid, anchor positioning, typed custom properties, and modern color functions where useful.
 - Typography direction: core exposes semantic font role tokens; optional scoped presets remap those roles via `data-ls-font` without global side effects.
-- Animation direction: GSAP may be used by future animation recipes, but it should not be added as a root dependency until a concrete registry item needs it.
+- Animation direction: prefer CSS animations, scroll-driven animations, View Transitions, and Web Animations API where they fit; GSAP may be used by future animation recipes, but it should not be added as a root dependency until a concrete registry item needs it.
 - Documentation direction: Astro docs site later, only once `docs/` is initialized with its own package manifest.
 - Linting: Oxlint.
 - Formatting: Oxfmt.
 - Config style: JSON configs for Oxlint/Oxfmt initially.
+- Compatibility posture: modern-first and progressively enhanced; use `@supports` and feature detection for uneven browser capabilities instead of adding transpilers or framework dependencies by default.
 
 ## Current setup details
 
