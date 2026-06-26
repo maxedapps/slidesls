@@ -1,4 +1,5 @@
 @layer animations {
+  /* The initial recipe supports up to three reveal steps; extend selectors when a deck needs more. */
   .ls-reveal {
     opacity: 1;
     transform: translateY(0);

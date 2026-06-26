@@ -1,7 +1,7 @@
 # Plan: Registry Foundation, Metadata, and Intro Example Deck
 
 Date: 2026-06-26
-Status: In Progress
+Status: Implemented
 Project: ls_slides
 
 ## Context
@@ -510,6 +510,37 @@ Optional agent/browser validation if time permits:
 
 Rollback is simple because this step only adds static files, metadata, and README updates. Revert the implementation commit if the foundation direction is rejected.
 
+## Implementation progress
+
+- [x] Phase 1 — Created registry metadata skeleton and item directories.
+- [x] Phase 2 — Defined core foundation item.
+- [x] Phase 3 — Added reveal animation item.
+- [x] Phase 4 — Added initial layouts.
+- [x] Phase 5 — Added minimal components.
+- [x] Phase 6 — Built project intro example deck.
+- [x] Phase 7 — Updated concise registry/example documentation.
+- [x] Phase 8 — Validated and polished.
+
+## Implementation notes
+
+- Implementation commit: `01c1a87` (`Add registry foundation and intro deck`).
+- Follow-up polish commit: `Polish registry foundation metadata`.
+- Used `lucide@0.468.0` from jsDelivr in the example deck with a computed SHA-384 SRI hash.
+- Kept reveal animation as an optional consumer choice; layouts do not require it in metadata.
+- Updated Oxlint config with `browser: true` for the core runtime.
+- Browser screenshots were captured with `npx agent-browser` for the revealed title slide and export/static mode.
+- Follow-up polish from peer review removes a placeholder schema URL, removes an unused CSS custom property, documents the initial reveal step limit, and keeps optional title-hero badge usage out of required metadata dependencies.
+
+## Implementation validation
+
+```sh
+pnpm fmt                         # passed
+pnpm check                       # passed
+node --check registry/core/base/slide-runtime.js  # passed
+node <registry metadata validation script>        # passed; validated 7 items
+python3 -m http.server 4173 + npx agent-browser   # passed; screenshots captured
+```
+
 ## Peer review summary
 
 The first draft was reviewed with Claude. The reviewer agreed with the overall copyable-registry direction, no-framework approach, no premature GSAP dependency, and generic icon contracts. The review identified several improvements that are incorporated in this final plan:
@@ -525,3 +556,5 @@ The first draft was reviewed with Claude. The reviewer agreed with the overall c
 - Use browser/visual validation where practical.
 
 A second review of this revised plan accepted the architecture and recommended these final clarifications, which are reflected above: put the canonical cascade layer declaration in the first core CSS file, choose an explicit JS-enhanced scaling mechanism with a no-JS readable fallback, make the Oxlint browser environment update concrete, keep reveal animation optional rather than forcing it through layout dependencies, use the canonical `ls-slides` metadata name, and document divergence from exact shadcn registry shapes.
+
+Implementation peer review accepted the implementation as matching the plan and mergeable. Optional polish items were addressed: documented the initial three-step reveal selector range, removed an unused CSS custom property, kept `components/badge` optional for `layouts/title-hero`, and removed the placeholder schema URL from `registry.json`.

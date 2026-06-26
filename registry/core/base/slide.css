@@ -16,8 +16,6 @@
   }
 
   .ls-deck {
-    --ls-current-step: 0;
-
     position: relative;
     min-block-size: 100vh;
   }

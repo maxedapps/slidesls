@@ -1,7 +1,6 @@
 {
   "name": "ls-slides",
   "description": "Copyable vanilla HTML, CSS, and JavaScript slide-building blocks.",
-  "schema": "https://ls-slides.local/registry.schema.json",
   "schemaStatus": "shadcn-inspired, not shadcn-cli-compatible",
   "items": [
     "registry/core/base/registry-item.json",
