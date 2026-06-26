@@ -1,0 +1,15 @@
+{
+  "name": "animations/spotlight",
+  "type": "ls:animation",
+  "description": "Spotlight focus animation.",
+  "files": [
+    {
+      "path": "registry/animations/spotlight/spotlight.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base", "animations/reveal"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/animations/spotlight/README.md"
+}

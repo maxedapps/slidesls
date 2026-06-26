@@ -42,6 +42,16 @@
     "registry/components/divider/registry-item.json",
     "registry/animations/scale-in/registry-item.json",
     "registry/animations/step-focus/registry-item.json",
-    "registry/animations/highlight/registry-item.json"
+    "registry/animations/highlight/registry-item.json",
+    "registry/components/annotation/registry-item.json",
+    "registry/components/connector/registry-item.json",
+    "registry/components/image-card/registry-item.json",
+    "registry/components/legend/registry-item.json",
+    "registry/layouts/quote-feature/registry-item.json",
+    "registry/layouts/layered-canvas/registry-item.json",
+    "registry/animations/pulse/registry-item.json",
+    "registry/animations/spotlight/registry-item.json",
+    "registry/animations/connector-grow/registry-item.json",
+    "registry/animations/path-draw/registry-item.json"
   ]
 }

@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Visual Narrative Gallery · ls_slides</title>
+    <link rel="stylesheet" href="../../registry/core/base/reset.css" />
+    <link rel="stylesheet" href="../../registry/core/base/tokens.css" />
+    <link rel="stylesheet" href="../../registry/core/base/slide.css" />
+    <link
+      rel="stylesheet"
+      href="../../registry/presets/fonts/editorial-serif/editorial-serif.css"
+    />
+    <link rel="stylesheet" href="../../registry/layouts/quote-feature/quote-feature.css" />
+    <link rel="stylesheet" href="../../registry/layouts/layered-canvas/layered-canvas.css" />
+    <link rel="stylesheet" href="../../registry/layouts/two-column/two-column.css" />
+    <link rel="stylesheet" href="../../registry/layouts/three-column/three-column.css" />
+    <link rel="stylesheet" href="../../registry/components/badge/badge.css" />
+    <link rel="stylesheet" href="../../registry/components/card/card.css" />
+    <link rel="stylesheet" href="../../registry/components/media-frame/media-frame.css" />
+    <link rel="stylesheet" href="../../registry/components/highlight-text/highlight-text.css" />
+    <link rel="stylesheet" href="../../registry/components/annotation/annotation.css" />
+    <link rel="stylesheet" href="../../registry/components/connector/connector.css" />
+    <link rel="stylesheet" href="../../registry/components/image-card/image-card.css" />
+    <link rel="stylesheet" href="../../registry/components/legend/legend.css" />
+    <link rel="stylesheet" href="../../registry/animations/reveal/reveal.css" />
+    <link rel="stylesheet" href="../../registry/animations/pulse/pulse.css" />
+    <link rel="stylesheet" href="../../registry/animations/spotlight/spotlight.css" />
+    <link rel="stylesheet" href="../../registry/animations/connector-grow/connector-grow.css" />
+    <link rel="stylesheet" href="../../registry/animations/path-draw/path-draw.css" />
+    <script type="module" src="../../registry/core/base/slide-runtime.js"></script>
+  </head>
+  <body class="ls-page" data-ls-font="editorial-serif">
+    <main class="ls-deck" data-ls-deck aria-label="Visual narrative gallery">
+      <section class="ls-slide" aria-label="Visual narrative overview">
+        <div
+          class="ls-slide__inner ls-quote-feature"
+          data-ls-align="center"
+          data-ls-variant="editorial"
+        >
+          <blockquote class="ls-quote-feature__quote">
+            <p class="ls-eyebrow">Batch 3</p>
+            <p class="ls-quote-feature__text">
+              Visual stories need safe annotations, clear connections, and export-ready focus.
+            </p>
+            <footer class="ls-quote-feature__source">
+              Visual Narrative &amp; Annotation primitives
+            </footer>
+          </blockquote>
+        </div>
+      </section>
+
+      <section class="ls-slide" aria-label="Quote feature">
+        <div class="ls-slide__inner ls-quote-feature" data-ls-variant="panel">
+          <blockquote class="ls-quote-feature__quote">
+            <span class="ls-quote-feature__mark" aria-hidden="true">“</span>
+            <p class="ls-quote-feature__text">
+              The best explanation made the invisible workflow feel obvious.
+            </p>
+            <footer class="ls-quote-feature__source">
+              <cite>Research participant</cite> · after a prototype walkthrough
+            </footer>
+          </blockquote>
+          <p class="ls-quote-feature__context">
+            `quote-feature` is a full-slide composition for customer stories, editorial moments, and
+            testimonials.
+          </p>
+        </div>
+      </section>
+
+      <section class="ls-slide" aria-label="Annotated visual">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Annotation + connector + legend</p>
+            <h2 class="ls-title">Annotate screenshots safely</h2>
+          </header>
+          <div class="ls-slide__body ls-two-column" data-ls-ratio="wide-main">
+            <figure
+              class="ls-media-frame ls-spotlight"
+              data-ls-variant="ring"
+              style="--ls-media-aspect: 16 / 7"
+            >
+              <div class="ls-media-frame__surface">
+                <svg
+                  viewBox="0 0 720 390"
+                  role="img"
+                  aria-label="Dashboard placeholder with highlighted workflow"
+                >
+                  <defs>
+                    <linearGradient id="panel-a" x1="0" x2="1">
+                      <stop stop-color="#1d4ed8" />
+                      <stop offset="1" stop-color="#22d3ee" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="720" height="390" rx="28" fill="#101722" />
+                  <rect x="42" y="48" width="190" height="280" rx="18" fill="#182231" />
+                  <rect
+                    x="268"
+                    y="54"
+                    width="380"
+                    height="64"
+                    rx="16"
+                    fill="url(#panel-a)"
+                    opacity=".55"
+                  />
+                  <rect
+                    x="268"
+                    y="148"
+                    width="168"
+                    height="132"
+                    rx="18"
+                    fill="#1a2332"
+                    stroke="#3b82f6"
+                  />
+                  <rect x="462" y="148" width="186" height="132" rx="18" fill="#1a2332" />
+                  <circle
+                    class="ls-pulse"
+                    data-ls-loop="true"
+                    cx="350"
+                    cy="214"
+                    r="18"
+                    fill="#bfdbfe"
+                  />
+                </svg>
+              </div>
+              <figcaption class="ls-media-frame__caption">
+                Inline SVG placeholder; no external assets.
+              </figcaption>
+            </figure>
+            <aside class="ls-two-column__aside">
+              <div class="ls-annotation ls-reveal" data-step="1" data-ls-variant="callout">
+                <span class="ls-annotation__marker">1</span>
+                <div class="ls-annotation__body">
+                  <h3 class="ls-annotation__title">Primary workflow</h3>
+                  <p class="ls-annotation__text">
+                    Use text and markers so meaning survives monochrome export.
+                  </p>
+                </div>
+              </div>
+              <svg
+                class="ls-connector ls-reveal"
+                data-step="2"
+                viewBox="0 0 360 90"
+                aria-hidden="true"
+              >
+                <path
+                  class="ls-connector__path ls-connector-grow"
+                  pathLength="1"
+                  d="M16 44 C 110 14, 210 82, 344 34"
+                />
+              </svg>
+              <ul class="ls-legend" data-ls-variant="panel">
+                <li class="ls-legend__item">
+                  <span class="ls-legend__marker"></span
+                  ><span
+                    ><span class="ls-legend__label">Active flow</span
+                    ><span class="ls-legend__description">Currently highlighted path</span></span
+                  >
+                </li>
+                <li class="ls-legend__item">
+                  <span
+                    class="ls-legend__marker"
+                    data-ls-shape="square"
+                    data-ls-pattern="dash"
+                    style="--ls-legend-marker-color: #22c55e"
+                  ></span
+                  ><span
+                    ><span class="ls-legend__label">Validated</span
+                    ><span class="ls-legend__description">Confirmed by research</span></span
+                  >
+                </li>
+              </ul>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="ls-slide" aria-label="Layered canvas">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Layered canvas</p>
+            <h2 class="ls-title">Layer visuals with flow-first defaults</h2>
+          </header>
+          <div
+            class="ls-slide__body ls-layered-canvas"
+            data-ls-variant="panel"
+            data-ls-overlap="soft"
+            style="--ls-layered-canvas-min-block: 320px"
+          >
+            <div class="ls-layered-canvas__stage">
+              <article class="ls-layered-canvas__item ls-card" data-ls-layer="base">
+                <p class="ls-badge">Input</p>
+                <h3 class="ls-card__title">Customer signal</h3>
+                <p class="ls-card__text">
+                  Feedback, support tickets, and telemetry enter the canvas as editable cards.
+                </p>
+              </article>
+              <article class="ls-layered-canvas__item ls-card" data-ls-layer="overlay">
+                <p class="ls-badge">Overlay</p>
+                <h3 class="ls-card__title">Annotated concept</h3>
+                <p class="ls-card__text">Overlaps are explicit and bounded by the canvas API.</p>
+              </article>
+              <aside
+                class="ls-layered-canvas__item ls-annotation ls-reveal"
+                data-step="1"
+                data-ls-layer="floating"
+              >
+                <span class="ls-annotation__marker">!</span>
+                <div class="ls-annotation__body">
+                  <h3 class="ls-annotation__title">Guardrail</h3>
+                  <p class="ls-annotation__text">
+                    Floating items remain opt-in, not the default placement model.
+                  </p>
+                </div>
+              </aside>
+              <svg
+                class="ls-layered-canvas__safe ls-connector ls-reveal"
+                data-step="2"
+                viewBox="0 0 960 120"
+                aria-hidden="true"
+              >
+                <path
+                  class="ls-connector__path ls-path-draw"
+                  pathLength="1"
+                  d="M80 80 C 260 20, 520 110, 880 44"
+                />
+              </svg>
+            </div>
+            <p class="ls-layered-canvas__caption">
+              The layout provides regions; components own annotation, card, and connector visuals.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="ls-slide" aria-label="Image card grid">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Image card</p>
+            <h2 class="ls-title">Case-study cards without external assets</h2>
+          </header>
+          <div class="ls-slide__body ls-three-column">
+            <figure class="ls-image-card" data-ls-ratio="wide">
+              <div class="ls-image-card__media"><span class="ls-badge ls-pulse">Pilot</span></div>
+              <figcaption class="ls-image-card__content">
+                <p class="ls-image-card__eyebrow">Onboarding</p>
+                <h3 class="ls-image-card__title">First-run clarity</h3>
+                <p class="ls-image-card__text">
+                  A narrative card for product or customer examples.
+                </p>
+              </figcaption>
+            </figure>
+            <figure class="ls-image-card" data-ls-ratio="wide">
+              <div class="ls-image-card__media"><span>Flow</span></div>
+              <figcaption class="ls-image-card__content">
+                <p class="ls-image-card__eyebrow">Activation</p>
+                <h3 class="ls-image-card__title">Moment of value</h3>
+                <p class="ls-image-card__text">
+                  Captions and metadata stay outside the visual crop.
+                </p>
+              </figcaption>
+            </figure>
+            <figure class="ls-image-card" data-ls-ratio="wide">
+              <div class="ls-image-card__media"><span>Scale</span></div>
+              <figcaption class="ls-image-card__content">
+                <p class="ls-image-card__eyebrow">Expansion</p>
+                <h3 class="ls-image-card__title">Reusable pattern</h3>
+                <p class="ls-image-card__text">
+                  Works for screenshots, SVG placeholders, or photos.
+                </p>
+              </figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <section class="ls-slide" aria-label="Connected diagram">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Connector grow + path draw</p>
+            <h2 class="ls-title">SVG connectors stay honest</h2>
+          </header>
+          <div
+            class="ls-slide__body ls-layered-canvas"
+            data-ls-valign="center"
+            style="--ls-layered-canvas-min-block: 300px"
+          >
+            <div class="ls-layered-canvas__stage">
+              <article class="ls-layered-canvas__item ls-card" data-ls-layer="base">
+                <h3 class="ls-card__title">Signal</h3>
+                <p class="ls-card__text">Inputs and observations.</p>
+              </article>
+              <article class="ls-layered-canvas__item ls-card" data-ls-layer="base">
+                <h3 class="ls-card__title">Model</h3>
+                <p class="ls-card__text">Interpretation and rules.</p>
+              </article>
+              <article class="ls-layered-canvas__item ls-card" data-ls-layer="base">
+                <h3 class="ls-card__title">Action</h3>
+                <p class="ls-card__text">Recommended next step.</p>
+              </article>
+              <svg
+                class="ls-layered-canvas__safe ls-connector ls-reveal"
+                data-step="1"
+                viewBox="0 0 980 180"
+                aria-hidden="true"
+              >
+                <path
+                  class="ls-connector__path ls-connector-grow"
+                  pathLength="1"
+                  d="M90 88 H 430 C 520 88, 520 120, 610 120 H 900"
+                />
+              </svg>
+            </div>
+            <ul class="ls-legend" data-ls-orientation="horizontal">
+              <li class="ls-legend__item">
+                <span class="ls-legend__marker"></span
+                ><span class="ls-legend__label">Connector path</span>
+              </li>
+              <li class="ls-legend__item">
+                <span class="ls-legend__marker" data-ls-shape="square"></span
+                ><span class="ls-legend__label">Narrative node</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="ls-slide" aria-label="Spotlight annotation">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Spotlight + pulse</p>
+            <h2 class="ls-title">Focus attention without hiding the rest</h2>
+          </header>
+          <div class="ls-slide__body ls-two-column">
+            <div class="ls-card ls-spotlight" data-ls-variant="wash">
+              <p class="ls-badge ls-pulse" data-ls-loop="true">Live</p>
+              <h3 class="ls-card__title">Decision point</h3>
+              <p class="ls-card__text">
+                Spotlight adds a local focus treatment instead of a full-slide dimming layer.
+              </p>
+            </div>
+            <aside class="ls-annotation" data-ls-tone="warning">
+              <span class="ls-annotation__marker">?</span>
+              <div class="ls-annotation__body">
+                <p class="ls-annotation__meta">Question</p>
+                <h3 class="ls-annotation__title">What changed?</h3>
+                <p class="ls-annotation__text">
+                  The annotation remains readable in normal, reveal, and export modes.
+                </p>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="ls-slide" aria-label="Composition recap">
+        <div class="ls-slide__inner ls-quote-feature" data-ls-align="center">
+          <blockquote class="ls-quote-feature__quote">
+            <p class="ls-eyebrow">Copyable composition</p>
+            <p class="ls-quote-feature__text">
+              Visual primitives stay small; stories emerge by composing them.
+            </p>
+            <footer class="ls-quote-feature__source">
+              Batch 3 adds quote-feature, layered-canvas, annotation, connector, image-card, legend,
+              pulse, spotlight, connector-grow, and path-draw.
+            </footer>
+          </blockquote>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

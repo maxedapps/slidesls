@@ -41,12 +41,14 @@ The current registry foundation is implemented:
 - `registry/animations/reveal` — vanilla reveal-step transitions.
 - Batch 1 animation variants: `fade`, `slide-up`, and `stagger`, all composing with `animations/reveal`.
 - Batch 2 animation variants: `scale-in`, `step-focus`, and `highlight`, all composing with `animations/reveal`.
-- Layouts: `title-hero`, `detail-split`, `centered-statement`, `section-divider`, `two-column`, `comparison-grid`, `asymmetric-feature`, `image-spotlight`, `three-column`, `metric-dashboard`, `timeline-strip`, and `code-explainer`.
-- Components: `badge`, `card`, `diagram`, `callout`, `metric`, `stat-grid`, `bullet-list`, `code-block`, `media-frame`, `quote`, `table`, `timeline`, `numbered-step`, `progress`, `logo-strip`, `highlight-text`, and `divider`.
+- Batch 3 animation variants: `pulse`, `spotlight`, `connector-grow`, and `path-draw`, all composing with `animations/reveal` where appropriate.
+- Layouts: `title-hero`, `detail-split`, `centered-statement`, `section-divider`, `two-column`, `comparison-grid`, `asymmetric-feature`, `image-spotlight`, `three-column`, `metric-dashboard`, `timeline-strip`, `code-explainer`, `quote-feature`, and `layered-canvas`.
+- Components: `badge`, `card`, `diagram`, `callout`, `metric`, `stat-grid`, `bullet-list`, `code-block`, `media-frame`, `quote`, `table`, `timeline`, `numbered-step`, `progress`, `logo-strip`, `highlight-text`, `divider`, `annotation`, `connector`, `image-card`, and `legend`.
 - `registry/presets/fonts/editorial-serif`, `registry/presets/fonts/technical-mono`, and `registry/presets/fonts/system-humanist` — scoped font-family role remaps activated with `data-ls-font`.
 - `examples/project-intro` — two-slide validation deck.
 - `examples/primitive-gallery` — seven-slide gallery validating the first primitive expansion batch.
 - `examples/structured-content-gallery` — eight-slide gallery validating Batch 2 structured content and data primitives.
+- `examples/visual-narrative-gallery` — eight-slide gallery validating Batch 3 visual narrative and annotation primitives.
 - `scripts/serve-examples.mjs` and `pnpm serve:examples` — dependency-free examples server with automatic example discovery.
 - `scripts/validate-registry.mjs` and `pnpm validate:registry` — registry metadata, path, and dependency validation included in `pnpm check`.
 

@@ -1,0 +1,15 @@
+{
+  "name": "components/legend",
+  "type": "ls:component",
+  "description": "Diagram legend component.",
+  "files": [
+    {
+      "path": "registry/components/legend/legend.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/legend/README.md"
+}

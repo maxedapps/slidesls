@@ -1,0 +1,15 @@
+{
+  "name": "components/annotation",
+  "type": "ls:component",
+  "description": "Annotation component for diagrams and visual explanations.",
+  "files": [
+    {
+      "path": "registry/components/annotation/annotation.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/annotation/README.md"
+}

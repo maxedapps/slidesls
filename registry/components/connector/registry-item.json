@@ -1,0 +1,15 @@
+{
+  "name": "components/connector",
+  "type": "ls:component",
+  "description": "SVG/CSS connector component.",
+  "files": [
+    {
+      "path": "registry/components/connector/connector.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/connector/README.md"
+}

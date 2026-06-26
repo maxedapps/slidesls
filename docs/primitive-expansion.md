@@ -88,6 +88,13 @@ Completed second expansion batch:
 - Animations: `scale-in`, `step-focus`, `highlight`.
 - Example: `examples/structured-content-gallery`.
 
+Completed third expansion batch:
+
+- Layouts: `quote-feature`, `layered-canvas`.
+- Components: `annotation`, `connector`, `image-card`, `legend`.
+- Animations: `pulse`, `spotlight`, `connector-grow`, `path-draw`.
+- Example: `examples/visual-narrative-gallery`.
+
 Modern-platform patterns used in these batches:
 
 - Use container queries in `two-column`, `comparison-grid`, `metric`, `stat-grid`, `code-block`, and `media-frame` so components adapt to their assigned slide regions.
@@ -114,3 +121,5 @@ Batch 1 follow-up tightened this bar for layout primitives: defaults should look
 Batch 2 reinforced the structured-content bar: dense tables, timelines, progress, code explainers, and dashboards need semantic markup, explicit labels/values, and conservative overflow handling before visual flourish.
 
 Batch 2 polish added four reusable lessons: avoid stretch defaults for sparse metric content, reveal sequencing must support realistic item counts without hard-coded CSS ceilings, captions should not be clipped by decorative table surfaces, and safe-area utilization should be controlled through explicit layout APIs.
+
+Batch 3 adds visual narrative guardrails: annotations default to normal flow, connectors use honest hand-authored SVG/CSS geometry instead of auto-routing, legends must provide text/shape cues instead of color-only meaning, and layered canvases should make overlap/floating explicit.

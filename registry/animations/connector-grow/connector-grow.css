@@ -1,0 +1,27 @@
+@layer animations {
+  .ls-connector-grow {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset var(--ls-connector-grow-duration, var(--ls-duration-slow))
+      var(--ls-connector-grow-ease, var(--ls-ease)) var(--ls-delay, 0ms);
+  }
+  .ls-deck[data-ls-ready="true"]
+    .ls-slide[data-active="true"]
+    .ls-reveal[data-ls-reveal-state="future"]
+    .ls-connector-grow,
+  .ls-deck[data-ls-ready="true"]
+    .ls-slide[data-active="true"]
+    .ls-connector-grow[data-ls-reveal-state="future"] {
+    stroke-dashoffset: 1;
+  }
+  .ls-deck[data-ls-export="true"] .ls-connector-grow {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ls-connector-grow {
+      stroke-dashoffset: 0;
+      transition: none;
+    }
+  }
+}

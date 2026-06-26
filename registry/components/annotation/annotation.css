@@ -1,0 +1,74 @@
+@layer components {
+  .ls-annotation {
+    --ls-annotation-accent: var(--ls-accent);
+    --ls-annotation-marker-size: 34px;
+    display: grid;
+    grid-template-columns: var(--ls-annotation-marker-size) minmax(0, 1fr);
+    gap: var(--ls-annotation-gap, var(--ls-space-2));
+    align-items: start;
+    min-inline-size: 0;
+    padding: var(--ls-space-3);
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background: color-mix(in srgb, var(--ls-surface) 92%, transparent);
+  }
+
+  .ls-annotation[data-ls-variant="label"] {
+    padding: var(--ls-space-2);
+    border-radius: var(--ls-radius-md);
+  }
+  .ls-annotation[data-ls-variant="callout"] {
+    border-color: color-mix(in srgb, var(--ls-annotation-accent) 42%, transparent);
+    background: color-mix(in srgb, var(--ls-annotation-accent) 12%, var(--ls-surface));
+  }
+  .ls-annotation[data-ls-tone="success"] {
+    --ls-annotation-accent: #22c55e;
+  }
+  .ls-annotation[data-ls-tone="warning"] {
+    --ls-annotation-accent: #f59e0b;
+  }
+
+  .ls-annotation__marker {
+    display: grid;
+    place-items: center;
+    inline-size: var(--ls-annotation-marker-size);
+    block-size: var(--ls-annotation-marker-size);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--ls-annotation-accent) 18%, var(--ls-surface-strong));
+    color: var(--ls-accent-text);
+    font-family: var(--ls-font-label);
+    font-size: 16px;
+    font-weight: 820;
+  }
+  .ls-annotation__body {
+    display: grid;
+    gap: var(--ls-space-1);
+    min-inline-size: 0;
+  }
+  .ls-annotation__title {
+    color: var(--ls-text);
+    font-size: var(--ls-text-sm);
+    font-weight: 760;
+    line-height: 1.1;
+  }
+  .ls-annotation__text {
+    color: var(--ls-muted);
+    font-size: var(--ls-text-xs);
+    line-height: 1.35;
+  }
+  .ls-annotation__meta {
+    color: var(--ls-subtle);
+    font-family: var(--ls-font-label);
+    font-size: 15px;
+    font-weight: 760;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .ls-annotation[data-ls-placement="floating"] {
+    position: relative;
+    z-index: 2;
+    max-inline-size: var(--ls-annotation-floating-max-inline, 360px);
+    box-shadow: var(--ls-shadow-sm);
+  }
+}

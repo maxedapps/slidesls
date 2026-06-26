@@ -16,5 +16,7 @@ Current items:
 - `metric-dashboard/` — headline insight plus metric/card regions.
 - `timeline-strip/` — full-slide horizontal roadmap or process strip.
 - `code-explainer/` — code region plus explanation, steps, and callouts.
+- `quote-feature/` — full-slide quote, testimonial, or editorial statement composition.
+- `layered-canvas/` — grid/flow visual canvas for layered cards, annotations, and connectors.
 
 Layouts depend on `core/base` and may pair with components, but reveal animation is an optional consumer choice.

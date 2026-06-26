@@ -1,0 +1,80 @@
+@layer layouts {
+  .ls-quote-feature,
+  .ls-layout-quote-feature .ls-slide__body {
+    container: ls-quote-feature / inline-size;
+    display: grid;
+    gap: var(--ls-quote-feature-gap, var(--ls-space-5));
+    align-content: var(--ls-quote-feature-valign, center);
+    justify-items: var(--ls-quote-feature-align, start);
+    block-size: 100%;
+    min-block-size: 0;
+  }
+  .ls-slide__inner.ls-quote-feature {
+    grid-template-rows: none;
+    padding-block: 108px;
+  }
+  .ls-quote-feature[data-ls-align="center"] {
+    --ls-quote-feature-align: center;
+    text-align: center;
+  }
+  .ls-quote-feature[data-ls-align="end"] {
+    --ls-quote-feature-align: end;
+    text-align: end;
+  }
+  .ls-quote-feature[data-ls-valign="start"] {
+    --ls-quote-feature-valign: start;
+  }
+  .ls-quote-feature[data-ls-valign="space-between"] {
+    --ls-quote-feature-valign: space-between;
+  }
+  .ls-quote-feature[data-ls-variant="panel"] .ls-quote-feature__quote {
+    padding: var(--ls-space-6);
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background: var(--ls-surface);
+  }
+  .ls-quote-feature__quote {
+    display: grid;
+    gap: var(--ls-space-4);
+    max-inline-size: var(--ls-quote-feature-max-inline, 1120px);
+    margin: 0;
+  }
+  .ls-quote-feature__mark {
+    color: var(--ls-accent-text);
+    font-family: var(--ls-font-serif);
+    font-size: var(--ls-quote-feature-mark-size, 96px);
+    line-height: 0.7;
+  }
+  .ls-quote-feature__text {
+    color: var(--ls-text);
+    font-family: var(--ls-font-display);
+    font-size: clamp(56px, 7cqi, 104px);
+    font-weight: 780;
+    letter-spacing: -0.055em;
+    line-height: 0.98;
+  }
+  .ls-quote-feature__source {
+    color: var(--ls-muted);
+    font-size: var(--ls-text-sm);
+    line-height: 1.35;
+  }
+  .ls-quote-feature__source cite {
+    color: var(--ls-text);
+    font-style: normal;
+    font-weight: 760;
+  }
+  .ls-quote-feature__context {
+    max-inline-size: 720px;
+    color: var(--ls-muted);
+    font-size: var(--ls-text-sm);
+    line-height: 1.35;
+  }
+  .ls-quote-feature__media {
+    justify-self: stretch;
+    min-block-size: 180px;
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background:
+      radial-gradient(circle at 30% 30%, var(--ls-accent-bg), transparent 38%), var(--ls-surface);
+  }
+}

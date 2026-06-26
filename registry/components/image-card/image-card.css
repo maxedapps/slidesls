@@ -1,0 +1,77 @@
+@layer components {
+  .ls-image-card {
+    --ls-image-card-aspect: 16 / 10;
+    display: grid;
+    gap: var(--ls-image-card-gap, var(--ls-space-3));
+    min-inline-size: 0;
+    overflow: hidden;
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background: var(--ls-surface);
+  }
+  .ls-image-card[data-ls-variant="plain"] {
+    border-color: transparent;
+    background: transparent;
+  }
+  .ls-image-card[data-ls-variant="cover"] {
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+  .ls-image-card[data-ls-density="compact"] {
+    --ls-image-card-gap: var(--ls-space-2);
+  }
+  .ls-image-card[data-ls-ratio="square"] {
+    --ls-image-card-aspect: 1;
+  }
+  .ls-image-card[data-ls-ratio="portrait"] {
+    --ls-image-card-aspect: 4 / 5;
+  }
+  .ls-image-card__media {
+    display: grid;
+    place-items: center;
+    aspect-ratio: var(--ls-image-card-aspect);
+    min-block-size: var(--ls-image-card-media-block, auto);
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 20% 20%, var(--ls-accent-bg), transparent 32%),
+      linear-gradient(135deg, var(--ls-surface-strong), #0c111b);
+    color: var(--ls-accent-text);
+  }
+  .ls-image-card__media > img,
+  .ls-image-card__media > svg {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+  .ls-image-card__content {
+    display: grid;
+    gap: var(--ls-space-2);
+    padding: 0 var(--ls-space-3) var(--ls-space-3);
+    min-inline-size: 0;
+  }
+  .ls-image-card[data-ls-variant="plain"] .ls-image-card__content {
+    padding-inline: 0;
+  }
+  .ls-image-card__eyebrow,
+  .ls-image-card__meta {
+    color: var(--ls-accent-text);
+    font-family: var(--ls-font-label);
+    font-size: 16px;
+    font-weight: 760;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ls-image-card__title {
+    color: var(--ls-text);
+    font-size: var(--ls-text-md);
+    font-weight: 760;
+    line-height: 1.08;
+  }
+  .ls-image-card__text {
+    color: var(--ls-muted);
+    font-size: var(--ls-text-xs);
+    line-height: 1.35;
+  }
+  .ls-image-card__badge {
+    justify-self: start;
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "animations/pulse",
+  "type": "ls:animation",
+  "description": "Subtle pulse animation.",
+  "files": [
+    {
+      "path": "registry/animations/pulse/pulse.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base", "animations/reveal"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/animations/pulse/README.md"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "components/image-card",
+  "type": "ls:component",
+  "description": "Image case-study card component.",
+  "files": [
+    {
+      "path": "registry/components/image-card/image-card.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/image-card/README.md"
+}

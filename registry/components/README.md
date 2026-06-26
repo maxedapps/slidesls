@@ -21,5 +21,9 @@ Current items:
 - `logo-strip/` — logo, partner, tool, or ecosystem rows.
 - `highlight-text/` — inline emphasis for phrases, values, and notes.
 - `divider/` — internal separator for dense slides.
+- `annotation/` — normal-flow labels, notes, and callouts for visuals.
+- `connector/` — SVG/CSS connector lines and arrows.
+- `image-card/` — image or case-study cards with captions and metadata.
+- `legend/` — keyed diagram/status legends with accessible labels and marker cues.
 
 Components depend on `core/base` and should remain small, semantic, and copyable.

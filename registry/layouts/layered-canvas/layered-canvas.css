@@ -1,0 +1,80 @@
+@layer layouts {
+  .ls-layered-canvas,
+  .ls-layout-layered-canvas .ls-slide__body {
+    container: ls-layered-canvas / inline-size;
+    display: grid;
+    gap: var(--ls-layered-canvas-gap, var(--ls-space-4));
+    align-content: var(--ls-layered-canvas-valign, stretch);
+    block-size: 100%;
+    min-block-size: 0;
+  }
+  .ls-layered-canvas[data-ls-valign="start"] {
+    --ls-layered-canvas-valign: start;
+  }
+  .ls-layered-canvas[data-ls-valign="center"] {
+    --ls-layered-canvas-valign: center;
+  }
+  .ls-layered-canvas[data-ls-variant="panel"] {
+    padding: var(--ls-space-4);
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background: color-mix(in srgb, var(--ls-surface) 88%, transparent);
+  }
+  .ls-layered-canvas[data-ls-overlap="soft"] {
+    --ls-layered-canvas-overlap: -24px;
+  }
+  .ls-layered-canvas[data-ls-overlap="strong"] {
+    --ls-layered-canvas-overlap: -56px;
+  }
+  .ls-layered-canvas__stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-auto-rows: minmax(48px, auto);
+    gap: var(--ls-layered-canvas-gap, var(--ls-space-4));
+    min-block-size: var(--ls-layered-canvas-min-block, 420px);
+    min-inline-size: 0;
+    overflow: visible;
+  }
+  .ls-layered-canvas__layer {
+    display: grid;
+    gap: var(--ls-space-3);
+    min-inline-size: 0;
+  }
+  .ls-layered-canvas__item {
+    min-inline-size: 0;
+  }
+  .ls-layered-canvas__item[data-ls-layer="base"] {
+    grid-column: span 5;
+  }
+  .ls-layered-canvas__item[data-ls-layer="overlay"] {
+    grid-column: span 4;
+    margin-block-start: var(--ls-layered-canvas-overlap, 0);
+    z-index: 1;
+  }
+  .ls-layered-canvas__item[data-ls-layer="floating"] {
+    grid-column: span 3;
+    align-self: start;
+    z-index: 2;
+  }
+  .ls-layered-canvas__safe {
+    grid-column: 2 / -2;
+    display: grid;
+    gap: var(--ls-space-3);
+    min-inline-size: 0;
+  }
+  .ls-layered-canvas__caption {
+    color: var(--ls-muted);
+    font-size: var(--ls-text-xs);
+    line-height: 1.35;
+  }
+  @container ls-layered-canvas (width < 900px) {
+    .ls-layered-canvas__stage {
+      grid-template-columns: 1fr;
+    }
+    .ls-layered-canvas__item[data-ls-layer] {
+      grid-column: auto;
+      margin-block-start: 0;
+    }
+  }
+}

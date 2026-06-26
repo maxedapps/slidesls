@@ -1,0 +1,27 @@
+@layer animations {
+  .ls-path-draw {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+    transition: stroke-dashoffset var(--ls-path-draw-duration, var(--ls-duration-slow))
+      var(--ls-path-draw-ease, var(--ls-ease)) var(--ls-path-draw-delay, var(--ls-delay, 0ms));
+  }
+  .ls-deck[data-ls-ready="true"]
+    .ls-slide[data-active="true"]
+    .ls-reveal[data-ls-reveal-state="future"]
+    .ls-path-draw,
+  .ls-deck[data-ls-ready="true"]
+    .ls-slide[data-active="true"]
+    .ls-path-draw[data-ls-reveal-state="future"] {
+    stroke-dashoffset: 1;
+  }
+  .ls-deck[data-ls-export="true"] .ls-path-draw {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .ls-path-draw {
+      stroke-dashoffset: 0;
+      transition: none;
+    }
+  }
+}
