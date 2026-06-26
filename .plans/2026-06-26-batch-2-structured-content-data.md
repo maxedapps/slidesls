@@ -649,7 +649,7 @@ Browser/visual review:
 
 ### Phase 11 — Peer review, cleanup, and commit
 
-- [ ] Run a fresh peer review after implementation, focused on:
+- [x] Run a fresh peer review after implementation, focused on:
   - architecture consistency,
   - semantic markup,
   - copyability,
@@ -657,7 +657,7 @@ Browser/visual review:
   - docs accuracy,
   - visual quality,
   - whether any primitive is too rigid or too demo-specific.
-- [ ] Address blocking feedback.
+- [x] Address blocking feedback.
 - [ ] Ensure working tree contains no generated screenshots, server logs, or temporary files unless intentionally tracked.
 - [ ] Update this plan status to `Implemented` when complete.
 - [ ] Add implementation notes, validation results, peer review outcome, and commit hash(es) to this plan.
@@ -751,6 +751,14 @@ registry/README.md     # only if copy/dependency guidance changes
 - Example smoke tests returned 200 for `/examples/`, `/examples/structured-content-gallery/`, and `/examples/structured-content-gallery/?export=1`.
 - Browser review via `npx agent-browser` confirmed the deck initializes (`data-ls-ready="true"`), has 8 slides, and key dense elements fit their containers.
 - Screenshots captured to `/tmp/ls-slides-batch2-gallery-1.png` through `/tmp/ls-slides-batch2-gallery-8.png` and `/tmp/ls-slides-batch2-export.png` for visual inspection.
+
+## Peer review outcome
+
+- Fresh implementation review found the batch architecturally aligned and acceptable after two should-fix gallery issues.
+- Fixed the native progress example so `.ls-progress` is not applied to both wrapper and child.
+- Switched the table highlight demo to the reveal-gated `.ls-reveal-highlight` variant so the animation is actually validated when the slide step appears.
+- Added a scale-in README note clarifying that the variant should load after `animations/reveal` because it replaces the reveal start transform by source order.
+- Post-fix validation: `pnpm fmt`, `pnpm check`, `pnpm validate:registry`, `node --check scripts/serve-examples.mjs`, and example curl smoke tests passed.
 
 ## Peer review summary
 

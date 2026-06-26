@@ -4,7 +4,7 @@ Reveal-compatible scale/opacity entrance variant.
 
 ## Usage
 
-Combine `.ls-reveal ls-reveal-scale-in` with `data-step`. Variables: `--ls-scale-in-start`, `--ls-scale-in-duration`, `--ls-scale-in-ease`. Load after `animations/reveal`.
+Combine `.ls-reveal ls-reveal-scale-in` with `data-step`. Variables: `--ls-scale-in-start`, `--ls-scale-in-duration`, `--ls-scale-in-ease`. Load after `animations/reveal`; the variant intentionally relies on that source order to replace the reveal start transform.
 
 ## Copy
 

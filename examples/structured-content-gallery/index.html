@@ -224,7 +224,10 @@
                   <td>Domain speed</td>
                   <td class="ls-table__muted">Fragmented tooling</td>
                   <td>
-                    <mark class="ls-highlight-text ls-highlight" data-ls-variant="box"
+                    <mark
+                      class="ls-highlight-text ls-reveal ls-reveal-highlight"
+                      data-ls-variant="box"
+                      data-step="1"
                       >Fast learning loops</mark
                     >
                   </td>
@@ -329,11 +332,18 @@ return visibleSteps.map((step, index) =&gt; ({
               </li>
             </ol>
             <aside class="ls-two-column__aside">
-              <label class="ls-progress" data-ls-density="spacious"
-                ><span class="ls-progress__label"
-                  ><span>Rollout</span><span class="ls-progress__value">62%</span></span
-                ><progress class="ls-progress" value="62" max="100">62%</progress></label
+              <div class="ls-progress__label">
+                <span>Rollout</span><span class="ls-progress__value">62%</span>
+              </div>
+              <progress
+                class="ls-progress"
+                data-ls-density="spacious"
+                value="62"
+                max="100"
+                aria-label="Rollout progress"
               >
+                62%
+              </progress>
               <hr class="ls-divider" data-ls-variant="accent" />
               <ol class="ls-timeline" data-ls-density="compact" data-ls-progress="true">
                 <li class="ls-timeline__item">
