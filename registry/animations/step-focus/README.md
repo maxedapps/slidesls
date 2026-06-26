@@ -24,6 +24,8 @@ Variables:
 
 Export mode disables dimming so all content is readable.
 
+Complex layered components may need component-aware focus rules. `timeline-strip` items use child-level muting so marker surfaces stay opaque and do not reveal connector lines behind them.
+
 ## Copy
 
 Copy this item CSS after `registry/core/base` and `registry/animations/reveal` styles.

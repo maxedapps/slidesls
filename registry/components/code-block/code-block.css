@@ -18,11 +18,12 @@
     font-size: 17px;
   }
 
+  pre.ls-code-block,
   .ls-code-block pre {
     overflow: auto;
     max-block-size: var(--ls-code-max-block-size, 520px);
     margin: 0;
-    padding: 24px;
+    padding: var(--ls-code-padding, 24px);
   }
 
   .ls-code-block code {

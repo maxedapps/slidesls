@@ -32,6 +32,8 @@ For animated timelines, add an explicit line child and let the runtime auto-sequ
 
 Variables: `--ls-timeline-strip-columns`, `--ls-timeline-strip-gap`, `--ls-timeline-strip-accent`.
 
+When paired with `animations/step-focus`, past timeline items are muted at the child level so marker surfaces stay opaque over the connector line.
+
 ## Copy
 
 Copy `timeline-strip.css` after `core/base` styles. Animated examples pair with `animations/reveal` and optionally `animations/step-focus`.

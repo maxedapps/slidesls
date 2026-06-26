@@ -46,6 +46,8 @@ Reveal primitives keep authoring simple with `.ls-reveal` and `data-step`. The c
 
 Use `data-ls-reveal-sequence` on a group when direct `.ls-reveal` children should receive missing `data-step` values in DOM order. This is useful for timelines and process lists where forgotten step numbers would otherwise expose items too early.
 
+Avoid muting layered structured components only with parent opacity when decorative layers sit behind child surfaces. Prefer child-level muting so markers, badges, and cards can remain opaque enough to mask connector lines or backgrounds.
+
 ## Visual QA
 
 Every new or changed primitive should be validated in an example deck. Example slides should demonstrate credible defaults first, then intentional customization hooks. Avoid one-off inline hacks unless the inline value demonstrates a documented CSS variable.
