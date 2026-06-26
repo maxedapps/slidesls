@@ -1,6 +1,6 @@
 # Structured Content Gallery
 
-Example deck validating Batch 2 structured content and data primitives.
+Example deck validating structured content and data primitives.
 
 Run locally:
 
@@ -10,4 +10,4 @@ pnpm serve:examples -- --port 4173
 
 Then open `/examples/structured-content-gallery/`.
 
-The deck demonstrates the new Batch 2 layouts, components, and reveal-compatible animations without external assets or dependencies.
+The deck demonstrates dashboard, timeline, table, progress, code-explainer, and logo-strip primitives without external assets or dependencies.

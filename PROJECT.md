@@ -6,8 +6,8 @@ It is not a slide generator, framework, runtime package, or component-library pa
 
 ## Core goals
 
-- Provide reusable visual and layout building blocks for web-based presentations.
-- Keep every registry item copyable, readable, and easy to modify.
+- Provide reusable visual, layout, content, data, media, annotation, and animation building blocks for web-based presentations.
+- Keep every registry item copyable, readable, dependency-light, and easy to modify.
 - Make the repository useful for both humans and AI agents.
 - Prefer modern platform features over framework abstractions, including modern CSS and browser APIs when they improve copyability or expressiveness.
 - Avoid implying that consumers must install this repository as a runtime dependency.
@@ -16,39 +16,109 @@ It is not a slide generator, framework, runtime package, or component-library pa
 
 Copyable registry items live under `registry/`:
 
-- `registry/core/` — mandatory base assets such as reset styles, cascade layers, tokens, shared slide CSS contracts, and minimal runtime behavior.
-- `registry/layouts/` — slide layout patterns such as title slides, centered titles, two-column layouts, three-column layouts, and asymmetric content grids.
-- `registry/components/` — individual slide building blocks such as badges, charts, highlighted text, bullet lists, callouts, infoboxes, code blocks, and media frames.
-- `registry/presets/` — optional token remaps and presentation-style presets for the same underlying components, including scoped font-family presets.
-- `registry/animations/` — copyable animation and transition recipes, expected to compose with the base reveal contract and use vanilla CSS/JavaScript by default; GSAP only where a future item genuinely needs it.
+- `registry/core/` — mandatory base assets such as reset styles, cascade layers, tokens, shared slide CSS contracts, icon styles, and minimal runtime behavior.
+- `registry/layouts/` — slide layout patterns for title, split, grid, dashboard, timeline, code, quote, visual-canvas, and editorial compositions.
+- `registry/components/` — individual slide building blocks such as badges, cards, metrics, tables, timelines, code blocks, media frames, annotations, connectors, and legends.
+- `registry/presets/` — optional token remaps and presentation-style presets, currently including scoped font-family presets.
+- `registry/animations/` — copyable animation and transition recipes that compose with the base reveal contract and use vanilla CSS/JavaScript by default.
 
 Registry items are directories with implementation files, `registry-item.json` metadata, and a concise `README.md`. The root `registry.json` indexes available item metadata. This model is shadcn-inspired, but it is not currently shadcn CLI compatible.
 
 Supporting folders are intentionally top-level and are not registry items:
 
-- `docs/` — future Astro documentation/discovery site.
+- `docs/` — project documentation and future documentation-site content.
 - `examples/` — example slide projects and demos.
 - `skills/` — agent-facing usage instructions and best practices.
-- `scripts/` — project automation scripts when a concrete workflow exists.
-- `.plans/` — implementation and architecture plans.
+- `scripts/` — project automation scripts.
+- `.plans/` — retained implementation and architecture plans that are still useful historically; completed batch-specific plans have been consolidated into project docs and removed.
 
-## Current registry foundation
+## Current implementation
 
-The current registry foundation is implemented:
+The registry foundation and three primitive expansion waves are implemented and consolidated into the current catalog.
+
+### Core and presets
 
 - `registry.json` — root registry index.
 - `registry/core/base` — reset, tokens, slide shell/scaling styles, icon styles, and slide runtime.
-- `registry/animations/reveal` — vanilla reveal-step transitions.
-- Batch 1 animation variants: `fade`, `slide-up`, and `stagger`, all composing with `animations/reveal`.
-- Batch 2 animation variants: `scale-in`, `step-focus`, and `highlight`, all composing with `animations/reveal`.
-- Batch 3 animation variants: `pulse`, `spotlight`, `connector-grow`, and `path-draw`, all composing with `animations/reveal` where appropriate.
-- Layouts: `title-hero`, `detail-split`, `centered-statement`, `section-divider`, `two-column`, `comparison-grid`, `asymmetric-feature`, `image-spotlight`, `three-column`, `metric-dashboard`, `timeline-strip`, `code-explainer`, `quote-feature`, and `layered-canvas`.
-- Components: `badge`, `card`, `diagram`, `callout`, `metric`, `stat-grid`, `bullet-list`, `code-block`, `media-frame`, `quote`, `table`, `timeline`, `numbered-step`, `progress`, `logo-strip`, `highlight-text`, `divider`, `annotation`, `connector`, `image-card`, and `legend`.
-- `registry/presets/fonts/editorial-serif`, `registry/presets/fonts/technical-mono`, and `registry/presets/fonts/system-humanist` — scoped font-family role remaps activated with `data-ls-font`.
-- `examples/project-intro` — two-slide validation deck.
-- `examples/primitive-gallery` — seven-slide gallery validating the first primitive expansion batch.
-- `examples/structured-content-gallery` — eight-slide gallery validating Batch 2 structured content and data primitives.
-- `examples/visual-narrative-gallery` — eight-slide gallery validating Batch 3 visual narrative and annotation primitives.
+- Font presets:
+  - `registry/presets/fonts/editorial-serif`
+  - `registry/presets/fonts/technical-mono`
+  - `registry/presets/fonts/system-humanist`
+
+### Layouts
+
+Implemented layouts:
+
+- `title-hero`
+- `detail-split`
+- `centered-statement`
+- `section-divider`
+- `two-column`
+- `comparison-grid`
+- `asymmetric-feature`
+- `image-spotlight`
+- `three-column`
+- `metric-dashboard`
+- `timeline-strip`
+- `code-explainer`
+- `quote-feature`
+- `layered-canvas`
+
+### Components
+
+Implemented components:
+
+- `badge`
+- `card`
+- `diagram`
+- `callout`
+- `metric`
+- `stat-grid`
+- `bullet-list`
+- `code-block`
+- `media-frame`
+- `quote`
+- `table`
+- `timeline`
+- `numbered-step`
+- `progress`
+- `logo-strip`
+- `highlight-text`
+- `divider`
+- `annotation`
+- `connector`
+- `image-card`
+- `legend`
+
+### Animations
+
+Implemented animations:
+
+- `reveal`
+- `fade`
+- `slide-up`
+- `stagger`
+- `scale-in`
+- `step-focus`
+- `highlight`
+- `pulse`
+- `spotlight`
+- `connector-grow`
+- `path-draw`
+
+All optional animation variants compose with `animations/reveal` where appropriate and do not replace the core reveal/runtime contract.
+
+### Examples and tooling
+
+Implemented examples:
+
+- `examples/project-intro` — two-slide validation deck for the initial registry foundation.
+- `examples/primitive-gallery` — gallery for foundational layout/component/animation primitives.
+- `examples/structured-content-gallery` — gallery for structured content and data primitives.
+- `examples/visual-narrative-gallery` — gallery for visual narrative and annotation primitives.
+
+Implemented tooling:
+
 - `scripts/serve-examples.mjs` and `pnpm serve:examples` — dependency-free examples server with automatic example discovery.
 - `scripts/validate-registry.mjs` and `pnpm validate:registry` — registry metadata, path, and dependency validation included in `pnpm check`.
 
@@ -58,9 +128,10 @@ The current registry foundation is implemented:
 - Workspace tooling: pnpm workspaces only; no Turborepo, Nx, Rush, Changesets, or other monorepo tooling.
 - Root project: private pnpm-managed project, currently not a publishable package.
 - Runtime/build philosophy: vanilla HTML, modern CSS, and vanilla JavaScript.
-- CSS philosophy: no Tailwind; prefer semantic classes, CSS custom properties, cascade layers, reusable tokens, container queries, `:has()`, subgrid, anchor positioning, typed custom properties, and modern color functions where useful. Layout primitives should expose clear `ls-` class/attribute APIs, opt-in decoration, variable-driven sizing, and baseline-safe progressive enhancement.
+- CSS philosophy: no Tailwind; prefer semantic classes, CSS custom properties, cascade layers, reusable tokens, container queries, `:has()`, subgrid, anchor positioning, typed custom properties, and modern color functions where useful.
+- Primitive API philosophy: expose clear `ls-` class/attribute APIs, opt-in decoration, variable-driven sizing, semantic markup, and baseline-safe progressive enhancement.
 - Typography direction: core exposes semantic font role tokens; optional scoped presets remap those roles via `data-ls-font` without global side effects.
-- Animation direction: prefer CSS animations, scroll-driven animations, View Transitions, and Web Animations API where they fit; GSAP may be used by future animation recipes, but it should not be added as a root dependency until a concrete registry item needs it.
+- Animation direction: prefer CSS animations, View Transitions, and Web Animations API where they fit; GSAP should not be added as a root dependency unless a concrete future registry item genuinely needs timeline orchestration.
 - Documentation direction: Astro docs site later, only once `docs/` is initialized with its own package manifest.
 - Linting: Oxlint.
 - Formatting: Oxfmt.
@@ -77,7 +148,21 @@ The current registry foundation is implemented:
   - `trustPolicy: no-downgrade`
   - `pmOnFail: error`
 - `pnpm-lock.yaml` should be committed.
-- Generated/dependency output such as `node_modules/`, `dist/`, `.astro/`, and temporary pnpm lock files should stay ignored.
+- Generated/dependency output such as `node_modules/`, `dist/`, `.astro/`, screenshots, server logs, and temporary pnpm lock files should stay ignored or untracked.
+
+## Current quality lessons
+
+- Defaults should look product-quality in galleries; decoration should be opt-in.
+- Modern CSS enhancements must not alter normal flow in ways that can overlap essential content.
+- Dense tables, timelines, progress, code explainers, and dashboards need semantic markup, explicit labels/values, and conservative overflow handling before visual flourish.
+- Reveal sequencing should support realistic item counts through runtime state rather than hard-coded CSS ceilings.
+- Captions should not be clipped by decorative table surfaces.
+- Safe-area utilization should be controlled through explicit layout APIs, not global padding hacks.
+- Avoid parent opacity on layered structured components when child surfaces must remain opaque over lines or connectors.
+- Annotations default to normal flow; floating/overlay behavior should be explicit.
+- Connectors use hand-authored SVG/CSS geometry, not auto-routing.
+- Legends must provide text and shape cues instead of relying on color alone.
+- Layered canvases should make overlap/floating explicit and baseline-safe.
 
 ## Important constraints
 

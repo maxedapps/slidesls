@@ -1,6 +1,6 @@
 # Visual Narrative Gallery
 
-Example deck validating Batch 3 visual narrative and annotation primitives.
+Example deck validating visual narrative and annotation primitives.
 
 Run locally:
 
@@ -10,4 +10,4 @@ pnpm serve:examples -- --port 4173
 
 Then open `/examples/visual-narrative-gallery/`.
 
-The deck demonstrates quote features, layered canvases, annotations, connectors, legends, image cards, and visual focus animations without external assets.
+The deck demonstrates quote features, layered canvases, annotations, connectors, image cards, legends, and visual emphasis animations without external assets or dependencies.

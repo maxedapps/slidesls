@@ -2,6 +2,10 @@
 
 A copyable registry of vanilla HTML, CSS, and JavaScript slide-building blocks.
 
-This repository is not a slide generator, framework, or component library package. Registry items are meant to be copied into downstream slide projects.
+This repository is not a slide generator, framework, or component library package. Registry items are meant to be copied into downstream slide projects and customized directly.
 
-The registry includes core slide assets, Batch 1, Batch 2, and Batch 3 layout/component primitives, reveal-compatible animations, and optional presets such as scoped font-family remaps. Preview examples with `pnpm serve:examples`.
+The registry currently includes core slide assets, layout primitives, content/data/media/annotation components, reveal-compatible animations, scoped font presets, and validation galleries. Preview examples with:
+
+```sh
+pnpm serve:examples
+```

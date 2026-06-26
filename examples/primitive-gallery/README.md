@@ -1,16 +1,11 @@
-# Primitive gallery
+# Primitive Gallery
 
-Seven-slide gallery covering the Batch 1 primitive expansion: layouts, components, and reveal-compatible animation variants.
+Seven-slide gallery covering foundational layout, component, and reveal-compatible animation primitives.
 
-Run from the repository root:
+Run locally:
 
 ```sh
 pnpm serve:examples -- --port 4173
 ```
 
-Open:
-
-- `http://localhost:4173/examples/primitive-gallery/`
-- `http://localhost:4173/examples/primitive-gallery/?export=1`
-
-The deck links registry CSS files directly and uses only vanilla HTML/CSS/JS.
+Then open `/examples/primitive-gallery/`.
