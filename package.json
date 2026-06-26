@@ -4,11 +4,12 @@
   "type": "module",
   "scripts": {
     "serve:examples": "node scripts/serve-examples.mjs",
+    "validate:registry": "node scripts/validate-registry.mjs",
     "lint": "oxlint --no-error-on-unmatched-pattern",
     "lint:fix": "oxlint --fix --no-error-on-unmatched-pattern",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
-    "check": "pnpm lint && pnpm fmt:check"
+    "check": "pnpm lint && pnpm fmt:check && pnpm validate:registry"
   },
   "devDependencies": {
     "oxfmt": "^0.56.0",

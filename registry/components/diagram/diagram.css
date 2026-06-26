@@ -38,7 +38,7 @@
 
   .ls-diagram__node span {
     color: var(--ls-subtle);
-    font-family: var(--ls-font-mono);
+    font-family: var(--ls-font-code);
     font-size: 18px;
   }
 
@@ -56,7 +56,7 @@
     border-radius: var(--ls-radius-md);
     background: rgb(0 0 0 / 16%);
     color: var(--ls-muted);
-    font-family: var(--ls-font-mono);
+    font-family: var(--ls-font-code);
     font-size: 20px;
     line-height: 1.35;
   }

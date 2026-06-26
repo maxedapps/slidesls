@@ -1,0 +1,10 @@
+{
+  "name": "presets/fonts/technical-mono",
+  "type": "ls:preset",
+  "description": "Monospace label font role remap for technical slide decks.",
+  "files": [{ "path": "registry/presets/fonts/technical-mono/font.css", "type": "registry:style" }],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/presets/fonts/technical-mono/README.md"
+}

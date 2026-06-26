@@ -28,6 +28,17 @@ Use ArrowRight/Space to reveal or advance, ArrowLeft to go back, Home/End to jum
 - `components/card`
 - `components/diagram`
 
+## Font presets
+
+Font presets can be loaded as optional scoped token remaps:
+
+```html
+<link rel="stylesheet" href="../../registry/presets/fonts/editorial-serif/font.css" />
+<body class="ls-page" data-ls-font="editorial-serif"></body>
+```
+
+You can also apply a preset to one slide with `data-ls-font` on `.ls-slide`.
+
 ## Icons
 
 This example loads Lucide from a pinned jsDelivr URL:

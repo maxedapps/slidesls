@@ -1,0 +1,12 @@
+{
+  "name": "presets/fonts/editorial-serif",
+  "type": "ls:preset",
+  "description": "Serif heading and display font role remap for editorial slide decks.",
+  "files": [
+    { "path": "registry/presets/fonts/editorial-serif/font.css", "type": "registry:style" }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/presets/fonts/editorial-serif/README.md"
+}

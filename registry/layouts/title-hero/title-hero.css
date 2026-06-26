@@ -14,6 +14,7 @@
   }
 
   .ls-layout-title-hero .ls-title {
+    font-family: var(--ls-font-display);
     font-size: var(--ls-text-hero);
     letter-spacing: -0.055em;
     line-height: 0.9;
@@ -66,7 +67,7 @@
   .ls-title-hero__caption {
     max-inline-size: 280px;
     color: var(--ls-subtle);
-    font-family: var(--ls-font-mono);
+    font-family: var(--ls-font-code);
     font-size: var(--ls-text-xs);
     line-height: 1.25;
     text-align: center;

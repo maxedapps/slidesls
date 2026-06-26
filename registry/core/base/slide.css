@@ -8,7 +8,7 @@
       linear-gradient(90deg, rgb(255 255 255 / 3%) 1px, transparent 1px), var(--ls-page-bg);
     background-size: 64px 64px;
     color: var(--ls-text);
-    font-family: var(--ls-font-sans);
+    font-family: var(--ls-font-body);
   }
 
   .ls-stage {
@@ -94,6 +94,7 @@
 
   .ls-eyebrow {
     color: var(--ls-accent-text);
+    font-family: var(--ls-font-label);
     font-size: var(--ls-text-xs);
     font-weight: 760;
     letter-spacing: 0.11em;
@@ -103,6 +104,7 @@
 
   .ls-title {
     color: var(--ls-text);
+    font-family: var(--ls-font-heading);
     font-size: var(--ls-text-2xl);
     font-weight: 780;
     letter-spacing: -0.045em;

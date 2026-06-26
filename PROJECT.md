@@ -16,11 +16,13 @@ It is not a slide generator, framework, runtime package, or component-library pa
 
 Copyable registry items live under `registry/`:
 
-- `registry/core/` — mandatory base assets such as reset styles, cascade layers, tokens, and shared slide CSS contracts.
+- `registry/core/` — mandatory base assets such as reset styles, cascade layers, tokens, shared slide CSS contracts, and minimal runtime behavior.
 - `registry/layouts/` — slide layout patterns such as title slides, centered titles, two-column layouts, three-column layouts, and asymmetric content grids.
 - `registry/components/` — individual slide building blocks such as badges, charts, highlighted text, bullet lists, callouts, infoboxes, code blocks, and media frames.
-- `registry/presets/` — optional token remaps and presentation-style presets for the same underlying components.
+- `registry/presets/` — optional token remaps and presentation-style presets for the same underlying components, including scoped font-family presets.
 - `registry/animations/` — copyable animation and transition recipes, expected to use vanilla JavaScript and GSAP where useful.
+
+Registry items are directories with implementation files, `registry-item.json` metadata, and a concise `README.md`. The root `registry.json` indexes available item metadata. This model is shadcn-inspired, but it is not currently shadcn CLI compatible.
 
 Supporting folders are intentionally top-level and are not registry items:
 
@@ -30,6 +32,18 @@ Supporting folders are intentionally top-level and are not registry items:
 - `scripts/` — project automation scripts when a concrete workflow exists.
 - `.plans/` — implementation and architecture plans.
 
+## Current registry foundation
+
+The first registry slice is implemented:
+
+- `registry.json` — root registry index.
+- `registry/core/base` — reset, tokens, slide shell/scaling styles, icon styles, and slide runtime.
+- `registry/animations/reveal` — vanilla reveal-step transitions.
+- `registry/layouts/title-hero` and `registry/layouts/detail-split` — initial slide layout patterns.
+- `registry/components/badge`, `registry/components/card`, and `registry/components/diagram` — initial reusable slide components.
+- `examples/project-intro` — two-slide validation deck.
+- `scripts/serve-examples.mjs` and `pnpm serve:examples` — dependency-free examples server with automatic example discovery.
+
 ## Technical direction
 
 - Package manager: `pnpm` only.
@@ -37,6 +51,7 @@ Supporting folders are intentionally top-level and are not registry items:
 - Root project: private pnpm-managed project, currently not a publishable package.
 - Runtime/build philosophy: vanilla HTML, modern CSS, and vanilla JavaScript.
 - CSS philosophy: no Tailwind; prefer semantic classes, CSS custom properties, cascade layers, and reusable tokens.
+- Typography direction: core exposes semantic font role tokens; optional scoped presets remap those roles via `data-ls-font` without global side effects.
 - Animation direction: GSAP may be used by future animation recipes, but it should not be added as a root dependency until a concrete registry item needs it.
 - Documentation direction: Astro docs site later, only once `docs/` is initialized with its own package manifest.
 - Linting: Oxlint.
@@ -57,7 +72,8 @@ Supporting folders are intentionally top-level and are not registry items:
 
 ## Important constraints
 
-- Do not add actual registry components, metadata formats, docs pages, or scripts without an explicit plan.
+- Do not add or significantly change registry item formats, registry components, docs pages, scripts, or examples without an explicit plan.
+- Preserve the established registry item model: copyable item directories with metadata, docs, and dependency declarations.
 - Do not add framework dependencies for registry items by default.
 - Do not add `docs` to workspace packages until `docs/package.json` exists.
 - Do not use `.gitkeep` placeholders; prefer concise README files when a directory must be tracked.

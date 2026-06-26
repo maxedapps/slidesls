@@ -9,6 +9,9 @@
     "registry/layouts/detail-split/registry-item.json",
     "registry/components/badge/registry-item.json",
     "registry/components/card/registry-item.json",
-    "registry/components/diagram/registry-item.json"
+    "registry/components/diagram/registry-item.json",
+    "registry/presets/fonts/editorial-serif/registry-item.json",
+    "registry/presets/fonts/technical-mono/registry-item.json",
+    "registry/presets/fonts/system-humanist/registry-item.json"
   ]
 }

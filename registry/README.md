@@ -14,4 +14,6 @@ The root `registry.json` indexes item metadata. This is shadcn-inspired, but not
 
 ## Copy model
 
-Copy items by resolving `registryDependencies` first. Always copy/load `core/base` before layouts, components, or animations because it declares the CSS cascade layer order.
+Copy items by resolving `registryDependencies` first. Always copy/load `core/base` before layouts, components, animations, or presets because it declares the CSS cascade layer order.
+
+Presets are optional token remaps. For example, font presets are loaded as ordinary CSS and activated with scoped attributes such as `data-ls-font="editorial-serif"`.
