@@ -1,7 +1,7 @@
 # Plan: Batch 2 Structured Content & Data Slides
 
 Date: 2026-06-26
-Status: In Progress
+Status: Implemented
 Project: ls_slides
 
 ## Context
@@ -658,10 +658,10 @@ Browser/visual review:
   - visual quality,
   - whether any primitive is too rigid or too demo-specific.
 - [x] Address blocking feedback.
-- [ ] Ensure working tree contains no generated screenshots, server logs, or temporary files unless intentionally tracked.
-- [ ] Update this plan status to `Implemented` when complete.
-- [ ] Add implementation notes, validation results, peer review outcome, and commit hash(es) to this plan.
-- [ ] Commit with a concise message such as `Add structured content primitive batch`.
+- [x] Ensure working tree contains no generated screenshots, server logs, or temporary files unless intentionally tracked.
+- [x] Update this plan status to `Implemented` when complete.
+- [x] Add implementation notes, validation results, peer review outcome, and commit hash(es) to this plan.
+- [x] Commit with a concise message such as `Add structured content primitive batch`.
 
 ## Validation commands
 
@@ -732,7 +732,7 @@ registry/README.md     # only if copy/dependency guidance changes
 - [x] Phase 8 — Documentation updates completed.
 - [x] Phase 9 — Accessibility and semantics pass completed.
 - [x] Phase 10 — Validation and visual review completed.
-- [ ] Phase 11 — Peer review, cleanup, and commit completed.
+- [x] Phase 11 — Peer review, cleanup, and commit completed.
 
 ## Implementation notes
 
@@ -759,6 +759,12 @@ registry/README.md     # only if copy/dependency guidance changes
 - Switched the table highlight demo to the reveal-gated `.ls-reveal-highlight` variant so the animation is actually validated when the slide step appears.
 - Added a scale-in README note clarifying that the variant should load after `animations/reveal` because it replaces the reveal start transform by source order.
 - Post-fix validation: `pnpm fmt`, `pnpm check`, `pnpm validate:registry`, `node --check scripts/serve-examples.mjs`, and example curl smoke tests passed.
+- Follow-up review accepted the fixes and found no blocking issues.
+
+## Commits
+
+- `cfbe19e` — `Add structured content primitive batch`
+- `f8ca338` — `Polish structured content gallery validation`
 
 ## Peer review summary
 
