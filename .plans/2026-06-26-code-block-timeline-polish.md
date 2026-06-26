@@ -1,7 +1,7 @@
 # Plan: Code Block and Timeline Marker Polish
 
 Date: 2026-06-26
-Status: In Progress
+Status: Implemented
 Project: ls_slides
 
 ## Context
@@ -202,10 +202,10 @@ Tasks:
 
 Validation:
 
-- [ ] Past timeline items are visually muted but markers remain legible and do not show the line through the label.
-- [ ] Current timeline item is clearly emphasized.
-- [ ] Generic step-focus use outside timeline remains unchanged.
-- [ ] Export mode remains fully readable.
+- [x] Past timeline items are visually muted but markers remain legible and do not show the line through the label.
+- [x] Current timeline item is clearly emphasized.
+- [x] Generic step-focus use outside timeline remains unchanged.
+- [x] Export mode remains fully readable.
 
 ### Phase 4 — Audit separate timeline component and gallery usage
 
@@ -269,17 +269,17 @@ Important validation note: export mode alone does not reproduce the timeline str
 
 ### Phase 7 — Peer review and commit
 
-- [ ] Run fresh peer review focused on:
+- [x] Run fresh peer review focused on:
   - code-block API correctness;
   - timeline-strip + step-focus compatibility;
   - preserving reveal/fill animation behavior;
   - avoiding gallery-only hacks;
   - docs accuracy;
   - visual quality.
-- [ ] Address blocking feedback.
-- [ ] Ensure no screenshots, server logs, browser traces, or temporary files are tracked.
-- [ ] Commit with a concise message such as `Polish code blocks and timeline focus states`.
-- [ ] Mark this plan `Implemented` after implementation.
+- [x] Address blocking feedback.
+- [x] Ensure no screenshots, server logs, browser traces, or temporary files are tracked.
+- [x] Commit with a concise message such as `Polish code blocks and timeline focus states`.
+- [x] Mark this plan `Implemented` after implementation.
 
 ## Expected files to change
 
@@ -321,7 +321,7 @@ docs/primitive-expansion.md
 - [x] Phase 4 — Separate timeline component and gallery usage audited; no changes needed.
 - [x] Phase 5 — Documentation and authoring notes updated.
 - [x] Phase 6 — Full validation and visual review completed.
-- [ ] Phase 7 — Peer review and commit pending.
+- [x] Phase 7 — Peer review and commit pending.
 
 ## Implementation notes
 
@@ -341,6 +341,18 @@ docs/primitive-expansion.md
 - Browser live-step validation confirmed timeline step 3 state: Q1 past item opacity stays `1`, title opacity is muted to `0.42`, marker opacity stays `1`, and Q3 is current.
 - Browser code validation confirmed `pre.ls-code-block` computed padding is `24px`; temporary wrapper fixture confirmed nested `.ls-code-block pre` padding is also `24px`.
 - Focused screenshots captured to `/tmp/ls-slides-timeline-focus-live-step3-final.png` and `/tmp/ls-slides-code-padding-live-final.png`.
+
+## Peer review outcome
+
+- Fresh review accepted the implementation as-is.
+- Reviewer confirmed code-block direct and wrapper patterns are correctly padded without double padding, including specificity for `pre.ls-code-block` overriding frame overflow.
+- Reviewer confirmed timeline-strip `step-focus` override is safely scoped, wins over generic parent opacity by specificity/source order, preserves future/current behavior, and keeps opaque markers above the connector line.
+- Reviewer confirmed the separate `timeline` component does not reproduce the reported connector-through-marker issue and was correctly left unchanged.
+- Non-blocking note: future primitives with similar marker/connector needs may prefer owning focus overrides in the layout CSS rather than the generic animation CSS.
+
+## Commits
+
+- `ac31ea8` — `Polish code blocks and timeline focus states`
 
 ## Peer review summary
 
