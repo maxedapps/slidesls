@@ -1,7 +1,7 @@
 # Plan: Font Family Presets and Project State Update
 
 Date: 2026-06-26
-Status: In Progress
+Status: Implemented
 Project: ls_slides
 
 ## Context
@@ -372,7 +372,8 @@ git commit -m "Add font preset support"
 - [x] Phase 5 — Documented font preset usage in the project intro example without changing the example deck default typography.
 - [x] Phase 6 — Added repeatable registry metadata validation and included it in `pnpm check`.
 - [x] Phase 7 — Updated registry/core/top-level docs for optional font presets.
-- [x] Phase 8 — Ran validation and browser verification; final commit pending.
+- [x] Phase 8 — Ran validation, browser verification, peer review, and committed the implementation.
+  - Commit: `6dfd7e0` — `Add font preset support`
 
 Validation run so far:
 
@@ -384,7 +385,7 @@ pnpm fmt
 pnpm check
 ```
 
-Results: all passed. Browser smoke checks also passed for `/examples/project-intro/`, `/examples/project-intro/?export=1`, and dynamic scoped `data-ls-font="editorial-serif"` behavior.
+Results: all passed. Browser smoke checks also passed for `/examples/project-intro/`, `/examples/project-intro/?export=1`, and dynamic scoped `data-ls-font="editorial-serif"` behavior. Peer review accepted the implementation as-is.
 
 ## Validation
 
@@ -422,7 +423,7 @@ Manual/browser validation:
 
 ## Peer review summary
 
-Fresh peer review approved the overall semantic font-role/token-remap direction and found it aligned with the project constraints. Feedback incorporated:
+Planning peer review approved the overall semantic font-role/token-remap direction and found it aligned with the project constraints. Feedback incorporated:
 
 - Use scoped-only presets instead of global-on-load presets.
 - Do not add a no-op `professional-sans` preset.
@@ -431,3 +432,5 @@ Fresh peer review approved the overall semantic font-role/token-remap direction 
 - Browser-inspect examples even if only base CSS changes.
 - Explicitly stage root `registry.json` when committing.
 - Keep presets focused on semantic role tokens instead of mutating raw tokens, and ensure dependency validation resolves item names rather than paths.
+
+Implementation peer review: fresh review after commit `6dfd7e0` accepted the implementation as-is. Non-blocking observations: the registry validator could later enforce item `type`, and `system-humanist` intentionally repeats literal stacks for copyability.
