@@ -1,0 +1,40 @@
+@layer components {
+  .ls-metric {
+    container: ls-metric / inline-size;
+    display: grid;
+    gap: var(--ls-space-2);
+    min-inline-size: 0;
+    padding: 24px;
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background: var(--ls-surface);
+  }
+
+  .ls-metric__value {
+    color: var(--ls-text);
+    font-family: var(--ls-font-display);
+    font-size: clamp(46px, 18cqi, 86px);
+    font-weight: 820;
+    letter-spacing: -0.055em;
+    line-height: 0.92;
+  }
+
+  .ls-metric__label {
+    color: var(--ls-muted);
+    font-size: 22px;
+    line-height: 1.25;
+  }
+
+  .ls-metric__delta {
+    color: var(--ls-accent-text);
+    font-family: var(--ls-font-label);
+    font-size: var(--ls-text-xs);
+    font-weight: 760;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .ls-metric[data-ls-compact="true"] {
+    padding: 18px;
+  }
+}

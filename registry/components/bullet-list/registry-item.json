@@ -1,0 +1,15 @@
+{
+  "name": "components/bullet-list",
+  "type": "ls:component",
+  "description": "Bullet List slide component.",
+  "files": [
+    {
+      "path": "registry/components/bullet-list/bullet-list.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/bullet-list/README.md"
+}

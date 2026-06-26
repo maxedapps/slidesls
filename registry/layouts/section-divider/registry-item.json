@@ -1,0 +1,15 @@
+{
+  "name": "layouts/section-divider",
+  "type": "ls:layout",
+  "description": "Section Divider slide layout.",
+  "files": [
+    {
+      "path": "registry/layouts/section-divider/section-divider.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/layouts/section-divider/README.md"
+}

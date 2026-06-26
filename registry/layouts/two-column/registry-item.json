@@ -1,0 +1,15 @@
+{
+  "name": "layouts/two-column",
+  "type": "ls:layout",
+  "description": "Two Column slide layout.",
+  "files": [
+    {
+      "path": "registry/layouts/two-column/two-column.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/layouts/two-column/README.md"
+}

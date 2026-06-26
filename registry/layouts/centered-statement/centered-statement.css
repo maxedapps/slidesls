@@ -1,0 +1,45 @@
+@layer layouts {
+  .ls-layout-centered-statement .ls-slide__inner,
+  .ls-centered-statement {
+    display: grid;
+    place-items: center;
+    padding: 108px;
+    text-align: center;
+  }
+
+  .ls-centered-statement__content {
+    container: ls-centered-statement / inline-size;
+    display: grid;
+    justify-items: center;
+    gap: var(--ls-space-4);
+    max-inline-size: 1120px;
+  }
+
+  .ls-centered-statement__statement {
+    max-inline-size: 11ch;
+    font-family: var(--ls-font-display);
+    font-size: clamp(74px, 10cqi, var(--ls-text-hero));
+    font-weight: 820;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+  }
+
+  .ls-centered-statement__support {
+    max-inline-size: 760px;
+    color: var(--ls-muted);
+    font-size: var(--ls-text-md);
+    line-height: 1.25;
+  }
+
+  .ls-centered-statement__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--ls-space-2);
+    margin-block-start: var(--ls-space-2);
+  }
+
+  .ls-centered-statement__content:has(.ls-eyebrow) {
+    gap: var(--ls-space-3);
+  }
+}

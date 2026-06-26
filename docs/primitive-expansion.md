@@ -72,13 +72,14 @@ Each expansion batch should include:
 4. `registry.json` updates.
 5. `pnpm check` validation.
 
-Recommended first expansion batch:
+Completed first expansion batch:
 
 - Layouts: `centered-statement`, `section-divider`, `two-column`, `comparison-grid`, `asymmetric-feature`, `image-spotlight`.
 - Components: `callout`, `metric`, `stat-grid`, `bullet-list`, `code-block`, `media-frame`, `quote`.
 - Animations: `fade`, `slide-up`, `stagger`.
+- Example: `examples/primitive-gallery`.
 
-Modern-platform opportunities for this batch:
+Modern-platform patterns used in this batch:
 
 - Use container queries in `two-column`, `comparison-grid`, `metric`, `stat-grid`, `code-block`, and `media-frame` so components adapt to their assigned slide regions.
 - Use anchor positioning for `asymmetric-feature`, `image-spotlight`, annotations, callouts, and diagram labels as progressive enhancement.

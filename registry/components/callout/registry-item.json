@@ -1,0 +1,15 @@
+{
+  "name": "components/callout",
+  "type": "ls:component",
+  "description": "Callout slide component.",
+  "files": [
+    {
+      "path": "registry/components/callout/callout.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/callout/README.md"
+}

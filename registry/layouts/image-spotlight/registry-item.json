@@ -1,0 +1,15 @@
+{
+  "name": "layouts/image-spotlight",
+  "type": "ls:layout",
+  "description": "Image Spotlight slide layout.",
+  "files": [
+    {
+      "path": "registry/layouts/image-spotlight/image-spotlight.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/layouts/image-spotlight/README.md"
+}

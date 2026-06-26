@@ -1,0 +1,15 @@
+{
+  "name": "layouts/comparison-grid",
+  "type": "ls:layout",
+  "description": "Comparison Grid slide layout.",
+  "files": [
+    {
+      "path": "registry/layouts/comparison-grid/comparison-grid.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/layouts/comparison-grid/README.md"
+}

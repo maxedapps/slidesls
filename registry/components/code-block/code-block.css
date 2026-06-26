@@ -1,0 +1,40 @@
+@layer components {
+  .ls-code-block {
+    overflow: hidden;
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background: #0b0f17;
+    box-shadow: var(--ls-shadow-sm);
+  }
+
+  .ls-code-block__header {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--ls-space-3);
+    padding: 14px 18px;
+    border-block-end: 1px solid var(--ls-border);
+    color: var(--ls-subtle);
+    font-family: var(--ls-font-code);
+    font-size: 17px;
+  }
+
+  .ls-code-block pre {
+    overflow: auto;
+    max-block-size: var(--ls-code-max-block-size, 520px);
+    margin: 0;
+    padding: 24px;
+  }
+
+  .ls-code-block code {
+    color: #dbeafe;
+    font-family: var(--ls-font-code);
+    font-size: var(--ls-code-font-size, 20px);
+    line-height: 1.55;
+    tab-size: 2;
+    white-space: pre;
+  }
+
+  .ls-code-block[data-ls-density="dense"] {
+    --ls-code-font-size: 17px;
+  }
+}

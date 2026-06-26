@@ -1,0 +1,43 @@
+@layer layouts {
+  .ls-two-column {
+    container: ls-two-column / inline-size;
+    display: grid;
+    grid-template-columns: minmax(0, var(--ls-two-column-main, 1fr)) minmax(
+        0,
+        var(--ls-two-column-aside, 1fr)
+      );
+    gap: var(--ls-two-column-gap, var(--ls-space-6));
+    align-items: var(--ls-two-column-align, start);
+    block-size: 100%;
+  }
+
+  .ls-two-column__main,
+  .ls-two-column__aside {
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+
+  .ls-two-column__main,
+  .ls-two-column__aside,
+  .ls-two-column__stack {
+    display: grid;
+    align-content: start;
+    gap: var(--ls-space-4);
+  }
+
+  .ls-two-column[data-ls-ratio="wide-main"] {
+    --ls-two-column-main: 1.35fr;
+    --ls-two-column-aside: 0.65fr;
+  }
+
+  .ls-two-column[data-ls-ratio="wide-aside"] {
+    --ls-two-column-main: 0.75fr;
+    --ls-two-column-aside: 1.25fr;
+  }
+
+  @container ls-two-column (width < 820px) {
+    .ls-two-column {
+      grid-template-columns: 1fr;
+    }
+  }
+}

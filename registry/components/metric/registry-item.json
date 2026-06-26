@@ -1,0 +1,15 @@
+{
+  "name": "components/metric",
+  "type": "ls:component",
+  "description": "Metric slide component.",
+  "files": [
+    {
+      "path": "registry/components/metric/metric.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/metric/README.md"
+}

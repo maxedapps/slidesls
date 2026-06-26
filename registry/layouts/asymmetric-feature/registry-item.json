@@ -1,0 +1,15 @@
+{
+  "name": "layouts/asymmetric-feature",
+  "type": "ls:layout",
+  "description": "Asymmetric Feature slide layout.",
+  "files": [
+    {
+      "path": "registry/layouts/asymmetric-feature/asymmetric-feature.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/layouts/asymmetric-feature/README.md"
+}

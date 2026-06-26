@@ -13,5 +13,6 @@ Then open `http://localhost:4173/examples/`.
 Current examples:
 
 - `project-intro/` — two-slide deck that validates the initial registry foundation.
+- `primitive-gallery/` — seven-slide gallery validating the Batch 1 layout, component, and animation primitives.
 
 Future examples should live in `examples/<example-name>/index.html`. The examples server automatically lists every example folder that contains an `index.html` file.

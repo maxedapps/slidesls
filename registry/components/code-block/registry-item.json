@@ -1,0 +1,15 @@
+{
+  "name": "components/code-block",
+  "type": "ls:component",
+  "description": "Code Block slide component.",
+  "files": [
+    {
+      "path": "registry/components/code-block/code-block.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/code-block/README.md"
+}

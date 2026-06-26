@@ -1,0 +1,15 @@
+{
+  "name": "animations/stagger",
+  "type": "ls:animation",
+  "description": "Reveal-compatible stagger animation utility.",
+  "files": [
+    {
+      "path": "registry/animations/stagger/stagger.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base", "animations/reveal"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/animations/stagger/README.md"
+}

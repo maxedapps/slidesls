@@ -1,0 +1,15 @@
+{
+  "name": "components/stat-grid",
+  "type": "ls:component",
+  "description": "Stat Grid slide component.",
+  "files": [
+    {
+      "path": "registry/components/stat-grid/stat-grid.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/stat-grid/README.md"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "components/quote",
+  "type": "ls:component",
+  "description": "Quote slide component.",
+  "files": [
+    {
+      "path": "registry/components/quote/quote.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/quote/README.md"
+}

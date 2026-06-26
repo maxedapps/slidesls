@@ -12,6 +12,22 @@
     "registry/components/diagram/registry-item.json",
     "registry/presets/fonts/editorial-serif/registry-item.json",
     "registry/presets/fonts/technical-mono/registry-item.json",
-    "registry/presets/fonts/system-humanist/registry-item.json"
+    "registry/presets/fonts/system-humanist/registry-item.json",
+    "registry/layouts/asymmetric-feature/registry-item.json",
+    "registry/layouts/centered-statement/registry-item.json",
+    "registry/layouts/comparison-grid/registry-item.json",
+    "registry/layouts/image-spotlight/registry-item.json",
+    "registry/layouts/section-divider/registry-item.json",
+    "registry/layouts/two-column/registry-item.json",
+    "registry/components/bullet-list/registry-item.json",
+    "registry/components/callout/registry-item.json",
+    "registry/components/code-block/registry-item.json",
+    "registry/components/media-frame/registry-item.json",
+    "registry/components/metric/registry-item.json",
+    "registry/components/quote/registry-item.json",
+    "registry/components/stat-grid/registry-item.json",
+    "registry/animations/fade/registry-item.json",
+    "registry/animations/slide-up/registry-item.json",
+    "registry/animations/stagger/registry-item.json"
   ]
 }

@@ -1,0 +1,46 @@
+@layer components {
+  .ls-stat-grid {
+    container: ls-stat-grid / inline-size;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: var(--ls-space-3);
+  }
+
+  .ls-stat-grid[data-ls-columns="2"] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ls-stat-grid[data-ls-columns="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ls-stat-grid__item {
+    display: grid;
+    gap: var(--ls-space-2);
+    min-inline-size: 0;
+    padding: 22px;
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background: color-mix(in srgb, var(--ls-surface) 88%, var(--ls-accent) 12%);
+  }
+
+  .ls-stat-grid__value {
+    font-family: var(--ls-font-display);
+    font-size: clamp(40px, 12cqi, 72px);
+    font-weight: 820;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+  }
+
+  .ls-stat-grid__label {
+    color: var(--ls-muted);
+    font-size: 21px;
+    line-height: 1.25;
+  }
+
+  @container ls-stat-grid (width < 720px) {
+    .ls-stat-grid[data-ls-columns] {
+      grid-template-columns: 1fr;
+    }
+  }
+}

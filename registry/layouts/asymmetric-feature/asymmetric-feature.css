@@ -1,0 +1,58 @@
+@layer layouts {
+  .ls-asymmetric-feature {
+    container: ls-asymmetric-feature / inline-size;
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(380px, 0.75fr);
+    gap: var(--ls-space-7);
+    align-items: center;
+    block-size: 100%;
+  }
+
+  .ls-asymmetric-feature__statement {
+    display: grid;
+    gap: var(--ls-space-4);
+    min-inline-size: 0;
+  }
+
+  .ls-asymmetric-feature__headline {
+    font-family: var(--ls-font-display);
+    font-size: clamp(68px, 8cqi, 118px);
+    font-weight: 820;
+    letter-spacing: -0.06em;
+    line-height: 0.92;
+  }
+
+  .ls-asymmetric-feature__stack {
+    position: relative;
+    display: grid;
+    gap: var(--ls-space-3);
+    min-inline-size: 0;
+  }
+
+  .ls-asymmetric-feature__annotation {
+    padding: 18px 20px;
+    border: 1px solid var(--ls-accent-border);
+    border-radius: var(--ls-radius-md);
+    background: var(--ls-accent-bg);
+    color: var(--ls-accent-text);
+    font-size: var(--ls-text-xs);
+    line-height: 1.25;
+  }
+
+  @supports (position-anchor: --ls-feature-anchor) {
+    .ls-asymmetric-feature__statement {
+      anchor-name: --ls-feature-anchor;
+    }
+
+    .ls-asymmetric-feature__annotation[data-ls-anchor="statement"] {
+      position-anchor: --ls-feature-anchor;
+    }
+  }
+
+  @container ls-asymmetric-feature (width < 900px) {
+    .ls-asymmetric-feature {
+      grid-template-columns: 1fr;
+      gap: var(--ls-space-5);
+    }
+  }
+}

@@ -1,0 +1,9 @@
+@layer animations {
+  .ls-reveal-fade {
+    transform: none;
+  }
+
+  .ls-deck[data-ls-ready="true"] .ls-slide[data-active="true"] .ls-reveal-fade[data-step] {
+    transform: none;
+  }
+}

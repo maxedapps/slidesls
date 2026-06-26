@@ -1,0 +1,56 @@
+@layer components {
+  .ls-callout {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--ls-space-3);
+    align-items: start;
+    padding: 22px 24px;
+    border: 1px solid
+      color-mix(in srgb, var(--ls-callout-accent, var(--ls-accent)) 34%, var(--ls-border));
+    border-radius: var(--ls-radius-lg);
+    background: color-mix(
+      in srgb,
+      var(--ls-callout-accent, var(--ls-accent)) 14%,
+      var(--ls-surface)
+    );
+  }
+
+  .ls-callout:not(:has(.ls-callout__icon)) {
+    grid-template-columns: 1fr;
+  }
+
+  .ls-callout__icon {
+    display: grid;
+    place-items: center;
+    inline-size: 42px;
+    block-size: 42px;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--ls-callout-accent, var(--ls-accent)) 22%, transparent);
+    color: var(--ls-accent-text);
+  }
+
+  .ls-callout__body {
+    display: grid;
+    gap: 6px;
+  }
+
+  .ls-callout__title {
+    font-size: 27px;
+    font-weight: 760;
+    letter-spacing: -0.025em;
+  }
+
+  .ls-callout__text {
+    color: var(--ls-muted);
+    font-size: 22px;
+    line-height: 1.32;
+  }
+
+  .ls-callout[data-ls-tone="warning"] {
+    --ls-callout-accent: #f59e0b;
+  }
+
+  .ls-callout[data-ls-tone="success"] {
+    --ls-callout-accent: #22c55e;
+  }
+}

@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ls_slides primitive gallery</title>
+    <link rel="stylesheet" href="../../registry/core/base/reset.css" />
+    <link rel="stylesheet" href="../../registry/core/base/tokens.css" />
+    <link rel="stylesheet" href="../../registry/core/base/slide.css" />
+    <link rel="stylesheet" href="../../registry/core/base/icons.css" />
+    <link rel="stylesheet" href="../../registry/presets/fonts/system-humanist/font.css" />
+    <link rel="stylesheet" href="../../registry/animations/reveal/reveal.css" />
+    <link rel="stylesheet" href="../../registry/animations/fade/fade.css" />
+    <link rel="stylesheet" href="../../registry/animations/slide-up/slide-up.css" />
+    <link rel="stylesheet" href="../../registry/animations/stagger/stagger.css" />
+    <link
+      rel="stylesheet"
+      href="../../registry/layouts/centered-statement/centered-statement.css"
+    />
+    <link rel="stylesheet" href="../../registry/layouts/section-divider/section-divider.css" />
+    <link rel="stylesheet" href="../../registry/layouts/two-column/two-column.css" />
+    <link rel="stylesheet" href="../../registry/layouts/comparison-grid/comparison-grid.css" />
+    <link
+      rel="stylesheet"
+      href="../../registry/layouts/asymmetric-feature/asymmetric-feature.css"
+    />
+    <link rel="stylesheet" href="../../registry/layouts/image-spotlight/image-spotlight.css" />
+    <link rel="stylesheet" href="../../registry/components/badge/badge.css" />
+    <link rel="stylesheet" href="../../registry/components/card/card.css" />
+    <link rel="stylesheet" href="../../registry/components/callout/callout.css" />
+    <link rel="stylesheet" href="../../registry/components/metric/metric.css" />
+    <link rel="stylesheet" href="../../registry/components/stat-grid/stat-grid.css" />
+    <link rel="stylesheet" href="../../registry/components/bullet-list/bullet-list.css" />
+    <link rel="stylesheet" href="../../registry/components/code-block/code-block.css" />
+    <link rel="stylesheet" href="../../registry/components/media-frame/media-frame.css" />
+    <link rel="stylesheet" href="../../registry/components/quote/quote.css" />
+    <script type="module" src="../../registry/core/base/slide-runtime.js"></script>
+  </head>
+  <body class="ls-page" data-ls-font="system-humanist">
+    <main class="ls-stage" aria-label="Primitive gallery deck">
+      <div class="ls-deck" data-ls-deck>
+        <section class="ls-slide ls-layout-centered-statement" aria-label="Centered statement">
+          <div class="ls-slide__inner ls-centered-statement">
+            <div class="ls-centered-statement__content">
+              <p class="ls-eyebrow ls-reveal ls-reveal-fade" data-step="1">Batch 1 primitives</p>
+              <h1
+                class="ls-centered-statement__statement ls-reveal ls-reveal-slide-up"
+                data-step="1"
+              >
+                More slides, less ceremony.
+              </h1>
+              <p class="ls-centered-statement__support ls-reveal ls-reveal-slide-up" data-step="1">
+                Six layouts, seven components, and three reveal-compatible animation utilities.
+              </p>
+              <div class="ls-centered-statement__actions ls-reveal ls-reveal-fade" data-step="1">
+                <span class="ls-badge ls-badge--accent">vanilla</span>
+                <span class="ls-badge">copyable</span>
+                <span class="ls-badge">modern CSS</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="ls-slide" aria-label="Section divider">
+          <div class="ls-slide__inner ls-section-divider" data-ls-align="center">
+            <div class="ls-section-divider__content">
+              <p class="ls-section-divider__number ls-reveal ls-reveal-fade" data-step="1">
+                01 / Workhorse
+              </p>
+              <h2 class="ls-section-divider__title ls-reveal ls-reveal-slide-up" data-step="1">
+                Professional slide primitives
+              </h2>
+              <p class="ls-section-divider__text ls-reveal ls-reveal-slide-up" data-step="1">
+                Structured enough for business decks, flexible enough to remix.
+              </p>
+            </div>
+            <p class="ls-section-divider__footer ls-reveal ls-reveal-fade" data-step="1">
+              Layouts and components stay small, scoped, and dependency-free.
+            </p>
+          </div>
+        </section>
+
+        <section class="ls-slide" aria-label="Two column slide">
+          <div class="ls-slide__inner">
+            <header class="ls-slide__header ls-reveal" data-step="1">
+              <p class="ls-eyebrow">Two-column + callout + bullets</p>
+              <h2 class="ls-title">Plan the slide, then copy the pieces.</h2>
+            </header>
+            <div class="ls-slide__body ls-two-column" data-ls-ratio="wide-main">
+              <div class="ls-two-column__main">
+                <article class="ls-callout ls-reveal" data-step="1" data-ls-tone="success">
+                  <span class="ls-callout__icon" aria-hidden="true">✓</span>
+                  <div class="ls-callout__body">
+                    <h3 class="ls-callout__title">Registry-first composition</h3>
+                    <p class="ls-callout__text">
+                      Every primitive remains a file you can copy, inspect, and own.
+                    </p>
+                  </div>
+                </article>
+                <ul class="ls-bullet-list ls-stagger" data-ls-variant="check">
+                  <li class="ls-reveal" data-step="1">Load core tokens and slide shell first.</li>
+                  <li class="ls-reveal" data-step="1">
+                    Add only the layout and component files you use.
+                  </li>
+                  <li class="ls-reveal" data-step="1">
+                    Use reveal variants without changing runtime code.
+                  </li>
+                </ul>
+              </div>
+              <aside class="ls-two-column__aside">
+                <article class="ls-card ls-reveal" data-step="1">
+                  <h3 class="ls-card__title">Scoped by convention</h3>
+                  <p class="ls-card__text">
+                    `ls-` classes, cascade layers, and semantic tokens keep primitives predictable.
+                  </p>
+                </article>
+                <article class="ls-callout ls-reveal" data-step="1" data-ls-tone="warning">
+                  <div class="ls-callout__body">
+                    <h3 class="ls-callout__title">No generator required</h3>
+                    <p class="ls-callout__text">The registry is metadata plus source files.</p>
+                  </div>
+                </article>
+              </aside>
+            </div>
+          </div>
+        </section>
+
+        <section class="ls-slide" aria-label="Comparison grid and metrics">
+          <div class="ls-slide__inner">
+            <header class="ls-slide__header ls-reveal" data-step="1">
+              <p class="ls-eyebrow">Comparison + metrics</p>
+              <h2 class="ls-title">Choose the right slide shape.</h2>
+            </header>
+            <div class="ls-slide__body ls-comparison-grid" style="--ls-comparison-columns: 3">
+              <article class="ls-comparison-grid__item ls-reveal" data-step="1">
+                <h3 class="ls-comparison-grid__title">Status</h3>
+                <div class="ls-comparison-grid__body">
+                  <div class="ls-metric" data-ls-compact="true">
+                    <strong class="ls-metric__value">16</strong>
+                    <span class="ls-metric__label">new primitives</span>
+                    <span class="ls-metric__delta">Batch 1</span>
+                  </div>
+                </div>
+                <p class="ls-comparison-grid__verdict">Expanded vocabulary</p>
+              </article>
+              <article class="ls-comparison-grid__item ls-reveal" data-step="1">
+                <h3 class="ls-comparison-grid__title">Coverage</h3>
+                <div class="ls-comparison-grid__body">
+                  <div class="ls-stat-grid" data-ls-columns="2">
+                    <div class="ls-stat-grid__item">
+                      <strong class="ls-stat-grid__value">6</strong>
+                      <span class="ls-stat-grid__label">layouts</span>
+                    </div>
+                    <div class="ls-stat-grid__item">
+                      <strong class="ls-stat-grid__value">7</strong>
+                      <span class="ls-stat-grid__label">components</span>
+                    </div>
+                  </div>
+                </div>
+                <p class="ls-comparison-grid__verdict">Professional + creative</p>
+              </article>
+              <article class="ls-comparison-grid__item ls-reveal" data-step="1">
+                <h3 class="ls-comparison-grid__title">Motion</h3>
+                <div class="ls-comparison-grid__body">
+                  <p>Fade, slide-up, and stagger compose with the existing reveal contract.</p>
+                </div>
+                <p class="ls-comparison-grid__verdict">No runtime fork</p>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="ls-slide" aria-label="Asymmetric feature">
+          <div class="ls-slide__inner">
+            <div class="ls-slide__body ls-asymmetric-feature">
+              <div
+                class="ls-asymmetric-feature__statement ls-reveal ls-reveal-slide-up"
+                data-step="1"
+              >
+                <p class="ls-eyebrow">Editorial mode</p>
+                <h2 class="ls-asymmetric-feature__headline">A bold side and a useful stack.</h2>
+                <p class="ls-subtitle">
+                  Use asymmetry for chapter moments, launch narratives, or concept framing.
+                </p>
+              </div>
+              <div class="ls-asymmetric-feature__stack ls-stagger">
+                <article class="ls-card ls-reveal" data-step="1">
+                  <h3 class="ls-card__title">Statement region</h3>
+                  <p class="ls-card__text">
+                    Large type, tight line-height, and semantic display fonts.
+                  </p>
+                </article>
+                <article class="ls-card ls-reveal" data-step="1">
+                  <h3 class="ls-card__title">Stack region</h3>
+                  <p class="ls-card__text">
+                    Cards, callouts, diagrams, or metrics can live beside it.
+                  </p>
+                </article>
+                <aside
+                  class="ls-asymmetric-feature__annotation ls-reveal"
+                  data-step="1"
+                  data-ls-anchor="statement"
+                >
+                  Progressive anchor-positioning hook; baseline remains grid-based.
+                </aside>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="ls-slide" aria-label="Image spotlight">
+          <div class="ls-slide__inner">
+            <div class="ls-slide__body ls-image-spotlight">
+              <figure class="ls-image-spotlight__media ls-reveal ls-reveal-fade" data-step="1">
+                <svg
+                  viewBox="0 0 900 620"
+                  role="img"
+                  aria-label="Abstract blue presentation canvas"
+                >
+                  <defs>
+                    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1">
+                      <stop offset="0" stop-color="#1d4ed8" />
+                      <stop offset="0.55" stop-color="#111827" />
+                      <stop offset="1" stop-color="#22d3ee" />
+                    </linearGradient>
+                  </defs>
+                  <rect width="900" height="620" fill="url(#g)" />
+                  <circle cx="690" cy="170" r="140" fill="rgba(255,255,255,.14)" />
+                  <rect
+                    x="110"
+                    y="145"
+                    width="420"
+                    height="56"
+                    rx="28"
+                    fill="rgba(255,255,255,.22)"
+                  />
+                  <rect
+                    x="110"
+                    y="240"
+                    width="610"
+                    height="230"
+                    rx="34"
+                    fill="rgba(11,13,18,.42)"
+                  />
+                </svg>
+                <span class="ls-image-spotlight__label">visual primitive</span>
+              </figure>
+              <div class="ls-image-spotlight__content">
+                <figure class="ls-media-frame ls-reveal" data-step="1" data-ls-chrome="browser">
+                  <div class="ls-media-frame__surface">
+                    <svg viewBox="0 0 640 400" role="img" aria-label="Browser chrome preview">
+                      <rect width="640" height="400" fill="#121826" />
+                      <rect
+                        x="42"
+                        y="76"
+                        width="556"
+                        height="72"
+                        rx="18"
+                        fill="#1d4ed8"
+                        opacity=".8"
+                      />
+                      <rect x="42" y="176" width="250" height="142" rx="18" fill="#334155" />
+                      <rect
+                        x="320"
+                        y="176"
+                        width="278"
+                        height="142"
+                        rx="18"
+                        fill="#0e7490"
+                        opacity=".75"
+                      />
+                    </svg>
+                  </div>
+                  <figcaption>
+                    Media frames support screenshots, diagrams, video, and captions.
+                  </figcaption>
+                </figure>
+                <blockquote class="ls-quote ls-reveal" data-step="1">
+                  <p class="ls-quote__text">Copy the useful part, then make it yours.</p>
+                  <footer>ls_slides <cite>registry principle</cite></footer>
+                </blockquote>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="ls-slide" aria-label="Code block and staggered list">
+          <div class="ls-slide__inner">
+            <header class="ls-slide__header ls-reveal" data-step="1">
+              <p class="ls-eyebrow">Code content</p>
+              <h2 class="ls-title">Presentation-ready source snippets.</h2>
+            </header>
+            <div class="ls-slide__body ls-two-column" data-ls-ratio="wide-main">
+              <div class="ls-two-column__main">
+                <figure class="ls-code-block ls-reveal ls-reveal-slide-up" data-step="1">
+                  <figcaption class="ls-code-block__header">
+                    <span>registry/components/callout/callout.css</span>
+                    <span>copyable</span>
+                  </figcaption>
+                  <pre><code>.ls-callout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  border-color: color-mix(
+    in srgb,
+    var(--ls-accent) 34%,
+    var(--ls-border)
+  );
+}</code></pre>
+                </figure>
+              </div>
+              <aside class="ls-two-column__aside">
+                <ul class="ls-bullet-list ls-stagger" data-ls-density="dense">
+                  <li class="ls-reveal" data-step="1">Semantic HTML remains the default.</li>
+                  <li class="ls-reveal" data-step="1">Modern CSS is progressive, not mandatory.</li>
+                  <li class="ls-reveal" data-step="1">
+                    Export mode reveals all essential content.
+                  </li>
+                  <li class="ls-reveal" data-step="1">Reduced motion keeps transforms off.</li>
+                </ul>
+              </aside>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </body>
+</html>
