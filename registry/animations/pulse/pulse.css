@@ -4,38 +4,56 @@
     --ls-pulse-accent: var(--ls-accent);
     animation: ls-pulse-once var(--ls-pulse-duration, 1100ms) var(--ls-ease) both;
   }
+
   .ls-pulse[data-ls-loop="true"] {
     animation: ls-pulse-loop var(--ls-pulse-duration, 1600ms) var(--ls-ease) infinite;
   }
+
   .ls-reveal-pulse[data-ls-reveal-state="future"] {
     animation: none;
   }
+
   @keyframes ls-pulse-once {
     0% {
+      filter: drop-shadow(0 0 0 color-mix(in srgb, var(--ls-pulse-accent) 0%, transparent));
       box-shadow: 0 0 0 0 color-mix(in srgb, var(--ls-pulse-accent) 0%, transparent);
     }
+
     45% {
+      filter: drop-shadow(
+        0 0 var(--ls-pulse-size, 12px) color-mix(in srgb, var(--ls-pulse-accent) 42%, transparent)
+      );
       box-shadow: 0 0 0 var(--ls-pulse-size, 12px)
         color-mix(in srgb, var(--ls-pulse-accent) 28%, transparent);
     }
+
     100% {
+      filter: drop-shadow(0 0 0 color-mix(in srgb, var(--ls-pulse-accent) 0%, transparent));
       box-shadow: 0 0 0 0 color-mix(in srgb, var(--ls-pulse-accent) 0%, transparent);
     }
   }
+
   @keyframes ls-pulse-loop {
     0%,
     100% {
+      filter: drop-shadow(0 0 0 color-mix(in srgb, var(--ls-pulse-accent) 0%, transparent));
       box-shadow: 0 0 0 0 color-mix(in srgb, var(--ls-pulse-accent) 0%, transparent);
     }
+
     50% {
+      filter: drop-shadow(
+        0 0 var(--ls-pulse-size, 10px) color-mix(in srgb, var(--ls-pulse-accent) 38%, transparent)
+      );
       box-shadow: 0 0 0 var(--ls-pulse-size, 10px)
         color-mix(in srgb, var(--ls-pulse-accent) 24%, transparent);
     }
   }
+
   .ls-deck[data-ls-export="true"] .ls-pulse,
   .ls-deck[data-ls-export="true"] .ls-reveal-pulse {
     animation: none;
   }
+
   @media (prefers-reduced-motion: reduce) {
     .ls-pulse,
     .ls-reveal-pulse {

@@ -529,7 +529,7 @@ Browser/visual review:
 
 ### Phase 11 — Peer review, cleanup, and commit
 
-- [ ] Run a fresh peer review after implementation, focused on:
+- [x] Run a fresh peer review after implementation, focused on:
   - architecture consistency,
   - annotation/connector safety,
   - copyability,
@@ -537,7 +537,7 @@ Browser/visual review:
   - visual quality,
   - whether any primitive is too demo-specific,
   - whether modern CSS/SVG enhancements are baseline-safe.
-- [ ] Address blocking feedback.
+- [x] Address blocking feedback.
 - [ ] Ensure working tree contains no generated screenshots, server logs, or temporary files unless intentionally tracked.
 - [ ] Update this plan status to `Implemented` when complete.
 - [ ] Add implementation notes, validation results, peer review outcome, and commit hash(es) to this plan.
@@ -627,6 +627,14 @@ registry/README.md     # only if copy/dependency guidance changes
 - Example smoke tests returned 200 for `/examples/`, `/examples/visual-narrative-gallery/`, and `/examples/visual-narrative-gallery/?export=1`.
 - Browser review via `npx agent-browser` confirmed the deck initializes (`data-ls-ready="true"`), has 8 slides, and exercises Batch 3 annotations, connectors, image cards, and legends.
 - Screenshots captured to `/tmp/ls-slides-batch3-gallery-1.png` through `/tmp/ls-slides-batch3-gallery-8.png` and `/tmp/ls-slides-batch3-export.png` for visual inspection.
+
+## Peer review outcome
+
+- Fresh implementation review found the batch aligned with the plan and identified one required fix: `pulse` was demonstrated on an SVG circle while the original animation used only `box-shadow`.
+- Fixed `pulse` to combine `box-shadow` for HTML boxes with `filter: drop-shadow()` so SVG diagram markers can visibly pulse.
+- Updated `pulse` README to document HTML/SVG support.
+- Added connector README guidance that the arrow variant requires a copied SVG marker definition.
+- Post-fix `pnpm fmt` and `pnpm check` passed.
 
 ## Peer review summary
 
