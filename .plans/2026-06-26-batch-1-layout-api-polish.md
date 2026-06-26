@@ -436,7 +436,7 @@ Required visual validation:
 - First implementation review found one blocking issue: `centered-statement` and `section-divider` were still top-biased because the row reset targeted child markup but the gallery uses the class on `.ls-slide__inner` itself.
 - Fixed by setting `grid-template-rows: none` on the main layout root selectors and correcting centered-statement action alignment.
 - Second review found no blockers and confirmed the prior issue was resolved.
-- Commit: `e852084`.
+- Commit: `c5aff5a`.
 
 ## Peer review summary
 
