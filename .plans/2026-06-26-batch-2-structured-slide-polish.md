@@ -1,7 +1,7 @@
 # Plan: Batch 2 Structured Slide Polish
 
 Date: 2026-06-26
-Status: In Progress
+Status: Implemented
 Project: ls_slides
 
 ## Context
@@ -458,7 +458,7 @@ Validation for this phase:
   - reveal sequencing must support realistic item counts,
   - captions should not be clipped by decorative surfaces,
   - safe-area utilization should be explicit.
-- [ ] Update this plan with implementation notes, validation results, peer review outcome, and commit hashes when implemented.
+- [x] Update this plan with implementation notes, validation results, peer review outcome, and commit hashes when implemented.
 
 ### Phase 9 — Validation and visual review
 
@@ -499,17 +499,17 @@ Browser/visual review:
 
 ### Phase 10 — Fresh peer review and commit
 
-- [ ] Run fresh peer review after implementation, focused on:
+- [x] Run fresh peer review after implementation, focused on:
   - reveal runtime compatibility,
   - primitive API quality,
   - avoiding one-off gallery hacks,
   - accessibility and semantic markup,
   - visual quality and safe-area use,
   - export mode behavior.
-- [ ] Address blocking feedback.
-- [ ] Ensure no screenshots, server logs, or temporary files are tracked.
-- [ ] Commit with a concise message such as `Refine structured slide sequencing and layout defaults`.
-- [ ] Mark this plan `Implemented` when complete.
+- [x] Address blocking feedback.
+- [x] Ensure no screenshots, server logs, or temporary files are tracked.
+- [x] Commit with a concise message such as `Refine structured slide sequencing and layout defaults`.
+- [x] Mark this plan `Implemented` when complete.
 
 ## Expected files to change
 
@@ -568,7 +568,7 @@ docs/primitive-expansion.md
 - [x] Phase 7 — Safe-area composition APIs and gallery use improved.
 - [x] Phase 8 — Documentation and plan tracking updated.
 - [x] Phase 9 — Validation and visual review completed.
-- [ ] Phase 10 — Peer review and commit completed.
+- [x] Phase 10 — Peer review and commit completed.
 
 ## Implementation notes
 
@@ -597,6 +597,13 @@ docs/primitive-expansion.md
 - Fixed `slide-up` to target only `data-ls-reveal-state="future"`.
 - Migrated `fade` to the reveal-state selector model for consistency.
 - Updated `fade` and `slide-up` READMEs to mention the runtime reveal-state contract.
+- Follow-up review confirmed the blocking issue is resolved and found no remaining blockers.
+
+## Commits
+
+- `6bc73d2` — `Refine structured slide sequencing and layout defaults`
+- `80a32e5` — `Fix reveal variant state selectors`
+- Final plan tracking completed in this commit.
 
 ## Peer review summary
 
