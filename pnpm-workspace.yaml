@@ -1,0 +1,10 @@
+# No workspace packages yet. Add packages when docs/ becomes an actual package.
+
+# Explicitly document the 24-hour dependency freshness delay.
+minimumReleaseAge: 1440
+
+# Stronger than pnpm's default: fail if package trust evidence downgrades.
+trustPolicy: no-downgrade
+
+# Fail if the running pnpm version does not match packageManager.
+pmOnFail: error

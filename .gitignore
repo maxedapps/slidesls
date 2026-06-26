@@ -1,3 +1,5 @@
+node_modules/
+pnpm-lock.yaml.tmp
+dist/
+.astro/
 .DS_Store
-node_modules
-.plans

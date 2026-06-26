@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026-06-26-base-project-setup.md</title>
+<style>
+:root { color-scheme: dark; }
+body { margin: 0; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.6; background: #0b1020; color: #d1d5db; }
+main { max-width: 920px; margin: 48px auto; padding: 48px 56px; background: #111827; border: 1px solid #253044; border-radius: 18px; box-shadow: 0 18px 50px rgba(0, 0, 0, 0.28); }
+.header-meta { margin: -18px 0 34px; color: #9ca3af; font-size: 13px; }
+h1, h2, h3, h4 { line-height: 1.25; color: #f9fafb; }
+h1 { margin-top: 0; font-size: 2.2rem; }
+h2 { margin-top: 2.2rem; padding-top: 1rem; border-top: 1px solid #253044; }
+h3 { margin-top: 1.7rem; }
+a { color: #60a5fa; }
+code { padding: 0.15em 0.35em; border-radius: 0.35em; background: #1f2937; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.92em; }
+pre { overflow-x: auto; padding: 18px; border-radius: 12px; background: #030712; color: #f9fafb; }
+pre code { padding: 0; background: transparent; color: inherit; }
+blockquote { margin-left: 0; padding-left: 1rem; color: #9ca3af; border-left: 4px solid #4b5563; }
+table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; }
+th, td { border: 1px solid #374151; padding: 8px 10px; }
+th { background: #1f2937; }
+li + li { margin-top: 0.25rem; }
+/* Task lists: Bun.markdown and marked both emit checkbox inputs. Keep the list item in normal block flow (so inline text/code wraps correctly) and absolutely position the checkbox. This handles both input-plus-text and input-plus-paragraph renderer shapes. */
+li:has(> input[type="checkbox"]), li.task-list-item { list-style: none; position: relative; margin-left: -1.35rem; padding-left: 1.85rem; }
+li:has(> input[type="checkbox"])::marker, li.task-list-item::marker { content: ""; }
+ul:has(> li > input[type="checkbox"]), ul:has(li.task-list-item) { padding-left: 1.7rem; }
+li:has(> input[type="checkbox"]) > p:first-of-type, li.task-list-item > p:first-of-type { margin-top: 0; }
+li:has(> input[type="checkbox"]) > p:first-of-type:last-child, li.task-list-item > p:first-of-type:last-child { margin-bottom: 0; }
+li:has(> input[type="checkbox"]) > input[type="checkbox"], li.task-list-item > input[type="checkbox"] { position: absolute; left: 0; top: 0.28rem; }
+input[type="checkbox"] { appearance: none; -webkit-appearance: none; width: 1.05rem; height: 1.05rem; margin: 0; vertical-align: -0.16rem; border: 2px solid #6b7280; border-radius: 0.25rem; background: #1f2937; }
+input[type="checkbox"]:checked { background: #60a5fa; border-color: #60a5fa; box-shadow: inset 0 0 0 3px #111827; }
+@media print { body { background: white; color: #111827; } main { box-shadow: none; border: 0; margin: 0; padding: 0; max-width: none; background: white; color: #111827; } h1, h2, h3, h4 { color: #111827; } input[type="checkbox"] { border-color: #111827; background: white; } }
+</style>
+</head>
+<body>
+<main>
+<div class="header-meta">Source: /Users/maximilianschwarzmuller/development/projects/ls_slides/.plans/2026-06-26-base-project-setup.md<br>Rendered: 2026-06-26T07:52:38Z</div>
+<h1 id="plan-base-project-setup">Plan: Base Project Setup</h1>
+<p>Date: 2026-06-26
+Status: Final
+Project: ls_slides</p>
+<h2 id="context">Context</h2>
+<p>This repository will become a copyable registry of vanilla HTML/CSS/JS slide-building blocks: core CSS contracts, layouts, components, presets, and GSAP animation recipes. It is not a slide generator, framework, or component library package.</p>
+<p>The agreed repository model is:</p>
+<ul>
+<li><code>registry/</code> contains copyable/installable building blocks.</li>
+<li><code>docs/</code> will be an Astro-based discovery/documentation site.</li>
+<li><code>examples/</code>, <code>skills/</code>, and <code>scripts/</code> support the registry but are not registry items.</li>
+</ul>
+<h2 id="goals">Goals</h2>
+<ul>
+<li>Set up only the base project scaffolding.</li>
+<li>Use pnpm for package/project management.</li>
+<li>Use pnpm workspaces only; no Turborepo, Nx, Rush, Changesets, or other monorepo tooling.</li>
+<li>Use Oxlint for linting.</li>
+<li>Use Oxfmt for formatting.</li>
+<li>Configure pnpm with conservative, supply-chain-aware settings.</li>
+<li>Avoid creating actual slide components, registry item files, docs pages, or scripts in this phase.</li>
+</ul>
+<h2 id="user-constraints">User constraints</h2>
+<ul>
+<li>pnpm only for package management.</li>
+<li>No other monorepo tools.</li>
+<li>Oxlint for linting.</li>
+<li>Oxfmt for formatting.</li>
+<li>Research pnpm safe settings from docs.</li>
+<li>No actual code/components yet.</li>
+<li>No bunch of empty files.</li>
+<li>Only base folder structure in this phase.</li>
+</ul>
+<h2 id="research-performed">Research performed</h2>
+<p>Sources checked:</p>
+<ul>
+<li>pnpm settings: <code>https://pnpm.io/settings</code></li>
+<li>pnpm workspaces: <code>https://pnpm.io/workspaces</code></li>
+<li>pnpm package.json docs: <code>https://pnpm.io/package_json</code></li>
+<li>pnpm supply-chain security: <code>https://pnpm.io/supply-chain-security</code></li>
+<li>pnpm v11 release notes: <code>https://pnpm.io/blog/releases/11.0</code></li>
+<li>Oxlint quickstart/config docs: <code>https://oxc.rs/docs/guide/usage/linter/quickstart</code>, <code>https://oxc.rs/docs/guide/usage/linter/config</code></li>
+<li>Oxfmt quickstart/CLI docs: <code>https://oxc.rs/docs/guide/usage/formatter/quickstart.html</code>, <code>https://oxc.rs/docs/guide/usage/formatter/cli</code></li>
+</ul>
+<p>Relevant findings:</p>
+<ul>
+<li>pnpm v11 stores most project settings in <code>pnpm-workspace.yaml</code>; <code>.npmrc</code> is mainly for auth/registry settings.</li>
+<li>A <code>pnpm-workspace.yaml</code> is useful even before multiple package manifests exist because it stores project-level pnpm config.</li>
+<li>pnpm v11 already defaults to several safe behaviors, including <code>minimumReleaseAge: 1440</code>, <code>blockExoticSubdeps: true</code>, <code>strictDepBuilds: true</code>, <code>dangerouslyAllowAllBuilds: false</code>, <code>verifyStoreIntegrity: true</code>, and <code>strictStorePkgContentCheck: true</code>.</li>
+<li>pnpm recommends blocking risky dependency lifecycle scripts via explicit <code>allowBuilds</code>, preventing exotic transitive dependencies via <code>blockExoticSubdeps</code>, delaying fresh releases via <code>minimumReleaseAge</code>, and using <code>trustPolicy: no-downgrade</code> for stronger trust checks.</li>
+<li>pnpm v11 replaces old package-manager strictness settings with <code>pmOnFail</code>.</li>
+<li>Oxlint docs recommend <code>pnpm add -D oxlint</code>, scripts <code>lint</code> and <code>lint:fix</code>, and either <code>.oxlintrc.json</code> or <code>oxlint.config.ts</code>.</li>
+<li>Oxfmt docs recommend <code>pnpm add -D oxfmt</code>, scripts <code>fmt</code> and <code>fmt:check</code>, and <code>.oxfmtrc.json</code> via <code>oxfmt --init</code>.</li>
+<li>Use JSON configs for Oxlint/Oxfmt initially to avoid TypeScript config runtime constraints and keep setup simple.</li>
+</ul>
+<p>Local environment observed:</p>
+<pre><code class="language-sh">node -v   # v26.1.0
+pnpm -v   # 11.1.1
+</code></pre>
+<h2 id="decisions">Decisions</h2>
+<h3 id="1-use-a-single-pnpm-managed-root-project-initially">1. Use a single pnpm-managed root project initially</h3>
+<p>Create a root <code>package.json</code> with:</p>
+<ul>
+<li><code>private: true</code></li>
+<li><code>type: module</code></li>
+<li><code>packageManager: pnpm@11.1.1</code></li>
+<li><code>engines.node: &gt;=22.18.0</code></li>
+<li>root scripts for linting, formatting, and checks</li>
+</ul>
+<p>Do not create a <code>docs/package.json</code> yet. The <code>docs/</code> folder can become a workspace package later when the Astro site is actually initialized.</p>
+<h3 id="2-keep-pnpm-workspaceyaml-but-omit-packages-for-now">2. Keep <code>pnpm-workspace.yaml</code>, but omit <code>packages</code> for now</h3>
+<p>Use <code>pnpm-workspace.yaml</code> for project-level pnpm config.</p>
+<p>Do not add <code>packages: [&quot;docs&quot;]</code> until <code>docs/</code> has its own <code>package.json</code>. Otherwise pnpm may treat it as a workspace candidate without a manifest.</p>
+<h3 id="3-use-a-small-intentional-pnpm-safety-config">3. Use a small, intentional pnpm safety config</h3>
+<p>Avoid restating every pnpm default. Too many default restatements increase maintenance and typo risk.</p>
+<p>Recommended <code>pnpm-workspace.yaml</code> settings for phase 1:</p>
+<pre><code class="language-yaml"># No workspace packages yet. Add packages when docs/ becomes an actual package.
+
+# Explicitly document the 24-hour dependency freshness delay.
+minimumReleaseAge: 1440
+
+# Stronger than pnpm's default: fail if package trust evidence downgrades.
+trustPolicy: no-downgrade
+
+# Fail if the running pnpm version does not match packageManager.
+pmOnFail: error
+</code></pre>
+<p>Optional extra explicit defaults may be added only if desired for documentation:</p>
+<pre><code class="language-yaml"># Defaults in pnpm v11, documented here only if we want extra visibility.
+# blockExoticSubdeps: true
+# strictDepBuilds: true
+# dangerouslyAllowAllBuilds: false
+</code></pre>
+<p>Do not set these in phase 1 unless there is a strong reason:</p>
+<ul>
+<li><code>minimumReleaseAgeIgnoreMissingTime: false</code> — stricter but can make installs fragile with registries/packages missing publish-time metadata.</li>
+<li><code>resolutionMode: time-based</code> — overlaps with <code>minimumReleaseAge</code> and can make transitive resolution less intuitive.</li>
+<li><code>nodeLinker</code>, <code>shamefullyHoist</code>, <code>publicHoistPattern</code>, <code>linkWorkspacePackages</code>, <code>saveWorkspaceProtocol</code> — current defaults are fine and need not be restated.</li>
+</ul>
+<h3 id="4-use-oxlint-and-oxfmt-at-the-root">4. Use Oxlint and Oxfmt at the root</h3>
+<p>Install as dev dependencies:</p>
+<pre><code class="language-sh">pnpm add -D oxlint oxfmt
+</code></pre>
+<p>Add root scripts:</p>
+<pre><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;lint&quot;: &quot;oxlint&quot;,
+    &quot;lint:fix&quot;: &quot;oxlint --fix&quot;,
+    &quot;fmt&quot;: &quot;oxfmt&quot;,
+    &quot;fmt:check&quot;: &quot;oxfmt --check&quot;,
+    &quot;check&quot;: &quot;pnpm lint &amp;&amp; pnpm fmt:check&quot;
+  }
+}
+</code></pre>
+<p>Use <code>.oxlintrc.json</code> and <code>.oxfmtrc.json</code>, not TypeScript config files, for the initial setup.</p>
+<h3 id="5-do-not-add-gsap-as-a-root-dependency-now">5. Do not add GSAP as a root dependency now</h3>
+<p>GSAP is part of the future animation recipes consumed by downstream slide projects. Adding it to the root package would imply this repo is a runtime/package library, which conflicts with the copyable-registry model.</p>
+<h3 id="6-make-folder-structure-commit-friendly-without-empty-filler-files">6. Make folder structure commit-friendly without empty filler files</h3>
+<p>Git does not track empty directories. To make the structure visible without <code>.gitkeep</code> filler, add concise <code>README.md</code> files only where they explain the purpose of a major folder.</p>
+<p>This satisfies the “not a bunch of empty files” constraint better than empty placeholders.</p>
+<h2 id="alternatives-considered">Alternatives considered</h2>
+<h3 id="alternative-a-put-docs-in-pnpm-workspace-immediately">Alternative A — Put <code>docs</code> in pnpm workspace immediately</h3>
+<p>Rejected for phase 1. <code>docs/</code> will not have a package manifest yet, so adding it to workspace packages is premature. Add it once Astro is initialized.</p>
+<h3 id="alternative-b-restate-many-pnpm-defaults-for-maximum-explicitness">Alternative B — Restate many pnpm defaults for maximum explicitness</h3>
+<p>Rejected. pnpm v11 already defaults to many safe settings. Restating all of them adds noise and risk of stale/misspelled config.</p>
+<h3 id="alternative-c-use-stylesbase-instead-of-registrycore">Alternative C — Use <code>styles/base</code> instead of <code>registry/core</code></h3>
+<p>Rejected in prior structure discussion. <code>registry/core</code> is the mandatory base registry item; presets are optional token remaps.</p>
+<h3 id="alternative-d-use-gitkeep-files-for-empty-folders">Alternative D — Use <code>.gitkeep</code> files for empty folders</h3>
+<p>Rejected. <code>.gitkeep</code> files are pure placeholders. Short README files are more useful for humans and agents.</p>
+<h2 id="implementation-phases">Implementation phases</h2>
+<h3 id="phase-1-create-base-structure">Phase 1 — Create base structure</h3>
+<p>Create these directories:</p>
+<pre><code class="language-txt">registry/
+  core/
+  layouts/
+  components/
+  presets/
+  animations/
+examples/
+skills/
+docs/
+scripts/
+.plans/
+</code></pre>
+<p>Create concise README files only for meaningful root/section explanation:</p>
+<pre><code class="language-txt">README.md
+registry/README.md
+registry/core/README.md
+registry/layouts/README.md
+registry/components/README.md
+registry/presets/README.md
+registry/animations/README.md
+examples/README.md
+skills/README.md
+docs/README.md
+scripts/README.md
+</code></pre>
+<p>Do not create component files, registry metadata files, scripts, Astro files, or docs pages yet.</p>
+<h3 id="phase-2-initialize-package-management">Phase 2 — Initialize package management</h3>
+<p>Create root <code>package.json</code> with the agreed metadata and scripts.</p>
+<p>Create <code>pnpm-workspace.yaml</code> with only intentional settings:</p>
+<pre><code class="language-yaml">minimumReleaseAge: 1440
+trustPolicy: no-downgrade
+pmOnFail: error
+</code></pre>
+<p>Create <code>.gitignore</code> for standard generated artifacts:</p>
+<pre><code class="language-gitignore">node_modules/
+pnpm-lock.yaml.tmp
+dist/
+.astro/
+.DS_Store
+</code></pre>
+<p>Keep <code>pnpm-lock.yaml</code> committed after install.</p>
+<h3 id="phase-3-add-linting-and-formatting-tools">Phase 3 — Add linting and formatting tools</h3>
+<p>Install:</p>
+<pre><code class="language-sh">pnpm add -D oxlint oxfmt
+</code></pre>
+<p>Create conservative config files:</p>
+<pre><code class="language-txt">.oxlintrc.json
+.oxfmtrc.json
+</code></pre>
+<p>Prefer generated starter configs from:</p>
+<pre><code class="language-sh">pnpm exec oxlint --init
+pnpm exec oxfmt --init
+</code></pre>
+<p>Then simplify if needed.</p>
+<h3 id="phase-4-validate-the-setup">Phase 4 — Validate the setup</h3>
+<p>Run:</p>
+<pre><code class="language-sh">pnpm install
+pnpm config list
+pnpm lint
+pnpm fmt:check
+pnpm check
+</code></pre>
+<p>Confirm:</p>
+<ul>
+<li>pnpm uses the pinned version or fails because of <code>pmOnFail: error</code>.</li>
+<li><code>minimumReleaseAge</code>, <code>trustPolicy</code>, and <code>pmOnFail</code> appear in effective config.</li>
+<li>No unexpected dependency lifecycle build approval is required.</li>
+<li>If dependency build approval is required, add specific trusted packages to <code>allowBuilds</code>; never use <code>dangerouslyAllowAllBuilds</code>.</li>
+<li>Oxlint and Oxfmt commands run successfully.</li>
+</ul>
+<h2 id="validation">Validation</h2>
+<p>Expected validation commands after implementation:</p>
+<pre><code class="language-sh">pnpm install
+pnpm config list
+pnpm lint
+pnpm fmt:check
+pnpm check
+</code></pre>
+<p>Optional structure check:</p>
+<pre><code class="language-sh">find . -maxdepth 3 -type d | sort
+</code></pre>
+<h2 id="risks-rollback">Risks / rollback</h2>
+<ul>
+<li>Empty directories are not tracked by Git. Mitigation: use concise README files, not <code>.gitkeep</code>.</li>
+<li><code>trustPolicy: no-downgrade</code> may reject some packages. Mitigation: review failures case-by-case and use <code>trustPolicyExclude</code> only for known safe packages/versions.</li>
+<li><code>pmOnFail: error</code> requires contributors to use the pinned pnpm version. Mitigation: document the pnpm version and upgrade intentionally.</li>
+<li>Oxlint/Oxfmt are evolving tools. Mitigation: keep config minimal and use documented flags only.</li>
+<li>Future Astro setup may need its own package manifest. Mitigation: add <code>docs</code> to workspace packages only when initialized.</li>
+</ul>
+<h2 id="peer-review-summary">Peer review summary</h2>
+<p>A Claude review agreed with the structure and tooling choices but recommended these changes, which are incorporated above:</p>
+<ul>
+<li>Do not add <code>packages: [&quot;docs&quot;]</code> before <code>docs/package.json</code> exists.</li>
+<li>Do not restate every pnpm v11 default; keep only intentional settings.</li>
+<li>Avoid <code>minimumReleaseAgeIgnoreMissingTime: false</code> and <code>resolutionMode: time-based</code> for now.</li>
+<li>Use concise README files instead of empty folders or <code>.gitkeep</code>.</li>
+<li>Do not add GSAP as a root dependency.</li>
+<li>Add <code>pnpm config list</code> to validation to catch config mistakes.</li>
+</ul>
+</main>
+</body>
+</html>

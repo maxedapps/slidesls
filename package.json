@@ -1,0 +1,20 @@
+{
+  "name": "ls-slides",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "oxlint --no-error-on-unmatched-pattern",
+    "lint:fix": "oxlint --fix --no-error-on-unmatched-pattern",
+    "fmt": "oxfmt",
+    "fmt:check": "oxfmt --check",
+    "check": "pnpm lint && pnpm fmt:check"
+  },
+  "devDependencies": {
+    "oxfmt": "^0.56.0",
+    "oxlint": "^1.71.0"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "packageManager": "pnpm@11.1.1"
+}
