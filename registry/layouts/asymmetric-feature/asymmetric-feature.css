@@ -1,4 +1,8 @@
 @layer layouts {
+  .ls-slide__inner:has(> .ls-asymmetric-feature) {
+    grid-template-rows: 1fr;
+  }
+
   .ls-asymmetric-feature {
     container: ls-asymmetric-feature / inline-size;
     display: grid;
@@ -39,13 +43,17 @@
     line-height: 1.25;
   }
 
-  @supports (position-anchor: --ls-feature-anchor) {
+  @supports (anchor-name: --ls-feature-anchor) and (position-anchor: --ls-feature-anchor) {
     .ls-asymmetric-feature__statement {
       anchor-name: --ls-feature-anchor;
     }
 
     .ls-asymmetric-feature__annotation[data-ls-anchor="statement"] {
+      position: absolute;
       position-anchor: --ls-feature-anchor;
+      position-area: bottom span-right;
+      inline-size: min(360px, 36cqi);
+      inset: auto;
     }
   }
 

@@ -1,7 +1,7 @@
 # Plan: Batch 1 primitive expansion
 
 Date: 2026-06-26
-Status: In Progress
+Status: Implemented
 Project: ls_slides
 
 ## Context
@@ -502,16 +502,16 @@ Because CSS has little automated coverage in the current project, use browser au
 
 ### Phase 11 — Peer review, cleanup, and commit
 
-- [ ] Run a fresh peer review after implementation, focused on:
+- [x] Run a fresh peer review after implementation, focused on:
   - coherence across all 16 new items,
   - copyability,
   - modern CSS usage without overengineering,
   - animation model clarity,
   - docs accuracy,
   - visual quality.
-- [ ] Address blocking feedback.
+- [x] Address blocking feedback.
 - [x] Ensure working tree contains no generated previews, server temp files, or screenshots unless intentionally tracked.
-- [ ] Commit with a concise message such as `Add first primitive expansion batch`.
+- [x] Commit with a concise message such as `Add first primitive expansion batch`.
 
 ## Validation
 
@@ -558,16 +558,25 @@ Recommended visual validation:
 - [x] Phase 8 — Semantic/accessibility pass completed.
 - [x] Phase 9 — Project docs and progress tracking updated.
 - [x] Phase 10 — Validation and visual review completed.
-- [ ] Phase 11 — Peer review, cleanup, and commit pending.
+- [x] Phase 11 — Peer review, cleanup, and commit pending.
 
 ## Implementation notes
 
 - Removed generated `.plans/2026-06-26-batch-1-primitive-expansion.html` preview from the working tree; the project tracks Markdown plan sources only.
 - Did not extend the three-step reveal ceiling; the gallery uses within-step staggering with `animations/stagger`.
 - `fade` and `slide-up` are thin `.ls-reveal` variants loaded after `animations/reveal`; `stagger` sets child `--ls-delay` values only.
-- Validation: `pnpm validate:registry`, `pnpm fmt`, and `pnpm check` passed.
+- Validation: `pnpm validate:registry`, `pnpm fmt`, and `pnpm check` passed. Post-review `pnpm check` also passed.
 - Smoke tests: `curl -I` passed for `/examples/`, `/examples/primitive-gallery/`, and `/examples/primitive-gallery/?export=1`.
 - Browser visual review: captured normal-mode gallery screenshots and export-mode screenshot with `npx agent-browser`; no blocking layout issues found.
+
+## Peer review outcome
+
+- Fresh review accepted the overall implementation and identified one blocking layout-height defect plus README/API documentation cleanup.
+- Fixed direct-child full-slide layout height for `asymmetric-feature` and `image-spotlight`.
+- Replaced boilerplate new-item READMEs with concrete usage contracts and removed stale animation README text.
+- Wired the `asymmetric-feature` anchor-positioning enhancement instead of leaving a no-op hook.
+- Removed a non-functional `comparison-grid` subgrid enhancement.
+- Commits: `a8e1e84`; follow-up fixes are included in the final docs/layout polish commit.
 
 ## Peer review summary
 

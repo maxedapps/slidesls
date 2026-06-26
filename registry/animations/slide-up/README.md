@@ -1,7 +1,21 @@
 # Slide Up
 
-A reveal-compatible animation item. Load after `animations/reveal` and combine with `.ls-reveal` using `.ls-reveal-slide-up` or `.ls-stagger` as applicable.
+Configurable larger vertical reveal variant.
+
+## Usage
+
+Load after `animations/reveal`, then combine with reveal markup:
+
+```html
+<p class="ls-reveal ls-reveal-slide-up" data-step="1">Slide up</p>
+```
+
+Customization variables:
+
+- `--ls-slide-up-distance`
+- `--ls-slide-up-duration`
+- `--ls-slide-up-ease`
 
 ## Copy
 
-Copy `slide-up.css` after `core/base` styles. Use the classes documented here in your slide markup.
+Copy `slide-up.css` after `core/base` and `animations/reveal` styles.

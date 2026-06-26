@@ -1,7 +1,17 @@
 # Metric
 
-A dependency-free component primitive for metric content. Use `.ls-metric` and child classes from `metric.css`.
+Single KPI/stat block.
+
+## Usage
+
+Key classes/attributes:
+
+- `.ls-metric`
+- `.ls-metric__value`
+- `.ls-metric__label`
+- `.ls-metric__delta`
+- `data-ls-compact="true"`
 
 ## Copy
 
-Copy `metric.css` after `core/base` styles. Use the classes documented here in your slide markup.
+Copy `metric.css` after `core/base` styles.

@@ -1,7 +1,19 @@
 # Two Column
 
-A copyable layout primitive for two column slides. Main class: `.ls-two-column` or layout wrapper `.ls-layout-two-column` where documented by the CSS.
+Reliable two-region professional layout.
+
+## Usage
+
+Use `.ls-two-column` around two regions.
+
+Key classes/attributes/variables:
+
+- `.ls-two-column__main`
+- `.ls-two-column__aside`
+- `.ls-two-column__stack`
+- `data-ls-ratio="wide-main" | "wide-aside"`
+- `--ls-two-column-main`, `--ls-two-column-aside`, `--ls-two-column-gap`, `--ls-two-column-align`
 
 ## Copy
 
-Copy `two-column.css` after `core/base` styles. Use the classes documented here in your slide markup.
+Copy `two-column.css` after `core/base` styles.

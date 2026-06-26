@@ -1,7 +1,19 @@
 # Comparison Grid
 
-A copyable layout primitive for comparison grid slides. Main class: `.ls-comparison-grid` or layout wrapper `.ls-layout-comparison-grid` where documented by the CSS.
+Option-vs-option, before/after, or pros/cons layout.
+
+## Usage
+
+Use `.ls-comparison-grid` with repeated comparison items.
+
+Key classes/variables:
+
+- `.ls-comparison-grid__item`
+- `.ls-comparison-grid__title`
+- `.ls-comparison-grid__body`
+- `.ls-comparison-grid__verdict`
+- `--ls-comparison-columns`
 
 ## Copy
 
-Copy `comparison-grid.css` after `core/base` styles. Use the classes documented here in your slide markup.
+Copy `comparison-grid.css` after `core/base` styles.

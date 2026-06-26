@@ -1,7 +1,18 @@
 # Centered Statement
 
-A copyable layout primitive for centered statement slides. Main class: `.ls-centered-statement` or layout wrapper `.ls-layout-centered-statement` where documented by the CSS.
+Sparse high-impact statement layout.
+
+## Usage
+
+Use `.ls-layout-centered-statement` on the slide or `.ls-centered-statement` on the slide inner/body.
+
+Key classes:
+
+- `.ls-centered-statement__content`
+- `.ls-centered-statement__statement`
+- `.ls-centered-statement__support`
+- `.ls-centered-statement__actions`
 
 ## Copy
 
-Copy `centered-statement.css` after `core/base` styles. Use the classes documented here in your slide markup.
+Copy `centered-statement.css` after `core/base` styles.

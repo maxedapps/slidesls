@@ -1,4 +1,8 @@
 @layer layouts {
+  .ls-slide__inner:has(> .ls-image-spotlight) {
+    grid-template-rows: 1fr;
+  }
+
   .ls-image-spotlight {
     container: ls-image-spotlight / inline-size;
     display: grid;

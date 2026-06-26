@@ -1,7 +1,19 @@
 # Callout
 
-A dependency-free component primitive for callout content. Use `.ls-callout` and child classes from `callout.css`.
+Highlighted note, warning, insight, or takeaway.
+
+## Usage
+
+Key classes/attributes:
+
+- `.ls-callout`
+- `.ls-callout__icon`
+- `.ls-callout__body`
+- `.ls-callout__title`
+- `.ls-callout__text`
+- `data-ls-tone="warning" | "success"`
+- `--ls-callout-accent`
 
 ## Copy
 
-Copy `callout.css` after `core/base` styles. Use the classes documented here in your slide markup.
+Copy `callout.css` after `core/base` styles.

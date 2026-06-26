@@ -1,7 +1,17 @@
 # Stat Grid
 
-A dependency-free component primitive for stat grid content. Use `.ls-stat-grid` and child classes from `stat-grid.css`.
+Grouped metrics without requiring `components/metric`.
+
+## Usage
+
+Key classes/attributes:
+
+- `.ls-stat-grid`
+- `.ls-stat-grid__item`
+- `.ls-stat-grid__value`
+- `.ls-stat-grid__label`
+- `data-ls-columns="2" | "3"`
 
 ## Copy
 
-Copy `stat-grid.css` after `core/base` styles. Use the classes documented here in your slide markup.
+Copy `stat-grid.css` after `core/base` styles.

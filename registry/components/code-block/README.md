@@ -1,7 +1,19 @@
 # Code Block
 
-A dependency-free component primitive for code block content. Use `.ls-code-block` and child classes from `code-block.css`. Use semantic `pre` and `code` markup.
+Presentation-ready code snippets without a syntax highlighter dependency.
+
+## Usage
+
+Use semantic `pre` and `code` markup.
+
+Key classes/attributes:
+
+- `.ls-code-block`
+- `.ls-code-block__header`
+- `data-ls-density="dense"`
+- `--ls-code-max-block-size`
+- `--ls-code-font-size`
 
 ## Copy
 
-Copy `code-block.css` after `core/base` styles. Use the classes documented here in your slide markup.
+Copy `code-block.css` after `core/base` styles.

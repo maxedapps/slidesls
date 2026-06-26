@@ -1,7 +1,19 @@
 # Media Frame
 
-A dependency-free component primitive for media frame content. Use `.ls-media-frame` and child classes from `media-frame.css`.
+Frame for screenshots, images, videos, iframes, and diagrams.
+
+## Usage
+
+Use semantic `figure` and `figcaption` markup where possible.
+
+Key classes/attributes/variables:
+
+- `.ls-media-frame`
+- `.ls-media-frame__surface`
+- `.ls-media-frame__caption`
+- `data-ls-chrome="browser"`
+- `--ls-media-aspect`
 
 ## Copy
 
-Copy `media-frame.css` after `core/base` styles. Use the classes documented here in your slide markup.
+Copy `media-frame.css` after `core/base` styles.

@@ -43,11 +43,4 @@
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
-
-  @supports (grid-template-rows: subgrid) {
-    .ls-comparison-grid__item {
-      grid-row: span 3;
-      grid-template-rows: subgrid;
-    }
-  }
 }

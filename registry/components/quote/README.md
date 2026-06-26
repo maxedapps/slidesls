@@ -1,7 +1,17 @@
 # Quote
 
-A dependency-free component primitive for quote content. Use `.ls-quote` and child classes from `quote.css`. Use semantic `blockquote`, `footer`, and `cite` markup where possible.
+Testimonial, pull quote, or cited statement.
+
+## Usage
+
+Use semantic `blockquote`, `footer`, and `cite` markup where possible.
+
+Key classes:
+
+- `.ls-quote`
+- `.ls-quote__text`
+- `.ls-quote__source`
 
 ## Copy
 
-Copy `quote.css` after `core/base` styles. Use the classes documented here in your slide markup.
+Copy `quote.css` after `core/base` styles.

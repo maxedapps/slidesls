@@ -1,7 +1,15 @@
 # Fade
 
-A reveal-compatible animation item. Load after `animations/reveal` and combine with `.ls-reveal` using `.ls-reveal-fade` or `.ls-stagger` as applicable.
+Opacity-only reveal variant.
+
+## Usage
+
+Load after `animations/reveal`, then combine with reveal markup:
+
+```html
+<p class="ls-reveal ls-reveal-fade" data-step="1">Fade in</p>
+```
 
 ## Copy
 
-Copy `fade.css` after `core/base` styles. Use the classes documented here in your slide markup.
+Copy `fade.css` after `core/base` and `animations/reveal` styles.
