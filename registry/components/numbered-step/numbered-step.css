@@ -1,0 +1,70 @@
+@layer components {
+  .ls-numbered-steps {
+    display: grid;
+    gap: var(--ls-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ls-numbered-step {
+    --ls-numbered-step-accent: var(--ls-accent);
+    --ls-numbered-step-number-size: 44px;
+    display: grid;
+    grid-template-columns: var(--ls-numbered-step-number-size) minmax(0, 1fr);
+    gap: var(--ls-numbered-step-gap, var(--ls-space-3));
+    align-items: start;
+    min-inline-size: 0;
+    padding: var(--ls-space-3);
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background: var(--ls-surface);
+  }
+  .ls-numbered-step[data-ls-variant="inline"] {
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  .ls-numbered-step[data-ls-variant="compact"] {
+    --ls-numbered-step-number-size: 34px;
+    padding: var(--ls-space-2);
+  }
+  .ls-numbered-step__number {
+    display: grid;
+    place-items: center;
+    inline-size: var(--ls-numbered-step-number-size);
+    block-size: var(--ls-numbered-step-number-size);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--ls-numbered-step-accent) 18%, var(--ls-surface-strong));
+    color: var(--ls-accent-text);
+    font-family: var(--ls-font-label);
+    font-size: var(--ls-text-xs);
+    font-weight: 820;
+  }
+  .ls-numbered-step__title {
+    font-size: var(--ls-text-sm);
+    font-weight: 760;
+    line-height: 1.15;
+  }
+  .ls-numbered-step__text {
+    color: var(--ls-muted);
+    font-size: var(--ls-text-xs);
+    line-height: 1.35;
+  }
+  .ls-numbered-step__meta {
+    color: var(--ls-subtle);
+    font-family: var(--ls-font-label);
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ls-numbered-step[data-ls-status="done"] {
+    --ls-numbered-step-accent: #22c55e;
+  }
+  .ls-numbered-step[data-ls-status="active"] {
+    border-color: var(--ls-accent-border);
+    box-shadow: inset 0 0 0 1px var(--ls-accent-border);
+  }
+  .ls-numbered-step[data-ls-status="pending"] {
+    opacity: 0.72;
+  }
+}

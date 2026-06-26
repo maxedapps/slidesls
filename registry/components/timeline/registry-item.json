@@ -1,0 +1,15 @@
+{
+  "name": "components/timeline",
+  "type": "ls:component",
+  "description": "Reusable timeline component.",
+  "files": [
+    {
+      "path": "registry/components/timeline/timeline.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/timeline/README.md"
+}

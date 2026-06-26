@@ -1,0 +1,15 @@
+{
+  "name": "layouts/metric-dashboard",
+  "type": "ls:layout",
+  "description": "Dashboard layout for headline insights and metrics.",
+  "files": [
+    {
+      "path": "registry/layouts/metric-dashboard/metric-dashboard.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/layouts/metric-dashboard/README.md"
+}

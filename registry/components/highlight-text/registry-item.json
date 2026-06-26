@@ -1,0 +1,15 @@
+{
+  "name": "components/highlight-text",
+  "type": "ls:component",
+  "description": "Inline highlight text component.",
+  "files": [
+    {
+      "path": "registry/components/highlight-text/highlight-text.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/highlight-text/README.md"
+}

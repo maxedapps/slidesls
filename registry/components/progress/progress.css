@@ -1,0 +1,70 @@
+@layer components {
+  .ls-progress {
+    --ls-progress-accent: var(--ls-accent);
+    --ls-progress-thickness: 14px;
+    display: grid;
+    gap: var(--ls-space-1);
+    min-inline-size: 0;
+    color: var(--ls-text);
+  }
+  progress.ls-progress {
+    inline-size: 100%;
+    block-size: var(--ls-progress-thickness);
+    overflow: hidden;
+    border: 0;
+    border-radius: 999px;
+    background: var(--ls-surface-strong);
+  }
+  progress.ls-progress::-webkit-progress-bar {
+    background: var(--ls-surface-strong);
+    border-radius: 999px;
+  }
+  progress.ls-progress::-webkit-progress-value {
+    background: linear-gradient(90deg, var(--ls-progress-accent), var(--ls-accent-2));
+    border-radius: 999px;
+  }
+  progress.ls-progress::-moz-progress-bar {
+    background: linear-gradient(90deg, var(--ls-progress-accent), var(--ls-accent-2));
+    border-radius: 999px;
+  }
+  .ls-progress__track {
+    overflow: hidden;
+    block-size: var(--ls-progress-thickness);
+    border-radius: 999px;
+    background: var(--ls-surface-strong);
+  }
+  .ls-progress__bar {
+    inline-size: var(--ls-progress-value, 0%);
+    block-size: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--ls-progress-accent), var(--ls-accent-2));
+  }
+  .ls-progress__label {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--ls-space-2);
+    color: var(--ls-muted);
+    font-family: var(--ls-font-label);
+    font-size: var(--ls-progress-label-size, 18px);
+    font-weight: 720;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .ls-progress__value {
+    color: var(--ls-accent-text);
+  }
+  .ls-progress[data-ls-density="compact"] {
+    --ls-progress-thickness: 8px;
+    --ls-progress-label-size: 16px;
+  }
+  .ls-progress[data-ls-density="spacious"] {
+    --ls-progress-thickness: 22px;
+    --ls-progress-label-size: 20px;
+  }
+  .ls-progress[data-ls-tone="success"] {
+    --ls-progress-accent: #22c55e;
+  }
+  .ls-progress[data-ls-tone="warning"] {
+    --ls-progress-accent: #f59e0b;
+  }
+}

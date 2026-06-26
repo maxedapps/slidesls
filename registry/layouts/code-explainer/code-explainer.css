@@ -1,0 +1,68 @@
+@layer layouts {
+  .ls-code-explainer,
+  .ls-layout-code-explainer .ls-slide__body {
+    container: ls-code-explainer / inline-size;
+    display: grid;
+    grid-template-columns: minmax(0, var(--ls-code-explainer-code-size, 1.15fr)) minmax(
+        0,
+        var(--ls-code-explainer-notes-size, 0.85fr)
+      );
+    gap: var(--ls-code-explainer-gap, var(--ls-space-5));
+    align-items: var(--ls-code-explainer-valign, stretch);
+    block-size: 100%;
+    min-block-size: 0;
+  }
+  .ls-code-explainer[data-ls-ratio="code-wide"] {
+    --ls-code-explainer-code-size: 1.35fr;
+    --ls-code-explainer-notes-size: 0.65fr;
+  }
+  .ls-code-explainer[data-ls-ratio="notes-wide"] {
+    --ls-code-explainer-code-size: 0.8fr;
+    --ls-code-explainer-notes-size: 1.2fr;
+  }
+  .ls-code-explainer[data-ls-ratio="balanced"] {
+    --ls-code-explainer-code-size: 1fr;
+    --ls-code-explainer-notes-size: 1fr;
+  }
+  .ls-code-explainer[data-ls-density="compact"] {
+    --ls-code-explainer-gap: var(--ls-space-3);
+  }
+  .ls-code-explainer[data-ls-valign="start"] {
+    --ls-code-explainer-valign: start;
+  }
+  .ls-code-explainer[data-ls-valign="center"] {
+    --ls-code-explainer-valign: center;
+  }
+  .ls-code-explainer[data-ls-valign="stretch"] {
+    --ls-code-explainer-valign: stretch;
+  }
+  .ls-code-explainer__code,
+  .ls-code-explainer__notes {
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+  .ls-code-explainer__code {
+    display: grid;
+    align-content: stretch;
+    overflow: hidden;
+  }
+  .ls-code-explainer__notes {
+    display: grid;
+    align-content: start;
+    gap: var(--ls-space-3);
+  }
+  .ls-code-explainer__steps {
+    display: grid;
+    gap: var(--ls-space-2);
+  }
+  .ls-code-explainer__summary {
+    color: var(--ls-muted);
+    font-size: var(--ls-text-sm);
+    line-height: 1.35;
+  }
+  @container ls-code-explainer (width < 940px) {
+    .ls-code-explainer {
+      grid-template-columns: 1fr;
+    }
+  }
+}

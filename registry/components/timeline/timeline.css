@@ -1,0 +1,70 @@
+@layer components {
+  .ls-timeline {
+    --ls-timeline-accent: var(--ls-accent);
+    --ls-timeline-marker-size: 34px;
+    display: grid;
+    gap: var(--ls-timeline-gap, var(--ls-space-3));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ls-timeline__item {
+    display: grid;
+    grid-template-columns: var(--ls-timeline-marker-size) minmax(0, 1fr);
+    gap: var(--ls-space-3);
+    min-inline-size: 0;
+  }
+  .ls-timeline__marker {
+    display: grid;
+    place-items: center;
+    inline-size: var(--ls-timeline-marker-size);
+    block-size: var(--ls-timeline-marker-size);
+    border-radius: 999px;
+    border: 1px solid var(--ls-accent-border);
+    background: var(--ls-accent-bg);
+    color: var(--ls-accent-text);
+    font-family: var(--ls-font-label);
+    font-size: 16px;
+    font-weight: 800;
+  }
+  .ls-timeline__title {
+    color: var(--ls-text);
+    font-size: var(--ls-text-sm);
+    font-weight: 760;
+    line-height: 1.1;
+  }
+  .ls-timeline__meta {
+    color: var(--ls-accent-text);
+    font-family: var(--ls-font-label);
+    font-size: 16px;
+    font-weight: 760;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ls-timeline__text {
+    color: var(--ls-muted);
+    font-size: var(--ls-text-xs);
+    line-height: 1.35;
+  }
+  .ls-timeline[data-ls-density="compact"] {
+    --ls-timeline-gap: var(--ls-space-2);
+    --ls-timeline-marker-size: 28px;
+  }
+  .ls-timeline[data-ls-orientation="horizontal"] {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    align-items: start;
+  }
+  .ls-timeline[data-ls-orientation="horizontal"] .ls-timeline__item {
+    grid-template-columns: 1fr;
+  }
+  .ls-timeline[data-ls-progress="true"] .ls-timeline__item {
+    border-inline-start: 2px solid color-mix(in srgb, var(--ls-timeline-accent) 42%, transparent);
+    padding-inline-start: var(--ls-space-3);
+  }
+  .ls-timeline[data-ls-orientation="horizontal"][data-ls-progress="true"] .ls-timeline__item {
+    border-inline-start: 0;
+    border-block-start: 2px solid color-mix(in srgb, var(--ls-timeline-accent) 42%, transparent);
+    padding-inline-start: 0;
+    padding-block-start: var(--ls-space-3);
+  }
+}

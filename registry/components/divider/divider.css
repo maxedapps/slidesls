@@ -1,0 +1,58 @@
+@layer components {
+  .ls-divider {
+    --ls-divider-color: var(--ls-border);
+    --ls-divider-thickness: 1px;
+    --ls-divider-gap: var(--ls-space-3);
+    display: flex;
+    align-items: center;
+    gap: var(--ls-divider-gap);
+    inline-size: 100%;
+    margin: var(--ls-divider-gap) 0;
+    border: 0;
+    color: var(--ls-subtle);
+  }
+  hr.ls-divider::before,
+  .ls-divider::before,
+  .ls-divider::after {
+    content: "";
+    flex: 1;
+    border-block-start: var(--ls-divider-thickness) solid var(--ls-divider-color);
+  }
+  hr.ls-divider::after {
+    content: none;
+  }
+  .ls-divider__label {
+    flex: 0 0 auto;
+    font-family: var(--ls-font-label);
+    font-size: 16px;
+    font-weight: 760;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .ls-divider[data-ls-variant="dashed"]::before,
+  .ls-divider[data-ls-variant="dashed"]::after {
+    border-block-start-style: dashed;
+  }
+  .ls-divider[data-ls-variant="accent"] {
+    --ls-divider-color: var(--ls-accent-border);
+    color: var(--ls-accent-text);
+  }
+  .ls-divider[data-ls-density="compact"] {
+    --ls-divider-gap: var(--ls-space-2);
+  }
+  .ls-divider[data-ls-density="spacious"] {
+    --ls-divider-gap: var(--ls-space-5);
+  }
+  .ls-divider[data-ls-orientation="vertical"] {
+    align-self: stretch;
+    inline-size: auto;
+    block-size: auto;
+    margin: 0 var(--ls-divider-gap);
+    flex-direction: column;
+  }
+  .ls-divider[data-ls-orientation="vertical"]::before,
+  .ls-divider[data-ls-orientation="vertical"]::after {
+    border-block-start: 0;
+    border-inline-start: var(--ls-divider-thickness) solid var(--ls-divider-color);
+  }
+}

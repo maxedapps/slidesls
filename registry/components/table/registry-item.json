@@ -1,0 +1,15 @@
+{
+  "name": "components/table",
+  "type": "ls:component",
+  "description": "Presentation-friendly table component.",
+  "files": [
+    {
+      "path": "registry/components/table/table.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/table/README.md"
+}

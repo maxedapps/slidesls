@@ -1,0 +1,15 @@
+{
+  "name": "components/divider",
+  "type": "ls:component",
+  "description": "Content divider component.",
+  "files": [
+    {
+      "path": "registry/components/divider/divider.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/divider/README.md"
+}

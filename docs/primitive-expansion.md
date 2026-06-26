@@ -81,12 +81,20 @@ Completed first expansion batch:
 - Animations: `fade`, `slide-up`, `stagger`.
 - Example: `examples/primitive-gallery`.
 
-Modern-platform patterns used in this batch:
+Completed second expansion batch:
+
+- Layouts: `three-column`, `metric-dashboard`, `timeline-strip`, `code-explainer`.
+- Components: `table`, `timeline`, `numbered-step`, `progress`, `logo-strip`, `highlight-text`, `divider`.
+- Animations: `scale-in`, `step-focus`, `highlight`.
+- Example: `examples/structured-content-gallery`.
+
+Modern-platform patterns used in these batches:
 
 - Use container queries in `two-column`, `comparison-grid`, `metric`, `stat-grid`, `code-block`, and `media-frame` so components adapt to their assigned slide regions.
 - Use anchor positioning for `asymmetric-feature`, `image-spotlight`, annotations, callouts, and diagram labels as progressive enhancement.
 - Use `:has()` for components that adapt when optional icons, media, attribution, or metadata are present.
 - Use `color-mix()` for accent surfaces and borders instead of duplicating one-off colors.
+- Use CSS-only reveal companions such as `step-focus` only when they can mirror the existing runtime contract without adding JavaScript.
 - Use `@property` only for primitives with interpolated custom-property animation, such as progress, highlight, spotlight, or connector effects.
 
 ## Quality bar
@@ -102,3 +110,5 @@ A new primitive should only be added if it is:
 - validated in an example before commit.
 
 Batch 1 follow-up tightened this bar for layout primitives: defaults should look product-quality in the gallery, decoration should be opt-in, and modern CSS enhancements must not alter normal flow in ways that can overlap essential content.
+
+Batch 2 reinforced the structured-content bar: dense tables, timelines, progress, code explainers, and dashboards need semantic markup, explicit labels/values, and conservative overflow handling before visual flourish.

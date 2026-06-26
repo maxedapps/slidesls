@@ -1,0 +1,15 @@
+{
+  "name": "animations/scale-in",
+  "type": "ls:animation",
+  "description": "Reveal-compatible scale-in animation.",
+  "files": [
+    {
+      "path": "registry/animations/scale-in/scale-in.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base", "animations/reveal"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/animations/scale-in/README.md"
+}

@@ -1,0 +1,15 @@
+{
+  "name": "animations/highlight",
+  "type": "ls:animation",
+  "description": "Subtle highlight emphasis animation.",
+  "files": [
+    {
+      "path": "registry/animations/highlight/highlight.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base", "animations/reveal"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/animations/highlight/README.md"
+}

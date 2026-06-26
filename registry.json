@@ -28,6 +28,20 @@
     "registry/components/stat-grid/registry-item.json",
     "registry/animations/fade/registry-item.json",
     "registry/animations/slide-up/registry-item.json",
-    "registry/animations/stagger/registry-item.json"
+    "registry/animations/stagger/registry-item.json",
+    "registry/layouts/three-column/registry-item.json",
+    "registry/layouts/metric-dashboard/registry-item.json",
+    "registry/layouts/timeline-strip/registry-item.json",
+    "registry/layouts/code-explainer/registry-item.json",
+    "registry/components/table/registry-item.json",
+    "registry/components/timeline/registry-item.json",
+    "registry/components/numbered-step/registry-item.json",
+    "registry/components/progress/registry-item.json",
+    "registry/components/logo-strip/registry-item.json",
+    "registry/components/highlight-text/registry-item.json",
+    "registry/components/divider/registry-item.json",
+    "registry/animations/scale-in/registry-item.json",
+    "registry/animations/step-focus/registry-item.json",
+    "registry/animations/highlight/registry-item.json"
   ]
 }

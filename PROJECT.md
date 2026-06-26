@@ -40,11 +40,13 @@ The current registry foundation is implemented:
 - `registry/core/base` — reset, tokens, slide shell/scaling styles, icon styles, and slide runtime.
 - `registry/animations/reveal` — vanilla reveal-step transitions.
 - Batch 1 animation variants: `fade`, `slide-up`, and `stagger`, all composing with `animations/reveal`.
-- Layouts: `title-hero`, `detail-split`, `centered-statement`, `section-divider`, `two-column`, `comparison-grid`, `asymmetric-feature`, and `image-spotlight`.
-- Components: `badge`, `card`, `diagram`, `callout`, `metric`, `stat-grid`, `bullet-list`, `code-block`, `media-frame`, and `quote`.
+- Batch 2 animation variants: `scale-in`, `step-focus`, and `highlight`, all composing with `animations/reveal`.
+- Layouts: `title-hero`, `detail-split`, `centered-statement`, `section-divider`, `two-column`, `comparison-grid`, `asymmetric-feature`, `image-spotlight`, `three-column`, `metric-dashboard`, `timeline-strip`, and `code-explainer`.
+- Components: `badge`, `card`, `diagram`, `callout`, `metric`, `stat-grid`, `bullet-list`, `code-block`, `media-frame`, `quote`, `table`, `timeline`, `numbered-step`, `progress`, `logo-strip`, `highlight-text`, and `divider`.
 - `registry/presets/fonts/editorial-serif`, `registry/presets/fonts/technical-mono`, and `registry/presets/fonts/system-humanist` — scoped font-family role remaps activated with `data-ls-font`.
 - `examples/project-intro` — two-slide validation deck.
 - `examples/primitive-gallery` — seven-slide gallery validating the first primitive expansion batch.
+- `examples/structured-content-gallery` — eight-slide gallery validating Batch 2 structured content and data primitives.
 - `scripts/serve-examples.mjs` and `pnpm serve:examples` — dependency-free examples server with automatic example discovery.
 - `scripts/validate-registry.mjs` and `pnpm validate:registry` — registry metadata, path, and dependency validation included in `pnpm check`.
 

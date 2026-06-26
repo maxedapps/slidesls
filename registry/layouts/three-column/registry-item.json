@@ -1,0 +1,15 @@
+{
+  "name": "layouts/three-column",
+  "type": "ls:layout",
+  "description": "Three-column slide layout.",
+  "files": [
+    {
+      "path": "registry/layouts/three-column/three-column.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/layouts/three-column/README.md"
+}

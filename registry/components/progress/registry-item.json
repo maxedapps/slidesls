@@ -1,0 +1,15 @@
+{
+  "name": "components/progress",
+  "type": "ls:component",
+  "description": "Accessible progress component.",
+  "files": [
+    {
+      "path": "registry/components/progress/progress.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/progress/README.md"
+}

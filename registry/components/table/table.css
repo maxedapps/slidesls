@@ -1,0 +1,57 @@
+@layer components {
+  .ls-table {
+    --ls-table-accent: var(--ls-accent);
+    inline-size: 100%;
+    min-inline-size: var(--ls-table-min-inline, 0);
+    border-collapse: collapse;
+    border-spacing: 0;
+    overflow: hidden;
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background: var(--ls-surface);
+    font-size: var(--ls-text-xs);
+    line-height: 1.25;
+  }
+  .ls-table caption,
+  .ls-table__caption {
+    caption-side: top;
+    padding-block-end: var(--ls-space-2);
+    color: var(--ls-muted);
+    text-align: start;
+  }
+  .ls-table th,
+  .ls-table td {
+    padding: var(--ls-table-cell-padding, 16px 18px);
+    border-block-start: 1px solid var(--ls-border);
+    text-align: start;
+    vertical-align: top;
+  }
+  .ls-table thead th {
+    border-block-start: 0;
+    background: color-mix(in srgb, var(--ls-table-accent) 16%, var(--ls-surface));
+    color: var(--ls-text);
+    font-family: var(--ls-font-label);
+    font-weight: 780;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .ls-table[data-ls-density="compact"] {
+    --ls-table-cell-padding: 10px 12px;
+    font-size: 18px;
+  }
+  .ls-table[data-ls-variant="striped"] tbody tr:nth-child(even) {
+    background: rgb(255 255 255 / 4%);
+  }
+  .ls-table[data-ls-variant="plain"] {
+    border-color: transparent;
+    background: transparent;
+  }
+  .ls-table__value {
+    color: var(--ls-text);
+    font-weight: 760;
+  }
+  .ls-table__muted,
+  .ls-table__note {
+    color: var(--ls-muted);
+  }
+}

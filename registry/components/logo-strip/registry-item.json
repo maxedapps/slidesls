@@ -1,0 +1,15 @@
+{
+  "name": "components/logo-strip",
+  "type": "ls:component",
+  "description": "Logo strip component.",
+  "files": [
+    {
+      "path": "registry/components/logo-strip/logo-strip.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/logo-strip/README.md"
+}
