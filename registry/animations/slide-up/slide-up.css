@@ -8,12 +8,16 @@
         var(--ls-slide-up-ease, var(--ls-ease)) var(--ls-delay, 0ms);
   }
 
-  .ls-deck[data-ls-ready="true"] .ls-slide[data-active="true"] .ls-reveal-slide-up[data-step] {
+  .ls-deck[data-ls-ready="true"]
+    .ls-slide[data-active="true"]
+    .ls-reveal-slide-up[data-ls-reveal-state="future"] {
     transform: translateY(var(--ls-slide-up-distance));
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ls-deck[data-ls-ready="true"] .ls-slide[data-active="true"] .ls-reveal-slide-up[data-step] {
+    .ls-deck[data-ls-ready="true"]
+      .ls-slide[data-active="true"]
+      .ls-reveal-slide-up[data-ls-reveal-state="future"] {
       transform: none;
     }
   }

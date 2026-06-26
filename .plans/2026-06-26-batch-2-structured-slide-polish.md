@@ -589,6 +589,14 @@ docs/primitive-expansion.md
 - Smoke tests returned 200 for `/examples/`, `/examples/structured-content-gallery/`, `/examples/structured-content-gallery/?export=1`, `/examples/primitive-gallery/`, and `/examples/project-intro/`.
 - Browser review via `npx agent-browser` captured structured gallery screenshots, focused timeline step 0-4 screenshots, focused process step 0-6 screenshots, and export screenshot under `/tmp/ls-slides-polish-*.png`.
 - Browser eval confirmed structured gallery initializes, timeline auto-sequence assigned steps `1..4`, export mode has no `future` reveal states, table caption has a non-zero box and is not clipped, key dense elements have no overflow candidates, and Batch 1 primitive gallery still initializes.
+- Post-review fix validation confirmed `slide-up` now settles to `translateY(0)` for current reveal state, and `pnpm check` passed.
+
+## Peer review outcome
+
+- Fresh implementation review accepted the architecture but found one blocking regression: `animations/slide-up` still targeted `[data-step]`, so it overrode the new reveal-state show transform after elements became current/past.
+- Fixed `slide-up` to target only `data-ls-reveal-state="future"`.
+- Migrated `fade` to the reveal-state selector model for consistency.
+- Updated `fade` and `slide-up` READMEs to mention the runtime reveal-state contract.
 
 ## Peer review summary
 
