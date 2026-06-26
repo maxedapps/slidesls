@@ -7,7 +7,7 @@ Two-slide example deck that validates the initial ls_slides registry foundation.
 From the repository root:
 
 ```sh
-python3 -m http.server 4173
+pnpm serve:examples
 ```
 
 Open:
