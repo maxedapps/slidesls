@@ -33,14 +33,14 @@ Recommended deck order:
 2. `registry/core/base/tokens.css`
 3. `registry/core/base/slide.css`
 4. `registry/core/base/icons.css` if using icon wrappers
-5. Layout CSS
-6. Component CSS
-7. `registry/animations/reveal/reveal.css`
-8. Animation variant CSS
-9. Preset CSS where scoped by an attribute such as `data-ls-font`
+5. Preset CSS where scoped by an attribute such as `data-ls-font`
+6. Layout CSS
+7. Component CSS
+8. `registry/animations/reveal/reveal.css`
+9. Animation variant CSS
 10. `registry/core/base/slide-runtime.js` as a module script
 
-Follow an item README when it gives a stricter order.
+Scoped presets can also load later when their selectors are explicitly attribute-scoped, but keep this order in generated decks for consistency. Follow an item README when it gives a stricter order.
 
 ## Runtime/deck contract
 

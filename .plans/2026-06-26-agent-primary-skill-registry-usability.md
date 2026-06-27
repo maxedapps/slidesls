@@ -1,7 +1,7 @@
 # Plan: Agent-primary skill and registry usability pass
 
 Date: 2026-06-26
-Status: In Progress
+Status: Implemented
 Project: ls_slides
 
 ## Context
@@ -545,7 +545,7 @@ Create a temporary deck outside the repo, e.g. `/tmp/ls-slides-skill-dogfood`.
 
 - [x] Run any new npm scripts added for skill/catalog validation.
 - [x] Run end-to-end dogfood test in remote default mode and local override mode.
-- [ ] Run fresh peer review focused on:
+- [x] Run fresh peer review focused on:
   - skill triggering and false positives,
   - no-clone remote consumption,
   - agent workflow clarity,
@@ -553,8 +553,8 @@ Create a temporary deck outside the repo, e.g. `/tmp/ls-slides-skill-dogfood`.
   - Lucide/icon dependency guidance,
   - preservation of copyable registry model,
   - whether `PROJECT.md` accurately reflects agent-primary goals.
-- [ ] Address blocking feedback.
-- [ ] Commit with a concise message such as:
+- [x] Address blocking feedback.
+- [x] Commit with a concise message such as:
 
   ```sh
   git commit -m "Add agent-primary ls_slides skill workflow"
@@ -651,6 +651,18 @@ If implementation causes problems:
 - Local behavior checks passed for `list-items`, `inspect-item`, `generate-catalog --check`, `copy-items --dry-run`, and actual copy with `--registry-root .`.
 - Remote-default `list-items` was attempted and returned raw GitHub 404 while the repository is unavailable/private; the script produced the intended fallback guidance.
 - Dogfood deck was created under `/tmp/ls-slides-skill-dogfood-local`, served with `serve-deck.mjs`, smoke-tested with curl, and browser-checked with `data-ls-ready="true"` and 2 slides.
+
+## Implementation peer review outcome
+
+- Fresh implementation review found the skill workflow acceptable as-is with no blocking bugs.
+- Reviewer verified skill structure, no-clone/local source handling, dependency ordering, overwrite/path safety, serve-root confinement, reference accuracy against runtime source, and agent-primary framing.
+- One non-blocking docs consistency issue was fixed: `references/registry-contract.md` now aligns preset/load-order guidance with `registry/README.md`.
+- Known accepted limitation: remote default raw GitHub fetch cannot pass end-to-end until the repository is public; scripts already provide clear fallback guidance to `--registry-root`.
+
+## Commits
+
+- `33a6fdf` — `Add agent-primary ls_slides skill workflow`
+- Final tracking commit — `Finalize agent skill implementation tracking`
 
 ## Peer review summary
 
