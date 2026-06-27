@@ -1,10 +1,10 @@
 # ls_slides
 
-A copyable registry of vanilla HTML, CSS, and JavaScript slide-building blocks.
+An agent-primary copyable registry of vanilla HTML, CSS, and JavaScript slide-building blocks.
 
-This repository is not a slide generator, framework, or component library package. Registry items are meant to be copied into downstream slide projects and customized directly.
+This repository is not a slide generator, framework, runtime package, CLI product, or component library package. Agents should use `skills/ls-slides/` to discover remote/local registry items, copy selected files into downstream slide projects, author plain HTML decks there, and preview them locally.
 
-The registry currently includes core slide assets, layout primitives, content/data/media/annotation components, reveal-compatible animations, scoped font presets, and validation galleries. Preview examples with:
+The registry currently includes core slide assets, layout primitives, content/data/media/annotation components, reveal-compatible animations, scoped font presets, validation galleries, and an Agent Skill workflow. Preview repository examples with:
 
 ```sh
 pnpm serve:examples

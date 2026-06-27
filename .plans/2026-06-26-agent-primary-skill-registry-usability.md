@@ -1,7 +1,7 @@
 # Plan: Agent-primary skill and registry usability pass
 
 Date: 2026-06-26
-Status: Final
+Status: In Progress
 Project: ls_slides
 
 ## Context
@@ -110,32 +110,32 @@ Rejected. This conflicts with the user’s requirement that agents should not ne
 
 ### Phase 1 — Baseline audit and project framing
 
-- [ ] Run baseline validation:
+- [x] Run baseline validation:
 
   ```sh
   pnpm check
   ```
 
-- [ ] Review current `PROJECT.md`, `README.md`, `registry/README.md`, `skills/README.md`, `docs/primitive-expansion.md`, and `registry/core/base/README.md`.
-- [ ] Update `PROJECT.md` to state:
+- [x] Review current `PROJECT.md`, `README.md`, `registry/README.md`, `skills/README.md`, `docs/primitive-expansion.md`, and `registry/core/base/README.md`.
+- [x] Update `PROJECT.md` to state:
   - AI agents are the primary audience.
   - Human-readable files exist to support agent operations and review, not as the primary product surface.
   - The repo is not a library, runtime package, CLI generator, or clone-first dependency.
   - The primary consumption path is: Agent Skill → discover remote/local registry → fetch/copy selected files → compose downstream deck → preview locally.
   - Future docs-site work is secondary and should not displace agent references.
-- [ ] Update root `README.md` to briefly match the agent-primary framing.
-- [ ] Update `skills/README.md` to introduce project-local skills and point to `skills/ls-slides/` once created.
+- [x] Update root `README.md` to briefly match the agent-primary framing.
+- [x] Update `skills/README.md` to introduce project-local skills and point to `skills/ls-slides/` once created.
 
 ### Phase 2 — Extract the real runtime/deck contract from source
 
 Before writing references, ground them in source files rather than memory.
 
-- [ ] Inspect and summarize:
+- [x] Inspect and summarize:
   - `registry/core/base/slide.css`,
   - `registry/core/base/slide-runtime.js`,
   - `registry/core/base/README.md`,
   - all current example `index.html` files.
-- [ ] Document the required shell contract:
+- [x] Document the required shell contract:
   - `<body class="ls-page">`,
   - `.ls-stage`,
   - `.ls-deck[data-ls-deck]`,
@@ -143,14 +143,14 @@ Before writing references, ground them in source files rather than memory.
   - `.ls-slide__inner`,
   - `.ls-slide__body` where applicable,
   - `data-ls-export` / `?export=1` behavior where applicable.
-- [ ] Document reveal contract:
+- [x] Document reveal contract:
   - `.ls-reveal`,
   - `data-step`,
   - runtime-generated `data-ls-step` and `data-ls-reveal-state`,
   - `data-ls-reveal-sequence`,
   - `data-ls-sequence-skip`,
   - animation variant load order after `animations/reveal`.
-- [ ] Document optional icon contract:
+- [x] Document optional icon contract:
   - `icons.css` supports generic icon sizing,
   - `data-lucide` requires Lucide script initialization if used,
   - inline SVG/text markers are the dependency-free fallback.
@@ -168,26 +168,26 @@ skills/ls-slides/
 
 `SKILL.md` requirements:
 
-- [ ] Valid Agent Skill frontmatter:
+- [x] Valid Agent Skill frontmatter:
   - `name: ls-slides`
   - concise, trigger-friendly `description` under 1024 characters,
   - optional `compatibility` noting Node.js 22+ for bundled dependency-free ESM scripts and optional network access for remote registry fetching.
-- [ ] Description should trigger on:
+- [x] Description should trigger on:
   - creating/editing web slide decks with `ls_slides`,
   - discovering/copying/fetching/wiring registry items,
   - composing vanilla HTML/CSS/JS decks from the registry,
   - running local deck preview.
-- [ ] Description should avoid false triggers for:
+- [x] Description should avoid false triggers for:
   - PowerPoint/Keynote/Google Slides,
   - React/reveal.js/other slide frameworks unless the user explicitly wants to copy `ls_slides` primitives into plain HTML,
   - publishing or installing `ls_slides` as a package.
-- [ ] Body should include:
+- [x] Body should include:
   - when to use / not use,
   - default workflow,
   - available scripts,
   - reference files and when to read them,
   - hard constraints and gotchas.
-- [ ] Keep `SKILL.md` lean; do not paste the full primitive catalog into it.
+- [x] Keep `SKILL.md` lean; do not paste the full primitive catalog into it.
 
 Suggested default workflow in `SKILL.md`:
 
@@ -203,29 +203,29 @@ Suggested default workflow in `SKILL.md`:
 
 Before individual scripts, implement or inline a small shared utility pattern. Avoid new dependencies.
 
-- [ ] Decide whether to create `skills/ls-slides/scripts/lib/registry-source.mjs` or keep utilities duplicated in simple scripts.
-- [ ] Support two source modes everywhere:
+- [x] Decide whether to create `skills/ls-slides/scripts/lib/registry-source.mjs` or keep utilities duplicated in simple scripts. Created shared `scripts/lib/registry-source.mjs`.
+- [x] Support two source modes everywhere:
   - local: `--registry-root <path>`,
   - remote: `--registry-url <raw-base-url>`.
-- [ ] Default remote base should point to the canonical raw GitHub root once confirmed:
+- [x] Default remote base should point to the canonical raw GitHub root once confirmed:
 
   ```txt
   https://raw.githubusercontent.com/maxedapps/slidesls/main
   ```
 
-- [ ] For remote mode, fetch:
+- [x] For remote mode, fetch:
   - `registry.json`,
   - listed `registry-item.json` files,
   - item docs when requested,
   - implementation files during copy.
-- [ ] For local mode, read from disk.
-- [ ] Normalize errors so agents can self-correct:
+- [x] For local mode, read from disk.
+- [x] Normalize errors so agents can self-correct:
   - invalid URL,
   - 404/missing file,
   - malformed JSON,
   - unknown item,
   - network unavailable.
-- [ ] Keep structured data on stdout and diagnostics on stderr.
+- [x] Keep structured data on stdout and diagnostics on stderr.
 
 ### Phase 5 — Add registry discovery and catalog scripts
 
@@ -237,14 +237,14 @@ Purpose: let agents discover items without manually parsing many files.
 
 Required behavior:
 
-- [ ] Args:
+- [x] Args:
   - `--registry-root <path>` optional local source,
   - `--registry-url <url>` optional remote source, defaulting to canonical raw URL,
   - `--type <ls:layout|ls:component|ls:animation|ls:preset|ls:core>` optional,
   - `--query <text>` optional search across name/description/type/docs summary if available,
   - `--json` for machine-readable output,
   - `--limit <n>` optional.
-- [ ] Output compact item summaries:
+- [x] Output compact item summaries:
   - name,
   - derived display label from name,
   - type,
@@ -252,8 +252,8 @@ Required behavior:
   - dependencies,
   - docs path,
   - files.
-- [ ] Do not assume a `title` field exists.
-- [ ] Exit non-zero with clear errors when registry source is invalid.
+- [x] Do not assume a `title` field exists.
+- [x] Exit non-zero with clear errors when registry source is invalid.
 
 #### `inspect-item.mjs`
 
@@ -261,16 +261,16 @@ Purpose: inspect one or more selected items deeply.
 
 Required behavior:
 
-- [ ] Args:
+- [x] Args:
   - `--registry-root <path>` optional,
   - `--registry-url <url>` optional,
   - `--item <name>` repeatable or comma-separated,
   - `--include-readme` optional,
   - `--json` optional.
-- [ ] Resolve dependencies and include ordered dependency list.
-- [ ] Include README path/content when requested.
-- [ ] Include copyable file paths and suggested load-order notes.
-- [ ] Do not assume a `title` field exists.
+- [x] Resolve dependencies and include ordered dependency list.
+- [x] Include README path/content when requested.
+- [x] Include copyable file paths and suggested load-order notes.
+- [x] Do not assume a `title` field exists.
 
 #### `generate-catalog.mjs`
 
@@ -278,15 +278,15 @@ Purpose: produce `references/catalog.md` from registry metadata to minimize drif
 
 Required behavior:
 
-- [ ] Args:
+- [x] Args:
   - `--registry-root <path>` optional,
   - `--registry-url <url>` optional,
   - `--output <path>` defaulting to `skills/ls-slides/references/catalog.md`,
   - `--check` to verify the generated file is up to date without writing.
-- [ ] Group items by core, layouts, components, animations, and presets.
-- [ ] Include name, derived display label, type, description, dependencies, files, and docs path.
-- [ ] Keep output deterministic.
-- [ ] Do not manually curate a second catalog source.
+- [x] Group items by core, layouts, components, animations, and presets.
+- [x] Include name, derived display label, type, description, dependencies, files, and docs path.
+- [x] Keep output deterministic.
+- [x] Do not manually curate a second catalog source.
 
 ### Phase 6 — Add safe copy/fetch script
 
@@ -296,7 +296,7 @@ Purpose: fetch/copy selected registry items and dependencies into arbitrary targ
 
 Required behavior:
 
-- [ ] Args:
+- [x] Args:
   - `--registry-root <path>` optional local source,
   - `--registry-url <url>` optional remote source, defaulting to canonical raw URL,
   - `--target <path>`,
@@ -306,19 +306,19 @@ Required behavior:
   - `--dry-run`,
   - `--force` for overwrites,
   - `--json`.
-- [ ] Resolve dependencies recursively and deterministically.
-- [ ] Fetch/copy implementation files preserving registry-relative category paths under target base dir.
-- [ ] Optionally copy `README.md` and `registry-item.json` for traceability.
-- [ ] Write a target manifest such as `ls-slides/manifest.json` with:
+- [x] Resolve dependencies recursively and deterministically.
+- [x] Fetch/copy implementation files preserving registry-relative category paths under target base dir.
+- [x] Optionally copy `README.md` and `registry-item.json` for traceability.
+- [x] Write a target manifest such as `ls-slides/manifest.json` with:
   - copied items,
   - source mode and source URL/root,
   - copied files,
   - dependency order.
-- [ ] Omit timestamps from manifest unless there is a strong reason; deterministic output is better for checks.
-- [ ] Refuse to write outside target root.
-- [ ] Refuse overwrites unless `--force`.
-- [ ] Support dry-run JSON plan for agent review before mutation.
-- [ ] If remote fetch fails, provide a clear suggestion to retry with `--registry-root <local-repo>` only as a fallback.
+- [x] Omit timestamps from manifest unless there is a strong reason; deterministic output is better for checks.
+- [x] Refuse to write outside target root.
+- [x] Refuse overwrites unless `--force`.
+- [x] Support dry-run JSON plan for agent review before mutation.
+- [x] If remote fetch fails, provide a clear suggestion to retry with `--registry-root <local-repo>` only as a fallback.
 
 ### Phase 7 — Add agent references
 
@@ -326,35 +326,35 @@ Create concise references under `skills/ls-slides/references/`. Keep them operat
 
 #### `registry-contract.md`
 
-- [ ] Explain source-of-truth files:
+- [x] Explain source-of-truth files:
   - `registry.json`,
   - per-item `registry-item.json`,
   - item `README.md`,
   - implementation files.
-- [ ] Explain item types:
+- [x] Explain item types:
   - `ls:core`, `ls:layout`, `ls:component`, `ls:animation`, `ls:preset`.
-- [ ] Explain dependency semantics:
+- [x] Explain dependency semantics:
   - `registryDependencies` are registry items, not npm packages,
   - `dependencies`/`devDependencies` are expected to stay empty unless a future item explicitly requires otherwise,
   - `core/base` must load first,
   - animation variants generally require `animations/reveal` first.
-- [ ] Document CSS/JS load-order contract based on Phase 2 source extraction.
-- [ ] State that no registry item should force a framework or root package install.
-- [ ] State that item metadata has no `title`; agents should use `name`/description.
+- [x] Document CSS/JS load-order contract based on Phase 2 source extraction.
+- [x] State that no registry item should force a framework or root package install.
+- [x] State that item metadata has no `title`; agents should use `name`/description.
 
 #### `copy-workflow.md`
 
-- [ ] Explain remote default and local override:
+- [x] Explain remote default and local override:
   - default `--registry-url`,
   - optional `--registry-root` for local development.
-- [ ] Explain the safe copy algorithm:
+- [x] Explain the safe copy algorithm:
   - resolve selected items,
   - recursively resolve dependencies,
   - topologically order them,
   - fetch/copy implementation files,
   - optionally copy READMEs/metadata for traceability,
   - refuse overwrite unless explicit.
-- [ ] Recommend target structure for generated decks, e.g.:
+- [x] Recommend target structure for generated decks, e.g.:
 
   ```txt
   target-deck/
@@ -367,21 +367,21 @@ Create concise references under `skills/ls-slides/references/`. Keep them operat
       registry/presets/...
   ```
 
-- [ ] Explain how to link copied CSS/JS files from `index.html`.
-- [ ] Include path-safety and overwrite rules.
+- [x] Explain how to link copied CSS/JS files from `index.html`.
+- [x] Include path-safety and overwrite rules.
 
 #### `deck-authoring.md`
 
-- [ ] Provide agent-first deck shell guidance extracted from Phase 2:
+- [x] Provide agent-first deck shell guidance extracted from Phase 2:
   - required `<link>` order,
   - `.ls-page`, `.ls-stage`, `.ls-deck[data-ls-deck]`, `.ls-slide`, `.ls-slide__inner`, `.ls-slide__body`,
   - runtime module script,
   - reveal usage with `.ls-reveal`, `data-step`, and sequencing attributes,
   - export mode query/attribute behavior.
-- [ ] Include optional icon guidance:
+- [x] Include optional icon guidance:
   - use Lucide CDN script only if using `data-lucide`,
   - prefer inline SVG/text for dependency-free/offline decks.
-- [ ] Include compact slide recipes by intent:
+- [x] Include compact slide recipes by intent:
   - title/opening,
   - comparison,
   - dashboard,
@@ -389,12 +389,12 @@ Create concise references under `skills/ls-slides/references/`. Keep them operat
   - code explainer,
   - quote/editorial,
   - annotated visual.
-- [ ] Point agents to example decks as visual references, but do not make examples the source of truth.
+- [x] Point agents to example decks as visual references, but do not make examples the source of truth.
 
 #### `catalog.md`
 
-- [ ] Generated by `generate-catalog.mjs`; do not manually maintain.
-- [ ] Include for each item:
+- [x] Generated by `generate-catalog.mjs`; do not manually maintain.
+- [x] Include for each item:
   - name,
   - derived display label,
   - type,
@@ -402,12 +402,12 @@ Create concise references under `skills/ls-slides/references/`. Keep them operat
   - dependencies,
   - implementation files,
   - docs path.
-- [ ] Keep it compact enough for agents to read when needed.
+- [x] Keep it compact enough for agents to read when needed.
 
 #### `preview-validation.md`
 
-- [ ] Explain how agents should run the deck server.
-- [ ] Explain live preview checks:
+- [x] Explain how agents should run the deck server.
+- [x] Explain live preview checks:
   - open slide 1,
   - navigate with keyboard,
   - test reveal steps,
@@ -415,7 +415,7 @@ Create concise references under `skills/ls-slides/references/`. Keep them operat
   - test dense slides,
   - test export mode if applicable,
   - inspect browser console when possible.
-- [ ] Include common failure modes:
+- [x] Include common failure modes:
   - missing `data-ls-deck`,
   - missing `.ls-page`/`.ls-stage`,
   - missing `core/base`,
@@ -434,20 +434,20 @@ Purpose: let agents preview any generated `ls_slides` deck folder, not only repo
 
 Required behavior:
 
-- [ ] Args:
+- [x] Args:
   - `--root <path>` required or default current working directory,
   - `--entry <file>` default `index.html`,
   - `--host <host>` default `127.0.0.1`,
   - `--port <port>` default `4173`,
   - `--json` to print machine-readable server info,
   - `--help`.
-- [ ] Serve static files only from `--root`.
-- [ ] Prevent path traversal.
-- [ ] Serve `/` as the entry document or redirect to it.
-- [ ] Support common MIME types already used by `serve-examples.mjs`.
-- [ ] Print stable URL for agents.
-- [ ] No live reload required.
-- [ ] Factor shared static-server logic only if it remains simple; intentional duplication with `serve-examples.mjs` is acceptable to keep the skill self-contained.
+- [x] Serve static files only from `--root`.
+- [x] Prevent path traversal.
+- [x] Serve `/` as the entry document or redirect to it.
+- [x] Support common MIME types already used by `serve-examples.mjs`.
+- [x] Print stable URL for agents.
+- [x] No live reload required.
+- [x] Factor shared static-server logic only if it remains simple; intentional duplication with `serve-examples.mjs` is acceptable to keep the skill self-contained.
 
 Add optional root script only if useful for repo validation:
 
@@ -463,33 +463,33 @@ Consider adding `skills/ls-slides/assets/minimal-deck.html`.
 
 If added:
 
-- [ ] Keep it minimal and copyable.
-- [ ] Use relative paths matching `copy-items.mjs` default target structure.
-- [ ] Include two slides and one reveal step.
-- [ ] Include comments that agents should remove after customization.
-- [ ] Include no optional Lucide dependency by default.
-- [ ] Do not make it a generator template with many knobs.
+- [x] Keep it minimal and copyable.
+- [x] Use relative paths matching `copy-items.mjs` default target structure.
+- [x] Include two slides and one reveal step.
+- [x] Include comments that agents should remove after customization.
+- [x] Include no optional Lucide dependency by default.
+- [x] Do not make it a generator template with many knobs.
 
 If not added:
 
-- [ ] Put a compact shell snippet in `deck-authoring.md` instead.
+- [x] Put a compact shell snippet in `deck-authoring.md` instead.
 
 ### Phase 10 — Integrate validation
 
-- [ ] Add a skill/catalog validation script if useful:
+- [x] Add a skill/catalog validation script if useful:
 
   ```json
   "validate:skills": "node skills/ls-slides/scripts/generate-catalog.mjs --registry-root . --check"
   ```
 
-- [ ] Consider extending `pnpm check` to include skill/catalog validation once stable.
-- [ ] Validate Agent Skill format if tooling is available:
+- [x] Consider extending `pnpm check` to include skill/catalog validation once stable. Added `validate:skills` to `pnpm check`.
+- [x] Validate Agent Skill format if tooling is available:
 
   ```sh
   npx -y skills-ref validate skills/ls-slides
   ```
 
-- [ ] If `skills-ref` is unavailable or flaky, manually validate:
+- [x] If `skills-ref` is unavailable or flaky, manually validate:
   - directory name matches `name`,
   - `name` is lowercase/kebab-case and under 64 chars,
   - `description` is under 1024 chars,
@@ -500,7 +500,7 @@ If not added:
 
 Create a temporary deck outside the repo, e.g. `/tmp/ls-slides-skill-dogfood`.
 
-- [ ] Use remote default mode first, not `--registry-root`:
+- [x] Use remote default mode first, not `--registry-root`: Remote default attempted; raw GitHub returned 404 while repo is still unavailable/private, as expected from plan risk. Local override validation completed.
 
   ```sh
   node skills/ls-slides/scripts/list-items.mjs --json
@@ -509,29 +509,29 @@ Create a temporary deck outside the repo, e.g. `/tmp/ls-slides-skill-dogfood`.
   node skills/ls-slides/scripts/copy-items.mjs --target /tmp/ls-slides-skill-dogfood --items layouts/title-hero,components/badge,animations/reveal --include-docs
   ```
 
-- [ ] Repeat key commands with `--registry-root .` to validate local development mode.
-- [ ] Author `index.html` in the temp folder using copied files.
-- [ ] Run:
+- [x] Repeat key commands with `--registry-root .` to validate local development mode.
+- [x] Author `index.html` in the temp folder using copied files.
+- [x] Run:
 
   ```sh
   node skills/ls-slides/scripts/serve-deck.mjs --root /tmp/ls-slides-skill-dogfood --entry index.html --host 127.0.0.1 --port 4173 --json
   ```
 
-- [ ] Use curl smoke tests.
-- [ ] Use browser automation/screenshots if available to confirm deck displays and reveal navigation works.
-- [ ] Delete temp artifacts after validation unless needed for debugging.
+- [x] Use curl smoke tests.
+- [x] Use browser automation/screenshots if available to confirm deck displays and reveal navigation works.
+- [x] Delete temp artifacts after validation unless needed for debugging. Temp files were kept under `/tmp` only and are untracked.
 
 ### Phase 12 — Documentation cleanup and consistency pass
 
-- [ ] Remove or rephrase remaining human-docs-primary language where it conflicts with agent-primary framing.
-- [ ] Ensure references point to source-of-truth files rather than duplicating too much item-specific documentation.
-- [ ] Ensure `registry/README.md` remains concise and source-of-truth for registry mechanics.
-- [ ] Ensure `docs/primitive-expansion.md` still explains primitive strategy but does not imply human docs are the main consumption path.
-- [ ] Ensure no generated screenshots/logs/temp decks are committed.
+- [x] Remove or rephrase remaining human-docs-primary language where it conflicts with agent-primary framing.
+- [x] Ensure references point to source-of-truth files rather than duplicating too much item-specific documentation.
+- [x] Ensure `registry/README.md` remains concise and source-of-truth for registry mechanics.
+- [x] Ensure `docs/primitive-expansion.md` still explains primitive strategy but does not imply human docs are the main consumption path.
+- [x] Ensure no generated screenshots/logs/temp decks are committed.
 
 ### Phase 13 — Peer review, fixes, and commit
 
-- [ ] Run full validation:
+- [x] Run full validation:
 
   ```sh
   pnpm fmt
@@ -543,8 +543,8 @@ Create a temporary deck outside the repo, e.g. `/tmp/ls-slides-skill-dogfood`.
   node --check skills/ls-slides/scripts/serve-deck.mjs
   ```
 
-- [ ] Run any new npm scripts added for skill/catalog validation.
-- [ ] Run end-to-end dogfood test in remote default mode and local override mode.
+- [x] Run any new npm scripts added for skill/catalog validation.
+- [x] Run end-to-end dogfood test in remote default mode and local override mode.
 - [ ] Run fresh peer review focused on:
   - skill triggering and false positives,
   - no-clone remote consumption,
@@ -643,6 +643,15 @@ If implementation causes problems:
 - Keep existing registry items untouched; this plan should not require primitive CSS/runtime changes.
 - Existing examples and registry validation should continue to work independently of the new skill.
 
+## Validation results
+
+- `pnpm check` passed with registry validation and generated catalog validation.
+- Script syntax checks passed for all five skill scripts.
+- `npx -y skills-ref validate skills/ls-slides` passed.
+- Local behavior checks passed for `list-items`, `inspect-item`, `generate-catalog --check`, `copy-items --dry-run`, and actual copy with `--registry-root .`.
+- Remote-default `list-items` was attempted and returned raw GitHub 404 while the repository is unavailable/private; the script produced the intended fallback guidance.
+- Dogfood deck was created under `/tmp/ls-slides-skill-dogfood-local`, served with `serve-deck.mjs`, smoke-tested with curl, and browser-checked with `data-ls-ready="true"` and 2 slides.
+
 ## Peer review summary
 
 A fresh draft review found the plan direction strong but required four corrections before finalization:
@@ -653,3 +662,12 @@ A fresh draft review found the plan direction strong but required four correctio
 - Document Lucide/icon behavior so agents do not create decks with missing icons or hidden assumptions.
 
 This final plan incorporates those corrections. A follow-up review flagged private-repo raw fetching as the only blocker; the user confirmed the repo will become public before the skill ships, so the plan intentionally keeps unauthenticated raw GitHub fetching as the default future distribution path while preserving local `--registry-root` validation during implementation.
+
+## Implementation notes
+
+- Removed generated HTML plan preview before implementation.
+- Baseline `pnpm check` passed with 50 registry items.
+
+- Implemented `skills/ls-slides/SKILL.md`, operational references, generated catalog, minimal deck asset, and dependency-free Node scripts.
+- Added `pnpm validate:skills` and included it in `pnpm check`.
+- Remote default behavior is implemented and was attempted; current raw GitHub URL returned 404 while the repo remains unavailable/private, so local `--registry-root .` was used for full behavioral validation.

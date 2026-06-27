@@ -1,14 +1,14 @@
 # ls_slides Project Vision
 
-`ls_slides` is a copyable registry of vanilla HTML, CSS, and JavaScript building blocks for creating slide decks as web pages.
+`ls_slides` is an agent-primary copyable registry of vanilla HTML, CSS, and JavaScript building blocks for creating slide decks as web pages.
 
-It is not a slide generator, framework, runtime package, or component-library package. It should stay closer to a shadcn-style registry: users and AI agents copy code from this repository into downstream slide projects, then customize it directly.
+It is not a slide generator, framework, runtime package, CLI product, npm dependency, or component-library package. It should stay closer to a shadcn-style registry: AI agents use the project skill to discover remote or local registry items, fetch/copy files into downstream slide projects, compose decks there, preview them locally, and customize the copied code directly. Human-readable files support review and debugging, but the primary product surface is agent operation.
 
 ## Core goals
 
 - Provide reusable visual, layout, content, data, media, annotation, and animation building blocks for web-based presentations.
 - Keep every registry item copyable, readable, dependency-light, and easy to modify.
-- Make the repository useful for both humans and AI agents.
+- Optimize the repository for AI agents as the primary consumers while keeping files readable for human review.
 - Prefer modern platform features over framework abstractions, including modern CSS and browser APIs when they improve copyability or expressiveness.
 - Avoid implying that consumers must install this repository as a runtime dependency.
 
@@ -26,9 +26,9 @@ Registry items are directories with implementation files, `registry-item.json` m
 
 Supporting folders are intentionally top-level and are not registry items:
 
-- `docs/` — project documentation and future documentation-site content.
+- `docs/` — project documentation and future documentation-site content; secondary to agent-readable references.
 - `examples/` — example slide projects and demos.
-- `skills/` — agent-facing usage instructions and best practices.
+- `skills/` — agent-facing usage instructions, references, and helper scripts; the primary consumption path for the registry.
 - `scripts/` — project automation scripts.
 - `.plans/` — retained implementation and architecture plans that are still useful historically; completed batch-specific plans have been consolidated into project docs and removed.
 
@@ -119,8 +119,11 @@ Implemented examples:
 
 Implemented tooling:
 
+- `skills/ls-slides` — Agent Skill for discovering, inspecting, copying/fetching, authoring, and previewing decks with the registry.
+- `skills/ls-slides/scripts/*` — dependency-free agent helper scripts for local/remote registry discovery, safe copying, generated catalog validation, and arbitrary target-folder deck preview.
 - `scripts/serve-examples.mjs` and `pnpm serve:examples` — dependency-free examples server with automatic example discovery.
 - `scripts/validate-registry.mjs` and `pnpm validate:registry` — registry metadata, path, and dependency validation included in `pnpm check`.
+- `pnpm validate:skills` — verifies the generated agent catalog is in sync with registry metadata.
 
 ## Technical direction
 
@@ -132,7 +135,7 @@ Implemented tooling:
 - Primitive API philosophy: expose clear `ls-` class/attribute APIs, opt-in decoration, variable-driven sizing, semantic markup, and baseline-safe progressive enhancement.
 - Typography direction: core exposes semantic font role tokens; optional scoped presets remap those roles via `data-ls-font` without global side effects.
 - Animation direction: prefer CSS animations, View Transitions, and Web Animations API where they fit; GSAP should not be added as a root dependency unless a concrete future registry item genuinely needs timeline orchestration.
-- Documentation direction: Astro docs site later, only once `docs/` is initialized with its own package manifest.
+- Documentation direction: agent-readable skill references first; any future Astro docs site is secondary and should not displace the skill-driven consumption workflow.
 - Linting: Oxlint.
 - Formatting: Oxfmt.
 - Config style: JSON configs for Oxlint/Oxfmt initially.
@@ -169,6 +172,7 @@ Implemented tooling:
 - Do not add or significantly change registry item formats, registry components, docs pages, scripts, or examples without an explicit plan.
 - Preserve the established registry item model: copyable item directories with metadata, docs, and dependency declarations.
 - Do not add framework dependencies for registry items by default.
+- Do not turn skill scripts into a public package, generator, framework, or clone-first workflow.
 - Do not add `docs` to workspace packages until `docs/package.json` exists.
 - Do not use `.gitkeep` placeholders; prefer concise README files when a directory must be tracked.
 - Keep the copyable-registry model central in all future architecture decisions.

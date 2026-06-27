@@ -22,18 +22,19 @@ The root `registry.json` indexes item metadata. This is shadcn-inspired, but not
 
 ## Copy model
 
-Copy items by resolving `registryDependencies` first. Always copy/load `core/base` before layouts, components, animations, or presets because it declares the CSS cascade layer order.
+Agents should normally use `skills/ls-slides/scripts/copy-items.mjs` to resolve `registryDependencies`, copy files safely, and write a manifest. Manual copying is still supported: resolve dependencies first and always copy/load `core/base` before layouts, components, animations, or presets because it declares the CSS cascade layer order.
 
 Recommended CSS order:
 
 1. `core/base/reset.css`
 2. `core/base/tokens.css`
 3. `core/base/slide.css`
-4. optional presets
-5. layouts
-6. components
-7. `animations/reveal/reveal.css`
-8. optional animation variants
+4. `core/base/icons.css` if icon wrappers are used
+5. optional presets
+6. layouts
+7. components
+8. `animations/reveal/reveal.css`
+9. optional animation variants
 
 Presets are optional token remaps. For example, font presets are loaded as ordinary CSS and activated with scoped attributes such as `data-ls-font="editorial-serif"`.
 
