@@ -4,8 +4,7 @@ import { fail, printJson } from "../src/shared/result.mjs";
 import { help, runCommand, textFor } from "../src/cli/commands.mjs";
 
 const argv = process.argv.slice(2);
-const command =
-  argv[0] && !argv[0].startsWith("--") ? argv[0] : argv.includes("--help") ? "help" : "help";
+const command = argv[0] && !argv[0].startsWith("--") ? argv[0] : "help";
 const commandArgs = command === argv[0] ? argv.slice(1) : argv;
 
 try {

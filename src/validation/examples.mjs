@@ -95,7 +95,7 @@ export async function validateExamples({ root = process.cwd() } = {}) {
     }
   }
 
-  const templateCandidates = ["src/deck/templates.mjs", "skills/slidesls/assets/minimal-deck.html"];
+  const templateCandidates = ["src/deck/templates.mjs"];
   for (const relative of templateCandidates) {
     const templatePath = path.join(root, relative);
     if (!(await fileExists(templatePath))) continue;

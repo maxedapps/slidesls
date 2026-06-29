@@ -20,6 +20,7 @@ const knownTypes = new Set([
 const knownFileTypes = new Set([
   "css",
   "js",
+  "mjs",
   "json",
   "html",
   "md",
