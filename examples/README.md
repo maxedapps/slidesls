@@ -1,20 +1,17 @@
 # Examples
 
-Example slide projects and usage demos live here. Examples are not registry items.
+Examples are repo-local demo and validation decks for slidesls registry items. They are plain HTML files that use repo-relative assets so changes can be checked without publishing a package.
 
-Run the examples server:
+Preview all examples:
 
 ```sh
 pnpm serve:examples
 ```
 
-Then open `http://localhost:4173/examples/`.
+Validate example links:
 
-Current examples:
+```sh
+slidesls validate-examples
+```
 
-- `project-intro/` — two-slide deck that validates the initial registry foundation.
-- `primitive-gallery/` — seven-slide gallery validating foundational layout, component, and animation primitives.
-- `structured-content-gallery/` — eight-slide gallery validating structured content and data primitives.
-- `visual-narrative-gallery/` — eight-slide gallery validating visual narrative and annotation primitives.
-
-Future examples should live in `examples/<example-name>/index.html`. The examples server automatically lists every example folder that contains an `index.html` file.
+Downstream generated decks normally start with `slidesls init`; examples intentionally remain repo-relative to demonstrate registry assets in place.

@@ -4,15 +4,19 @@ Agent-primary slide authoring CLI and copyable registry for plain HTML/CSS/JS de
 
 `slidesls` helps agents and humans initialize deck folders, copy registry primitives, validate decks, and preview them locally. The npm package is an authoring tool only; generated decks remain editable vanilla files with no runtime package dependency.
 
+Package: `@maxedapps/slidels` (binary: `slidesls`). Publishing remains manual until explicitly approved.
+
 ## Quickstart
 
+After publish:
+
 ```sh
-npx slidesls init my-deck --title "My Deck"
+npx @maxedapps/slidels init my-deck --title "My Deck"
 cd my-deck
-npx slidesls catalog
-npx slidesls add layouts/two-column components/card
-npx slidesls validate
-npx slidesls preview
+npx @maxedapps/slidels catalog
+npx @maxedapps/slidels add layouts/two-column components/card
+npx @maxedapps/slidels validate
+npx @maxedapps/slidels preview
 ```
 
 Local repo development:
@@ -25,14 +29,16 @@ node bin/slidesls.mjs validate /tmp/my-deck
 
 ## Commands
 
-- `slidesls init [dir]` — create/prepare a plain deck project with `slidesls.json`, copied assets, starter `index.html`, and `slidesls/manifest.json`.
-- `slidesls add <items...>` — copy registry items into a project and print `<link>` / `<script>` tags; does not mutate HTML by default.
-- `slidesls catalog` — list registry items; supports `--query`, `--type`, `--tag`, `--limit`, `--json`.
+- `slidesls init [dir]` — create/prepare a plain deck project.
+- `slidesls add <items...>` — copy registry items and print load tags.
+- `slidesls catalog` — list registry items.
 - `slidesls inspect <items...>` — show metadata, dependencies, files, and load guidance.
-- `slidesls validate [dir]` — static validation for config, manifest, local assets, and required deck shell.
+- `slidesls validate [dir]` — static deck validation.
 - `slidesls preview [dir]` — serve a deck locally.
+- `slidesls doctor [--dir <project>]` — check CLI/project health.
+- `slidesls validate-registry` / `validate-examples` — repo/package checks.
 
-All agent-facing commands support `--json`.
+Most agent-facing commands support `--json`.
 
 ## Registry
 
@@ -41,10 +47,8 @@ Registry items live under `registry/` and are copied into downstream decks. Gene
 ## Validation
 
 ```sh
-node --check bin/slidesls.mjs
-node scripts/test-cli-smoke.mjs
-pnpm validate:registry
-pnpm validate:examples
+pnpm check
+npm pack --dry-run
 ```
 
-`pnpm check` also includes lint/format checks, but requires the repo-pinned pnpm version.
+`snapshot` is intentionally deferred to keep the base package lightweight.

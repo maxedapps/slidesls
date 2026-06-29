@@ -95,7 +95,7 @@ async function renderExamplesIndex() {
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ls_slides examples</title>
+    <title>slidesls examples</title>
     <style>
       body { margin: 0; min-height: 100vh; display: grid; place-items: center; background: #0b0d12; color: #f5f7fb; font: 18px/1.5 system-ui, sans-serif; }
       main { width: min(720px, calc(100vw - 48px)); }
@@ -108,7 +108,7 @@ async function renderExamplesIndex() {
   </head>
   <body>
     <main>
-      <h1>ls_slides examples</h1>
+      <h1>slidesls examples</h1>
       <p>Select an example deck.</p>
       <ul>${list || "<li>No examples with index.html found.</li>"}</ul>
     </main>
@@ -189,6 +189,6 @@ const server = createServer((request, response) => {
 
 server.listen(options.port, options.host, () => {
   const baseUrl = `http://${options.host}:${options.port}`;
-  console.log(`ls_slides examples server running at ${baseUrl}/examples/`);
+  console.log(`slidesls examples server running at ${baseUrl}/examples/`);
   console.log(`Project intro: ${baseUrl}/examples/project-intro/`);
 });

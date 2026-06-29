@@ -1,8 +1,17 @@
 {
-  "name": "slidesls",
-  "version": "0.0.0",
+  "name": "@maxedapps/slidels",
+  "version": "0.1.0",
   "private": true,
   "description": "Agent-primary vanilla HTML/CSS/JS slide deck authoring CLI and registry.",
+  "keywords": [
+    "agents",
+    "css",
+    "html",
+    "presentation",
+    "registry",
+    "slides"
+  ],
+  "license": "MIT",
   "bin": {
     "slidesls": "./bin/slidesls.mjs"
   },
@@ -15,21 +24,23 @@
     "docs",
     "README.md",
     "PROJECT.md",
+    "LICENSE",
     "registry.json"
   ],
   "type": "module",
   "scripts": {
     "serve:examples": "node scripts/serve-examples.mjs",
-    "serve:deck": "node skills/ls-slides/scripts/serve-deck.mjs",
-    "validate:registry": "node scripts/validate-registry.mjs",
-    "validate:skills": "node skills/ls-slides/scripts/generate-catalog.mjs --registry-root . --check",
-    "validate:examples": "node scripts/validate-examples.mjs",
+    "serve:deck": "node bin/slidesls.mjs preview",
+    "validate:registry": "node bin/slidesls.mjs validate-registry",
+    "validate:skills": "node bin/slidesls.mjs generate-catalog --registry-root . --check",
+    "validate:examples": "node bin/slidesls.mjs validate-examples",
     "lint": "oxlint --no-error-on-unmatched-pattern",
     "lint:fix": "oxlint --fix --no-error-on-unmatched-pattern",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "check": "pnpm lint && pnpm fmt:check && pnpm validate:registry && pnpm validate:skills && pnpm validate:examples && pnpm cli:smoke",
-    "cli:smoke": "node scripts/test-cli-smoke.mjs"
+    "cli:smoke": "node scripts/test-cli-smoke.mjs",
+    "pack:check": "pnpm check && npm pack --dry-run"
   },
   "devDependencies": {
     "oxfmt": "^0.56.0",
@@ -38,5 +49,5 @@
   "engines": {
     "node": ">=22.18.0"
   },
-  "packageManager": "pnpm@11.1.1"
+  "packageManager": "pnpm@11.9.0"
 }

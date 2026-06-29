@@ -1,9 +1,15 @@
-# Docs
+# slidesls docs
 
-Future Astro documentation site. Do not add this folder to pnpm workspace packages until it has its own package manifest.
+- [CLI](./cli.md) — commands, options, JSON output, and stability notes.
+- [Deck contract](./deck-contract.md) — plain HTML/CSS/JS structure and stable `.ls-*` / `data-ls-*` API.
+- [Registry contract](./registry-contract.md) — item metadata, files, dependencies, and copy behavior.
+- [Agent workflow](./agent-workflow.md) — recommended agent process for building decks.
+- [Validation](./validation.md) — static validation, preview, and deferred snapshot workflow.
+- [Publishing](./publishing.md) — package readiness and npm release gates.
+- [Vision](./vision.md) — product/architecture direction.
 
-## Current documents
+Design rationale retained for now:
 
-- [Primitive expansion strategy](./primitive-expansion.md) — how to grow layouts, components, and animations while balancing structure with flexibility.
-- [Primitive authoring contract](./primitive-authoring.md) — shared guidance for reusable layout APIs, sizing, decoration, and visual QA.
-- [Modern platform strategy](./modern-platform-strategy.md) — current CSS/browser API direction for modern-first, progressively enhanced primitives.
+- [Primitive authoring](./primitive-authoring.md)
+- [Primitive expansion](./primitive-expansion.md)
+- [Modern platform strategy](./modern-platform-strategy.md)

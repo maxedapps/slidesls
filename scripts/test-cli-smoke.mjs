@@ -69,12 +69,30 @@ async function previewSmoke() {
 }
 
 try {
+  run(["--help"]);
+  for (const command of [
+    "init",
+    "add",
+    "catalog",
+    "inspect",
+    "validate",
+    "preview",
+    "doctor",
+    "validate-registry",
+    "validate-examples",
+    "generate-catalog",
+  ]) {
+    run([command, "--help"]);
+  }
   run(["init", tmp, "--template", "minimal", "--title", "Smoke Deck", "--json"]);
+  run(["doctor", "--dir", tmp, "--json"]);
   run(["catalog", "--json"]);
   run(["inspect", "layouts/title-hero", "--json"]);
   run(["add", "components/card", "--dir", tmp, "--dry-run", "--json"]);
   run(["add", "components/card", "--dir", tmp, "--json"]);
   run(["validate", tmp, "--json"]);
+  run(["validate-registry", "--json"]);
+  run(["validate-examples", "--json"]);
   await previewSmoke();
   console.log(`slidesls CLI smoke passed: ${tmp}`);
 } finally {

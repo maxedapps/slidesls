@@ -15,16 +15,36 @@ try {
   }
   const result = await runCommand(command, commandArgs);
   const parsed = parseArgs(commandArgs, {
-    boolean: ["json", "help", "force", "dry-run", "strict", "include-docs", "open", "readme"],
+    boolean: [
+      "json",
+      "help",
+      "force",
+      "dry-run",
+      "strict",
+      "include-docs",
+      "open",
+      "readme",
+      "check",
+    ],
   });
   if (parsed.json) printJson(result);
   else process.stdout.write(textFor(command, result));
-  if (command === "validate" && result.data && result.data.valid === false) process.exit(1);
+  if (result.data && (result.data.valid === false || result.data.ok === false)) process.exit(1);
 } catch (error) {
   const parsed = (() => {
     try {
       return parseArgs(commandArgs, {
-        boolean: ["json", "help", "force", "dry-run", "strict", "include-docs", "open", "readme"],
+        boolean: [
+          "json",
+          "help",
+          "force",
+          "dry-run",
+          "strict",
+          "include-docs",
+          "open",
+          "readme",
+          "check",
+        ],
       });
     } catch {
       return {};

@@ -1,6 +1,6 @@
 # Core
 
-Mandatory foundation items for ls_slides decks.
+Mandatory foundation items for slidesls decks.
 
 Current items:
 

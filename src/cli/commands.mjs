@@ -1,6 +1,6 @@
 import { createServer } from "node:http";
 import path from "node:path";
-import { readFile } from "node:fs/promises";
+import { access, readFile } from "node:fs/promises";
 import { parseArgs, usageError } from "../shared/args.mjs";
 import { ok } from "../shared/result.mjs";
 import {
@@ -12,10 +12,19 @@ import {
 } from "../shared/fs.mjs";
 import { localReferences } from "../shared/html.mjs";
 import { RegistrySource, loadRegistry, resolveItems, summarizeItem } from "../registry/source.mjs";
-import { DEFAULT_CONFIG, mergeConfig, readConfig, writeDefaultConfig } from "../deck/config.mjs";
+import {
+  CONFIG_FILE,
+  DEFAULT_CONFIG,
+  mergeConfig,
+  readConfig,
+  writeDefaultConfig,
+} from "../deck/config.mjs";
 import { createManifest, mergeManifest, readManifest, writeManifest } from "../deck/manifest.mjs";
 import { performCopies, planCopies, tagsForWrites } from "../deck/copy.mjs";
 import { deckTemplate } from "../deck/templates.mjs";
+import { validateRegistry } from "../validation/registry.mjs";
+import { validateExamples } from "../validation/examples.mjs";
+import { generateCatalogDoc } from "../registry/catalog-doc.mjs";
 
 const coreItems = ["core/base"];
 const minimalItems = ["core/base", "layouts/title-hero"];
@@ -30,9 +39,13 @@ Commands:
   add <items...>   Copy registry items into a deck project
   catalog          List registry items
   inspect <items>  Show item metadata and load guidance
-  validate [dir]   Static deck validation
-  preview [dir]    Serve a deck locally
-  help             Show help
+  validate [dir]           Static deck validation
+  preview [dir]            Serve a deck locally
+  doctor                   Check CLI/project health
+  validate-registry        Validate registry metadata and files
+  validate-examples        Validate repo example/template references
+  generate-catalog         Generate/check agent catalog docs
+  help                     Show help
 
 Common options:
   --json           Machine-readable output
@@ -53,6 +66,14 @@ export async function runCommand(command, argv) {
       return validateCommand(argv);
     case "preview":
       return previewCommand(argv);
+    case "doctor":
+      return doctorCommand(argv);
+    case "validate-registry":
+      return validateRegistryCommand(argv);
+    case "validate-examples":
+      return validateExamplesCommand(argv);
+    case "generate-catalog":
+      return generateCatalogCommand(argv);
     case "help":
       return ok({ help });
     default:
@@ -346,6 +367,140 @@ export async function validateCommand(argv) {
   return ok({ valid, root, entry: config.paths.entry, errors, warnings });
 }
 
+export async function doctorCommand(argv) {
+  const args = parseArgs(argv, { boolean: ["json", "help"] });
+  if (args.help)
+    return ok({
+      help: `Usage: slidesls doctor [--dir <project>] [--registry-root <path>] [--json]`,
+    });
+  const start = path.resolve(args.dir || args._[0] || ".");
+  const checks = [];
+  const warnings = [];
+  const errors = [];
+  const pkg = JSON.parse(
+    await readFile(path.resolve(import.meta.dirname, "..", "..", "package.json"), "utf8"),
+  );
+
+  function check(code, passed, message, severity = "error", details = {}) {
+    const entry = { code, passed, message, severity, ...details };
+    checks.push(entry);
+    if (!passed && severity === "error") errors.push(entry);
+    if (!passed && severity === "warning") warnings.push(entry);
+  }
+
+  const required = pkg.engines?.node?.match(/>=\s*([\d.]+)/)?.[1];
+  check(
+    "node_version",
+    !required || compareVersions(process.versions.node, required) >= 0,
+    `Node ${process.versions.node}${required ? ` satisfies >=${required}` : " detected"}`,
+  );
+  check(
+    "package_metadata",
+    Boolean(pkg.name && pkg.version && pkg.bin?.slidesls),
+    `Package ${pkg.name}@${pkg.version} metadata is readable`,
+  );
+
+  let configInfo;
+  try {
+    configInfo = await readConfig(start);
+    check(
+      "config_parse",
+      true,
+      configInfo.configPath
+        ? `${CONFIG_FILE} parsed`
+        : `${CONFIG_FILE} not found; defaults are available`,
+      configInfo.configPath ? "error" : "warning",
+    );
+  } catch (error) {
+    check("config_parse", false, `${CONFIG_FILE} could not be parsed: ${error.message}`);
+    configInfo = { config: null, root: start };
+  }
+  const config = mergeConfig(configInfo.config || {});
+  if (configInfo.config) {
+    check(
+      "entry_exists",
+      await exists(path.join(configInfo.root, config.paths.entry)),
+      `Entry file exists: ${config.paths.entry}`,
+    );
+  }
+  try {
+    await access(configInfo.root, 2);
+    check("project_writable", true, `Project directory is writable: ${configInfo.root}`);
+  } catch {
+    check("project_writable", false, `Project directory is not writable: ${configInfo.root}`);
+  }
+  try {
+    const data = await registryData(args);
+    check("registry_available", true, `Registry available with ${data.items.length} item(s)`);
+  } catch (error) {
+    check("registry_available", false, `Registry is unavailable: ${error.message}`);
+  }
+  check(
+    "browser_optional",
+    false,
+    "Browser snapshot support is optional and not bundled in the MVP",
+    "warning",
+  );
+
+  return ok({
+    ok: errors.length === 0,
+    package: { name: pkg.name, version: pkg.version },
+    root: configInfo.root,
+    checks,
+    errors,
+    warnings,
+  });
+}
+
+function compareVersions(actual, required) {
+  const a = actual.split(".").map(Number);
+  const b = required.split(".").map(Number);
+  for (let index = 0; index < Math.max(a.length, b.length); index += 1) {
+    const diff = (a[index] || 0) - (b[index] || 0);
+    if (diff !== 0) return diff;
+  }
+  return 0;
+}
+
+export async function validateRegistryCommand(argv) {
+  const args = parseArgs(argv, { boolean: ["json", "help"] });
+  if (args.help)
+    return ok({
+      help: `Usage: slidesls validate-registry [--registry-root <path>] [--registry-url <url>] [--json]`,
+    });
+  const result = await validateRegistry({
+    registryRoot: args["registry-root"],
+    registryUrl: args["registry-url"],
+  });
+  return ok(result);
+}
+
+export async function validateExamplesCommand(argv) {
+  const args = parseArgs(argv, { boolean: ["json", "help"] });
+  if (args.help) return ok({ help: `Usage: slidesls validate-examples [--dir <repo>] [--json]` });
+  return ok(await validateExamples({ root: args.dir || args._[0] || process.cwd() }));
+}
+
+export async function generateCatalogCommand(argv) {
+  const args = parseArgs(argv, { boolean: ["json", "help", "check"] });
+  if (args.help)
+    return ok({
+      help: `Usage: slidesls generate-catalog [--registry-root <path>] [--output <path>] [--check] [--json]`,
+    });
+  const result = await generateCatalogDoc({
+    registryRoot: args["registry-root"],
+    registryUrl: args["registry-url"],
+    output: args.output,
+    check: args.check,
+  });
+  if (!result.ok) {
+    const error = new Error(`Catalog is out of date: ${result.output}`);
+    error.code = "catalog_out_of_date";
+    throw error;
+  }
+  return ok(result);
+}
+
 export async function previewCommand(argv) {
   const args = parseArgs(argv, { boolean: ["json", "help", "open"] });
   if (args.help)
@@ -436,5 +591,19 @@ export function textFor(command, result) {
   if (command === "init")
     return `Initialized ${result.data.root}\nNext steps:\n${result.data.nextSteps.map((s) => `  ${s}`).join("\n")}\n`;
   if (command === "preview") return `Serving ${result.data.root} at ${result.data.url}\n`;
+  if (command === "doctor")
+    return result.data.ok
+      ? `slidesls doctor: ok (${result.data.root})\n${result.data.warnings.map((w) => `- warning: ${w.message}`).join("\n")}${result.data.warnings.length ? "\n" : ""}`
+      : `slidesls doctor: failed (${result.data.errors.length} error(s))\n${result.data.errors.map((e) => `- ${e.message}`).join("\n")}\n`;
+  if (command === "validate-registry")
+    return result.data.valid
+      ? `slidesls validate-registry: ok (${result.data.itemCount} item(s))\n`
+      : `slidesls validate-registry: failed (${result.data.errors.length} error(s))\n${result.data.errors.map((e) => `- ${e.message}`).join("\n")}\n`;
+  if (command === "validate-examples")
+    return result.data.valid
+      ? `slidesls validate-examples: ok (${result.data.checkedExamples} example(s))\n`
+      : `slidesls validate-examples: failed (${result.data.errors.length} error(s))\n${result.data.errors.map((e) => `- ${e.message}`).join("\n")}\n`;
+  if (command === "generate-catalog")
+    return `${result.data.ok ? "Catalog is up to date" : "Wrote catalog"}: ${result.data.output}\n`;
   return `${JSON.stringify(result.data, null, 2)}\n`;
 }

@@ -1,6 +1,6 @@
 # core/base
 
-Mandatory base item for ls_slides decks.
+Mandatory base item for slidesls decks.
 
 Copy/load order:
 

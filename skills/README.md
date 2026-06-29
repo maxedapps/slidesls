@@ -1,9 +1,7 @@
-# Skills
+# Project skills
 
-Project-local skills are the primary agent-facing workflow surface for `ls_slides`.
+Project-local skills expose the agent-facing workflow for slidesls.
 
-Current skills:
+- `slidesls/` — create, inspect, add registry items to, validate, and preview plain HTML/CSS/JS decks with the `slidesls` CLI.
 
-- `ls-slides/` — discover, inspect, fetch/copy, author, and preview vanilla `ls_slides` decks from the registry.
-
-Agents should load `skills/ls-slides/SKILL.md` when a task involves using the registry in another folder or validating a generated deck.
+Agents should load `skills/slidesls/SKILL.md` when a task involves building or validating a slidesls deck.

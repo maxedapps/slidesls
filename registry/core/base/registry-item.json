@@ -1,7 +1,7 @@
 {
   "name": "core/base",
   "type": "ls:core",
-  "description": "Mandatory base styles and runtime for ls_slides decks.",
+  "description": "Mandatory base styles and runtime for slidesls decks.",
   "files": [
     { "path": "registry/core/base/reset.css", "type": "registry:style" },
     { "path": "registry/core/base/tokens.css", "type": "registry:style" },

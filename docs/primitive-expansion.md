@@ -1,6 +1,6 @@
 # Primitive expansion strategy
 
-`ls_slides` grows through coherent groups of primitives, not as a random catalog. Each addition should improve both everyday professional decks and more expressive presentation moments while preserving the copyable-registry model.
+`slidesls` grows through coherent groups of primitives, not as a random catalog. Each addition should improve both everyday professional decks and more expressive presentation moments while preserving the copyable-registry model.
 
 ## Balance to preserve
 

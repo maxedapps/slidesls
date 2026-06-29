@@ -1,6 +1,6 @@
 # Primitive authoring contract
 
-`ls_slides` primitives are copyable blueprints, not hidden framework components. A copied layout should remain readable, editable, and robust in plain HTML/CSS.
+`slidesls` primitives are copyable blueprints, not hidden framework components. A copied layout should remain readable, editable, and robust in plain HTML/CSS.
 
 ## Layout roots
 

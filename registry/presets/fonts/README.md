@@ -1,6 +1,6 @@
 # Font presets
 
-Scoped font-family token remaps for ls_slides decks.
+Scoped font-family token remaps for slidesls decks.
 
 Font presets are optional registry items. They do not load web fonts and they do not change the deck globally when copied or linked. Load the preset CSS, then opt in with `data-ls-font`.
 

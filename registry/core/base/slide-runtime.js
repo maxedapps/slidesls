@@ -194,7 +194,7 @@ function initializeDeck() {
   });
 
   document.dispatchEvent(
-    new CustomEvent("ls-slides:ready", {
+    new CustomEvent("slidesls:ready", {
       detail: {
         deck,
         slideCount: slides.length,

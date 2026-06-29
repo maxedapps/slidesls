@@ -1,6 +1,6 @@
 # Modern platform strategy
 
-`ls_slides` should aggressively use modern CSS and browser APIs when they make copied slide code smaller, clearer, more expressive, or easier to customize. The project should prefer platform primitives over framework abstractions while keeping fallbacks understandable.
+`slidesls` should aggressively use modern CSS and browser APIs when they make copied slide code smaller, clearer, more expressive, or easier to customize. The project should prefer platform primitives over framework abstractions while keeping fallbacks understandable.
 
 ## Research summary
 

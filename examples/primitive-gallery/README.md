@@ -1,11 +1,21 @@
-# Primitive Gallery
+# primitive-gallery
 
-Seven-slide gallery covering foundational layout, component, and reveal-compatible animation primitives.
+Repo-local slidesls example deck.
 
-Run locally:
+## Purpose
+
+Demonstrates selected registry layouts, components, animations, and presets in a plain HTML deck using repo-relative assets.
+
+## Preview
+
+overall examples server:
 
 ```sh
-pnpm serve:examples -- --port 4173
+pnpm serve:examples
 ```
 
-Then open `/examples/primitive-gallery/`.
+or open this folder's `index.html` through the examples server.
+
+## Notes
+
+Generated downstream decks should use `slidesls init` and `slidesls add`; examples stay repo-relative for validation and demos.

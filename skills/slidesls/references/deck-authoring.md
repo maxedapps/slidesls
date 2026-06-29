@@ -9,11 +9,11 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Slide deck</title>
-    <link rel="stylesheet" href="./ls-slides/registry/core/base/reset.css" />
-    <link rel="stylesheet" href="./ls-slides/registry/core/base/tokens.css" />
-    <link rel="stylesheet" href="./ls-slides/registry/core/base/slide.css" />
-    <link rel="stylesheet" href="./ls-slides/registry/animations/reveal/reveal.css" />
-    <script type="module" src="./ls-slides/registry/core/base/slide-runtime.js"></script>
+    <link rel="stylesheet" href="./slidesls/registry/core/base/reset.css" />
+    <link rel="stylesheet" href="./slidesls/registry/core/base/tokens.css" />
+    <link rel="stylesheet" href="./slidesls/registry/core/base/slide.css" />
+    <link rel="stylesheet" href="./slidesls/registry/animations/reveal/reveal.css" />
+    <script type="module" src="./slidesls/registry/core/base/slide-runtime.js"></script>
   </head>
   <body class="ls-page">
     <main class="ls-deck" data-ls-deck aria-label="Slide deck">
