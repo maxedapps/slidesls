@@ -1,7 +1,7 @@
 # Plan: Fix example asset drift and add example validation
 
 Date: 2026-06-29
-Status: In Progress
+Status: Implemented
 Project: ls_slides
 
 ## Context
@@ -348,6 +348,8 @@ Rollback is simple:
 - [x] Phase 3 — Added `validate:examples` and included it in `pnpm check`.
 - [x] Phase 4 — Ran direct local validation successfully. Full `pnpm check` remains blocked in this environment by the intentional pinned pnpm version requirement (`pnpm@11.1.1`; local `pnpm` is `11.9.0`). Full `oxfmt --check` also reports unrelated untracked `context.md`; targeted formatting checks for changed files pass.
 - [x] Phase 5 — Browser-validated corrected font preset requests and minimal deck title-hero hook.
+- [x] Implementation committed in `edb27a6` (`Validate example asset links`).
+- [x] Fresh implementation peer review completed and accepted the implementation as-is.
 
 ## Implementation validation results
 
@@ -389,3 +391,5 @@ A fresh Claude plan review verified the technical diagnosis against the codebase
 The review identified one important refinement: a plain example-link validator would not guard the minimal-deck finding, because that asset intentionally references copied target paths and the bug is a wrong CSS hook rather than a missing file. The final plan incorporates this by adding a narrow minimal-deck layout-hook assertion to `scripts/validate-examples.mjs` and by clearly limiting the validator's scope.
 
 The review also suggested mirroring `serve-examples.mjs` example discovery, handling single-quoted attributes defensively, matching the existing `validate-registry.mjs` script style, and explicitly documenting that this does not validate CSS `url()` references or visual correctness. These refinements are included in the final plan.
+
+A fresh Claude implementation review accepted commit `edb27a6` as matching the plan with no required fixes. The reviewer independently verified the corrected font links, minimal deck layout hook, validator behavior, package script integration, and validation limitations. The only note was unrelated: untracked `context.md` remains in the working tree and is why full `oxfmt --check` fails in this environment.
