@@ -104,6 +104,20 @@ export async function initCommand(argv) {
     }
   }
   await writeDefaultConfig(projectRoot, config);
+  await writeText(
+    path.join(projectRoot, config.paths.items, "schema", "slidesls.schema.json"),
+    await readFile(
+      path.resolve(import.meta.dirname, "..", "..", "schemas", "slidesls.schema.json"),
+      "utf8",
+    ),
+  );
+  await writeText(
+    path.join(projectRoot, config.paths.items, "schema", "manifest.schema.json"),
+    await readFile(
+      path.resolve(import.meta.dirname, "..", "..", "schemas", "manifest.schema.json"),
+      "utf8",
+    ),
+  );
   const data = await registryData(args);
   const items = resolveItems(data, template === "blank" ? coreItems : minimalItems);
   const writes = await planCopies({ items, targetRoot: projectRoot, baseDir: config.paths.items });
@@ -348,6 +362,7 @@ export async function previewCommand(argv) {
     const target = path.join(root, relative);
     try {
       assertInside(root, target);
+      response.setHeader("Content-Type", contentType(target));
       response.end(await readFile(target));
     } catch {
       response.statusCode = 404;
@@ -365,6 +380,24 @@ export async function previewCommand(argv) {
     pid: process.pid,
     note: "Server keeps running until this process is stopped.",
   });
+}
+
+function contentType(filePath) {
+  return (
+    {
+      ".html": "text/html; charset=utf-8",
+      ".css": "text/css; charset=utf-8",
+      ".js": "text/javascript; charset=utf-8",
+      ".mjs": "text/javascript; charset=utf-8",
+      ".json": "application/json; charset=utf-8",
+      ".svg": "image/svg+xml",
+      ".png": "image/png",
+      ".jpg": "image/jpeg",
+      ".jpeg": "image/jpeg",
+      ".webp": "image/webp",
+      ".gif": "image/gif",
+    }[path.extname(filePath).toLowerCase()] || "application/octet-stream"
+  );
 }
 
 function listen(server, host, port) {

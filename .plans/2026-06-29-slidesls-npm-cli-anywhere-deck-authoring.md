@@ -165,6 +165,7 @@ Definition of done for each slice:
 - `node skills/ls-slides/scripts/generate-catalog.mjs --registry-root . --check` — passed.
 - `./node_modules/.bin/oxlint --no-error-on-unmatched-pattern` — passed.
 - `./node_modules/.bin/oxfmt --check bin src schemas scripts/test-cli-smoke.mjs package.json README.md PROJECT.md .plans/2026-06-29-slidesls-npm-cli-anywhere-deck-authoring.md` — passed.
+- Fresh Claude implementation review found one required fix: preview needed MIME types for module scripts. Fixed by adding extension-based `Content-Type` headers and a smoke-test assertion for `slide-runtime.js`. Also copied local schema files into initialized projects to satisfy generated `$schema`.
 - Full `pnpm check` not run because this environment's pnpm version is known to mismatch the repo-pinned `pnpm@11.1.1`.
 
 ## Implementation phases
