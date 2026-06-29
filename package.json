@@ -1,6 +1,22 @@
 {
-  "name": "ls-slides",
+  "name": "slidesls",
+  "version": "0.0.0",
   "private": true,
+  "description": "Agent-primary vanilla HTML/CSS/JS slide deck authoring CLI and registry.",
+  "bin": {
+    "slidesls": "./bin/slidesls.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "registry",
+    "schemas",
+    "skills",
+    "docs",
+    "README.md",
+    "PROJECT.md",
+    "registry.json"
+  ],
   "type": "module",
   "scripts": {
     "serve:examples": "node scripts/serve-examples.mjs",
@@ -12,7 +28,8 @@
     "lint:fix": "oxlint --fix --no-error-on-unmatched-pattern",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
-    "check": "pnpm lint && pnpm fmt:check && pnpm validate:registry && pnpm validate:skills && pnpm validate:examples"
+    "check": "pnpm lint && pnpm fmt:check && pnpm validate:registry && pnpm validate:skills && pnpm validate:examples && pnpm cli:smoke",
+    "cli:smoke": "node scripts/test-cli-smoke.mjs"
   },
   "devDependencies": {
     "oxfmt": "^0.56.0",

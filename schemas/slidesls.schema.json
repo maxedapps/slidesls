@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "slidesls.schema.json",
+  "title": "slidesls project config",
+  "type": "object",
+  "properties": {
+    "$schema": { "type": "string" },
+    "registry": { "type": "string" },
+    "paths": {
+      "type": "object",
+      "properties": {
+        "items": { "type": "string" },
+        "entry": { "type": "string" },
+        "assets": { "type": "string" },
+        "snapshots": { "type": "string" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
