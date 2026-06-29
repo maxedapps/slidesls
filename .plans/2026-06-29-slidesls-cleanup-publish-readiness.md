@@ -447,6 +447,12 @@ Fresh Claude review accepted the overall direction but requested revisions befor
 - Packed tarball smoke (`npm install <tgz>`, `npx slidesls init/add/validate/doctor`) — passed.
 - Grep gate for stale non-historical old names/old commands — passed.
 
+## Implementation review
+
+- Fresh Claude review accepted commit `9951c56` as-is.
+- Optional nits addressed in follow-up commit `5c910c4`: removed dead template candidate, simplified CLI command parsing, and added `.mjs` to known registry file types.
+- Reviewer noted `slidesls:ready` is an intentional pre-publish event rename from the old product name; no in-repo listeners depended on the old event.
+
 ## Implementation notes
 
 - `private` remains `true`; publishing is still manual and requires explicit approval.
