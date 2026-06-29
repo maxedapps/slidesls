@@ -1,7 +1,7 @@
 # Plan: slidesls npm CLI and Agent-Primary Anywhere Deck Authoring
 
 Date: 2026-06-29
-Status: In Progress
+Status: In Progress — v0.1 MVP implemented
 Project: slidesls
 
 ## Context
@@ -154,6 +154,11 @@ Definition of done for each slice:
   - Added `scripts/test-cli-smoke.mjs` covering init/catalog/inspect/add/validate/preview JSON.
   - Rewrote root `README.md` for the `slidesls` CLI quickstart.
 - [ ] Later phases — metadata v2 snippets, full README normalization, examples-as-templates, runtime polish, browser validation/snapshots, doctor, publishing hardening, cleanup/removal.
+
+## Implementation commits
+
+- `29f900a` — Add slidesls CLI MVP.
+- `eafd6aa` — Fix slidesls preview MIME handling.
 
 ## Implementation validation log
 
@@ -678,6 +683,13 @@ Browser/snapshot validation when optional browser support is available:
 ```sh
 slidesls snapshot /tmp/slidesls-smoke --slides all --json
 ```
+
+## Implementation peer review
+
+- Fresh Claude review initially rejected the slice because `preview` did not serve JavaScript with a module-compatible MIME type.
+- Fixed preview MIME headers and added a smoke-test assertion that fetched `slide-runtime.js` is served as `text/javascript`.
+- Also copied config/manifest schemas into initialized projects so generated `$schema` paths resolve.
+- Follow-up Claude review accepted the MVP slice as-is, with only optional future cleanup notes.
 
 ## Risks / rollback
 
