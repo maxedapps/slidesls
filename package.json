@@ -7,11 +7,12 @@
     "serve:deck": "node skills/ls-slides/scripts/serve-deck.mjs",
     "validate:registry": "node scripts/validate-registry.mjs",
     "validate:skills": "node skills/ls-slides/scripts/generate-catalog.mjs --registry-root . --check",
+    "validate:examples": "node scripts/validate-examples.mjs",
     "lint": "oxlint --no-error-on-unmatched-pattern",
     "lint:fix": "oxlint --fix --no-error-on-unmatched-pattern",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
-    "check": "pnpm lint && pnpm fmt:check && pnpm validate:registry && pnpm validate:skills"
+    "check": "pnpm lint && pnpm fmt:check && pnpm validate:registry && pnpm validate:skills && pnpm validate:examples"
   },
   "devDependencies": {
     "oxfmt": "^0.56.0",
