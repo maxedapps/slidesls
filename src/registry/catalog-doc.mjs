@@ -4,11 +4,12 @@ import { writeText } from "../shared/fs.mjs";
 import { loadRegistry, RegistrySource, summarizeItem } from "./source.mjs";
 
 export function groupName(type = "") {
-  if (type === "core") return "Core";
-  if (type === "layout") return "Layouts";
-  if (type === "component") return "Components";
-  if (type === "animation") return "Animations";
-  if (type.startsWith("preset")) return "Presets";
+  const normalized = String(type).replace(/^ls:/, "");
+  if (normalized === "core") return "Core";
+  if (normalized === "layout") return "Layouts";
+  if (normalized === "component") return "Components";
+  if (normalized === "animation") return "Animations";
+  if (normalized.startsWith("preset")) return "Presets";
   return "Other";
 }
 
@@ -65,8 +66,13 @@ export async function generateCatalogDoc({
   const content = renderCatalog(registryData);
   if (check) {
     const current = await readFile(outputPath, "utf8").catch(() => null);
-    return { ok: current === content, output: outputPath, itemCount: registryData.items.length };
+    return {
+      ok: current === content,
+      checked: true,
+      output: outputPath,
+      itemCount: registryData.items.length,
+    };
   }
   await writeText(outputPath, content);
-  return { ok: true, output: outputPath, itemCount: registryData.items.length };
+  return { ok: true, checked: false, output: outputPath, itemCount: registryData.items.length };
 }

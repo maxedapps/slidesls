@@ -4,16 +4,16 @@
 
 ## Commands
 
-- `slidesls init [dir] --template blank|minimal --title <text>` — create a plain deck project.
-- `slidesls add <items...> --dir <project>` — copy registry items and update the manifest.
-- `slidesls catalog [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>]` — list items.
-- `slidesls inspect <items...> [--readme]` — show metadata and load guidance.
+- `slidesls init [dir] --template blank|minimal --title <text> [--registry-root <path> | --registry-url <url>]` — create a plain deck project.
+- `slidesls add <items...> --dir <project> [--registry-root <path> | --registry-url <url>]` — copy registry items and update the manifest.
+- `slidesls catalog [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path> | --registry-url <url>]` — list items.
+- `slidesls inspect <items...> [--readme] [--registry-root <path> | --registry-url <url>]` — show metadata and load guidance.
 - `slidesls validate [dir] [--strict]` — validate deck config, entry markup, local assets, and manifest drift.
 - `slidesls preview [dir] [--host <host>] [--port <port>]` — serve a local preview.
-- `slidesls doctor [--dir <project>]` — check Node/package/config/registry/project health.
-- `slidesls validate-registry` — repo/package registry validation.
+- `slidesls doctor [--dir <project>] [--registry-root <path> | --registry-url <url>]` — check Node/package/config/registry/project health.
+- `slidesls validate-registry [--registry-root <path> | --registry-url <url>]` — repo/package registry validation.
 - `slidesls validate-examples` — repo example/template validation.
-- `slidesls generate-catalog [--check]` — internal agent catalog generation/check.
+- `slidesls generate-catalog [--registry-root <path> | --registry-url <url>] [--check]` — internal agent catalog generation/check.
 
 All commands support `--help`. Agent-facing commands support `--json` where useful.
 

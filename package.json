@@ -1,5 +1,5 @@
 {
-  "name": "@maxedapps/slidels",
+  "name": "@maxedapps/slidesls",
   "version": "0.1.0",
   "private": true,
   "description": "Agent-primary vanilla HTML/CSS/JS slide deck authoring CLI and registry.",
@@ -38,7 +38,8 @@
     "lint:fix": "oxlint --fix --no-error-on-unmatched-pattern",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
-    "check": "pnpm lint && pnpm fmt:check && pnpm validate:registry && pnpm validate:skills && pnpm validate:examples && pnpm cli:smoke",
+    "check": "pnpm lint && pnpm fmt:check && pnpm test && pnpm validate:registry && pnpm validate:skills && pnpm validate:examples && pnpm cli:smoke",
+    "test": "node --test tests/**/*.test.mjs",
     "cli:smoke": "node scripts/test-cli-smoke.mjs",
     "pack:check": "pnpm check && npm pack --dry-run"
   },

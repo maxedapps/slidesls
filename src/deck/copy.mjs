@@ -1,4 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { assertInside, assertSafeRelativePath, exists, sha256Text } from "../shared/fs.mjs";
 
@@ -56,7 +56,6 @@ export async function performCopies({ source, targetRoot, writes, force = false 
     const sha256 = sha256Text(content);
 
     if ((await exists(destination)) && !force) {
-      const { readFile } = await import("node:fs/promises");
       const currentHash = sha256Text(await readFile(destination));
       if (currentHash !== sha256) collisions.push(write.targetPath);
       copiedFiles.push({ ...write, sha256, skipped: currentHash === sha256 });

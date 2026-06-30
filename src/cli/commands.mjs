@@ -1,6 +1,6 @@
 import { createServer } from "node:http";
 import path from "node:path";
-import { access, readFile } from "node:fs/promises";
+import { access, readFile, realpath } from "node:fs/promises";
 import { parseArgs, usageError } from "../shared/args.mjs";
 import { ok } from "../shared/result.mjs";
 import {
@@ -10,7 +10,14 @@ import {
   sha256File,
   writeText,
 } from "../shared/fs.mjs";
-import { localReferences } from "../shared/html.mjs";
+import {
+  hasDeckElement,
+  hasElementWithClass,
+  hasLucideScript,
+  hasModuleRuntimeScript,
+  localReferences,
+  usesLucideIcons,
+} from "../shared/html.mjs";
 import { RegistrySource, loadRegistry, resolveItems, summarizeItem } from "../registry/source.mjs";
 import {
   CONFIG_FILE,
@@ -81,11 +88,17 @@ export async function runCommand(command, argv) {
   }
 }
 
+function rejectRemovedRegistryOption(args) {
+  if (args.registry !== undefined)
+    throw usageError(
+      "--registry has been removed.",
+      "Use --registry-root <path> or --registry-url <url>.",
+    );
+}
+
 function registrySource(args) {
   return new RegistrySource({
-    registryRoot:
-      args["registry-root"] ||
-      (args.registry && args.registry !== "bundled" ? args.registry : undefined),
+    registryRoot: args["registry-root"],
     registryUrl: args["registry-url"],
   });
 }
@@ -99,8 +112,9 @@ export async function initCommand(argv) {
   const args = parseArgs(argv, { boolean: ["force", "json", "help"] });
   if (args.help)
     return ok({
-      help: `Usage: slidesls init [dir] [--template blank|minimal] [--title <text>] [--force] [--json]`,
+      help: `Usage: slidesls init [dir] [--template blank|minimal] [--title <text>] [--registry-root <path>] [--registry-url <url>] [--force] [--json]`,
     });
+  rejectRemovedRegistryOption(args);
   const projectRoot = path.resolve(args._[0] || ".");
   const template = args.template || "minimal";
   if (!["blank", "minimal"].includes(template))
@@ -109,7 +123,7 @@ export async function initCommand(argv) {
       "Use --template blank or --template minimal.",
     );
   const title = args.title || path.basename(projectRoot) || "Untitled deck";
-  const config = mergeConfig({ registry: args.registry || "bundled" });
+  const config = mergeConfig({ registry: "bundled" });
   const entryPath = path.join(projectRoot, config.paths.entry);
   const configPath = path.join(projectRoot, "slidesls.json");
   if (!args.force) {
@@ -180,8 +194,9 @@ export async function addCommand(argv) {
   const args = parseArgs(argv, { boolean: ["include-docs", "dry-run", "force", "json", "help"] });
   if (args.help)
     return ok({
-      help: `Usage: slidesls add <items...> [--dir <project>] [--base-dir <relative>] [--include-docs] [--dry-run] [--force] [--json]`,
+      help: `Usage: slidesls add <items...> [--dir <project>] [--base-dir <relative>] [--registry-root <path>] [--registry-url <url>] [--include-docs] [--dry-run] [--force] [--json]`,
     });
+  rejectRemovedRegistryOption(args);
   const names = args._;
   if (!names.length) throw usageError("slidesls add requires at least one item name");
   const projectStart = path.resolve(args.dir || ".");
@@ -241,8 +256,9 @@ export async function catalogCommand(argv) {
   const args = parseArgs(argv, { boolean: ["json", "help"] });
   if (args.help)
     return ok({
-      help: `Usage: slidesls catalog [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--json]`,
+      help: `Usage: slidesls catalog [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path>] [--registry-url <url>] [--json]`,
     });
+  rejectRemovedRegistryOption(args);
   const data = await registryData(args);
   let items = data.items.map(summarizeItem);
   if (args.type)
@@ -264,7 +280,11 @@ export async function catalogCommand(argv) {
 
 export async function inspectCommand(argv) {
   const args = parseArgs(argv, { boolean: ["json", "help", "readme"] });
-  if (args.help) return ok({ help: `Usage: slidesls inspect <items...> [--json]` });
+  if (args.help)
+    return ok({
+      help: `Usage: slidesls inspect <items...> [--readme] [--registry-root <path>] [--registry-url <url>] [--json]`,
+    });
+  rejectRemovedRegistryOption(args);
   if (!args._.length) throw usageError("slidesls inspect requires at least one item name");
   const data = await registryData(args);
   const items = [];
@@ -303,19 +323,13 @@ export async function validateCommand(argv) {
   let html = "";
   if (await exists(entryPath)) {
     html = await readFile(entryPath, "utf8");
-    if (!/<body\b[^>]*class=["'][^"']*\bls-page\b/i.test(html))
+    if (!hasElementWithClass(html, "body", "ls-page"))
       errors.push({ code: "missing_body_class", message: "body.ls-page is required" });
-    if (
-      !/<[^>]+class=["'][^"']*\bls-deck\b[^"']*["'][^>]*data-ls-deck/i.test(html) &&
-      !/<[^>]+data-ls-deck[^>]*class=["'][^"']*\bls-deck\b/i.test(html)
-    )
+    if (!hasDeckElement(html))
       errors.push({ code: "missing_deck", message: ".ls-deck[data-ls-deck] is required" });
-    if (!/class=["'][^"']*\bls-slide\b/i.test(html))
+    if (!hasElementWithClass(html, "[a-z][a-z0-9:-]*", "ls-slide"))
       errors.push({ code: "missing_slide", message: "At least one .ls-slide is required" });
-    if (
-      !/slide-runtime\.js/i.test(html) ||
-      !/<script\b[^>]*type=["']module["'][^>]*slide-runtime\.js/i.test(html)
-    )
+    if (!hasModuleRuntimeScript(html))
       errors.push({
         code: "missing_runtime",
         message: "slide-runtime.js must be loaded as a module script",
@@ -331,7 +345,7 @@ export async function validateCommand(argv) {
       if (!(await exists(target)))
         errors.push({ code: "missing_asset", message: `${ref} does not exist` });
     }
-    if (/data-lucide=/.test(html) && !/lucide/i.test(html))
+    if (usesLucideIcons(html) && !hasLucideScript(html))
       warnings.push({
         code: "lucide_missing",
         message: "data-lucide appears without a Lucide script; icons are opt-in.",
@@ -371,8 +385,9 @@ export async function doctorCommand(argv) {
   const args = parseArgs(argv, { boolean: ["json", "help"] });
   if (args.help)
     return ok({
-      help: `Usage: slidesls doctor [--dir <project>] [--registry-root <path>] [--json]`,
+      help: `Usage: slidesls doctor [--dir <project>] [--registry-root <path>] [--registry-url <url>] [--json]`,
     });
+  rejectRemovedRegistryOption(args);
   const start = path.resolve(args.dir || args._[0] || ".");
   const checks = [];
   const warnings = [];
@@ -468,6 +483,7 @@ export async function validateRegistryCommand(argv) {
     return ok({
       help: `Usage: slidesls validate-registry [--registry-root <path>] [--registry-url <url>] [--json]`,
     });
+  rejectRemovedRegistryOption(args);
   const result = await validateRegistry({
     registryRoot: args["registry-root"],
     registryUrl: args["registry-url"],
@@ -485,8 +501,9 @@ export async function generateCatalogCommand(argv) {
   const args = parseArgs(argv, { boolean: ["json", "help", "check"] });
   if (args.help)
     return ok({
-      help: `Usage: slidesls generate-catalog [--registry-root <path>] [--output <path>] [--check] [--json]`,
+      help: `Usage: slidesls generate-catalog [--registry-root <path>] [--registry-url <url>] [--output <path>] [--check] [--json]`,
     });
+  rejectRemovedRegistryOption(args);
   const result = await generateCatalogDoc({
     registryRoot: args["registry-root"],
     registryUrl: args["registry-url"],
@@ -510,6 +527,7 @@ export async function previewCommand(argv) {
   const config = mergeConfig(foundConfig || {});
   const host = args.host || "127.0.0.1";
   const desiredPort = Number(args.port || 4321);
+  const realRoot = await realpath(root);
   const server = createServer(async (request, response) => {
     const url = new URL(request.url || "/", `http://${host}`);
     const relative =
@@ -517,8 +535,10 @@ export async function previewCommand(argv) {
     const target = path.join(root, relative);
     try {
       assertInside(root, target);
+      const realTarget = await realpath(target);
+      assertInside(realRoot, realTarget);
       response.setHeader("Content-Type", contentType(target));
-      response.end(await readFile(target));
+      response.end(await readFile(realTarget));
     } catch {
       response.statusCode = 404;
       response.end("Not found");
@@ -586,8 +606,13 @@ export function textFor(command, result) {
     return result.data.valid
       ? `slidesls validate: ok (${result.data.root})\n`
       : `slidesls validate: failed (${result.data.errors.length} error(s))\n${result.data.errors.map((e) => `- ${e.message}`).join("\n")}\n`;
-  if (command === "add")
-    return `Copied ${result.data.copied} file(s). Add these tags if needed:\n${[...result.data.links, ...result.data.scripts].join("\n")}\n`;
+  if (command === "add") {
+    const links = result.data.links || [];
+    const scripts = result.data.scripts || [];
+    const count = result.data.dryRun ? result.data.files.length : result.data.copied;
+    const action = result.data.dryRun ? "Would copy" : "Copied";
+    return `${action} ${count} file(s). Add these tags if needed:\n${[...links, ...scripts].join("\n")}\n`;
+  }
   if (command === "init")
     return `Initialized ${result.data.root}\nNext steps:\n${result.data.nextSteps.map((s) => `  ${s}`).join("\n")}\n`;
   if (command === "preview") return `Serving ${result.data.root} at ${result.data.url}\n`;
@@ -604,6 +629,6 @@ export function textFor(command, result) {
       ? `slidesls validate-examples: ok (${result.data.checkedExamples} example(s))\n`
       : `slidesls validate-examples: failed (${result.data.errors.length} error(s))\n${result.data.errors.map((e) => `- ${e.message}`).join("\n")}\n`;
   if (command === "generate-catalog")
-    return `${result.data.ok ? "Catalog is up to date" : "Wrote catalog"}: ${result.data.output}\n`;
+    return `${result.data.checked ? "Catalog is up to date" : "Wrote catalog"}: ${result.data.output}\n`;
   return `${JSON.stringify(result.data, null, 2)}\n`;
 }

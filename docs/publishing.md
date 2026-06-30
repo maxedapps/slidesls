@@ -1,6 +1,6 @@
 # Publishing
 
-Package name: `@maxedapps/slidels`.
+Package name: `@maxedapps/slidesls`.
 Binary name: `slidesls`.
 
 Publishing is manual and requires explicit approval.
@@ -17,7 +17,7 @@ Then test the tarball in a temp project:
 
 ```sh
 npm init -y
-npm install /path/to/maxedapps-slidels-*.tgz
+npm install /path/to/maxedapps-slidesls-*.tgz
 npx slidesls init deck --template minimal --title "Packed Smoke"
 npx slidesls add components/card --dir deck
 npx slidesls validate deck

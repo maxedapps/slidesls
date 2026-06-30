@@ -4,19 +4,19 @@ Agent-primary slide authoring CLI and copyable registry for plain HTML/CSS/JS de
 
 `slidesls` helps agents and humans initialize deck folders, copy registry primitives, validate decks, and preview them locally. The npm package is an authoring tool only; generated decks remain editable vanilla files with no runtime package dependency.
 
-Package: `@maxedapps/slidels` (binary: `slidesls`). Publishing remains manual until explicitly approved.
+Package: `@maxedapps/slidesls` (binary: `slidesls`). Publishing remains manual until explicitly approved.
 
 ## Quickstart
 
 After publish:
 
 ```sh
-npx @maxedapps/slidels init my-deck --title "My Deck"
+npx @maxedapps/slidesls init my-deck --title "My Deck"
 cd my-deck
-npx @maxedapps/slidels catalog
-npx @maxedapps/slidels add layouts/two-column components/card
-npx @maxedapps/slidels validate
-npx @maxedapps/slidels preview
+npx @maxedapps/slidesls catalog
+npx @maxedapps/slidesls add layouts/two-column components/card
+npx @maxedapps/slidesls validate
+npx @maxedapps/slidesls preview
 ```
 
 Local repo development:

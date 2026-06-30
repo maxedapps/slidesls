@@ -21,8 +21,3 @@ export function fail(error) {
 export function printJson(value) {
   process.stdout.write(`${JSON.stringify(value, null, 2)}\n`);
 }
-
-export function printResult(result, json, text) {
-  if (json) printJson(result);
-  else if (text) process.stdout.write(text);
-}

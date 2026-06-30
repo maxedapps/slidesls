@@ -7,7 +7,7 @@ Registry items are copyable primitives indexed by `registry.json`.
 Each item has `registry-item.json` with:
 
 - `name` — stable item id, e.g. `components/card`.
-- `type` — `core`, `layout`, `component`, `animation`, `preset`, or `preset/font`.
+- `type` — `ls:core`, `ls:layout`, `ls:component`, `ls:animation`, `ls:preset`, or a future `ls:preset/*` subtype.
 - `description`, `tags`, and optional `useCases`.
 - `registryDependencies` — other registry item names that must be copied first.
 - `files` — repo-relative implementation files.

@@ -2,7 +2,7 @@
 
 Generated from `registry.json` and per-item metadata. Do not edit manually; run `slidesls generate-catalog`.
 
-## Other
+## Core
 
 ### core/base
 
@@ -13,14 +13,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Files: registry/core/base/reset.css, registry/core/base/tokens.css, registry/core/base/slide.css, registry/core/base/icons.css, registry/core/base/slide-runtime.js
 - Docs: registry/core/base/README.md
 
-### animations/reveal
-
-- Label: Reveal
-- Type: ls:animation
-- Description: Vanilla CSS reveal transitions driven by the core slide runtime.
-- Registry dependencies: core/base
-- Files: registry/animations/reveal/reveal.css
-- Docs: registry/animations/reveal/README.md
+## Layouts
 
 ### layouts/title-hero
 
@@ -39,60 +32,6 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Registry dependencies: core/base
 - Files: registry/layouts/detail-split/detail-split.css
 - Docs: registry/layouts/detail-split/README.md
-
-### components/badge
-
-- Label: Badge
-- Type: ls:component
-- Description: Compact labels for slide metadata and short attributes.
-- Registry dependencies: core/base
-- Files: registry/components/badge/badge.css
-- Docs: registry/components/badge/README.md
-
-### components/card
-
-- Label: Card
-- Type: ls:component
-- Description: Flat feature and explanation cards for slide content.
-- Registry dependencies: core/base
-- Files: registry/components/card/card.css
-- Docs: registry/components/card/README.md
-
-### components/diagram
-
-- Label: Diagram
-- Type: ls:component
-- Description: Simple flow and file-tree diagram primitives for concept slides.
-- Registry dependencies: core/base
-- Files: registry/components/diagram/diagram.css
-- Docs: registry/components/diagram/README.md
-
-### presets/fonts/editorial-serif
-
-- Label: Editorial Serif
-- Type: ls:preset
-- Description: Serif heading and display font role remap for editorial slide decks.
-- Registry dependencies: core/base
-- Files: registry/presets/fonts/editorial-serif/font.css
-- Docs: registry/presets/fonts/editorial-serif/README.md
-
-### presets/fonts/technical-mono
-
-- Label: Technical Mono
-- Type: ls:preset
-- Description: Monospace label font role remap for technical slide decks.
-- Registry dependencies: core/base
-- Files: registry/presets/fonts/technical-mono/font.css
-- Docs: registry/presets/fonts/technical-mono/README.md
-
-### presets/fonts/system-humanist
-
-- Label: System Humanist
-- Type: ls:preset
-- Description: Humanist system sans font role remap for professional slide decks.
-- Registry dependencies: core/base
-- Files: registry/presets/fonts/system-humanist/font.css
-- Docs: registry/presets/fonts/system-humanist/README.md
 
 ### layouts/asymmetric-feature
 
@@ -147,6 +86,89 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Registry dependencies: core/base
 - Files: registry/layouts/two-column/two-column.css
 - Docs: registry/layouts/two-column/README.md
+
+### layouts/three-column
+
+- Label: Three Column
+- Type: ls:layout
+- Description: Three-column slide layout.
+- Registry dependencies: core/base
+- Files: registry/layouts/three-column/three-column.css
+- Docs: registry/layouts/three-column/README.md
+
+### layouts/metric-dashboard
+
+- Label: Metric Dashboard
+- Type: ls:layout
+- Description: Dashboard layout for headline insights and metrics.
+- Registry dependencies: core/base
+- Files: registry/layouts/metric-dashboard/metric-dashboard.css
+- Docs: registry/layouts/metric-dashboard/README.md
+
+### layouts/timeline-strip
+
+- Label: Timeline Strip
+- Type: ls:layout
+- Description: Full-slide horizontal timeline layout.
+- Registry dependencies: core/base
+- Files: registry/layouts/timeline-strip/timeline-strip.css
+- Docs: registry/layouts/timeline-strip/README.md
+
+### layouts/code-explainer
+
+- Label: Code Explainer
+- Type: ls:layout
+- Description: Code-and-notes explainer layout.
+- Registry dependencies: core/base
+- Files: registry/layouts/code-explainer/code-explainer.css
+- Docs: registry/layouts/code-explainer/README.md
+
+### layouts/quote-feature
+
+- Label: Quote Feature
+- Type: ls:layout
+- Description: Full-slide quote feature layout.
+- Registry dependencies: core/base
+- Files: registry/layouts/quote-feature/quote-feature.css
+- Docs: registry/layouts/quote-feature/README.md
+
+### layouts/layered-canvas
+
+- Label: Layered Canvas
+- Type: ls:layout
+- Description: Layered visual canvas layout.
+- Registry dependencies: core/base
+- Files: registry/layouts/layered-canvas/layered-canvas.css
+- Docs: registry/layouts/layered-canvas/README.md
+
+## Components
+
+### components/badge
+
+- Label: Badge
+- Type: ls:component
+- Description: Compact labels for slide metadata and short attributes.
+- Registry dependencies: core/base
+- Files: registry/components/badge/badge.css
+- Docs: registry/components/badge/README.md
+
+### components/card
+
+- Label: Card
+- Type: ls:component
+- Description: Flat feature and explanation cards for slide content.
+- Registry dependencies: core/base
+- Files: registry/components/card/card.css
+- Docs: registry/components/card/README.md
+
+### components/diagram
+
+- Label: Diagram
+- Type: ls:component
+- Description: Simple flow and file-tree diagram primitives for concept slides.
+- Registry dependencies: core/base
+- Files: registry/components/diagram/diagram.css
+- Docs: registry/components/diagram/README.md
 
 ### components/bullet-list
 
@@ -211,69 +233,6 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Files: registry/components/stat-grid/stat-grid.css
 - Docs: registry/components/stat-grid/README.md
 
-### animations/fade
-
-- Label: Fade
-- Type: ls:animation
-- Description: Reveal-compatible fade animation utility.
-- Registry dependencies: core/base, animations/reveal
-- Files: registry/animations/fade/fade.css
-- Docs: registry/animations/fade/README.md
-
-### animations/slide-up
-
-- Label: Slide Up
-- Type: ls:animation
-- Description: Reveal-compatible slide up animation utility.
-- Registry dependencies: core/base, animations/reveal
-- Files: registry/animations/slide-up/slide-up.css
-- Docs: registry/animations/slide-up/README.md
-
-### animations/stagger
-
-- Label: Stagger
-- Type: ls:animation
-- Description: Reveal-compatible stagger animation utility.
-- Registry dependencies: core/base, animations/reveal
-- Files: registry/animations/stagger/stagger.css
-- Docs: registry/animations/stagger/README.md
-
-### layouts/three-column
-
-- Label: Three Column
-- Type: ls:layout
-- Description: Three-column slide layout.
-- Registry dependencies: core/base
-- Files: registry/layouts/three-column/three-column.css
-- Docs: registry/layouts/three-column/README.md
-
-### layouts/metric-dashboard
-
-- Label: Metric Dashboard
-- Type: ls:layout
-- Description: Dashboard layout for headline insights and metrics.
-- Registry dependencies: core/base
-- Files: registry/layouts/metric-dashboard/metric-dashboard.css
-- Docs: registry/layouts/metric-dashboard/README.md
-
-### layouts/timeline-strip
-
-- Label: Timeline Strip
-- Type: ls:layout
-- Description: Full-slide horizontal timeline layout.
-- Registry dependencies: core/base
-- Files: registry/layouts/timeline-strip/timeline-strip.css
-- Docs: registry/layouts/timeline-strip/README.md
-
-### layouts/code-explainer
-
-- Label: Code Explainer
-- Type: ls:layout
-- Description: Code-and-notes explainer layout.
-- Registry dependencies: core/base
-- Files: registry/layouts/code-explainer/code-explainer.css
-- Docs: registry/layouts/code-explainer/README.md
-
 ### components/table
 
 - Label: Table
@@ -337,33 +296,6 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Files: registry/components/divider/divider.css
 - Docs: registry/components/divider/README.md
 
-### animations/scale-in
-
-- Label: Scale In
-- Type: ls:animation
-- Description: Reveal-compatible scale-in animation.
-- Registry dependencies: core/base, animations/reveal
-- Files: registry/animations/scale-in/scale-in.css
-- Docs: registry/animations/scale-in/README.md
-
-### animations/step-focus
-
-- Label: Step Focus
-- Type: ls:animation
-- Description: CSS-only step focus animation companion.
-- Registry dependencies: core/base, animations/reveal
-- Files: registry/animations/step-focus/step-focus.css
-- Docs: registry/animations/step-focus/README.md
-
-### animations/highlight
-
-- Label: Highlight
-- Type: ls:animation
-- Description: Subtle highlight emphasis animation.
-- Registry dependencies: core/base, animations/reveal
-- Files: registry/animations/highlight/highlight.css
-- Docs: registry/animations/highlight/README.md
-
 ### components/annotation
 
 - Label: Annotation
@@ -400,23 +332,70 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Files: registry/components/legend/legend.css
 - Docs: registry/components/legend/README.md
 
-### layouts/quote-feature
+## Animations
 
-- Label: Quote Feature
-- Type: ls:layout
-- Description: Full-slide quote feature layout.
+### animations/reveal
+
+- Label: Reveal
+- Type: ls:animation
+- Description: Vanilla CSS reveal transitions driven by the core slide runtime.
 - Registry dependencies: core/base
-- Files: registry/layouts/quote-feature/quote-feature.css
-- Docs: registry/layouts/quote-feature/README.md
+- Files: registry/animations/reveal/reveal.css
+- Docs: registry/animations/reveal/README.md
 
-### layouts/layered-canvas
+### animations/fade
 
-- Label: Layered Canvas
-- Type: ls:layout
-- Description: Layered visual canvas layout.
-- Registry dependencies: core/base
-- Files: registry/layouts/layered-canvas/layered-canvas.css
-- Docs: registry/layouts/layered-canvas/README.md
+- Label: Fade
+- Type: ls:animation
+- Description: Reveal-compatible fade animation utility.
+- Registry dependencies: core/base, animations/reveal
+- Files: registry/animations/fade/fade.css
+- Docs: registry/animations/fade/README.md
+
+### animations/slide-up
+
+- Label: Slide Up
+- Type: ls:animation
+- Description: Reveal-compatible slide up animation utility.
+- Registry dependencies: core/base, animations/reveal
+- Files: registry/animations/slide-up/slide-up.css
+- Docs: registry/animations/slide-up/README.md
+
+### animations/stagger
+
+- Label: Stagger
+- Type: ls:animation
+- Description: Reveal-compatible stagger animation utility.
+- Registry dependencies: core/base, animations/reveal
+- Files: registry/animations/stagger/stagger.css
+- Docs: registry/animations/stagger/README.md
+
+### animations/scale-in
+
+- Label: Scale In
+- Type: ls:animation
+- Description: Reveal-compatible scale-in animation.
+- Registry dependencies: core/base, animations/reveal
+- Files: registry/animations/scale-in/scale-in.css
+- Docs: registry/animations/scale-in/README.md
+
+### animations/step-focus
+
+- Label: Step Focus
+- Type: ls:animation
+- Description: CSS-only step focus animation companion.
+- Registry dependencies: core/base, animations/reveal
+- Files: registry/animations/step-focus/step-focus.css
+- Docs: registry/animations/step-focus/README.md
+
+### animations/highlight
+
+- Label: Highlight
+- Type: ls:animation
+- Description: Subtle highlight emphasis animation.
+- Registry dependencies: core/base, animations/reveal
+- Files: registry/animations/highlight/highlight.css
+- Docs: registry/animations/highlight/README.md
 
 ### animations/pulse
 
@@ -453,3 +432,32 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Registry dependencies: core/base, animations/reveal
 - Files: registry/animations/path-draw/path-draw.css
 - Docs: registry/animations/path-draw/README.md
+
+## Presets
+
+### presets/fonts/editorial-serif
+
+- Label: Editorial Serif
+- Type: ls:preset
+- Description: Serif heading and display font role remap for editorial slide decks.
+- Registry dependencies: core/base
+- Files: registry/presets/fonts/editorial-serif/font.css
+- Docs: registry/presets/fonts/editorial-serif/README.md
+
+### presets/fonts/technical-mono
+
+- Label: Technical Mono
+- Type: ls:preset
+- Description: Monospace label font role remap for technical slide decks.
+- Registry dependencies: core/base
+- Files: registry/presets/fonts/technical-mono/font.css
+- Docs: registry/presets/fonts/technical-mono/README.md
+
+### presets/fonts/system-humanist
+
+- Label: System Humanist
+- Type: ls:preset
+- Description: Humanist system sans font role remap for professional slide decks.
+- Registry dependencies: core/base
+- Files: registry/presets/fonts/system-humanist/font.css
+- Docs: registry/presets/fonts/system-humanist/README.md
