@@ -11,5 +11,14 @@
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/components/progress/README.md"
+  "docs": "registry/components/progress/README.md",
+  "rootClass": "ls-progress",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Basic progress",
+      "path": "registry/components/progress/snippets/basic.html"
+    }
+  ]
 }

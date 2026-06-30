@@ -1,0 +1,16 @@
+{
+  "name": "utilities/layout",
+  "type": "ls:utility",
+  "description": "Reusable layout utilities for stacks, clusters, grids, centering, and fill behavior.",
+  "files": [{ "path": "registry/utilities/layout/layout.css", "type": "registry:style" }],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/utilities/layout/README.md",
+  "rootClass": "ls-stack",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "snippets": [
+    { "label": "Basic utility layouts", "path": "registry/utilities/layout/snippets/basic.html" }
+  ]
+}

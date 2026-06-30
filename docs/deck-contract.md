@@ -1,6 +1,6 @@
 # Deck contract
 
-Generated decks are plain HTML/CSS/JS. The stable deck API keeps the existing `.ls-*` classes and `data-ls-*` attributes.
+Generated decks are plain HTML/CSS/JS. The stable deck API is the shell, copied registry assets, and `.ls-*` classes provided by those assets.
 
 ## Required shell
 
@@ -8,6 +8,16 @@ Generated decks are plain HTML/CSS/JS. The stable deck API keeps the existing `.
 - `.ls-deck[data-ls-deck]`
 - one or more `.ls-slide` elements
 - `slide-runtime.js` loaded as a module script
+
+## Composition model
+
+Use:
+
+- utilities for layout (`.ls-stack`, `.ls-grid`, `.ls-center`, `.ls-fill`);
+- standalone components for content (`.ls-card`, `.ls-panel`, `.ls-metric`, etc.);
+- template snippets for complete slide skeletons.
+
+Avoid hidden ancestor-dependent layout classes. Templates should be pasted as HTML and then edited directly.
 
 ## Asset model
 

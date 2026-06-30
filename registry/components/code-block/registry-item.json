@@ -11,5 +11,14 @@
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/components/code-block/README.md"
+  "docs": "registry/components/code-block/README.md",
+  "rootClass": "ls-code-block",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Basic code block",
+      "path": "registry/components/code-block/snippets/basic.html"
+    }
+  ]
 }

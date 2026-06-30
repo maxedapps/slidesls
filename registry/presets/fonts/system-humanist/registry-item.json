@@ -3,10 +3,15 @@
   "type": "ls:preset",
   "description": "Humanist system sans font role remap for professional slide decks.",
   "files": [
-    { "path": "registry/presets/fonts/system-humanist/font.css", "type": "registry:style" }
+    {
+      "path": "registry/presets/fonts/system-humanist/font.css",
+      "type": "registry:style"
+    }
   ],
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/presets/fonts/system-humanist/README.md"
+  "docs": "registry/presets/fonts/system-humanist/README.md",
+  "safeAnywhere": true,
+  "agentRecommended": false
 }

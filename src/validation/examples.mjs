@@ -95,25 +95,21 @@ export async function validateExamples({ root = process.cwd() } = {}) {
     }
   }
 
-  const templateCandidates = ["src/deck/templates.mjs"];
-  for (const relative of templateCandidates) {
-    const templatePath = path.join(root, relative);
-    if (!(await fileExists(templatePath))) continue;
-    const html = await readFile(templatePath, "utf8");
-    if (html.includes("title-hero.css")) {
-      if (!html.includes("ls-layout-title-hero"))
-        push(
-          errors,
-          "missing_title_hero_hook",
-          `${relative} links title-hero.css but does not include ls-layout-title-hero.`,
-        );
-      if (html.includes("ls-slide__inner ls-title-hero"))
-        push(
-          errors,
-          "obsolete_title_hero_hook",
-          `${relative} still contains obsolete inner title-hero hook.`,
-        );
-    }
+  for (const relative of [
+    "src/deck/templates.mjs",
+    ...files.map((file) => path.relative(root, file)),
+  ]) {
+    const candidatePath = path.join(root, relative);
+    if (!(await fileExists(candidatePath))) continue;
+    const html = await readFile(candidatePath, "utf8");
+    if (/\bls-layout-[\w-]+/.test(html))
+      push(errors, "removed_layout_class", `${relative} uses removed ls-layout-* classes.`);
+    if (html.includes("ls-grid") && !html.includes("utilities/layout/layout.css"))
+      push(
+        errors,
+        "missing_layout_utilities",
+        `${relative} uses ls-grid but does not reference utilities/layout/layout.css.`,
+      );
   }
 
   return { valid: errors.length === 0, root, checkedExamples: files.length, errors, warnings };

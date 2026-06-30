@@ -2,9 +2,16 @@
   "name": "animations/reveal",
   "type": "ls:animation",
   "description": "Vanilla CSS reveal transitions driven by the core slide runtime.",
-  "files": [{ "path": "registry/animations/reveal/reveal.css", "type": "registry:style" }],
+  "files": [
+    {
+      "path": "registry/animations/reveal/reveal.css",
+      "type": "registry:style"
+    }
+  ],
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/animations/reveal/README.md"
+  "docs": "registry/animations/reveal/README.md",
+  "safeAnywhere": true,
+  "agentRecommended": true
 }

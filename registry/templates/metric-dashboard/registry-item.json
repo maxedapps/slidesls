@@ -1,0 +1,25 @@
+{
+  "name": "templates/metric-dashboard",
+  "type": "ls:template",
+  "description": "Dashboard template for metrics and progress indicators.",
+  "files": [],
+  "registryDependencies": [
+    "core/base",
+    "utilities/layout",
+    "components/metric",
+    "components/progress",
+    "components/panel"
+  ],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/templates/metric-dashboard/README.md",
+  "rootClass": null,
+  "safeAnywhere": false,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Metric dashboard slide",
+      "path": "registry/templates/metric-dashboard/snippet.html"
+    }
+  ]
+}

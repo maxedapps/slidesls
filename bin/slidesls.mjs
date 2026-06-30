@@ -10,10 +10,15 @@ const globalBooleanOptions = [
   "dry-run",
   "strict",
   "include-docs",
-  "open",
   "readme",
+  "recommended",
   "check",
 ];
+
+process.stdout.on("error", (error) => {
+  if (error.code === "EPIPE") process.exit(0);
+  throw error;
+});
 
 const argv = process.argv.slice(2);
 const command = argv[0] && !argv[0].startsWith("--") ? argv[0] : "help";

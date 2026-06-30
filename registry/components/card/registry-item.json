@@ -2,9 +2,23 @@
   "name": "components/card",
   "type": "ls:component",
   "description": "Flat feature and explanation cards for slide content.",
-  "files": [{ "path": "registry/components/card/card.css", "type": "registry:style" }],
+  "files": [
+    {
+      "path": "registry/components/card/card.css",
+      "type": "registry:style"
+    }
+  ],
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/components/card/README.md"
+  "docs": "registry/components/card/README.md",
+  "rootClass": "ls-card",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Basic card",
+      "path": "registry/components/card/snippets/basic.html"
+    }
+  ]
 }

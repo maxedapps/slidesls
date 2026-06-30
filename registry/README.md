@@ -6,17 +6,19 @@ Copyable slidesls building blocks live here. Items are framework-agnostic, depen
 
 Each item directory should include:
 
-- implementation files such as `.css` or `.js`;
+- implementation files such as `.css` or `.js` when the item has copied assets;
 - `registry-item.json` metadata;
-- `README.md` with item-specific usage/API notes.
+- `README.md` with item-specific usage/API notes;
+- optional `snippets/*.html` for paste-ready markup.
 
 The root `registry.json` indexes metadata files.
 
 ## Categories
 
 - `core/base` — required reset, tokens, slide shell, and runtime assets.
-- `layouts/` — full-slide composition patterns.
-- `components/` — reusable content, data, media, technical, and visual primitives.
+- `utilities/` — layout helpers that work anywhere.
+- `components/` — standalone content, data, media, technical, and visual primitives.
+- `templates/` — full slide skeleton snippets composed from utilities and components.
 - `animations/` — optional reveal-compatible animation recipes.
 - `presets/` — scoped token/style remaps such as font-family presets.
 
@@ -24,17 +26,15 @@ The root `registry.json` indexes metadata files.
 
 Use `slidesls add <items...>` to resolve `registryDependencies`, copy files safely, and update the deck manifest. Manual copying is supported, but load `core/base` before other items.
 
-Recommended CSS order:
+Recommended discovery flow:
 
-1. `core/base/reset.css`
-2. `core/base/tokens.css`
-3. `core/base/slide.css`
-4. optional presets
-5. layouts
-6. components
-7. animations
+```sh
+slidesls catalog --recommended --json
+slidesls inspect templates/split --json
+slidesls add utilities/layout components/panel components/card
+```
 
-Font presets are ordinary CSS files activated with scoped attributes such as `data-ls-font="editorial-serif"`.
+Template snippet HTML is exposed through `inspect`; it is not copied into deck assets by `add`.
 
 ## Validation
 

@@ -1,0 +1,76 @@
+@layer utilities {
+  .ls-stack {
+    display: grid;
+    gap: var(--ls-stack-gap, var(--ls-space-4));
+    min-inline-size: 0;
+  }
+
+  .ls-stack--sm {
+    --ls-stack-gap: var(--ls-space-2);
+  }
+
+  .ls-stack--lg {
+    --ls-stack-gap: var(--ls-space-6);
+  }
+
+  .ls-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ls-cluster-gap, var(--ls-space-3));
+    align-items: var(--ls-cluster-align, center);
+    min-inline-size: 0;
+  }
+
+  .ls-grid {
+    display: grid;
+    gap: var(--ls-grid-gap, var(--ls-space-5));
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+
+  .ls-grid--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ls-grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ls-grid--wide-left {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  }
+
+  .ls-grid--wide-right {
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  }
+
+  .ls-center {
+    display: grid;
+    place-items: center;
+    text-align: center;
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+
+  .ls-fill {
+    block-size: 100%;
+    min-block-size: 0;
+  }
+
+  .ls-frame {
+    display: grid;
+    place-items: center;
+    min-block-size: var(--ls-frame-min-block-size, 320px);
+    border-radius: var(--ls-radius-xl);
+    overflow: hidden;
+  }
+
+  @container (width < 900px) {
+    .ls-grid--2,
+    .ls-grid--3,
+    .ls-grid--wide-left,
+    .ls-grid--wide-right {
+      grid-template-columns: 1fr;
+    }
+  }
+}

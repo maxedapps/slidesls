@@ -1,0 +1,19 @@
+{
+  "name": "templates/section-divider",
+  "type": "ls:template",
+  "description": "Section break template for transitions between topics.",
+  "files": [],
+  "registryDependencies": ["core/base", "utilities/layout", "components/badge"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/templates/section-divider/README.md",
+  "rootClass": null,
+  "safeAnywhere": false,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Section divider slide",
+      "path": "registry/templates/section-divider/snippet.html"
+    }
+  ]
+}

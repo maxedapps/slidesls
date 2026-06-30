@@ -5,15 +5,17 @@
 - `registry.json` indexes item metadata paths.
 - Each item has `registry/<category>/<item>/registry-item.json`.
 - Item READMEs are concise usage contracts.
-- Item CSS/JS files are the copyable implementation.
+- Item CSS/JS files are copied implementation.
+- Item snippets are paste-ready HTML returned by `slidesls inspect --json`.
 
-Scripts derive agent-facing catalogs from these files. Do not assume a `title` field exists; derive display labels from `name` and use `description` for intent.
+The CLI is the authoritative discovery surface for agents: use `slidesls catalog --recommended --json` and `slidesls inspect <item> --readme --json` instead of guessing from file names.
 
 ## Item types
 
 - `ls:core` — mandatory base assets.
-- `ls:layout` — full-slide or region layout patterns.
-- `ls:component` — reusable content blocks.
+- `ls:utility` — layout/helper classes that work anywhere.
+- `ls:component` — standalone content/visual blocks.
+- `ls:template` — full slide skeleton snippets composed from utilities/components.
 - `ls:animation` — optional reveal or emphasis recipes.
 - `ls:preset` — scoped token/style remaps.
 
@@ -22,25 +24,23 @@ Scripts derive agent-facing catalogs from these files. Do not assume a `title` f
 - `registryDependencies` are other registry item names to copy/load, not npm packages.
 - `dependencies` and `devDependencies` should remain empty unless a future item explicitly documents external requirements.
 - `core/base` must load first.
-- Animation variants generally require `animations/reveal` before the variant CSS.
-- Layouts usually keep loose dependencies and document compatible components instead of requiring them.
+- Templates should list all assets needed by their snippet.
+- Template snippets live in `snippets`, not `files`, so `add` does not copy snippet HTML into deck assets.
 
 ## Load order
 
-Recommended deck order:
+Use `slidesls add` and returned load tags whenever possible. Manual deck order usually is:
 
 1. `registry/core/base/reset.css`
 2. `registry/core/base/tokens.css`
 3. `registry/core/base/slide.css`
 4. `registry/core/base/icons.css` if using icon wrappers
-5. Preset CSS where scoped by an attribute such as `data-ls-font`
-6. Layout CSS
-7. Component CSS
-8. `registry/animations/reveal/reveal.css`
-9. Animation variant CSS
-10. `registry/core/base/slide-runtime.js` as a module script
+5. Presets where scoped by an attribute such as `data-ls-font`
+6. Components and animations as needed
+7. `registry/utilities/layout/layout.css`
+8. `registry/core/base/slide-runtime.js` as a module script
 
-Scoped presets can also load later when their selectors are explicitly attribute-scoped, but keep this order in generated decks for consistency. Follow an item README when it gives a stricter order.
+Utilities intentionally load late so their classes can be applied anywhere.
 
 ## Runtime/deck contract
 

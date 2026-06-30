@@ -32,9 +32,16 @@ import { deckTemplate } from "../deck/templates.mjs";
 import { validateRegistry } from "../validation/registry.mjs";
 import { validateExamples } from "../validation/examples.mjs";
 import { generateCatalogDoc } from "../registry/catalog-doc.mjs";
+import {
+  defaultSkillTarget,
+  performSkillInstall,
+  performSkillLink,
+  readSkillMarkdown,
+  skillInfo,
+} from "../skill/agent-skill.mjs";
 
 const coreItems = ["core/base"];
-const minimalItems = ["core/base", "layouts/title-hero"];
+const minimalItems = ["core/base", "utilities/layout", "components/badge", "components/panel"];
 
 export const help = `slidesls — plain HTML/CSS/JS slide authoring CLI
 
@@ -42,10 +49,11 @@ Usage:
   slidesls <command> [options]
 
 Commands:
-  init [dir]       Create or prepare a deck project
+  init [dir]       Initialize a deck in the current directory, or in [dir]
   add <items...>   Copy registry items into a deck project
-  catalog          List registry items
-  inspect <items>  Show item metadata and load guidance
+  catalog          List registry items, with --recommended for agent-safe items
+  inspect <items>  Show metadata, load guidance, and snippets
+  skill            Show, install, or link the bundled agent skill
   validate [dir]           Static deck validation
   preview [dir]            Serve a deck locally
   doctor                   Check CLI/project health
@@ -53,6 +61,12 @@ Commands:
   validate-examples        Validate repo example/template references
   generate-catalog         Generate/check agent catalog docs
   help                     Show help
+
+Agent usage:
+  slidesls skill install ./.claude/skills/slidesls
+  slidesls catalog --recommended --json
+  slidesls inspect templates/split --json
+  slidesls add utilities/layout components/panel components/card --dry-run --json
 
 Common options:
   --json           Machine-readable output
@@ -69,6 +83,8 @@ export async function runCommand(command, argv) {
       return catalogCommand(argv);
     case "inspect":
       return inspectCommand(argv);
+    case "skill":
+      return skillCommand(argv);
     case "validate":
       return validateCommand(argv);
     case "preview":
@@ -112,7 +128,10 @@ export async function initCommand(argv) {
   const args = parseArgs(argv, { boolean: ["force", "json", "help"] });
   if (args.help)
     return ok({
-      help: `Usage: slidesls init [dir] [--template blank|minimal] [--title <text>] [--registry-root <path>] [--registry-url <url>] [--force] [--json]`,
+      help: `Usage: slidesls init [dir] [--template blank|minimal] [--title <text>] [--registry-root <path>] [--registry-url <url>] [--force] [--json]
+
+Initializes the current directory by default. If [dir] is supplied, initializes that directory.
+Use a dedicated deck folder inside larger projects to avoid adding deck files to the project root.`,
     });
   rejectRemovedRegistryOption(args);
   const projectRoot = path.resolve(args._[0] || ".");
@@ -182,8 +201,9 @@ export async function initCommand(argv) {
     template,
     items: items.map((i) => i.name),
     nextSteps: [
-      "slidesls catalog",
-      "slidesls add layouts/two-column components/card",
+      "slidesls catalog --recommended",
+      "slidesls inspect templates/split --json",
+      "slidesls add utilities/layout components/card components/panel",
       "slidesls validate",
       "slidesls preview",
     ],
@@ -253,14 +273,15 @@ export async function addCommand(argv) {
 }
 
 export async function catalogCommand(argv) {
-  const args = parseArgs(argv, { boolean: ["json", "help"] });
+  const args = parseArgs(argv, { boolean: ["json", "help", "recommended"] });
   if (args.help)
     return ok({
-      help: `Usage: slidesls catalog [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path>] [--registry-url <url>] [--json]`,
+      help: `Usage: slidesls catalog [--recommended] [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path>] [--registry-url <url>] [--json]`,
     });
   rejectRemovedRegistryOption(args);
   const data = await registryData(args);
   let items = data.items.map(summarizeItem);
+  if (args.recommended) items = items.filter((item) => item.agentRecommended === true);
   if (args.type)
     items = items.filter(
       (item) => item.type === args.type || item.type.endsWith(String(args.type)),
@@ -287,6 +308,8 @@ export async function inspectCommand(argv) {
   rejectRemovedRegistryOption(args);
   if (!args._.length) throw usageError("slidesls inspect requires at least one item name");
   const data = await registryData(args);
+  const source = registrySource(args);
+  const requested = new Set(args._);
   const items = [];
   for (const item of resolveItems(data, args._)) {
     const summary = summarizeItem(item);
@@ -298,10 +321,63 @@ export async function inspectCommand(argv) {
     });
     const tags = tagsForWrites(writes);
     let readme = null;
-    if (args.readme && item.docs) readme = await registrySource(args).readText(item.docs);
-    items.push({ ...summary, load: tags, readme });
+    if (args.readme && item.docs) readme = await source.readText(item.docs);
+    const snippets = requested.has(item.name)
+      ? await Promise.all(
+          (item.snippets || []).map(async (snippet) => ({
+            ...snippet,
+            html: await source.readText(snippet.path),
+          })),
+        )
+      : item.snippets || [];
+    items.push({ ...summary, snippets, load: tags, readme });
   }
   return ok({ items });
+}
+
+export async function skillCommand(argv) {
+  const args = parseArgs(argv, { boolean: ["json", "help", "dry-run", "force"] });
+  const subcommand = args._[0] || "info";
+  const targetDir = args._[1] ? path.resolve(args._[1]) : defaultSkillTarget();
+
+  if (args.help)
+    return ok({
+      help: `Usage:
+  slidesls skill info [--json]
+  slidesls skill show
+  slidesls skill install [dir] [--dry-run] [--force] [--json]
+  slidesls skill link [dir] [--force] [--json]
+
+Defaults:
+  [dir] defaults to ./.claude/skills/slidesls in the current project.
+
+Local checkout example:
+  node /path/to/ls_slides/bin/slidesls.mjs skill link ./.claude/skills/slidesls`,
+    });
+
+  switch (subcommand) {
+    case "info":
+      return ok(await skillInfo());
+    case "show":
+      return ok({ markdown: await readSkillMarkdown() });
+    case "install":
+      return ok(
+        await performSkillInstall({
+          targetDir,
+          dryRun: args["dry-run"],
+          force: args.force,
+        }),
+      );
+    case "link":
+      if (args["dry-run"])
+        throw usageError(
+          "slidesls skill link does not support --dry-run",
+          "Use skill install --dry-run.",
+        );
+      return ok(await performSkillLink({ targetDir, force: args.force }));
+    default:
+      throw usageError(`Unknown skill subcommand: ${subcommand}`, "Run slidesls skill --help.");
+  }
 }
 
 export async function validateCommand(argv) {
@@ -357,6 +433,7 @@ export async function validateCommand(argv) {
       });
   }
   const manifest = await readManifest(root, config);
+  if (html) validateClassDependencies({ html, manifest, errors, warnings });
   if (manifest) {
     for (const file of manifest.copiedFiles || []) {
       const target = path.join(root, file.targetPath);
@@ -467,6 +544,38 @@ export async function doctorCommand(argv) {
   });
 }
 
+function validateClassDependencies({ html, manifest, errors, warnings }) {
+  if (/\bls-layout-[\w-]+/.test(html))
+    errors.push({
+      code: "removed_layout_class",
+      message:
+        "ls-layout-* classes are not part of the current registry; use templates and utilities instead.",
+    });
+
+  const copied = new Set(manifest?.dependencyOrder || []);
+  const checks = [
+    { item: "utilities/layout", pattern: /\bls-(?:stack|cluster|grid|center|fill|frame)(?:\b|--)/ },
+    { item: "components/panel", pattern: /\bls-panel(?:\b|__|--)/ },
+    { item: "components/card", pattern: /\bls-card(?:\b|__|--)/ },
+    { item: "components/badge", pattern: /\bls-badge(?:\b|__|--)/ },
+    { item: "components/callout", pattern: /\bls-callout(?:\b|__|--)/ },
+    { item: "components/code-block", pattern: /\bls-code-block(?:\b|__|--)/ },
+    { item: "components/metric", pattern: /\bls-metric(?:\b|__|--)/ },
+    { item: "components/progress", pattern: /\bls-progress(?:\b|__|--)/ },
+    { item: "components/quote", pattern: /\bls-quote(?:\b|__|--)/ },
+    { item: "components/table", pattern: /\bls-table(?:\b|__|--)/ },
+    { item: "components/timeline", pattern: /\bls-timeline(?:\b|__|--)/ },
+  ];
+
+  for (const check of checks) {
+    if (check.pattern.test(html) && !copied.has(check.item))
+      warnings.push({
+        code: "missing_registry_item_for_class",
+        message: `${check.item} should be added when using its classes in HTML`,
+      });
+  }
+}
+
 function compareVersions(actual, required) {
   const a = actual.split(".").map(Number);
   const b = required.split(".").map(Number);
@@ -519,7 +628,7 @@ export async function generateCatalogCommand(argv) {
 }
 
 export async function previewCommand(argv) {
-  const args = parseArgs(argv, { boolean: ["json", "help", "open"] });
+  const args = parseArgs(argv, { boolean: ["json", "help"] });
   if (args.help)
     return ok({ help: `Usage: slidesls preview [dir] [--host <host>] [--port <port>] [--json]` });
   const start = path.resolve(args._[0] || args.dir || ".");
@@ -585,6 +694,12 @@ function listen(server, host, port) {
   });
 }
 
+function formatCounts(counts = {}) {
+  const entries = Object.entries(counts);
+  if (!entries.length) return "";
+  return `${entries.map(([status, count]) => `${status}: ${count}`).join(", ")}\n`;
+}
+
 export function textFor(command, result) {
   if (command === "help" || result.data?.help) return `${result.data.help}\n`;
   if (command === "catalog")
@@ -596,12 +711,20 @@ export function textFor(command, result) {
   if (command === "inspect")
     return (
       result.data.items
-        .map(
-          (item) =>
-            `${item.name}\n  ${item.description || ""}\n  Files: ${(item.files || []).map((file) => file.path).join(", ")}\n  Links:\n    ${(item.load.links || []).join("\n    ")}\n  Scripts:\n    ${(item.load.scripts || []).join("\n    ")}`,
-        )
+        .map((item) => {
+          const snippets = (item.snippets || [])
+            .map((snippet) => `${snippet.label}: ${snippet.path}`)
+            .join("\n    ");
+          return `${item.name}\n  ${item.description || ""}\n  Files: ${(item.files || []).map((file) => file.path).join(", ") || "none"}\n  Snippets:\n    ${snippets || "none"}\n  Links:\n    ${(item.load.links || []).join("\n    ")}\n  Scripts:\n    ${(item.load.scripts || []).join("\n    ")}`;
+        })
         .join("\n\n") + "\n"
     );
+  if (command === "skill") {
+    if (result.data.markdown) return result.data.markdown;
+    if (!result.data.action)
+      return `slidesls skill: ${result.data.source}\nFiles: ${result.data.files?.length || 0}\n${result.data.recommendedTargets ? `Recommended target: ${result.data.recommendedTargets[0]}\n` : ""}`;
+    return `slidesls skill ${result.data.action}: ${result.data.target}\n${result.data.status ? `status: ${result.data.status}\n` : ""}${formatCounts(result.data.counts)}`;
+  }
   if (command === "validate")
     return result.data.valid
       ? `slidesls validate: ok (${result.data.root})\n`

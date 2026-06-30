@@ -6,10 +6,11 @@ import { loadRegistry, RegistrySource, summarizeItem } from "./source.mjs";
 export function groupName(type = "") {
   const normalized = String(type).replace(/^ls:/, "");
   if (normalized === "core") return "Core";
-  if (normalized === "layout") return "Layouts";
+  if (normalized === "utility") return "Utilities";
   if (normalized === "component") return "Components";
   if (normalized === "animation") return "Animations";
   if (normalized.startsWith("preset")) return "Presets";
+  if (normalized === "template") return "Templates";
   return "Other";
 }
 
@@ -24,7 +25,15 @@ export function renderCatalog(registryData) {
     groups.set(group, [...(groups.get(group) || []), item]);
   }
 
-  const groupOrder = ["Core", "Layouts", "Components", "Animations", "Presets", "Other"];
+  const groupOrder = [
+    "Core",
+    "Utilities",
+    "Components",
+    "Animations",
+    "Presets",
+    "Templates",
+    "Other",
+  ];
   const lines = [
     "# slidesls Agent Catalog",
     "",
@@ -42,10 +51,16 @@ export function renderCatalog(registryData) {
       lines.push(`- Label: ${item.label}`);
       lines.push(`- Type: ${item.type}`);
       lines.push(`- Description: ${item.description || ""}`);
+      lines.push(`- Agent recommended: ${item.agentRecommended ? "yes" : "no"}`);
+      if (item.rootClass) lines.push(`- Root class: ${item.rootClass}`);
+      lines.push(`- Safe anywhere: ${item.safeAnywhere ? "yes" : "no"}`);
       lines.push(
         `- Registry dependencies: ${(item.registryDependencies || []).join(", ") || "none"}`,
       );
       lines.push(`- Files: ${(item.files || []).map((file) => file.path).join(", ") || "none"}`);
+      lines.push(
+        `- Snippets: ${(item.snippets || []).map((snippet) => `${snippet.label} (${snippet.path})`).join(", ") || "none"}`,
+      );
       lines.push(`- Docs: ${item.docs || "none"}`);
       lines.push("");
     }

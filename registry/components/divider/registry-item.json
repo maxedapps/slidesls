@@ -11,5 +11,14 @@
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/components/divider/README.md"
+  "docs": "registry/components/divider/README.md",
+  "rootClass": "ls-divider",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Basic divider",
+      "path": "registry/components/divider/snippets/basic.html"
+    }
+  ]
 }

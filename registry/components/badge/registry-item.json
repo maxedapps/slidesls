@@ -2,9 +2,23 @@
   "name": "components/badge",
   "type": "ls:component",
   "description": "Compact labels for slide metadata and short attributes.",
-  "files": [{ "path": "registry/components/badge/badge.css", "type": "registry:style" }],
+  "files": [
+    {
+      "path": "registry/components/badge/badge.css",
+      "type": "registry:style"
+    }
+  ],
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/components/badge/README.md"
+  "docs": "registry/components/badge/README.md",
+  "rootClass": "ls-badge",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Basic badge",
+      "path": "registry/components/badge/snippets/basic.html"
+    }
+  ]
 }

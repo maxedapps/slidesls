@@ -11,5 +11,14 @@
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/components/quote/README.md"
+  "docs": "registry/components/quote/README.md",
+  "rootClass": "ls-quote",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Basic quote",
+      "path": "registry/components/quote/snippets/basic.html"
+    }
+  ]
 }

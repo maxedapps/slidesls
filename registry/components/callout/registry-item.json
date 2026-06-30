@@ -11,5 +11,14 @@
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/components/callout/README.md"
+  "docs": "registry/components/callout/README.md",
+  "rootClass": "ls-callout",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Basic callout",
+      "path": "registry/components/callout/snippets/basic.html"
+    }
+  ]
 }

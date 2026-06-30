@@ -11,5 +11,7 @@
   "registryDependencies": ["core/base", "animations/reveal"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/animations/fade/README.md"
+  "docs": "registry/animations/fade/README.md",
+  "safeAnywhere": true,
+  "agentRecommended": true
 }

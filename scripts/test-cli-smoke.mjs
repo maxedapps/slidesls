@@ -75,6 +75,7 @@ try {
     "add",
     "catalog",
     "inspect",
+    "skill",
     "validate",
     "preview",
     "doctor",
@@ -84,10 +85,13 @@ try {
   ]) {
     run([command, "--help"]);
   }
+  run(["skill", "info", "--json"]);
+  run(["skill", "install", path.join(tmp, ".claude", "skills", "slidesls"), "--json"]);
   run(["init", tmp, "--template", "minimal", "--title", "Smoke Deck", "--json"]);
   run(["doctor", "--dir", tmp, "--json"]);
   run(["catalog", "--json"]);
-  run(["inspect", "layouts/title-hero", "--json"]);
+  run(["catalog", "--recommended", "--json"]);
+  run(["inspect", "templates/split", "--json"]);
   run(["add", "components/card", "--dir", tmp, "--dry-run", "--json"]);
   run(["add", "components/card", "--dir", tmp, "--json"]);
   run(["validate", tmp, "--json"]);

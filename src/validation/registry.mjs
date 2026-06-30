@@ -6,16 +6,18 @@ import { RegistrySource, loadRegistry, resolveItems } from "../registry/source.m
 
 const knownTypes = new Set([
   "core",
-  "layout",
+  "utility",
   "component",
   "animation",
   "preset",
   "preset/font",
+  "template",
   "ls:core",
-  "ls:layout",
+  "ls:utility",
   "ls:component",
   "ls:animation",
   "ls:preset",
+  "ls:template",
 ]);
 const knownFileTypes = new Set([
   "css",
@@ -140,6 +142,8 @@ export async function validateRegistry({ registryRoot, registryUrl } = {}) {
       }
     }
 
+    await validateItemMetadata({ item, itemPath, source, errors, warnings });
+
     for (const dependencyName of item.registryDependencies || []) {
       if (!data.byName.has(dependencyName))
         add(
@@ -182,4 +186,86 @@ export async function validateRegistry({ registryRoot, registryUrl } = {}) {
     errors,
     warnings,
   };
+}
+
+async function validateItemMetadata({ item, itemPath, source, errors, warnings }) {
+  if (item.agentRecommended !== undefined && typeof item.agentRecommended !== "boolean")
+    add(
+      "error",
+      errors,
+      "invalid_agent_recommended",
+      `${itemPath} agentRecommended must be boolean`,
+    );
+
+  if (item.safeAnywhere !== undefined && typeof item.safeAnywhere !== "boolean")
+    add("error", errors, "invalid_safe_anywhere", `${itemPath} safeAnywhere must be boolean`);
+
+  if (item.rootClass !== undefined && item.rootClass !== null && typeof item.rootClass !== "string")
+    add("error", errors, "invalid_root_class", `${itemPath} rootClass must be a string or null`);
+
+  if (item.type === "ls:template") {
+    if ((item.files || []).length > 0)
+      add(
+        "error",
+        errors,
+        "template_files",
+        `${itemPath} templates must not list snippet HTML in files`,
+      );
+    if (!Array.isArray(item.snippets) || item.snippets.length === 0)
+      add(
+        "error",
+        errors,
+        "template_missing_snippet",
+        `${itemPath} templates must declare snippets`,
+      );
+  }
+
+  if (item.snippets === undefined) return;
+  if (!Array.isArray(item.snippets)) {
+    add("error", errors, "snippets_not_array", `${itemPath} snippets must be an array`);
+    return;
+  }
+
+  const filePaths = new Set((item.files || []).map((file) => file?.path).filter(Boolean));
+  for (const snippet of item.snippets) {
+    if (!snippet || typeof snippet.label !== "string" || !snippet.label.trim()) {
+      add("error", errors, "invalid_snippet_label", `${itemPath} has a snippet without a label`);
+      continue;
+    }
+    if (typeof snippet.path !== "string" || !snippet.path.trim()) {
+      add(
+        "error",
+        errors,
+        "invalid_snippet_path",
+        `${itemPath} snippet ${snippet.label} has no path`,
+      );
+      continue;
+    }
+    try {
+      assertSafeRelativePath(snippet.path);
+      await canRead(source, snippet.path);
+    } catch (error) {
+      add(
+        "error",
+        errors,
+        "missing_or_unsafe_snippet",
+        `${itemPath} snippet ${snippet.path} invalid: ${error.message}`,
+      );
+      continue;
+    }
+    if (path.extname(snippet.path).toLowerCase() !== ".html")
+      add(
+        "warning",
+        warnings,
+        "snippet_not_html",
+        `${itemPath} snippet is not HTML: ${snippet.path}`,
+      );
+    if (item.type === "ls:template" && filePaths.has(snippet.path))
+      add(
+        "error",
+        errors,
+        "template_snippet_copied",
+        `${itemPath} template snippet must be listed only in snippets, not files: ${snippet.path}`,
+      );
+  }
 }

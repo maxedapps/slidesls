@@ -11,5 +11,14 @@
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/components/timeline/README.md"
+  "docs": "registry/components/timeline/README.md",
+  "rootClass": "ls-timeline",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Basic timeline",
+      "path": "registry/components/timeline/snippets/basic.html"
+    }
+  ]
 }

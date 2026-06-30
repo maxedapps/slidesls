@@ -7,6 +7,10 @@ export function deckTemplate({
 } = {}) {
   const safeTitle = escapeHtml(title);
   const body = template === "blank" ? blankSlides(safeTitle) : minimalSlides(safeTitle);
+  const utilityLink =
+    template === "blank"
+      ? ""
+      : `    <link rel="stylesheet" href="./${baseDir}/registry/utilities/layout/layout.css" />\n    <link rel="stylesheet" href="./${baseDir}/registry/components/badge/badge.css" />\n    <link rel="stylesheet" href="./${baseDir}/registry/components/panel/panel.css" />`;
   return `<!doctype html>
 <html lang="en">
   <head>
@@ -16,7 +20,7 @@ export function deckTemplate({
     <link rel="stylesheet" href="./${baseDir}/registry/core/base/reset.css" />
     <link rel="stylesheet" href="./${baseDir}/registry/core/base/tokens.css" />
     <link rel="stylesheet" href="./${baseDir}/registry/core/base/slide.css" />
-    ${template === "blank" ? "" : `<link rel="stylesheet" href="./${baseDir}/registry/layouts/title-hero/title-hero.css" />`}
+${utilityLink}
     <script type="module" src="./${baseDir}/registry/core/base/slide-runtime.js"></script>
   </head>
   <body class="ls-page">
@@ -40,23 +44,39 @@ function blankSlides(title) {
 }
 
 function minimalSlides(title) {
-  return `      <section class="ls-slide ls-layout-title-hero" aria-label="Opening">
+  return `      <section class="ls-slide" aria-label="Opening">
         <div class="ls-slide__inner">
-          <div class="ls-title-hero__content">
-            <p class="ls-eyebrow">slidesls</p>
-            <h1 class="ls-title">${title}</h1>
-            <p class="ls-subtitle ls-reveal" data-step="1">A plain HTML/CSS/JS deck you can edit directly.</p>
+          <div class="ls-grid ls-grid--wide-left ls-fill">
+            <header class="ls-stack ls-center" style="text-align: left; place-items: center start;">
+              <div class="ls-cluster">
+                <span class="ls-badge">slidesls</span>
+                <span class="ls-badge">Plain HTML</span>
+              </div>
+              <h1 class="ls-title">${title}</h1>
+              <p class="ls-subtitle ls-reveal" data-step="1">A plain HTML/CSS/JS deck you can edit directly.</p>
+            </header>
+            <div class="ls-panel ls-panel--accent ls-center">
+              <p class="ls-eyebrow">Agent-safe primitives</p>
+              <p class="ls-panel__text">Compose slides with utilities, standalone components, and inspectable templates.</p>
+            </div>
           </div>
         </div>
       </section>
       <section class="ls-slide" aria-label="Next steps">
         <div class="ls-slide__inner">
-          <header class="ls-slide__header">
+          <header class="ls-stack ls-stack--sm">
             <p class="ls-eyebrow">Next</p>
-            <h2 class="ls-title">Add primitives as needed</h2>
+            <h2 class="ls-title">Start from recommended templates</h2>
           </header>
-          <div class="ls-slide__body">
-            <p class="ls-subtitle">Run <code>slidesls catalog</code>, <code>slidesls add</code>, then <code>slidesls validate</code>.</p>
+          <div class="ls-grid ls-grid--2">
+            <div class="ls-panel">
+              <h3 class="ls-panel__title">Discover</h3>
+              <p class="ls-panel__text">Run <code>slidesls catalog --recommended</code> and inspect templates for snippet HTML.</p>
+            </div>
+            <div class="ls-panel ls-panel--muted">
+              <h3 class="ls-panel__title">Validate</h3>
+              <p class="ls-panel__text">Run <code>slidesls validate</code> before visual review.</p>
+            </div>
           </div>
         </div>
       </section>`;

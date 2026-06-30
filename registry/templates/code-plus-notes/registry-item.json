@@ -1,0 +1,24 @@
+{
+  "name": "templates/code-plus-notes",
+  "type": "ls:template",
+  "description": "Code-focused slide template with explanatory notes.",
+  "files": [],
+  "registryDependencies": [
+    "core/base",
+    "utilities/layout",
+    "components/code-block",
+    "components/card"
+  ],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/templates/code-plus-notes/README.md",
+  "rootClass": null,
+  "safeAnywhere": false,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Code plus notes slide",
+      "path": "registry/templates/code-plus-notes/snippet.html"
+    }
+  ]
+}

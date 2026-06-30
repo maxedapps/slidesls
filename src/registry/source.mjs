@@ -105,6 +105,9 @@ export function summarizeItem(item) {
     devDependencies: item.devDependencies || [],
     files: item.files || [],
     docs: item.docs,
+    rootClass: item.rootClass ?? null,
+    safeAnywhere: item.safeAnywhere ?? false,
+    agentRecommended: item.agentRecommended === true,
     snippets: item.snippets || [],
     registryItemPath: item.registryItemPath,
   };

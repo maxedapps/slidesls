@@ -1,0 +1,14 @@
+{
+  "name": "components/panel",
+  "type": "ls:component",
+  "description": "Standalone visual panel for grouped slide content.",
+  "files": [{ "path": "registry/components/panel/panel.css", "type": "registry:style" }],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/panel/README.md",
+  "rootClass": "ls-panel",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "snippets": [{ "label": "Basic panel", "path": "registry/components/panel/snippets/basic.html" }]
+}

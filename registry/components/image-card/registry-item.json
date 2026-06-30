@@ -11,5 +11,14 @@
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/components/image-card/README.md"
+  "docs": "registry/components/image-card/README.md",
+  "rootClass": "ls-image-card",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Basic image card",
+      "path": "registry/components/image-card/snippets/basic.html"
+    }
+  ]
 }

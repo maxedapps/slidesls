@@ -1,0 +1,38 @@
+@layer components {
+  .ls-panel {
+    display: grid;
+    gap: var(--ls-panel-gap, var(--ls-space-3));
+    min-inline-size: 0;
+    min-block-size: 0;
+    padding: var(--ls-panel-padding, var(--ls-space-5));
+    border: 1px solid var(--ls-panel-border, var(--ls-border));
+    border-radius: var(--ls-radius-xl);
+    background: var(--ls-panel-bg, var(--ls-surface));
+    box-shadow: 0 1px 0 rgb(255 255 255 / 4%) inset;
+  }
+
+  .ls-panel--muted {
+    --ls-panel-bg: rgb(255 255 255 / 4%);
+  }
+
+  .ls-panel--accent {
+    --ls-panel-border: color-mix(in oklab, var(--ls-accent), transparent 35%);
+    --ls-panel-bg: color-mix(in oklab, var(--ls-accent), transparent 88%);
+  }
+
+  .ls-panel__title {
+    margin: 0;
+    color: var(--ls-text);
+    font-size: var(--ls-text-xl);
+    font-weight: 740;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+
+  .ls-panel__text {
+    margin: 0;
+    color: var(--ls-muted);
+    font-size: var(--ls-text-md);
+    line-height: 1.35;
+  }
+}

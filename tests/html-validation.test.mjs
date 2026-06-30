@@ -46,6 +46,28 @@ test("validate does not warn when a Lucide script is present", async () => {
   assert.ok(!result.data.warnings.some((warning) => warning.code === "lucide_missing"));
 });
 
+test("validate warns when utility classes are used without their registry item", async () => {
+  const root = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<div class="ls-grid ls-grid--2"><p>One</p><p>Two</p></div>`,
+  );
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.ok(
+    result.data.warnings.some((warning) => warning.code === "missing_registry_item_for_class"),
+  );
+});
+
+test("validate rejects removed layout classes", async () => {
+  const root = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<div class="ls-layout-detail-split"></div>`,
+  );
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, false);
+  assert.ok(result.data.errors.some((error) => error.code === "removed_layout_class"));
+});
+
 async function deckWithHtml(runtimeScript, slideContent = "") {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-validate-"));
   await writeFile(

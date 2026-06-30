@@ -11,5 +11,7 @@
   "registryDependencies": ["core/base", "animations/reveal"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/animations/scale-in/README.md"
+  "docs": "registry/animations/scale-in/README.md",
+  "safeAnywhere": true,
+  "agentRecommended": true
 }

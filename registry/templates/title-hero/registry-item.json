@@ -1,0 +1,19 @@
+{
+  "name": "templates/title-hero",
+  "type": "ls:template",
+  "description": "Opening slide template with a clear title, subtitle, and badges.",
+  "files": [],
+  "registryDependencies": ["core/base", "utilities/layout", "components/badge", "components/panel"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/templates/title-hero/README.md",
+  "rootClass": null,
+  "safeAnywhere": false,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Title hero slide",
+      "path": "registry/templates/title-hero/snippet.html"
+    }
+  ]
+}

@@ -24,6 +24,48 @@ test("catalog --json returns an agent-friendly result envelope", async () => {
   assert.equal(result.ok, true);
   assert.equal(typeof result.data.count, "number");
   assert.ok(result.data.items.some((item) => item.name === "core/base"));
+  assert.ok(result.data.items.some((item) => item.name === "utilities/layout"));
+  assert.equal(
+    result.data.items.some((item) => item.name.startsWith("layouts/")),
+    false,
+  );
+});
+
+test("catalog --recommended returns only recommended items", async () => {
+  const { stdout } = await run([bin, "catalog", "--recommended", "--json"]);
+  const result = JSON.parse(stdout);
+  assert.equal(result.ok, true);
+  assert.ok(result.data.items.length > 0);
+  assert.equal(
+    result.data.items.every((item) => item.agentRecommended === true),
+    true,
+  );
+  assert.ok(result.data.items.some((item) => item.name === "utilities/layout"));
+  assert.ok(result.data.items.some((item) => item.name === "components/panel"));
+  assert.ok(result.data.items.some((item) => item.name === "templates/split"));
+});
+
+test("inspect returns snippet HTML for requested templates and components", async () => {
+  const template = JSON.parse((await run([bin, "inspect", "templates/split", "--json"])).stdout);
+  const requested = template.data.items.find((item) => item.name === "templates/split");
+  assert.match(requested.snippets[0].html, /<section class="ls-slide"/);
+
+  const component = JSON.parse((await run([bin, "inspect", "components/card", "--json"])).stdout);
+  assert.match(component.data.items.at(-1).snippets[0].html, /class="ls-card"/);
+});
+
+test("template add plans dependencies but not snippet files", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-template-"));
+  await run([bin, "init", root, "--template", "minimal"]);
+  const result = JSON.parse(
+    (await run([bin, "add", "templates/split", "--dir", root, "--dry-run", "--json"])).stdout,
+  );
+  assert.equal(result.ok, true);
+  assert.ok(result.data.dependencyOrder.includes("templates/split"));
+  assert.equal(
+    result.data.files.some((file) => file.targetPath?.endsWith("snippet.html")),
+    false,
+  );
 });
 
 test("removed --registry option fails with a usage error", async () => {

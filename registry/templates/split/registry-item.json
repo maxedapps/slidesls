@@ -1,0 +1,19 @@
+{
+  "name": "templates/split",
+  "type": "ls:template",
+  "description": "Two-column slide template for a visual plus supporting points.",
+  "files": [],
+  "registryDependencies": ["core/base", "utilities/layout", "components/panel", "components/card"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/templates/split/README.md",
+  "rootClass": null,
+  "safeAnywhere": false,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Split slide",
+      "path": "registry/templates/split/snippet.html"
+    }
+  ]
+}

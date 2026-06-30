@@ -1,0 +1,19 @@
+{
+  "name": "templates/three-cards",
+  "type": "ls:template",
+  "description": "Three-card slide template for comparing related points.",
+  "files": [],
+  "registryDependencies": ["core/base", "utilities/layout", "components/card"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/templates/three-cards/README.md",
+  "rootClass": null,
+  "safeAnywhere": false,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Three cards slide",
+      "path": "registry/templates/three-cards/snippet.html"
+    }
+  ]
+}

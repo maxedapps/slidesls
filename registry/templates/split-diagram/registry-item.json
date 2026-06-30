@@ -1,0 +1,24 @@
+{
+  "name": "templates/split-diagram",
+  "type": "ls:template",
+  "description": "Asymmetric slide template for an explanatory diagram and notes.",
+  "files": [],
+  "registryDependencies": [
+    "core/base",
+    "utilities/layout",
+    "components/panel",
+    "components/callout"
+  ],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/templates/split-diagram/README.md",
+  "rootClass": null,
+  "safeAnywhere": false,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Split diagram slide",
+      "path": "registry/templates/split-diagram/snippet.html"
+    }
+  ]
+}

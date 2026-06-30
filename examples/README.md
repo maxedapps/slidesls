@@ -1,17 +1,12 @@
 # Examples
 
-Examples are repo-local demo and validation decks for slidesls registry items. They are plain HTML files that use repo-relative assets so changes can be checked without publishing a package.
+Examples demonstrate the current agent-safe registry model: layout utilities, standalone components, and complete templates/snippets.
 
-Preview all examples:
+- `project-intro/` — small deck using recommended primitives.
+- `template-gallery/` — examples of template-style slide compositions.
+
+Serve examples from the repository root with:
 
 ```sh
 pnpm serve:examples
 ```
-
-Validate example links:
-
-```sh
-slidesls validate-examples
-```
-
-Downstream generated decks normally start with `slidesls init`; examples intentionally remain repo-relative to demonstrate registry assets in place.

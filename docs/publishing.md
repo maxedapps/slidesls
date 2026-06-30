@@ -18,10 +18,13 @@ Then test the tarball in a temp project:
 ```sh
 npm init -y
 npm install /path/to/maxedapps-slidesls-*.tgz
-npx slidesls init deck --template minimal --title "Packed Smoke"
-npx slidesls add components/card --dir deck
-npx slidesls validate deck
-npx slidesls doctor --dir deck
+mkdir deck
+cd deck
+npx slidesls skill install ../.claude/skills/slidesls
+npx slidesls init --template minimal --title "Packed Smoke"
+npx slidesls add components/card
+npx slidesls validate
+npx slidesls doctor
 ```
 
 ## Package contents

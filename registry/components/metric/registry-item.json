@@ -11,5 +11,14 @@
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
-  "docs": "registry/components/metric/README.md"
+  "docs": "registry/components/metric/README.md",
+  "rootClass": "ls-metric",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Basic metric",
+      "path": "registry/components/metric/snippets/basic.html"
+    }
+  ]
 }
