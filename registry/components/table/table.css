@@ -78,7 +78,7 @@
   }
 
   .ls-table[data-ls-variant="striped"] tbody tr:nth-child(even) {
-    background: rgb(255 255 255 / 4%);
+    background: var(--ls-table-stripe-bg);
   }
 
   .ls-table[data-ls-variant="plain"] {

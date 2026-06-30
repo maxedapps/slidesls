@@ -1,6 +1,5 @@
 @layer components {
   .ls-progress {
-    --ls-progress-accent: var(--ls-accent);
     --ls-progress-thickness: 14px;
     display: grid;
     align-content: start;
@@ -21,11 +20,11 @@
     border-radius: 999px;
   }
   progress.ls-progress::-webkit-progress-value {
-    background: linear-gradient(90deg, var(--ls-progress-accent), var(--ls-accent-2));
+    background: linear-gradient(90deg, var(--ls-progress-accent), var(--ls-progress-accent-2));
     border-radius: 999px;
   }
   progress.ls-progress::-moz-progress-bar {
-    background: linear-gradient(90deg, var(--ls-progress-accent), var(--ls-accent-2));
+    background: linear-gradient(90deg, var(--ls-progress-accent), var(--ls-progress-accent-2));
     border-radius: 999px;
   }
   .ls-progress__track {
@@ -38,7 +37,7 @@
     inline-size: var(--ls-progress-value, 0%);
     block-size: 100%;
     border-radius: inherit;
-    background: linear-gradient(90deg, var(--ls-progress-accent), var(--ls-accent-2));
+    background: linear-gradient(90deg, var(--ls-progress-accent), var(--ls-progress-accent-2));
     transform-origin: left center;
   }
 
@@ -76,10 +75,16 @@
     --ls-progress-label-size: 20px;
   }
   .ls-progress[data-ls-tone="success"] {
-    --ls-progress-accent: #22c55e;
+    --ls-progress-accent: var(--ls-status-success);
+    --ls-progress-accent-2: var(--ls-status-success);
   }
   .ls-progress[data-ls-tone="warning"] {
-    --ls-progress-accent: #f59e0b;
+    --ls-progress-accent: var(--ls-status-warning);
+    --ls-progress-accent-2: var(--ls-status-warning);
+  }
+  .ls-progress[data-ls-tone="danger"] {
+    --ls-progress-accent: var(--ls-status-danger);
+    --ls-progress-accent-2: var(--ls-status-danger);
   }
 
   @media (prefers-reduced-motion: reduce) {

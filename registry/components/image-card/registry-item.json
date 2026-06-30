@@ -20,5 +20,37 @@
       "label": "Basic image card",
       "path": "registry/components/image-card/snippets/basic.html"
     }
-  ]
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-image-card",
+        "elements": [
+          "ls-image-card__media",
+          "ls-image-card__content",
+          "ls-image-card__eyebrow",
+          "ls-image-card__title",
+          "ls-image-card__text",
+          "ls-image-card__meta",
+          "ls-image-card__badge",
+          "ls-image-card__caption"
+        ]
+      }
+    ],
+    "dataAttributes": [
+      {
+        "name": "data-ls-variant",
+        "values": ["plain", "cover"]
+      },
+      {
+        "name": "data-ls-density",
+        "values": ["compact"]
+      },
+      {
+        "name": "data-ls-ratio",
+        "values": ["square", "portrait"]
+      }
+    ],
+    "cssVariables": ["--ls-image-card-aspect", "--ls-image-card-gap", "--ls-image-card-media-block"]
+  }
 }

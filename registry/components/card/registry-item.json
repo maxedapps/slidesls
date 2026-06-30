@@ -20,5 +20,15 @@
       "label": "Basic card",
       "path": "registry/components/card/snippets/basic.html"
     }
-  ]
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-card",
+        "elements": ["ls-card__body", "ls-card__title", "ls-card__text"],
+        "modifiers": ["ls-card--row"]
+      }
+    ],
+    "usage": ["Use for compact content blocks inside grids or stacks."]
+  }
 }

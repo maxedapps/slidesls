@@ -53,7 +53,11 @@ export function renderCatalog(registryData) {
       lines.push(`- Description: ${item.description || ""}`);
       lines.push(`- Agent recommended: ${item.agentRecommended ? "yes" : "no"}`);
       if (item.rootClass) lines.push(`- Root class: ${item.rootClass}`);
+      if (item.themeAttribute) lines.push(`- Theme attribute: ${item.themeAttribute}`);
+      if (item.styleTone) lines.push(`- Style tone: ${item.styleTone}`);
+      if (item.pairsWith?.length) lines.push(`- Pairs with: ${item.pairsWith.join(", ")}`);
       lines.push(`- Safe anywhere: ${item.safeAnywhere ? "yes" : "no"}`);
+      lines.push(...authoringLines(item.authoring));
       lines.push(
         `- Registry dependencies: ${(item.registryDependencies || []).join(", ") || "none"}`,
       );
@@ -67,6 +71,56 @@ export function renderCatalog(registryData) {
   }
 
   return `${lines.join("\n").trim()}\n`;
+}
+
+function code(value) {
+  return `\`${value}\``;
+}
+
+function codeList(values) {
+  return values.map(code).join(", ");
+}
+
+function authoringLines(authoring) {
+  if (!authoring) return [];
+  const lines = [];
+  if (authoring.classGroups?.length) {
+    lines.push("- Class groups:");
+    for (const group of authoring.classGroups) {
+      const parts = [...(group.elements || []), ...(group.modifiers || [])];
+      lines.push(`  - ${code(group.base)}: ${parts.length ? codeList(parts) : "base only"}`);
+      if (group.rule) lines.push(`    - Rule: ${group.rule}`);
+    }
+  }
+  if (authoring.classes?.length) lines.push(`- Classes: ${codeList(authoring.classes)}`);
+  if (authoring.dataAttributes?.length)
+    lines.push(
+      `- Data attributes: ${authoring.dataAttributes
+        .map((attribute) =>
+          code(
+            attribute.values?.length
+              ? `${attribute.name}=${attribute.values.join("|")}`
+              : attribute.name,
+          ),
+        )
+        .join(", ")}`,
+    );
+  if (authoring.attributes?.length)
+    lines.push(
+      `- Attributes: ${authoring.attributes
+        .map((attribute) =>
+          code(
+            attribute.value !== undefined
+              ? `${attribute.name}="${attribute.value}"`
+              : attribute.name,
+          ),
+        )
+        .join(", ")}`,
+    );
+  if (authoring.cssVariables?.length)
+    lines.push(`- CSS variables: ${codeList(authoring.cssVariables)}`);
+  if (authoring.usage?.length) lines.push(`- Usage: ${authoring.usage.join(" ")}`);
+  return lines;
 }
 
 export async function generateCatalogDoc({

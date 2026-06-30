@@ -13,5 +13,20 @@
   "devDependencies": [],
   "docs": "registry/animations/highlight/README.md",
   "safeAnywhere": true,
-  "agentRecommended": false
+  "agentRecommended": false,
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-highlight"
+      },
+      {
+        "base": "ls-reveal-highlight"
+      }
+    ],
+    "cssVariables": [
+      "--ls-highlight-animation-duration",
+      "--ls-highlight-animation-accent",
+      "--ls-highlight-animation-spread"
+    ]
+  }
 }

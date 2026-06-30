@@ -13,5 +13,13 @@
   "devDependencies": [],
   "docs": "registry/animations/slide-up/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true
+  "agentRecommended": true,
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-reveal-slide-up"
+      }
+    ],
+    "cssVariables": ["--ls-slide-up-distance", "--ls-slide-up-duration", "--ls-slide-up-ease"]
+  }
 }

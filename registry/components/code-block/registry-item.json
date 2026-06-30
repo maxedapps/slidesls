@@ -20,5 +20,21 @@
       "label": "Basic code block",
       "path": "registry/components/code-block/snippets/basic.html"
     }
-  ]
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-code-block",
+        "elements": ["ls-code-block__header"]
+      }
+    ],
+    "dataAttributes": [
+      {
+        "name": "data-ls-density",
+        "values": ["dense"]
+      }
+    ],
+    "cssVariables": ["--ls-code-max-block-size", "--ls-code-font-size", "--ls-code-padding"],
+    "usage": ["Use for short code excerpts that fit a slide without scrolling during presentation."]
+  }
 }

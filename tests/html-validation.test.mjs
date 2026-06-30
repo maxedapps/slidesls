@@ -124,6 +124,23 @@ test("validate rejects unsafe config entry paths", async () => {
   });
 });
 
+test("validate warns for unknown slidesls classes and strict mode errors", async () => {
+  const root = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<div class="ls-grdi" data-ls-theme="ls-not-a-class"><code>&lt;div class=&quot;ls-also-not-real&quot;&gt;</code></div>`,
+  );
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.ok(result.data.warnings.some((warning) => warning.code === "unknown_ls_class"));
+  assert.ok(result.data.warnings.some((warning) => warning.className === "ls-grdi"));
+  assert.ok(!result.data.warnings.some((warning) => warning.className === "ls-not-a-class"));
+  assert.ok(!result.data.warnings.some((warning) => warning.className === "ls-also-not-real"));
+
+  const strict = await validateCommand([root, "--strict"]);
+  assert.equal(strict.data.valid, false);
+  assert.ok(strict.data.errors.some((error) => error.code === "unknown_ls_class"));
+});
+
 test("validate rejects removed layout classes", async () => {
   const root = await deckWithHtml(
     `<script type="module" src="./${runtimePath}"></script>`,

@@ -13,5 +13,13 @@
   "devDependencies": [],
   "docs": "registry/animations/fade/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true
+  "agentRecommended": true,
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-reveal-fade"
+      }
+    ],
+    "usage": ["Combine with reveal sequencing classes/attributes for fade transitions."]
+  }
 }

@@ -20,5 +20,20 @@
       "label": "Basic metric",
       "path": "registry/components/metric/snippets/basic.html"
     }
-  ]
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-metric",
+        "elements": ["ls-metric__label", "ls-metric__value", "ls-metric__delta"]
+      }
+    ],
+    "dataAttributes": [
+      {
+        "name": "data-ls-compact",
+        "values": ["true"]
+      }
+    ],
+    "usage": ["Use for one prominent KPI or numeric proof point."]
+  }
 }

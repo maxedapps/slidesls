@@ -21,5 +21,24 @@
       "label": "Metric dashboard slide",
       "path": "registry/templates/metric-dashboard/snippet.html"
     }
-  ]
+  ],
+  "authoring": {
+    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "classes": [
+      "ls-slide",
+      "ls-slide__inner",
+      "ls-stack",
+      "ls-stack--sm",
+      "ls-eyebrow",
+      "ls-title",
+      "ls-grid",
+      "ls-grid--3",
+      "ls-panel",
+      "ls-metric",
+      "ls-metric__value",
+      "ls-metric__label",
+      "ls-progress",
+      "ls-progress__label"
+    ]
+  }
 }

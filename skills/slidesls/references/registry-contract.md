@@ -8,7 +8,7 @@
 - Item CSS/JS files are copied implementation.
 - Item snippets are paste-ready HTML returned by `slidesls inspect --json`.
 
-The CLI is the authoritative discovery surface for agents: use `slidesls catalog --recommended --json` and `slidesls inspect <item> --readme --json` instead of guessing from file names.
+The CLI is the authoritative discovery surface for agents: use `slidesls catalog --recommended --json` and `slidesls inspect <item> --readme --json` instead of guessing from file names. In JSON output, each item’s `authoring` field lists the public classes, class groups/modifiers, data attributes, CSS variables, theme/font attributes, and short usage rules. Use those values or snippet markup; do not invent `ls-*` classes.
 
 ## Item types
 
@@ -17,7 +17,7 @@ The CLI is the authoritative discovery surface for agents: use `slidesls catalog
 - `ls:component` — standalone content/visual blocks.
 - `ls:template` — full slide skeleton snippets composed from utilities/components.
 - `ls:animation` — optional reveal or emphasis recipes.
-- `ls:preset` — scoped token/style remaps.
+- `ls:preset` — scoped token/style remaps, including fonts and deck-wide themes.
 
 ## Dependency semantics
 
@@ -33,14 +33,19 @@ Use `slidesls add` and returned load tags whenever possible. Manual deck order u
 
 1. `registry/core/base/reset.css`
 2. `registry/core/base/tokens.css`
-3. `registry/core/base/slide.css`
-4. `registry/core/base/icons.css` if using icon wrappers
-5. Presets where scoped by an attribute such as `data-ls-font`
-6. Components and animations as needed
-7. `registry/utilities/layout/layout.css`
-8. `registry/core/base/slide-runtime.js` as a module script
+3. Theme presets such as `registry/presets/themes/executive-blue/theme.css` when using `data-ls-theme`
+4. `registry/core/base/slide.css`
+5. `registry/core/base/icons.css` if using icon wrappers
+6. Font presets where scoped by `data-ls-font`
+7. Components and animations as needed
+8. `registry/utilities/layout/layout.css`
+9. `registry/core/base/slide-runtime.js` as a module script
 
 Utilities intentionally load late so their classes can be applied anywhere.
+
+## Theme contract
+
+Theme presets live under `presets/themes/*`, scope CSS with `:root[data-ls-theme="..."]`, and apply deck-wide on `<html>`. They control visual tokens only; templates remain structural and fonts remain separate presets.
 
 ## Runtime/deck contract
 

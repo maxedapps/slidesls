@@ -52,27 +52,32 @@ Use a custom target if the active agent runtime expects skills elsewhere.
 ## Workflow
 
 1. Clarify the deck goal, audience, dimensions, style, and whether an existing deck folder should be reused.
-2. Run `slidesls --help` and, if behavior is unclear, `slidesls doctor --json`.
-3. For a new deck, use a dedicated deck folder. Inside that folder run:
+2. Choose exactly one theme early:
+   - `executive-blue` for product/professional decks.
+   - `boardroom-navy` for formal strategy, board, and reporting decks.
+   - `technical-deep` for engineering/code-heavy decks.
+   - `playful-ink` for workshops, education, and friendly product demos.
+3. Run `slidesls --help` and, if behavior is unclear, `slidesls doctor --json`.
+4. For a new deck, use a dedicated deck folder. Inside that folder run:
 
    ```sh
-   slidesls init --template minimal --title "My Deck"
+   slidesls init --template minimal --theme executive-blue --title "My Deck"
    ```
 
    Or initialize an explicit path inside a larger project:
 
    ```sh
-   slidesls init ./slides/my-deck --template minimal --title "My Deck"
+   slidesls init ./slides/my-deck --template minimal --theme executive-blue --title "My Deck"
    ```
 
-4. If editing an existing deck, inspect `slidesls.json` and the configured entry file.
-5. Discover agent-safe primitives with `slidesls catalog --recommended --json`.
-6. Inspect templates/components with `slidesls inspect <item> --readme --json`; use returned snippet HTML as source-of-truth markup.
-7. Add assets with `slidesls add <items...> --dir <deck> --dry-run --json`, review planned files and load tags, then run without `--dry-run`.
-8. Paste/edit snippets and plain HTML, CSS, and JS directly.
-9. Validate with `slidesls validate <deck> --json` and fix all errors.
-10. Preview with `slidesls preview <deck>`; use browser tools for visual review when needed.
-11. Run `slidesls doctor --dir <deck> --json` if config, registry, or environment behavior looks wrong.
+5. If editing an existing deck, inspect `slidesls.json` and the configured entry file. If adding a theme manually, copy it with `slidesls add presets/themes/<theme> --dir <deck>` and set `data-ls-theme="<theme>"` on the existing `<html>` element. Do not add a second theme attribute and do not stack multiple themes.
+6. Discover agent-safe primitives with `slidesls catalog --recommended --json`.
+7. Inspect templates/components with `slidesls inspect <item> --readme --json`; use returned snippet HTML as source-of-truth markup.
+8. Add assets with `slidesls add <items...> --dir <deck> --dry-run --json`, review planned files and load tags, then run without `--dry-run`.
+9. Paste/edit snippets and plain HTML, CSS, and JS directly.
+10. Validate with `slidesls validate <deck> --json` and fix all errors.
+11. Preview with `slidesls preview <deck>`; use browser tools for visual review when needed.
+12. Run `slidesls doctor --dir <deck> --json` if config, registry, or environment behavior looks wrong.
 
 ## Useful commands
 
@@ -80,9 +85,10 @@ Use a custom target if the active agent runtime expects skills elsewhere.
 slidesls --help
 slidesls skill info --json
 slidesls skill link ./.claude/skills/slidesls
-slidesls init --template minimal --title "My Deck"
-slidesls init ./slides/my-deck --template minimal --title "My Deck"
+slidesls init --template minimal --theme executive-blue --title "My Deck"
+slidesls init ./slides/my-deck --template minimal --theme executive-blue --title "My Deck"
 slidesls catalog --recommended --json
+slidesls catalog --type preset --tag theme --json
 slidesls inspect templates/split --readme --json
 slidesls inspect components/card --json
 slidesls add utilities/layout components/panel components/card --dir ./slides/my-deck --dry-run --json
@@ -100,7 +106,7 @@ slidesls doctor --dir ./slides/my-deck --json
 - `references/registry-contract.md` — registry metadata and file contract.
 - `references/catalog.md` — generated registry catalog.
 
-For current item-specific details, prefer CLI metadata and item READMEs through:
+For current item-specific details, start with `slidesls catalog --recommended --json`; its `authoring` metadata is the quick source of truth for public classes, modifiers, data attributes, theme/font attributes, CSS variables, and usage rules. Use item READMEs and snippets through:
 
 ```sh
 slidesls inspect <item> --readme --json
@@ -109,7 +115,7 @@ slidesls inspect <item> --readme --json
 ## Do not
 
 - Do not use old `ls-layout-*` or `layouts/*` patterns; use templates, utilities, and standalone components.
-- Do not invent nested structural contracts; prefer snippets returned by `inspect --json`.
+- Do not invent `ls-*` classes or nested structural contracts; use `catalog --json` authoring metadata and snippets returned by `inspect --json`.
 - Do not add React, Vite, Tailwind, or another framework unless explicitly requested.
 - Do not make generated decks depend on `slidesls` at runtime.
 - Do not skip `slidesls validate` before finalizing.

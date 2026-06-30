@@ -20,5 +20,34 @@
       "label": "Basic progress",
       "path": "registry/components/progress/snippets/basic.html"
     }
-  ]
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-progress",
+        "elements": [
+          "ls-progress__label",
+          "ls-progress__value",
+          "ls-progress__track",
+          "ls-progress__bar"
+        ]
+      }
+    ],
+    "dataAttributes": [
+      {
+        "name": "data-ls-tone",
+        "values": ["success", "warning", "danger"]
+      },
+      {
+        "name": "data-ls-density",
+        "values": ["compact", "spacious"]
+      },
+      {
+        "name": "data-ls-animate",
+        "values": ["fill"]
+      }
+    ],
+    "cssVariables": ["--ls-progress-value", "--ls-progress-thickness", "--ls-progress-label-size"],
+    "usage": ["Set --ls-progress-value to the fill percentage, e.g. 72%."]
+  }
 }

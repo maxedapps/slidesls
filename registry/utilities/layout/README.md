@@ -8,7 +8,7 @@ Reusable layout utilities for safe slide composition. These classes work anywher
 - `.ls-stack--sm` / `.ls-stack--lg` — smaller or larger stack gap.
 - `.ls-cluster` — wrapping inline cluster.
 - `.ls-grid` — generic grid container.
-- `.ls-grid--2` / `.ls-grid--3` — equal column grids.
+- `.ls-grid--2` / `.ls-grid--3` / `.ls-grid--4` — equal column grids. Use `.ls-grid--4` for short, compact cards or metrics.
 - `.ls-grid--wide-left` / `.ls-grid--wide-right` — asymmetric two-column grids.
 - `.ls-center` — center content in both axes.
 - `.ls-fill` — fill available block size.

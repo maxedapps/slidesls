@@ -8,11 +8,11 @@
     border: 1px solid var(--ls-panel-border, var(--ls-border));
     border-radius: var(--ls-radius-xl);
     background: var(--ls-panel-bg, var(--ls-surface));
-    box-shadow: 0 1px 0 rgb(255 255 255 / 4%) inset;
+    box-shadow: var(--ls-surface-highlight);
   }
 
   .ls-panel--muted {
-    --ls-panel-bg: rgb(255 255 255 / 4%);
+    --ls-panel-bg: var(--ls-surface-muted);
   }
 
   .ls-panel--accent {

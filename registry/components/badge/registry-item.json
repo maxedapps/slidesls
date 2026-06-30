@@ -20,5 +20,14 @@
       "label": "Basic badge",
       "path": "registry/components/badge/snippets/basic.html"
     }
-  ]
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-badge",
+        "modifiers": ["ls-badge--accent", "ls-badge--solid"]
+      }
+    ],
+    "usage": ["Use for compact labels, statuses, or category markers."]
+  }
 }

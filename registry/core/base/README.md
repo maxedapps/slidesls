@@ -5,10 +5,11 @@ Mandatory base item for slidesls decks.
 Copy/load order:
 
 1. `reset.css` — declares cascade layer order and reset rules.
-2. `tokens.css` — default dark theme, dimensions, spacing, semantic font roles, type, and motion tokens.
-3. `slide.css` — stage, deck, slide shell, scaling, fallback, export styles.
-4. `icons.css` — generic icon wrappers and generated SVG sizing.
-5. `slide-runtime.js` — keyboard navigation, reveal state, scaling, export mode, optional Lucide initialization.
+2. `tokens.css` — default dark theme, dimensions, spacing, semantic font roles, type, motion tokens, and theme override surface.
+3. optional theme preset CSS — token overrides scoped with `:root[data-ls-theme="..."]`.
+4. `slide.css` — stage, deck, slide shell, scaling, fallback, export styles.
+5. `icons.css` — generic icon wrappers and generated SVG sizing.
+6. `slide-runtime.js` — keyboard navigation, reveal state, scaling, export mode, optional Lucide initialization.
 
 Load this item before layouts, components, animations, and presets. It establishes the cascade layer contract.
 

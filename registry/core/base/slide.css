@@ -3,10 +3,9 @@
   .ls-page {
     min-block-size: 100vh;
     overflow: auto;
-    background:
-      linear-gradient(rgb(255 255 255 / 3%) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(255 255 255 / 3%) 1px, transparent 1px), var(--ls-page-bg);
-    background-size: 64px 64px;
+    background-color: var(--ls-page-bg);
+    background-image: var(--ls-page-bg-image);
+    background-size: var(--ls-page-grid-size);
     color: var(--ls-text);
     font-family: var(--ls-font-body);
   }
@@ -37,7 +36,8 @@
     inline-size: var(--ls-slide-width);
     block-size: var(--ls-slide-height);
     overflow: hidden;
-    background: var(--ls-slide-bg);
+    background-color: var(--ls-slide-bg);
+    background-image: var(--ls-slide-bg-image);
     color: var(--ls-text);
   }
 
@@ -132,7 +132,8 @@
   @media print {
     body.ls-page,
     .ls-page {
-      background: #fff;
+      background-color: var(--ls-print-bg);
+      background-image: none;
     }
 
     .ls-deck[data-ls-ready="true"],

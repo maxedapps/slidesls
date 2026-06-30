@@ -15,5 +15,25 @@
       "label": "Title hero slide",
       "path": "registry/templates/title-hero/snippet.html"
     }
-  ]
+  ],
+  "authoring": {
+    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "classes": [
+      "ls-slide",
+      "ls-slide__inner",
+      "ls-grid",
+      "ls-grid--wide-left",
+      "ls-fill",
+      "ls-stack",
+      "ls-center",
+      "ls-cluster",
+      "ls-badge",
+      "ls-title",
+      "ls-subtitle",
+      "ls-panel",
+      "ls-panel--accent",
+      "ls-eyebrow",
+      "ls-panel__text"
+    ]
+  }
 }

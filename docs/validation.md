@@ -2,14 +2,14 @@
 
 ## Deck validation
 
-`slidesls validate [dir]` checks config discovery, entry existence, required deck shell markup, local asset references, manifest files, removed layout macros, and common missing registry-item usage for known classes.
+`slidesls validate [dir]` checks config discovery, entry existence, required deck shell markup, local asset references, manifest files, removed layout macros, unknown `ls-*` class attributes, and common missing registry-item usage for known classes.
 
 Copied registry files are intentionally editable. Default validation reports changed copied files as `customizedFiles` in JSON data, not as warnings or errors. Use `--strict` when you need hash drift from the copied baseline to fail validation.
 
 ## Repo validation
 
-- `slidesls validate-registry` checks registry metadata, files, docs, snippets, dependency references/cycles, and local JS syntax.
-- `slidesls validate-examples` checks example asset links and rejects removed `ls-layout-*` usage.
+- `slidesls validate-registry` checks registry metadata, authoring metadata, files, docs, snippets, dependency references/cycles, and local JS syntax.
+- `slidesls validate-examples` checks example asset links and rejects removed `ls-layout-*` usage and unsupported real `ls-*` class attributes.
 - `slidesls doctor` checks Node/package/config/registry/project write health.
 
 ## Static validation limits

@@ -5,13 +5,13 @@
 Use a dedicated deck folder. From inside that folder:
 
 ```sh
-slidesls init --template minimal --title "My Deck"
+slidesls init --template minimal --theme executive-blue --title "My Deck"
 ```
 
 Inside a larger project, prefer an explicit deck path:
 
 ```sh
-slidesls init ./slides/my-deck --template minimal --title "My Deck"
+slidesls init ./slides/my-deck --template minimal --theme executive-blue --title "My Deck"
 ```
 
 `slidesls init` writes `slidesls.json`, `index.html`, and `slidesls/` into the target directory, so only run it at a project root if the root itself is meant to be the deck.
@@ -20,13 +20,14 @@ slidesls init ./slides/my-deck --template minimal --title "My Deck"
 
 ```html
 <!doctype html>
-<html lang="en">
+<html lang="en" data-ls-theme="executive-blue">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Slide deck</title>
     <link rel="stylesheet" href="./slidesls/registry/core/base/reset.css" />
     <link rel="stylesheet" href="./slidesls/registry/core/base/tokens.css" />
+    <link rel="stylesheet" href="./slidesls/registry/presets/themes/executive-blue/theme.css" />
     <link rel="stylesheet" href="./slidesls/registry/core/base/slide.css" />
     <link rel="stylesheet" href="./slidesls/registry/utilities/layout/layout.css" />
     <script type="module" src="./slidesls/registry/core/base/slide-runtime.js"></script>
@@ -55,6 +56,17 @@ slidesls init ./slides/my-deck --template minimal --title "My Deck"
 - `.ls-slide__inner` for base padding/grid/safe area.
 - `slide-runtime.js` as a module script.
 
+## Themes
+
+Choose exactly one theme per deck and set it on `<html>` with `data-ls-theme`. Do not stack multiple theme attributes.
+
+- Product/professional: `executive-blue` + `templates/title-hero` + `templates/split` + `templates/metric-dashboard`.
+- Board/business: `boardroom-navy` + `templates/section-divider` + `templates/metric-dashboard` + `components/table`/`components/quote`.
+- Technical: `technical-deep` + `presets/fonts/technical-mono` + `templates/code-plus-notes` + `templates/split-diagram`.
+- Workshop/playful: `playful-ink` + `templates/three-cards` + `components/callout` + `components/image-card`.
+
+Prefer spacing, hierarchy, and solid surfaces over decorative gradients or glow-heavy effects.
+
 ## Composition model
 
 Use:
@@ -74,6 +86,8 @@ slidesls catalog --recommended --json
 slidesls inspect templates/split --readme --json
 slidesls inspect components/card --json
 ```
+
+Treat `catalog --json` `authoring` metadata as the quick source of truth for public classes, modifiers, data attributes, and CSS variables. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and strict validation errors.
 
 Use `add --dry-run --json` before copying. After copying, add any returned `<link>` or `<script>` tags to the entry HTML. `add` does not mutate HTML for you.
 

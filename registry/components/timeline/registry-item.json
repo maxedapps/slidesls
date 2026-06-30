@@ -20,5 +20,34 @@
       "label": "Basic timeline",
       "path": "registry/components/timeline/snippets/basic.html"
     }
-  ]
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-timeline",
+        "elements": [
+          "ls-timeline__item",
+          "ls-timeline__marker",
+          "ls-timeline__meta",
+          "ls-timeline__title",
+          "ls-timeline__text"
+        ]
+      }
+    ],
+    "dataAttributes": [
+      {
+        "name": "data-ls-density",
+        "values": ["compact"]
+      },
+      {
+        "name": "data-ls-orientation",
+        "values": ["horizontal"]
+      },
+      {
+        "name": "data-ls-progress",
+        "values": ["true"]
+      }
+    ],
+    "cssVariables": ["--ls-timeline-gap", "--ls-timeline-marker-size", "--ls-timeline-accent"]
+  }
 }

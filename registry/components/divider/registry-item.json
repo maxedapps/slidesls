@@ -20,5 +20,28 @@
       "label": "Basic divider",
       "path": "registry/components/divider/snippets/basic.html"
     }
-  ]
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-divider",
+        "elements": ["ls-divider__label"]
+      }
+    ],
+    "dataAttributes": [
+      {
+        "name": "data-ls-density",
+        "values": ["compact", "spacious"]
+      },
+      {
+        "name": "data-ls-orientation",
+        "values": ["vertical"]
+      },
+      {
+        "name": "data-ls-variant",
+        "values": ["accent", "dashed"]
+      }
+    ],
+    "cssVariables": ["--ls-divider-color", "--ls-divider-thickness", "--ls-divider-gap"]
+  }
 }

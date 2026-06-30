@@ -66,10 +66,15 @@
     font-weight: 760;
     line-height: 1.08;
   }
-  .ls-image-card__text {
+  .ls-image-card__text,
+  .ls-image-card__caption {
     color: var(--ls-muted);
     font-size: var(--ls-text-xs);
     line-height: 1.35;
+  }
+  .ls-image-card__caption {
+    margin: 0;
+    padding: 0 var(--ls-space-3) var(--ls-space-3);
   }
   .ls-image-card__badge {
     justify-self: start;

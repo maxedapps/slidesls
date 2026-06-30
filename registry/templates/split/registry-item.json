@@ -15,5 +15,25 @@
       "label": "Split slide",
       "path": "registry/templates/split/snippet.html"
     }
-  ]
+  ],
+  "authoring": {
+    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "classes": [
+      "ls-slide",
+      "ls-slide__inner",
+      "ls-stack",
+      "ls-stack--sm",
+      "ls-eyebrow",
+      "ls-title",
+      "ls-grid",
+      "ls-grid--wide-left",
+      "ls-panel",
+      "ls-panel--accent",
+      "ls-center",
+      "ls-panel__text",
+      "ls-card",
+      "ls-card__title",
+      "ls-card__text"
+    ]
+  }
 }

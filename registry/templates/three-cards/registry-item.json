@@ -15,5 +15,21 @@
       "label": "Three cards slide",
       "path": "registry/templates/three-cards/snippet.html"
     }
-  ]
+  ],
+  "authoring": {
+    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "classes": [
+      "ls-slide",
+      "ls-slide__inner",
+      "ls-stack",
+      "ls-stack--sm",
+      "ls-eyebrow",
+      "ls-title",
+      "ls-grid",
+      "ls-grid--3",
+      "ls-card",
+      "ls-card__title",
+      "ls-card__text"
+    ]
+  }
 }

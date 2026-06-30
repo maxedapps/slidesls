@@ -29,5 +29,64 @@
   "devDependencies": [],
   "docs": "registry/core/base/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true
+  "agentRecommended": true,
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-page"
+      },
+      {
+        "base": "ls-deck"
+      },
+      {
+        "base": "ls-slide",
+        "elements": ["ls-slide__inner", "ls-slide__header", "ls-slide__body"]
+      }
+    ],
+    "classes": [
+      "ls-stage",
+      "ls-eyebrow",
+      "ls-title",
+      "ls-subtitle",
+      "ls-muted",
+      "ls-subtle",
+      "ls-accent-text",
+      "ls-icon",
+      "ls-icon-badge",
+      "ls-icon-mark"
+    ],
+    "dataAttributes": [
+      {
+        "name": "data-ls-deck",
+        "scope": "main"
+      },
+      {
+        "name": "data-step"
+      },
+      {
+        "name": "data-ls-reveal-sequence"
+      },
+      {
+        "name": "data-ls-sequence-skip"
+      }
+    ],
+    "cssVariables": [
+      "--ls-slide-width",
+      "--ls-slide-height",
+      "--ls-slide-bg",
+      "--ls-page-bg",
+      "--ls-text",
+      "--ls-muted",
+      "--ls-accent",
+      "--ls-accent-text",
+      "--ls-space-3",
+      "--ls-space-6",
+      "--ls-font-heading",
+      "--ls-font-body"
+    ],
+    "usage": [
+      "Use body.ls-page, a .ls-deck[data-ls-deck] wrapper, and one or more .ls-slide sections.",
+      "Runtime state attributes such as data-ls-ready and data-active are managed by slide-runtime.js."
+    ]
+  }
 }

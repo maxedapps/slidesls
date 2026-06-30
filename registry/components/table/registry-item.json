@@ -20,5 +20,30 @@
       "label": "Basic table",
       "path": "registry/components/table/snippets/basic.html"
     }
-  ]
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-table",
+        "elements": ["ls-table__caption", "ls-table__value", "ls-table__muted", "ls-table__note"]
+      }
+    ],
+    "classes": ["ls-table-frame"],
+    "dataAttributes": [
+      {
+        "name": "data-ls-density",
+        "values": ["compact"]
+      },
+      {
+        "name": "data-ls-variant",
+        "values": ["striped", "plain"]
+      }
+    ],
+    "cssVariables": [
+      "--ls-table-cell-padding",
+      "--ls-table-min-inline",
+      "--ls-table-accent",
+      "--ls-table-stripe-bg"
+    ]
+  }
 }

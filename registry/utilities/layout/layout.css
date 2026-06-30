@@ -36,6 +36,10 @@
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .ls-grid--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
   .ls-grid--wide-left {
     grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
   }
@@ -66,8 +70,15 @@
   }
 
   @container (width < 900px) {
+    .ls-grid--4 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @container (width < 640px) {
     .ls-grid--2,
     .ls-grid--3,
+    .ls-grid--4,
     .ls-grid--wide-left,
     .ls-grid--wide-right {
       grid-template-columns: 1fr;

@@ -47,10 +47,14 @@
   }
 
   .ls-callout[data-ls-tone="warning"] {
-    --ls-callout-accent: #f59e0b;
+    --ls-callout-accent: var(--ls-status-warning);
   }
 
   .ls-callout[data-ls-tone="success"] {
-    --ls-callout-accent: #22c55e;
+    --ls-callout-accent: var(--ls-status-success);
+  }
+
+  .ls-callout[data-ls-tone="danger"] {
+    --ls-callout-accent: var(--ls-status-danger);
   }
 }

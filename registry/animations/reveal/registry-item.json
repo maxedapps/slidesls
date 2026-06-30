@@ -13,5 +13,27 @@
   "devDependencies": [],
   "docs": "registry/animations/reveal/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true
+  "agentRecommended": true,
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-reveal"
+      }
+    ],
+    "dataAttributes": [
+      {
+        "name": "data-step"
+      },
+      {
+        "name": "data-ls-reveal-sequence"
+      },
+      {
+        "name": "data-ls-sequence-skip"
+      }
+    ],
+    "cssVariables": ["--ls-duration", "--ls-delay", "--ls-ease"],
+    "usage": [
+      "Use .ls-reveal with data-step or data-ls-reveal-sequence for progressive disclosure."
+    ]
+  }
 }

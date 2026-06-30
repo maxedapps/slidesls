@@ -1,0 +1,32 @@
+{
+  "name": "presets/themes/executive-blue",
+  "type": "ls:preset",
+  "description": "Clean professional blue theme for product and business decks.",
+  "tags": ["theme", "professional", "blue", "dark"],
+  "files": [
+    {
+      "path": "registry/presets/themes/executive-blue/theme.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/presets/themes/executive-blue/README.md",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "styleTone": "professional dark blue",
+  "useCases": ["product decks", "business updates", "general professional slides"],
+  "pairsWith": ["presets/fonts/system-humanist"],
+  "themeAttribute": "executive-blue",
+  "authoring": {
+    "attributes": [
+      {
+        "name": "data-ls-theme",
+        "scope": "html",
+        "value": "executive-blue"
+      }
+    ],
+    "usage": ["Apply exactly one theme per deck on the html element."]
+  }
+}

@@ -20,5 +20,23 @@
       "label": "Split diagram slide",
       "path": "registry/templates/split-diagram/snippet.html"
     }
-  ]
+  ],
+  "authoring": {
+    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "classes": [
+      "ls-slide",
+      "ls-slide__inner",
+      "ls-stack",
+      "ls-stack--sm",
+      "ls-eyebrow",
+      "ls-title",
+      "ls-grid",
+      "ls-grid--wide-left",
+      "ls-panel",
+      "ls-frame",
+      "ls-callout",
+      "ls-callout__title",
+      "ls-callout__text"
+    ]
+  }
 }

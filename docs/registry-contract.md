@@ -9,6 +9,7 @@ Each item has `registry-item.json` with:
 - `name` — stable item id, e.g. `components/card`.
 - `type` — one of `ls:core`, `ls:utility`, `ls:component`, `ls:animation`, `ls:preset`, or `ls:template`.
 - `description`, `tags`, and optional `useCases`.
+- Theme presets may also use `styleTone`, `pairsWith`, and `themeAttribute` metadata.
 - `registryDependencies` — other registry item names that must be copied first.
 - `files` — repo-relative implementation files copied by `slidesls add`.
 - `docs` — item README path.
@@ -16,8 +17,53 @@ Each item has `registry-item.json` with:
 - `safeAnywhere` — whether the item can be used without a specific parent structure.
 - `agentRecommended` — whether `catalog --recommended` should include the item.
 - `snippets` — paste-ready HTML examples loaded by `inspect --json`.
+- `authoring` — public, agent-facing authoring API surfaced by `catalog --json` and `inspect --json`.
 
 Templates must use `files: []` and expose HTML only through `snippets` so `add templates/x` does not copy snippet files into deck assets.
+
+## Authoring metadata
+
+`authoring` is the source of truth for public classes, data attributes, CSS variables, and usage rules. Agents should use classes/data attributes listed in `authoring` or copied from snippets; do not invent new `ls-*` classes.
+
+Supported fields:
+
+- `classGroups` — base classes plus related BEM elements/modifiers, e.g. `ls-grid` with `ls-grid--2`.
+- `classes` — standalone public classes.
+- `dataAttributes` — public `data-*` attributes and allowed values when enumerable.
+- `cssVariables` — intended local customization knobs.
+- `attributes` — important deck-level attributes such as `data-ls-theme` or `data-ls-font`.
+- `usage` — short authoring rules for agents.
+
+Registry validation checks authoring shape and, for local CSS-backed items, verifies listed classes exist in item CSS. Example validation fails on unsupported real `ls-*` class attributes.
+
+## Theme presets
+
+Theme presets live under `registry/presets/themes/<theme-name>/` and use type `ls:preset`. A theme should list exactly one copied stylesheet:
+
+```txt
+registry/presets/themes/<theme-name>/theme.css
+```
+
+Theme CSS belongs in `@layer tokens` and must scope overrides to the deck root:
+
+```css
+@layer tokens {
+  :root[data-ls-theme="executive-blue"] {
+    --ls-page-bg: #07111f;
+    --ls-slide-bg: #0d1b2d;
+  }
+}
+```
+
+Apply themes deck-wide on `<html>`:
+
+```html
+<html lang="en" data-ls-theme="executive-blue"></html>
+```
+
+Themes control visual language: colors, surfaces, backgrounds, borders, radii, shadows, code colors, table striping, status colors, and progress accents. They must not encode slide structure or force font families. Font presets remain separate and may be recommended with `pairsWith` metadata.
+
+Theme CSS should prefer solid colors, subtle borders, restrained shadows, and minimal texture. Avoid large gradient blobs, neon fog, glow stacks, and decorative backgrounds that compete with content.
 
 ## Copy/load order
 

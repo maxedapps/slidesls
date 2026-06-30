@@ -1,9 +1,9 @@
 @layer components {
   .ls-code-block {
     overflow: hidden;
-    border: 1px solid var(--ls-border);
+    border: 1px solid var(--ls-code-border);
     border-radius: var(--ls-radius-lg);
-    background: #0b0f17;
+    background: var(--ls-code-bg);
     box-shadow: var(--ls-shadow-sm);
   }
 
@@ -12,7 +12,8 @@
     justify-content: space-between;
     gap: var(--ls-space-3);
     padding: 14px 18px;
-    border-block-end: 1px solid var(--ls-border);
+    border-block-end: 1px solid var(--ls-code-border);
+    background: var(--ls-code-header-bg);
     color: var(--ls-subtle);
     font-family: var(--ls-font-code);
     font-size: 17px;
@@ -27,7 +28,7 @@
   }
 
   .ls-code-block code {
-    color: #dbeafe;
+    color: var(--ls-code-text);
     font-family: var(--ls-font-code);
     font-size: var(--ls-code-font-size, 20px);
     line-height: 1.55;

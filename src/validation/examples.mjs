@@ -3,6 +3,8 @@ import { access, readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { assertInside } from "../shared/fs.mjs";
 import { localFileReferences } from "../shared/html.mjs";
+import { RegistrySource, loadRegistry } from "../registry/source.mjs";
+import { buildAuthoringClassIndex, unknownLsClasses } from "./authoring-api.mjs";
 
 async function fileExists(filePath) {
   try {
@@ -34,6 +36,9 @@ export async function validateExamples({ root = process.cwd() } = {}) {
   const errors = [];
   const warnings = [];
   const files = await exampleHtmlFiles(root);
+  const authoringIndex = buildAuthoringClassIndex(
+    (await loadRegistry(new RegistrySource({ registryRoot: root }))).items,
+  );
 
   for (const filePath of files) {
     const html = await readFile(filePath, "utf8");
@@ -68,6 +73,10 @@ export async function validateExamples({ root = process.cwd() } = {}) {
     const html = await readFile(candidatePath, "utf8");
     if (/\bls-layout-[\w-]+/.test(html))
       push(errors, "removed_layout_class", `${relative} uses removed ls-layout-* classes.`);
+    for (const className of unknownLsClasses(html, authoringIndex.known))
+      push(errors, "unknown_ls_class", `${relative} uses unknown slidesls class ${className}.`, {
+        className,
+      });
     if (html.includes("ls-grid") && !html.includes("utilities/layout/layout.css"))
       push(
         errors,

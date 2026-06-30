@@ -20,5 +20,26 @@
       "label": "Basic callout",
       "path": "registry/components/callout/snippets/basic.html"
     }
-  ]
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-callout",
+        "elements": [
+          "ls-callout__icon",
+          "ls-callout__body",
+          "ls-callout__title",
+          "ls-callout__text"
+        ]
+      }
+    ],
+    "dataAttributes": [
+      {
+        "name": "data-ls-tone",
+        "values": ["success", "warning", "danger"]
+      }
+    ],
+    "cssVariables": ["--ls-callout-accent"],
+    "usage": ["Use data-ls-tone for semantic status callouts."]
+  }
 }

@@ -1,8 +1,9 @@
-import { access, constants } from "node:fs/promises";
+import { access, constants, readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { assertInside, assertSafeRelativePath } from "../shared/fs.mjs";
 import { RegistrySource, loadRegistry, resolveItems } from "../registry/source.mjs";
+import { authoringClasses, buildAuthoringClassIndex, unknownLsClasses } from "./authoring-api.mjs";
 
 const knownTypes = new Set([
   "core",
@@ -179,6 +180,8 @@ export async function validateRegistry({ registryRoot, registryUrl } = {}) {
     }
   }
 
+  await validateRegistryAuthoringCoverage({ data, source, errors });
+
   return {
     valid: errors.length === 0,
     source: data.source,
@@ -186,6 +189,126 @@ export async function validateRegistry({ registryRoot, registryUrl } = {}) {
     errors,
     warnings,
   };
+}
+
+function validateAuthoringMetadataShape({ item, itemPath, errors }) {
+  const authoring = item.authoring;
+  if (authoring === undefined) return false;
+  if (!authoring || typeof authoring !== "object" || Array.isArray(authoring)) {
+    add("error", errors, "invalid_authoring", `${itemPath} authoring must be an object`);
+    return false;
+  }
+  for (const key of [
+    "classGroups",
+    "classes",
+    "dataAttributes",
+    "cssVariables",
+    "attributes",
+    "usage",
+  ]) {
+    if (authoring[key] !== undefined && !Array.isArray(authoring[key]))
+      add("error", errors, "invalid_authoring", `${itemPath} authoring.${key} must be an array`);
+  }
+  for (const className of authoringClasses(item)) {
+    if (typeof className !== "string" || !className.startsWith("ls-"))
+      add(
+        "error",
+        errors,
+        "invalid_authoring_class",
+        `${itemPath} authoring class must start with ls-: ${className}`,
+      );
+  }
+  for (const attribute of authoring.dataAttributes || []) {
+    if (!attribute?.name?.startsWith("data-"))
+      add(
+        "error",
+        errors,
+        "invalid_authoring_attribute",
+        `${itemPath} data attribute must start with data-: ${attribute?.name}`,
+      );
+    if (attribute.values !== undefined && !Array.isArray(attribute.values))
+      add(
+        "error",
+        errors,
+        "invalid_authoring_attribute_values",
+        `${itemPath} ${attribute.name} values must be an array`,
+      );
+  }
+  for (const variable of authoring.cssVariables || []) {
+    if (typeof variable !== "string" || !variable.startsWith("--"))
+      add(
+        "error",
+        errors,
+        "invalid_authoring_css_variable",
+        `${itemPath} CSS variable must start with --: ${variable}`,
+      );
+  }
+  return true;
+}
+
+async function validateAuthoringMetadata({ item, itemPath, source, errors }) {
+  if (!validateAuthoringMetadataShape({ item, itemPath, errors }) || source.mode !== "local")
+    return;
+  const cssFiles = (item.files || []).filter((file) => file?.path?.endsWith(".css"));
+  if (!cssFiles.length) return;
+  const css = (
+    await Promise.all(
+      cssFiles.map((file) => readFile(path.join(source.registryRoot, file.path), "utf8")),
+    )
+  ).join("\n");
+  for (const className of authoringClasses(item)) {
+    const escaped = className.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    if (!new RegExp(`\\.${escaped}(?![A-Za-z0-9_-])`).test(css))
+      add(
+        "error",
+        errors,
+        "authoring_class_missing_css",
+        `${itemPath} lists ${className} in authoring but no local CSS selector defines it`,
+      );
+  }
+}
+
+async function validateRegistryAuthoringCoverage({ data, source, errors }) {
+  if (source.mode !== "local") return;
+  const index = buildAuthoringClassIndex(data.items);
+  for (const item of data.items) {
+    for (const snippet of item.snippets || []) {
+      const html = await source.readText(snippet.path);
+      for (const className of unknownLsClasses(html, index.known))
+        add(
+          "error",
+          errors,
+          "unknown_authoring_class",
+          `${snippet.path} uses unknown slidesls class ${className}`,
+          { item: item.name, className },
+        );
+    }
+  }
+}
+
+async function validateThemePreset({ item, itemPath, source, errors }) {
+  const expectedAttribute = item.name.split("/").at(-1);
+  if (item.type !== "ls:preset")
+    add("error", errors, "theme_type", `${itemPath} theme presets must use type ls:preset`);
+  if (item.themeAttribute !== expectedAttribute)
+    add(
+      "error",
+      errors,
+      "theme_attribute",
+      `${itemPath} must set themeAttribute to ${expectedAttribute}`,
+    );
+  const themeFiles = (item.files || []).filter((file) => file?.path?.endsWith("/theme.css"));
+  if (themeFiles.length !== 1)
+    add("error", errors, "theme_file", `${itemPath} must list exactly one theme.css file`);
+  if (source.mode !== "local" || themeFiles.length !== 1) return;
+  const css = await readFile(path.join(source.registryRoot, themeFiles[0].path), "utf8");
+  if (!css.includes(`:root[data-ls-theme="${expectedAttribute}"]`))
+    add(
+      "error",
+      errors,
+      "theme_css_attribute",
+      `${themeFiles[0].path} must scope tokens to :root[data-ls-theme="${expectedAttribute}"]`,
+    );
 }
 
 async function validateItemMetadata({ item, itemPath, source, errors, warnings }) {
@@ -219,6 +342,11 @@ async function validateItemMetadata({ item, itemPath, source, errors, warnings }
         `${itemPath} templates must declare snippets`,
       );
   }
+
+  if (item.name?.startsWith("presets/themes/"))
+    await validateThemePreset({ item, itemPath, source, errors });
+
+  await validateAuthoringMetadata({ item, itemPath, source, errors });
 
   if (item.snippets === undefined) return;
   if (!Array.isArray(item.snippets)) {

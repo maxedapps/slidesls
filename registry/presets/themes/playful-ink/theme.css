@@ -1,0 +1,45 @@
+@layer tokens {
+  :root[data-ls-theme="playful-ink"] {
+    --ls-page-bg: #171126;
+    --ls-page-grid-color: rgb(255 255 255 / 4%);
+    --ls-page-grid-size: 40px 40px;
+    --ls-slide-bg: #201735;
+    --ls-slide-bg-image: radial-gradient(
+      circle at 24px 24px,
+      rgb(255 255 255 / 4%) 2px,
+      transparent 2px
+    );
+    --ls-panel-bg: #281e3d;
+    --ls-surface: #302447;
+    --ls-surface-strong: #3a2c55;
+    --ls-surface-muted: rgb(255 255 255 / 7%);
+    --ls-surface-highlight: 0 1px 0 rgb(255 255 255 / 6%) inset;
+    --ls-border: rgb(255 255 255 / 15%);
+    --ls-border-strong: rgb(255 255 255 / 25%);
+    --ls-text: #fff9f5;
+    --ls-muted: #ddcfe6;
+    --ls-subtle: #a996b8;
+    --ls-accent: #ff7a90;
+    --ls-accent-2: #6fd6d2;
+    --ls-accent-text: #ffd5dd;
+    --ls-accent-bg: rgb(255 122 144 / 15%);
+    --ls-accent-border: rgb(255 122 144 / 32%);
+    --ls-code-bg: #130e20;
+    --ls-code-text: #f8e7ff;
+    --ls-code-header-bg: #1c142d;
+    --ls-code-border: rgb(255 255 255 / 14%);
+    --ls-table-stripe-bg: rgb(255 255 255 / 6%);
+    --ls-status-success: #65d6a6;
+    --ls-status-warning: #ffd166;
+    --ls-status-danger: #ff7a90;
+    --ls-progress-accent: var(--ls-accent);
+    --ls-progress-accent-2: var(--ls-accent);
+    --ls-radius-sm: 12px;
+    --ls-radius-md: 18px;
+    --ls-radius-lg: 26px;
+    --ls-radius-xl: 34px;
+    --ls-radius-slide: 32px;
+    --ls-shadow-sm: 0 12px 28px rgb(0 0 0 / 20%);
+    --ls-shadow-md: 0 22px 52px rgb(0 0 0 / 28%);
+  }
+}

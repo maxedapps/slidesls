@@ -20,5 +20,13 @@
       "label": "Basic quote",
       "path": "registry/components/quote/snippets/basic.html"
     }
-  ]
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-quote",
+        "elements": ["ls-quote__text", "ls-quote__source"]
+      }
+    ]
+  }
 }

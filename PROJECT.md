@@ -29,7 +29,7 @@ Copyable registry items live under `registry/`:
 - `registry/utilities/` — hierarchy-light layout utilities such as stacks, clusters, grids, centering, and fill behavior.
 - `registry/components/` — standalone visual/content primitives such as badges, cards, panels, metrics, tables, timelines, code blocks, quotes, and callouts.
 - `registry/templates/` — paste-ready slide skeleton snippets composed from utilities and components.
-- `registry/presets/` — optional token remaps and style presets.
+- `registry/presets/` — optional token remaps and style presets, including fonts and deck-wide themes.
 - `registry/animations/` — optional animation and transition recipes that compose with the base reveal contract.
 
 Registry items are directories with `registry-item.json`, `README.md`, implementation files when needed, and optional `snippets/*.html`. The root `registry.json` indexes available item metadata.
@@ -48,7 +48,7 @@ Templates are HTML snippets, not CSS layout contracts. Avoid hidden ancestor-dep
 
 - `bin/slidesls.mjs` — package-ready CLI entry point.
 - `src/` — CLI, registry, deck, validation, server, skill, and shared modules.
-- `slidesls init` — creates a plain deck project with `slidesls.json`, copied assets, starter HTML, and manifest.
+- `slidesls init` — creates a plain deck project with `slidesls.json`, copied assets, starter HTML, manifest, and optional `--theme` support.
 - `slidesls add` — copies registry items and prints load tags without mutating HTML by default.
 - `slidesls catalog --recommended` / `slidesls inspect` — registry discovery for humans and agents.
 - `slidesls skill info/show/install/link` — agent skill distribution for local and future package usage.
@@ -60,7 +60,7 @@ Templates are HTML snippets, not CSS layout contracts. Avoid hidden ancestor-dep
 - Package manager: `pnpm`.
 - Node engine: `>=22.18.0`.
 - Runtime/build philosophy: vanilla HTML, modern CSS, and vanilla JavaScript.
-- CSS philosophy: semantic classes, CSS custom properties, cascade layers, reusable tokens, progressive enhancement.
+- CSS philosophy: semantic classes, CSS custom properties, cascade layers, reusable theme tokens, progressive enhancement.
 - Documentation direction: root README for quickstart; registry and skill docs serve as agent-readable API.
 - Validation direction: static validation first; optional browser validation and snapshots later.
 

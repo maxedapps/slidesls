@@ -68,8 +68,8 @@ npx slidesls init --template minimal --title "My Deck"
 ## Commands
 
 - `slidesls init [dir]` — initialize a deck in the current directory, or in `[dir]` if supplied.
-- `slidesls catalog --recommended` — list agent-safe recommended items.
-- `slidesls inspect <items...>` — show metadata, dependencies, load guidance, READMEs, and snippet HTML.
+- `slidesls catalog --recommended` — list agent-safe recommended items; JSON output includes each item’s public `authoring` API.
+- `slidesls inspect <items...>` — show metadata, public `authoring` API, dependencies, load guidance, READMEs, and snippet HTML.
 - `slidesls add <items...>` — copy registry items into an initialized deck or any existing project in copy mode, and print load tags.
 - `slidesls skill info|show|install|link` — inspect, copy, or symlink the bundled agent skill.
 - `slidesls validate [dir]` — static deck validation.
@@ -87,9 +87,38 @@ Registry items live under `registry/` and are copied into downstream decks. The 
 - `utilities/` — layout utilities that work anywhere.
 - `components/` — standalone visual/content primitives.
 - `templates/` — paste-ready slide snippets composed from utilities and components.
-- `animations/` and `presets/` — optional enhancements.
+- `animations/` and `presets/` — optional enhancements, including fonts and themes.
 
 Generated projects use `slidesls/` as the default copied asset directory and may freely edit those files. Default validation accepts those edits; `validate --strict` is available when you want copied-file hash drift to fail.
+
+## Theming
+
+Themes are visual presets under `presets/themes/*`. They are not templates: templates define slide structure, while themes remap canonical tokens for colors, surfaces, borders, radii, shadows, code blocks, status colors, and progress bars.
+
+Use a theme during initialization:
+
+```sh
+slidesls init ./my-deck --template minimal --theme executive-blue --title "My Deck"
+```
+
+Or copy a theme into an existing project and apply it manually:
+
+```sh
+slidesls add presets/themes/technical-deep --dir ./existing-project
+```
+
+```html
+<html lang="en" data-ls-theme="technical-deep"></html>
+```
+
+Initial themes:
+
+- `executive-blue` — balanced professional/product decks.
+- `boardroom-navy` — formal strategy, executive, and reporting decks.
+- `technical-deep` — engineering, architecture, and code-heavy decks.
+- `playful-ink` — friendlier workshop/community/product decks.
+
+Themes intentionally avoid heavy decorative gradients and glow effects. Font presets remain separate and optional.
 
 The default remote registry URL points at the future public repository; until the repo is public, use bundled/local registry mode.
 

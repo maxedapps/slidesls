@@ -2,7 +2,12 @@
   "name": "components/panel",
   "type": "ls:component",
   "description": "Standalone visual panel for grouped slide content.",
-  "files": [{ "path": "registry/components/panel/panel.css", "type": "registry:style" }],
+  "files": [
+    {
+      "path": "registry/components/panel/panel.css",
+      "type": "registry:style"
+    }
+  ],
   "registryDependencies": ["core/base"],
   "dependencies": [],
   "devDependencies": [],
@@ -10,5 +15,21 @@
   "rootClass": "ls-panel",
   "safeAnywhere": true,
   "agentRecommended": true,
-  "snippets": [{ "label": "Basic panel", "path": "registry/components/panel/snippets/basic.html" }]
+  "snippets": [
+    {
+      "label": "Basic panel",
+      "path": "registry/components/panel/snippets/basic.html"
+    }
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-panel",
+        "elements": ["ls-panel__title", "ls-panel__text"],
+        "modifiers": ["ls-panel--muted", "ls-panel--accent"]
+      }
+    ],
+    "cssVariables": ["--ls-panel-gap", "--ls-panel-padding", "--ls-panel-border", "--ls-panel-bg"],
+    "usage": ["Use muted/accent modifiers sparingly to create hierarchy."]
+  }
 }

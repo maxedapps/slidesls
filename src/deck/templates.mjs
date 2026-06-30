@@ -4,22 +4,27 @@ export function deckTemplate({
   title = "Untitled deck",
   template = "minimal",
   baseDir = "slidesls",
+  themeAttribute = null,
 } = {}) {
   const safeTitle = escapeHtml(title);
+  const safeTheme = themeAttribute ? escapeHtml(themeAttribute) : null;
+  const themeLink = safeTheme
+    ? `    <link rel="stylesheet" href="./${baseDir}/registry/presets/themes/${safeTheme}/theme.css" />\n`
+    : "";
   const body = template === "blank" ? blankSlides(safeTitle) : minimalSlides(safeTitle);
   const utilityLink =
     template === "blank"
       ? ""
       : `    <link rel="stylesheet" href="./${baseDir}/registry/utilities/layout/layout.css" />\n    <link rel="stylesheet" href="./${baseDir}/registry/components/badge/badge.css" />\n    <link rel="stylesheet" href="./${baseDir}/registry/components/panel/panel.css" />`;
   return `<!doctype html>
-<html lang="en">
+<html lang="en"${safeTheme ? ` data-ls-theme="${safeTheme}"` : ""}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>${safeTitle}</title>
     <link rel="stylesheet" href="./${baseDir}/registry/core/base/reset.css" />
     <link rel="stylesheet" href="./${baseDir}/registry/core/base/tokens.css" />
-    <link rel="stylesheet" href="./${baseDir}/registry/core/base/slide.css" />
+${themeLink}    <link rel="stylesheet" href="./${baseDir}/registry/core/base/slide.css" />
 ${utilityLink}
     <script type="module" src="./${baseDir}/registry/core/base/slide-runtime.js"></script>
   </head>

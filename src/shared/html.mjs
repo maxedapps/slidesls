@@ -57,6 +57,16 @@ export function parseAttributes(source) {
   return attributes;
 }
 
+export function classTokens(html) {
+  const tokens = [];
+  for (const attributes of startTags(html, "[a-z][a-z0-9:-]*")) {
+    for (const token of String(attributes.get("class") || "").split(/\s+/)) {
+      if (token) tokens.push(token);
+    }
+  }
+  return tokens;
+}
+
 export function hasClass(attributes, className) {
   return String(attributes.get("class") || "")
     .split(/\s+/)

@@ -37,6 +37,11 @@ import {
 import { deckTemplate } from "../deck/templates.mjs";
 import { validateRegistry } from "../validation/registry.mjs";
 import { validateExamples } from "../validation/examples.mjs";
+import {
+  buildAuthoringClassIndex,
+  itemNamesForClasses,
+  unknownLsClasses,
+} from "../validation/authoring-api.mjs";
 import { generateCatalogDoc } from "../registry/catalog-doc.mjs";
 import {
   defaultSkillTarget,
@@ -148,10 +153,11 @@ export async function initCommand(argv) {
   const args = parseArgs(argv, { boolean: ["force", "json", "help"] });
   if (args.help)
     return ok({
-      help: `Usage: slidesls init [dir] [--template blank|minimal] [--title <text>] [--registry-root <path>] [--registry-url <url>] [--force] [--json]
+      help: `Usage: slidesls init [dir] [--template blank|minimal] [--theme <theme>] [--title <text>] [--registry-root <path>] [--registry-url <url>] [--force] [--json]
 
 Initializes the current directory by default. If [dir] is supplied, initializes that directory.
-Use a dedicated deck folder inside larger projects to avoid adding deck files to the project root.`,
+Use a dedicated deck folder inside larger projects to avoid adding deck files to the project root.
+Use --theme executive-blue to copy a theme preset and set data-ls-theme on the generated <html>.`,
     });
   rejectRemovedRegistryOption(args);
   const projectRoot = path.resolve(args._[0] || ".");
@@ -176,7 +182,12 @@ Use a dedicated deck folder inside larger projects to avoid adding deck files to
     },
   ];
   const data = await registryData(args);
-  const items = resolveItems(data, template === "blank" ? coreItems : minimalItems);
+  const themeName = args.theme ? normalizeThemeName(args.theme) : null;
+  const themeItem = themeName ? themePreset(data, themeName) : null;
+  const items = resolveItems(data, [
+    ...(template === "blank" ? coreItems : minimalItems),
+    ...(themeItem ? [themeItem.name] : []),
+  ]);
   const writes = await planCopies({ items, targetRoot: projectRoot, baseDir: config.paths.items });
   const preparedCopies = await prepareCopies({
     source: registrySource(args),
@@ -194,7 +205,15 @@ Use a dedicated deck folder inside larger projects to avoid adding deck files to
   await writeDefaultConfig(projectRoot, config);
   for (const file of schemaFiles) await writeText(file.target, await readFile(file.source, "utf8"));
   const copiedFiles = await commitCopies(preparedCopies);
-  await writeText(entryPath, deckTemplate({ title, template, baseDir: config.paths.items }));
+  await writeText(
+    entryPath,
+    deckTemplate({
+      title,
+      template,
+      baseDir: config.paths.items,
+      themeAttribute: themeItem?.themeAttribute,
+    }),
+  );
   const { links, scripts } = tagsForWrites(writes);
   const manifest = createManifest({
     registrySource: data.source,
@@ -213,6 +232,7 @@ Use a dedicated deck folder inside larger projects to avoid adding deck files to
     entry: config.paths.entry,
     template,
     items: items.map((i) => i.name),
+    theme: themeItem ? themeItem.themeAttribute : null,
     nextSteps: [
       "slidesls catalog --recommended",
       "slidesls inspect templates/split --json",
@@ -252,6 +272,7 @@ Copies registry items into an initialized deck, or into any existing project in 
     includeDocs: args["include-docs"],
   });
   const { links, scripts } = tagsForWrites(writes);
+  const applyTheme = themeApplication(items);
   if (args["dry-run"])
     return ok({
       root,
@@ -264,6 +285,7 @@ Copies registry items into an initialized deck, or into any existing project in 
       files: writes,
       links,
       scripts,
+      applyTheme,
     });
   const copiedFiles = await performCopies({
     source: registrySource(args),
@@ -292,6 +314,7 @@ Copies registry items into an initialized deck, or into any existing project in 
     dependencyOrder: items.map((i) => i.name),
     links,
     scripts,
+    applyTheme,
     snippets: [],
   });
 }
@@ -300,7 +323,9 @@ export async function catalogCommand(argv) {
   const args = parseArgs(argv, { boolean: ["json", "help", "recommended"] });
   if (args.help)
     return ok({
-      help: `Usage: slidesls catalog [--recommended] [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path>] [--registry-url <url>] [--json]`,
+      help: `Usage: slidesls catalog [--recommended] [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path>] [--registry-url <url>] [--json]
+
+JSON output includes public authoring metadata for classes, modifiers, data attributes, attributes, CSS variables, and usage rules.`,
     });
   rejectRemovedRegistryOption(args);
   const data = await registryData(args);
@@ -325,7 +350,9 @@ export async function inspectCommand(argv) {
   const args = parseArgs(argv, { boolean: ["json", "help", "readme"] });
   if (args.help)
     return ok({
-      help: `Usage: slidesls inspect <items...> [--readme] [--registry-root <path>] [--registry-url <url>] [--json]`,
+      help: `Usage: slidesls inspect <items...> [--readme] [--registry-root <path>] [--registry-url <url>] [--json]
+
+Includes public authoring metadata plus load tags, snippets, and optional README content.`,
     });
   rejectRemovedRegistryOption(args);
   if (!args._.length) throw usageError("slidesls inspect requires at least one item name");
@@ -459,7 +486,25 @@ export async function validateCommand(argv) {
       });
   }
   const manifest = await readManifest(root, config);
-  if (html) validateClassDependencies({ html, manifest, errors, warnings });
+  if (html) {
+    const authoringIndex = buildAuthoringClassIndex(
+      (await loadRegistry(new RegistrySource())).items,
+    );
+    validateKnownClasses({
+      html,
+      strict: args.strict,
+      knownClasses: authoringIndex.known,
+      errors,
+      warnings,
+    });
+    validateClassDependencies({
+      html,
+      manifest,
+      ownerByClass: authoringIndex.ownerByClass,
+      errors,
+      warnings,
+    });
+  }
   if (manifest) {
     for (const file of manifest.copiedFiles || []) {
       const target = path.join(root, file.targetPath);
@@ -586,7 +631,33 @@ function normalizedType(type) {
   return String(type).split(":").at(-1);
 }
 
-function validateClassDependencies({ html, manifest, errors, warnings }) {
+function normalizeThemeName(name) {
+  const value = String(name).trim();
+  return value.startsWith("presets/themes/") ? value : `presets/themes/${value}`;
+}
+
+function themePreset(registryData, name) {
+  const item = registryData.byName.get(name);
+  if (!item || item.type !== "ls:preset" || !item.name.startsWith("presets/themes/"))
+    throw usageError(
+      `Unknown theme preset: ${name}`,
+      "Use slidesls catalog --type preset --tag theme to list themes.",
+    );
+  return item;
+}
+
+function themeApplication(items) {
+  const themes = items.filter((item) => item.name.startsWith("presets/themes/"));
+  if (!themes.length) return null;
+  const theme = themes.at(-1);
+  return {
+    themeAttribute: theme.themeAttribute || theme.name.split("/").at(-1),
+    item: theme.name,
+    element: "html",
+  };
+}
+
+function validateKnownClasses({ html, strict, knownClasses, errors, warnings }) {
   if (/\bls-layout-[\w-]+/.test(html))
     errors.push({
       code: "removed_layout_class",
@@ -594,27 +665,25 @@ function validateClassDependencies({ html, manifest, errors, warnings }) {
         "ls-layout-* classes are not part of the current registry; use templates and utilities instead.",
     });
 
-  const copied = new Set(manifest?.dependencyOrder || []);
-  const checks = [
-    { item: "utilities/layout", pattern: /\bls-(?:stack|cluster|grid|center|fill|frame)(?:\b|--)/ },
-    { item: "components/panel", pattern: /\bls-panel(?:\b|__|--)/ },
-    { item: "components/card", pattern: /\bls-card(?:\b|__|--)/ },
-    { item: "components/badge", pattern: /\bls-badge(?:\b|__|--)/ },
-    { item: "components/callout", pattern: /\bls-callout(?:\b|__|--)/ },
-    { item: "components/code-block", pattern: /\bls-code-block(?:\b|__|--)/ },
-    { item: "components/metric", pattern: /\bls-metric(?:\b|__|--)/ },
-    { item: "components/progress", pattern: /\bls-progress(?:\b|__|--)/ },
-    { item: "components/quote", pattern: /\bls-quote(?:\b|__|--)/ },
-    { item: "components/table", pattern: /\bls-table(?:\b|__|--)/ },
-    { item: "components/timeline", pattern: /\bls-timeline(?:\b|__|--)/ },
-  ];
+  for (const className of unknownLsClasses(html, knownClasses)) {
+    const entry = {
+      code: "unknown_ls_class",
+      message: `${className} is not listed in the slidesls authoring API catalog`,
+      className,
+    };
+    if (strict) errors.push(entry);
+    else warnings.push(entry);
+  }
+}
 
-  for (const check of checks) {
-    if (check.pattern.test(html) && !copied.has(check.item))
-      warnings.push({
-        code: "missing_registry_item_for_class",
-        message: `${check.item} should be added when using its classes in HTML`,
-      });
+function validateClassDependencies({ html, manifest, ownerByClass, warnings }) {
+  const copied = new Set(manifest?.dependencyOrder || []);
+  for (const item of itemNamesForClasses(html, ownerByClass)) {
+    if (item === "core/base" || copied.has(item)) continue;
+    warnings.push({
+      code: "missing_registry_item_for_class",
+      message: `${item} should be added when using its classes in HTML`,
+    });
   }
 }
 
@@ -761,7 +830,10 @@ export function textFor(command, result) {
           const snippets = (item.snippets || [])
             .map((snippet) => `${snippet.label}: ${snippet.path}`)
             .join("\n    ");
-          return `${item.name}\n  ${item.description || ""}\n  Files: ${(item.files || []).map((file) => file.path).join(", ") || "none"}\n  Snippets:\n    ${snippets || "none"}\n  Links:\n    ${(item.load.links || []).join("\n    ")}\n  Scripts:\n    ${(item.load.scripts || []).join("\n    ")}`;
+          const theme = item.themeAttribute
+            ? `\n  Theme: set data-ls-theme="${item.themeAttribute}" on <html>`
+            : "";
+          return `${item.name}\n  ${item.description || ""}${theme}\n  Files: ${(item.files || []).map((file) => file.path).join(", ") || "none"}\n  Snippets:\n    ${snippets || "none"}\n  Links:\n    ${(item.load.links || []).join("\n    ")}\n  Scripts:\n    ${(item.load.scripts || []).join("\n    ")}`;
         })
         .join("\n\n") + "\n"
     );
@@ -784,10 +856,13 @@ export function textFor(command, result) {
       result.data.mode === "copy"
         ? `No ${CONFIG_FILE} found; using copy mode and writing assets under ./${result.data.baseDir}.\n`
         : "";
-    return `${copyModeNote}${action} ${count} file(s). Add these tags if needed:\n${[...links, ...scripts].join("\n")}\n`;
+    const themeNote = result.data.applyTheme
+      ? `Apply theme by setting data-ls-theme="${result.data.applyTheme.themeAttribute}" on the <html> element.\n`
+      : "";
+    return `${copyModeNote}${action} ${count} file(s). Add these tags if needed:\n${[...links, ...scripts].join("\n")}\n${themeNote}`;
   }
   if (command === "init")
-    return `Initialized ${result.data.root}\nNext steps:\n${result.data.nextSteps.map((s) => `  ${s}`).join("\n")}\n`;
+    return `Initialized ${result.data.root}${result.data.theme ? ` with theme ${result.data.theme}` : ""}\nNext steps:\n${result.data.nextSteps.map((s) => `  ${s}`).join("\n")}\n`;
   if (command === "preview") return `Serving ${result.data.root} at ${result.data.url}\n`;
   if (command === "doctor")
     return result.data.ok

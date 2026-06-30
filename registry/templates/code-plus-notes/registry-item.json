@@ -20,5 +20,22 @@
       "label": "Code plus notes slide",
       "path": "registry/templates/code-plus-notes/snippet.html"
     }
-  ]
+  ],
+  "authoring": {
+    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "classes": [
+      "ls-slide",
+      "ls-slide__inner",
+      "ls-stack",
+      "ls-stack--sm",
+      "ls-eyebrow",
+      "ls-title",
+      "ls-grid",
+      "ls-grid--wide-left",
+      "ls-code-block",
+      "ls-card",
+      "ls-card__title",
+      "ls-card__text"
+    ]
+  }
 }

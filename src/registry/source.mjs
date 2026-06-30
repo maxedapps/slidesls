@@ -117,6 +117,10 @@ export function summarizeItem(item) {
     rootClass: item.rootClass ?? null,
     safeAnywhere: item.safeAnywhere ?? false,
     agentRecommended: item.agentRecommended === true,
+    styleTone: item.styleTone,
+    pairsWith: item.pairsWith || [],
+    themeAttribute: item.themeAttribute,
+    authoring: item.authoring || null,
     snippets: item.snippets || [],
     registryItemPath: item.registryItemPath,
   };

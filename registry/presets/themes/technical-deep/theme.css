@@ -1,0 +1,41 @@
+@layer tokens {
+  :root[data-ls-theme="technical-deep"] {
+    --ls-page-bg: #03070d;
+    --ls-page-grid-color: rgb(56 189 248 / 7%);
+    --ls-page-grid-size: 48px 48px;
+    --ls-slide-bg: #070b12;
+    --ls-slide-bg-image: none;
+    --ls-panel-bg: #0c121d;
+    --ls-surface: #0f1724;
+    --ls-surface-strong: #162235;
+    --ls-surface-muted: rgb(56 189 248 / 7%);
+    --ls-surface-highlight: 0 1px 0 rgb(125 211 252 / 5%) inset;
+    --ls-border: rgb(125 211 252 / 16%);
+    --ls-border-strong: rgb(125 211 252 / 28%);
+    --ls-text: #f1f7fb;
+    --ls-muted: #b9c8d8;
+    --ls-subtle: #7e91a6;
+    --ls-accent: #38bdf8;
+    --ls-accent-2: #34d399;
+    --ls-accent-text: #bae6fd;
+    --ls-accent-bg: rgb(56 189 248 / 13%);
+    --ls-accent-border: rgb(56 189 248 / 30%);
+    --ls-code-bg: #020617;
+    --ls-code-text: #d7f3ff;
+    --ls-code-header-bg: #07101e;
+    --ls-code-border: rgb(56 189 248 / 20%);
+    --ls-table-stripe-bg: rgb(56 189 248 / 6%);
+    --ls-status-success: #34d399;
+    --ls-status-warning: #fbbf24;
+    --ls-status-danger: #fb7185;
+    --ls-progress-accent: var(--ls-accent);
+    --ls-progress-accent-2: var(--ls-accent);
+    --ls-radius-sm: 6px;
+    --ls-radius-md: 9px;
+    --ls-radius-lg: 12px;
+    --ls-radius-xl: 16px;
+    --ls-radius-slide: 18px;
+    --ls-shadow-sm: 0 12px 28px rgb(0 0 0 / 24%);
+    --ls-shadow-md: 0 22px 54px rgb(0 0 0 / 34%);
+  }
+}

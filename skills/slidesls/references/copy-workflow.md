@@ -21,6 +21,7 @@ Important:
 - Always prefer `--dry-run --json` before copying multiple items or changing an existing deck.
 - `add` copies assets and updates the manifest; it does not rewrite the deck HTML.
 - Insert returned `<link>` and `<script>` tags into the entry HTML when needed.
+- When copying `presets/themes/<theme>`, also set `data-ls-theme="<theme>"` on the existing `<html>` element. Do not add a second theme attribute and do not stack multiple themes.
 - For templates, inspect snippet HTML first, then add the template or its dependencies to copy required assets.
 - Use `--include-docs` only when downstream item READMEs should be copied into the deck.
 - Customize copied deck files, not package registry source files.

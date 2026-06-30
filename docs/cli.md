@@ -15,10 +15,10 @@ If installed from a local tarball in the target project, use `npx slidesls ...`.
 
 ## Commands
 
-- `slidesls init [dir] --template blank|minimal --title <text> [--registry-root <path> | --registry-url <url>]` — initialize a deck in the current directory, or in `[dir]` if supplied.
+- `slidesls init [dir] --template blank|minimal --theme <theme> --title <text> [--registry-root <path> | --registry-url <url>]` — initialize a deck in the current directory, or in `[dir]` if supplied. `--theme` accepts names such as `executive-blue` or `presets/themes/executive-blue`.
 - `slidesls add <items...> --dir <project> [--base-dir <relative>] [--registry-root <path> | --registry-url <url>]` — copy registry items into a deck project or any existing project. If no `slidesls.json` exists in `--dir`, `add` uses copy mode and writes assets under `--base-dir` or `slidesls`.
-- `slidesls catalog [--recommended] [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path> | --registry-url <url>]` — list items; use `--recommended` for the agent-safe set.
-- `slidesls inspect <items...> [--readme] [--registry-root <path> | --registry-url <url>]` — show metadata, load guidance, and snippet HTML for requested items.
+- `slidesls catalog [--recommended] [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path> | --registry-url <url>]` — list items and their public `authoring` API in JSON; use `--recommended` for the agent-safe set.
+- `slidesls inspect <items...> [--readme] [--registry-root <path> | --registry-url <url>]` — show metadata, public `authoring` API, load guidance, and snippet HTML for requested items.
 - `slidesls skill info [--json]` — show bundled agent skill metadata.
 - `slidesls skill show` — print the bundled agent `SKILL.md`.
 - `slidesls skill install [dir] [--dry-run] [--force]` — copy the bundled skill to `[dir]` or `./.claude/skills/slidesls`.
@@ -46,7 +46,7 @@ Inside a larger project, prefer an explicit path:
 slidesls init ./slides/my-deck --template minimal --title "My Deck"
 ```
 
-`init` writes `slidesls.json`, the configured entry file, and copied registry assets into the target directory.
+`init` writes `slidesls.json`, the configured entry file, and copied registry assets into the target directory. With `--theme`, it also copies the theme preset, links its CSS, and sets `data-ls-theme` on the generated `<html>` element.
 
 ## Copy mode without init
 
@@ -57,6 +57,34 @@ slidesls add components/card utilities/layout --dir ./existing-project --base-di
 ```
 
 When `--dir` has no `slidesls.json`, `add` uses copy mode, writes under the selected base directory, creates/updates that base directory's `manifest.json`, and reports `mode: "copy"` in JSON output. If `--dir` is supplied, config discovery is limited to that exact directory; ancestor configs are not inherited.
+
+## Themes
+
+Themes are optional visual presets. They are copied like any other registry item, but they only take effect when the deck opts in on the `<html>` element.
+
+```sh
+slidesls catalog --type preset --tag theme
+slidesls add presets/themes/executive-blue --dir ./my-deck
+```
+
+```html
+<html lang="en" data-ls-theme="executive-blue"></html>
+```
+
+For new decks, prefer `init --theme <theme>`:
+
+```sh
+slidesls init ./my-deck --template minimal --theme technical-deep --title "Architecture Review"
+```
+
+Available initial themes:
+
+- `executive-blue` — balanced professional/product decks.
+- `boardroom-navy` — formal strategy, executive, and reporting decks.
+- `technical-deep` — engineering and code-heavy decks.
+- `playful-ink` — friendlier workshop/community decks.
+
+Font presets remain separate; use `data-ls-font` only when you want a font role remap.
 
 ## Agent skill workflow
 
@@ -80,6 +108,8 @@ slidesls inspect templates/split --json
 slidesls inspect components/card --json
 slidesls add utilities/layout components/panel components/card --dry-run --json
 ```
+
+Treat each item’s `authoring` metadata as the quick source of truth for public classes, modifiers, data attributes, theme/font attributes, and CSS variables. Use `inspect --json` when you need exact snippet markup or README details. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and `--strict` errors.
 
 ## Naming
 

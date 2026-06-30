@@ -24,7 +24,9 @@ test("catalog --json returns an agent-friendly result envelope", async () => {
   assert.equal(result.ok, true);
   assert.equal(typeof result.data.count, "number");
   assert.ok(result.data.items.some((item) => item.name === "core/base"));
-  assert.ok(result.data.items.some((item) => item.name === "utilities/layout"));
+  const layout = result.data.items.find((item) => item.name === "utilities/layout");
+  assert.ok(layout);
+  assert.ok(layout.authoring.classGroups.some((group) => group.modifiers?.includes("ls-grid--4")));
   assert.equal(
     result.data.items.some((item) => item.name.startsWith("layouts/")),
     false,
@@ -52,6 +54,11 @@ test("inspect returns snippet HTML for requested templates and components", asyn
 
   const component = JSON.parse((await run([bin, "inspect", "components/card", "--json"])).stdout);
   assert.match(component.data.items.at(-1).snippets[0].html, /class="ls-card"/);
+  assert.ok(
+    component.data.items
+      .find((item) => item.name === "components/card")
+      .authoring.classGroups.some((group) => group.base === "ls-card"),
+  );
 });
 
 test("add without init uses explicit copy mode", async () => {

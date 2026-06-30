@@ -5,10 +5,18 @@
     --ls-scale: 1;
 
     --ls-page-bg: #0b0d12;
+    --ls-page-grid-color: rgb(255 255 255 / 3%);
+    --ls-page-grid-size: 64px 64px;
+    --ls-page-bg-image:
+      linear-gradient(var(--ls-page-grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--ls-page-grid-color) 1px, transparent 1px);
     --ls-slide-bg: #111318;
+    --ls-slide-bg-image: none;
     --ls-panel-bg: #171a21;
     --ls-surface: #181b23;
     --ls-surface-strong: #20242e;
+    --ls-surface-muted: rgb(255 255 255 / 4%);
+    --ls-surface-highlight: 0 1px 0 rgb(255 255 255 / 4%) inset;
     --ls-border: rgb(255 255 255 / 12%);
     --ls-border-strong: rgb(255 255 255 / 20%);
     --ls-text: #f5f7fb;
@@ -19,6 +27,17 @@
     --ls-accent-text: #bfdbfe;
     --ls-accent-bg: rgb(59 130 246 / 14%);
     --ls-accent-border: rgb(96 165 250 / 30%);
+    --ls-code-bg: #0b0f17;
+    --ls-code-text: #dbeafe;
+    --ls-code-header-bg: transparent;
+    --ls-code-border: var(--ls-border);
+    --ls-table-stripe-bg: var(--ls-surface-muted);
+    --ls-status-success: #22c55e;
+    --ls-status-warning: #f59e0b;
+    --ls-status-danger: #ef4444;
+    --ls-progress-accent: var(--ls-accent);
+    --ls-progress-accent-2: var(--ls-accent-2);
+    --ls-print-bg: #fff;
 
     --ls-font-sans:
       Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -51,6 +70,7 @@
     --ls-radius-sm: 10px;
     --ls-radius-md: 14px;
     --ls-radius-lg: 20px;
+    --ls-radius-xl: 28px;
     --ls-radius-slide: 24px;
 
     --ls-shadow-sm: 0 10px 24px rgb(0 0 0 / 18%);
