@@ -7,6 +7,56 @@ import test from "node:test";
 
 const bin = path.resolve("bin/slidesls.mjs");
 
+test("preview rejects malformed URLs and keeps serving", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-preview-"));
+  await writeFile(
+    path.join(root, "slidesls.json"),
+    JSON.stringify({ paths: { entry: "index.html" } }),
+  );
+  await writeFile(path.join(root, "index.html"), "<!doctype html><p>ok</p>");
+
+  const child = spawn(process.execPath, [bin, "preview", root, "--port", "0", "--json"], {
+    cwd: path.resolve("."),
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+
+  try {
+    const result = await readJsonFromStdout(child);
+    const bad = await fetch(`${result.data.url}%E0%A4%A`);
+    assert.equal(bad.status, 400);
+    const good = await fetch(result.data.url);
+    assert.equal(good.status, 200);
+    assert.match(await good.text(), /ok/);
+  } finally {
+    child.kill("SIGTERM");
+  }
+});
+
+test("preview serves percent-encoded filenames inside the deck root", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-preview-"));
+  await mkdir(path.join(root, "assets"), { recursive: true });
+  await writeFile(
+    path.join(root, "slidesls.json"),
+    JSON.stringify({ paths: { entry: "index.html" } }),
+  );
+  await writeFile(path.join(root, "index.html"), "<!doctype html><p>ok</p>");
+  await writeFile(path.join(root, "assets", "My File.txt"), "encoded ok");
+
+  const child = spawn(process.execPath, [bin, "preview", root, "--port", "0", "--json"], {
+    cwd: path.resolve("."),
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+
+  try {
+    const result = await readJsonFromStdout(child);
+    const response = await fetch(`${result.data.url}assets/My%20File.txt`);
+    assert.equal(response.status, 200);
+    assert.equal(await response.text(), "encoded ok");
+  } finally {
+    child.kill("SIGTERM");
+  }
+});
+
 test("preview does not serve symlinks that resolve outside the deck root", async (t) => {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-preview-"));
   const outside = await mkdtemp(path.join(os.tmpdir(), "slidesls-outside-"));

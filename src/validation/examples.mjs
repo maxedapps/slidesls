@@ -2,6 +2,7 @@ import { constants } from "node:fs";
 import { access, readdir, readFile, stat } from "node:fs/promises";
 import path from "node:path";
 import { assertInside } from "../shared/fs.mjs";
+import { localFileReferences } from "../shared/html.mjs";
 
 async function fileExists(filePath) {
   try {
@@ -24,43 +25,6 @@ async function exampleHtmlFiles(root) {
   return files.sort((a, b) => a.localeCompare(b));
 }
 
-function isExternalOrNonFileUrl(value) {
-  const trimmed = value.trim();
-  return (
-    trimmed === "" ||
-    trimmed.startsWith("#") ||
-    trimmed.startsWith("//") ||
-    /^[a-z][a-z0-9+.-]*:/i.test(trimmed)
-  );
-}
-
-function stripQueryAndHash(value) {
-  const queryIndex = value.indexOf("?");
-  const hashIndex = value.indexOf("#");
-  const indexes = [queryIndex, hashIndex].filter((index) => index >= 0);
-  return value.slice(0, indexes.length > 0 ? Math.min(...indexes) : value.length);
-}
-
-function decodePath(value) {
-  try {
-    return decodeURIComponent(value);
-  } catch {
-    return value;
-  }
-}
-
-function extractLocalAssetReferences(html) {
-  const references = [];
-  const attributePattern = /\b(?:href|src)\s*=\s*(["'])(.*?)\1/gims;
-  for (const match of html.matchAll(attributePattern)) {
-    const value = match[2];
-    if (isExternalOrNonFileUrl(value)) continue;
-    const localPath = decodePath(stripQueryAndHash(value.trim()));
-    if (localPath) references.push({ rawValue: value, localPath });
-  }
-  return references;
-}
-
 function push(list, code, message, details = {}) {
   list.push({ code, message, ...details });
 }
@@ -74,7 +38,7 @@ export async function validateExamples({ root = process.cwd() } = {}) {
   for (const filePath of files) {
     const html = await readFile(filePath, "utf8");
     const sourcePath = path.relative(root, filePath);
-    for (const reference of extractLocalAssetReferences(html)) {
+    for (const reference of localFileReferences(html)) {
       const resolvedPath = path.resolve(path.dirname(filePath), reference.localPath);
       try {
         assertInside(root, resolvedPath);

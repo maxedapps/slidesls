@@ -103,7 +103,7 @@ function setSlideState(slides, activeIndex, step) {
 }
 
 function shouldIgnoreKey(event) {
-  return Boolean(event.target.closest(interactiveSelector));
+  return event.target instanceof Element && Boolean(event.target.closest(interactiveSelector));
 }
 
 function initializeLucide() {

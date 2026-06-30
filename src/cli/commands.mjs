@@ -15,19 +15,25 @@ import {
   hasElementWithClass,
   hasLucideScript,
   hasModuleRuntimeScript,
-  localReferences,
+  localFileReferences,
   usesLucideIcons,
 } from "../shared/html.mjs";
 import { RegistrySource, loadRegistry, resolveItems, summarizeItem } from "../registry/source.mjs";
+import { CONFIG_FILE, DEFAULT_CONFIG, readConfig, writeDefaultConfig } from "../deck/config.mjs";
 import {
-  CONFIG_FILE,
-  DEFAULT_CONFIG,
-  mergeConfig,
-  readConfig,
-  writeDefaultConfig,
-} from "../deck/config.mjs";
-import { createManifest, mergeManifest, readManifest, writeManifest } from "../deck/manifest.mjs";
-import { performCopies, planCopies, tagsForWrites } from "../deck/copy.mjs";
+  createManifest,
+  manifestPath,
+  mergeManifest,
+  readManifest,
+  writeManifest,
+} from "../deck/manifest.mjs";
+import {
+  commitCopies,
+  performCopies,
+  planCopies,
+  prepareCopies,
+  tagsForWrites,
+} from "../deck/copy.mjs";
 import { deckTemplate } from "../deck/templates.mjs";
 import { validateRegistry } from "../validation/registry.mjs";
 import { validateExamples } from "../validation/examples.mjs";
@@ -124,6 +130,20 @@ async function registryData(args) {
   return loadRegistry(source);
 }
 
+async function precheckNewFiles(root, filePaths) {
+  const collisions = [];
+  for (const filePath of filePaths) {
+    assertInside(root, filePath);
+    if (await exists(filePath)) collisions.push(path.relative(root, filePath));
+  }
+  if (!collisions.length) return;
+  const error = new Error(
+    `Refusing to overwrite existing files without --force: ${collisions.join(", ")}`,
+  );
+  error.code = "file_exists";
+  throw error;
+}
+
 export async function initCommand(argv) {
   const args = parseArgs(argv, { boolean: ["force", "json", "help"] });
   if (args.help)
@@ -142,45 +162,38 @@ Use a dedicated deck folder inside larger projects to avoid adding deck files to
       "Use --template blank or --template minimal.",
     );
   const title = args.title || path.basename(projectRoot) || "Untitled deck";
-  const config = mergeConfig({ registry: "bundled" });
+  const config = DEFAULT_CONFIG;
   const entryPath = path.join(projectRoot, config.paths.entry);
-  const configPath = path.join(projectRoot, "slidesls.json");
-  if (!args.force) {
-    const collisions = [];
-    if (await exists(configPath)) collisions.push("slidesls.json");
-    if (await exists(entryPath)) collisions.push(config.paths.entry);
-    if (collisions.length) {
-      const e = new Error(
-        `Refusing to overwrite existing files without --force: ${collisions.join(", ")}`,
-      );
-      e.code = "file_exists";
-      throw e;
-    }
-  }
-  await writeDefaultConfig(projectRoot, config);
-  await writeText(
-    path.join(projectRoot, config.paths.items, "schema", "slidesls.schema.json"),
-    await readFile(
-      path.resolve(import.meta.dirname, "..", "..", "schemas", "slidesls.schema.json"),
-      "utf8",
-    ),
-  );
-  await writeText(
-    path.join(projectRoot, config.paths.items, "schema", "manifest.schema.json"),
-    await readFile(
-      path.resolve(import.meta.dirname, "..", "..", "schemas", "manifest.schema.json"),
-      "utf8",
-    ),
-  );
+  const configPath = path.join(projectRoot, CONFIG_FILE);
+  const schemaFiles = [
+    {
+      target: path.join(projectRoot, config.paths.items, "schema", "slidesls.schema.json"),
+      source: path.resolve(import.meta.dirname, "..", "..", "schemas", "slidesls.schema.json"),
+    },
+    {
+      target: path.join(projectRoot, config.paths.items, "schema", "manifest.schema.json"),
+      source: path.resolve(import.meta.dirname, "..", "..", "schemas", "manifest.schema.json"),
+    },
+  ];
   const data = await registryData(args);
   const items = resolveItems(data, template === "blank" ? coreItems : minimalItems);
   const writes = await planCopies({ items, targetRoot: projectRoot, baseDir: config.paths.items });
-  const copiedFiles = await performCopies({
+  const preparedCopies = await prepareCopies({
     source: registrySource(args),
     targetRoot: projectRoot,
     writes,
     force: args.force,
   });
+  if (!args.force)
+    await precheckNewFiles(projectRoot, [
+      configPath,
+      entryPath,
+      manifestPath(projectRoot, config),
+      ...schemaFiles.map((file) => file.target),
+    ]);
+  await writeDefaultConfig(projectRoot, config);
+  for (const file of schemaFiles) await writeText(file.target, await readFile(file.source, "utf8"));
+  const copiedFiles = await commitCopies(preparedCopies);
   await writeText(entryPath, deckTemplate({ title, template, baseDir: config.paths.items }));
   const { links, scripts } = tagsForWrites(writes);
   const manifest = createManifest({
@@ -214,17 +227,22 @@ export async function addCommand(argv) {
   const args = parseArgs(argv, { boolean: ["include-docs", "dry-run", "force", "json", "help"] });
   if (args.help)
     return ok({
-      help: `Usage: slidesls add <items...> [--dir <project>] [--base-dir <relative>] [--registry-root <path>] [--registry-url <url>] [--include-docs] [--dry-run] [--force] [--json]`,
+      help: `Usage: slidesls add <items...> [--dir <project>] [--base-dir <relative>] [--registry-root <path>] [--registry-url <url>] [--include-docs] [--dry-run] [--force] [--json]
+
+Copies registry items into an initialized deck, or into any existing project in copy mode when --dir has no slidesls.json.`,
     });
   rejectRemovedRegistryOption(args);
   const names = args._;
   if (!names.length) throw usageError("slidesls add requires at least one item name");
   const projectStart = path.resolve(args.dir || ".");
-  const { config: foundConfig, root } = await readConfig(projectStart);
-  const config = mergeConfig(
-    foundConfig || { paths: { items: args["base-dir"] || DEFAULT_CONFIG.paths.items } },
-  );
-  if (args["base-dir"]) config.paths.items = assertSafeRelativePath(args["base-dir"]);
+  const { config: foundConfig, root } = await readConfig(projectStart, Boolean(args.dir));
+  const configFound = Boolean(foundConfig);
+  const config = foundConfig
+    ? { ...foundConfig, paths: { ...foundConfig.paths } }
+    : { ...DEFAULT_CONFIG, paths: { ...DEFAULT_CONFIG.paths } };
+  if (args["base-dir"] || !configFound)
+    config.paths.items = assertSafeRelativePath(args["base-dir"] || DEFAULT_CONFIG.paths.items);
+  const mode = configFound ? "deck" : "copy";
   const data = await registryData(args);
   const items = resolveItems(data, names);
   const writes = await planCopies({
@@ -238,6 +256,9 @@ export async function addCommand(argv) {
     return ok({
       root,
       dryRun: true,
+      configFound,
+      mode,
+      baseDir: config.paths.items,
       requestedItems: names,
       dependencyOrder: items.map((i) => i.name),
       files: writes,
@@ -263,6 +284,9 @@ export async function addCommand(argv) {
   await writeManifest(root, config, mergeManifest(await readManifest(root, config), next));
   return ok({
     root,
+    configFound,
+    mode,
+    baseDir: config.paths.items,
     copied: copiedFiles.length,
     requestedItems: names,
     dependencyOrder: items.map((i) => i.name),
@@ -283,9 +307,7 @@ export async function catalogCommand(argv) {
   let items = data.items.map(summarizeItem);
   if (args.recommended) items = items.filter((item) => item.agentRecommended === true);
   if (args.type)
-    items = items.filter(
-      (item) => item.type === args.type || item.type.endsWith(String(args.type)),
-    );
+    items = items.filter((item) => normalizedType(item.type) === normalizedType(args.type));
   if (args.tag) items = items.filter((item) => item.tags?.includes(args.tag));
   if (args.query) {
     const q = String(args.query).toLowerCase();
@@ -385,9 +407,10 @@ export async function validateCommand(argv) {
   if (args.help) return ok({ help: `Usage: slidesls validate [dir] [--strict] [--json]` });
   const start = path.resolve(args._[0] || args.dir || ".");
   const { config: foundConfig, root } = await readConfig(start);
-  const config = mergeConfig(foundConfig || {});
+  const config = foundConfig || DEFAULT_CONFIG;
   const errors = [],
-    warnings = [];
+    warnings = [],
+    customizedFiles = [];
   if (!foundConfig)
     warnings.push({
       code: "missing_config",
@@ -410,16 +433,19 @@ export async function validateCommand(argv) {
         code: "missing_runtime",
         message: "slide-runtime.js must be loaded as a module script",
       });
-    for (const ref of localReferences(html)) {
-      const target = path.resolve(path.dirname(entryPath), ref);
+    for (const ref of localFileReferences(html)) {
+      const target = path.resolve(path.dirname(entryPath), ref.localPath);
       try {
         assertInside(root, target);
       } catch {
-        errors.push({ code: "asset_outside_project", message: `${ref} resolves outside project` });
+        errors.push({
+          code: "asset_outside_project",
+          message: `${ref.rawValue} resolves outside project`,
+        });
         continue;
       }
       if (!(await exists(target)))
-        errors.push({ code: "missing_asset", message: `${ref} does not exist` });
+        errors.push({ code: "missing_asset", message: `${ref.rawValue} does not exist` });
     }
     if (usesLucideIcons(html) && !hasLucideScript(html))
       warnings.push({
@@ -446,16 +472,23 @@ export async function validateCommand(argv) {
       }
       if (file.sha256) {
         const actual = await sha256File(target);
-        if (actual !== file.sha256)
-          (args.strict ? errors : warnings).push({
-            code: "manifest_hash_drift",
-            message: `${file.targetPath} differs from manifest hash`,
+        if (actual !== file.sha256) {
+          customizedFiles.push({
+            targetPath: file.targetPath,
+            expectedSha256: file.sha256,
+            actualSha256: actual,
           });
+          if (args.strict)
+            errors.push({
+              code: "manifest_hash_drift",
+              message: `${file.targetPath} differs from manifest hash`,
+            });
+        }
       }
     }
   }
   const valid = errors.length === 0;
-  return ok({ valid, root, entry: config.paths.entry, errors, warnings });
+  return ok({ valid, root, entry: config.paths.entry, errors, warnings, customizedFiles });
 }
 
 export async function doctorCommand(argv) {
@@ -504,10 +537,15 @@ export async function doctorCommand(argv) {
       configInfo.configPath ? "error" : "warning",
     );
   } catch (error) {
-    check("config_parse", false, `${CONFIG_FILE} could not be parsed: ${error.message}`);
+    const code = error.code === "invalid_config_path" ? "config_paths" : "config_parse";
+    const message =
+      error.code === "invalid_config_path"
+        ? `${CONFIG_FILE} has invalid paths: ${error.message}`
+        : `${CONFIG_FILE} could not be parsed: ${error.message}`;
+    check(code, false, message);
     configInfo = { config: null, root: start };
   }
-  const config = mergeConfig(configInfo.config || {});
+  const config = configInfo.config || DEFAULT_CONFIG;
   if (configInfo.config) {
     check(
       "entry_exists",
@@ -542,6 +580,10 @@ export async function doctorCommand(argv) {
     errors,
     warnings,
   });
+}
+
+function normalizedType(type) {
+  return String(type).split(":").at(-1);
 }
 
 function validateClassDependencies({ html, manifest, errors, warnings }) {
@@ -630,27 +672,31 @@ export async function generateCatalogCommand(argv) {
 export async function previewCommand(argv) {
   const args = parseArgs(argv, { boolean: ["json", "help"] });
   if (args.help)
-    return ok({ help: `Usage: slidesls preview [dir] [--host <host>] [--port <port>] [--json]` });
+    return ok({
+      help: `Usage: slidesls preview [dir] [--host <host>] [--port <port>] [--json]
+
+Starts a local server, prints the URL, and keeps running until stopped.`,
+    });
   const start = path.resolve(args._[0] || args.dir || ".");
   const { config: foundConfig, root } = await readConfig(start);
-  const config = mergeConfig(foundConfig || {});
+  const config = foundConfig || DEFAULT_CONFIG;
   const host = args.host || "127.0.0.1";
   const desiredPort = Number(args.port || 4321);
   const realRoot = await realpath(root);
   const server = createServer(async (request, response) => {
-    const url = new URL(request.url || "/", `http://${host}`);
-    const relative =
-      url.pathname === "/" ? config.paths.entry : decodeURIComponent(url.pathname.slice(1));
-    const target = path.join(root, relative);
     try {
+      const url = new URL(request.url || "/", `http://${host}`);
+      const relative =
+        url.pathname === "/" ? config.paths.entry : decodeURIComponent(url.pathname.slice(1));
+      const target = path.join(root, relative);
       assertInside(root, target);
       const realTarget = await realpath(target);
       assertInside(realRoot, realTarget);
       response.setHeader("Content-Type", contentType(target));
       response.end(await readFile(realTarget));
-    } catch {
-      response.statusCode = 404;
-      response.end("Not found");
+    } catch (error) {
+      response.statusCode = error instanceof URIError || error instanceof TypeError ? 400 : 404;
+      response.end(response.statusCode === 400 ? "Bad request" : "Not found");
     }
   });
   const port = await listen(server, host, desiredPort);
@@ -734,7 +780,11 @@ export function textFor(command, result) {
     const scripts = result.data.scripts || [];
     const count = result.data.dryRun ? result.data.files.length : result.data.copied;
     const action = result.data.dryRun ? "Would copy" : "Copied";
-    return `${action} ${count} file(s). Add these tags if needed:\n${[...links, ...scripts].join("\n")}\n`;
+    const copyModeNote =
+      result.data.mode === "copy"
+        ? `No ${CONFIG_FILE} found; using copy mode and writing assets under ./${result.data.baseDir}.\n`
+        : "";
+    return `${copyModeNote}${action} ${count} file(s). Add these tags if needed:\n${[...links, ...scripts].join("\n")}\n`;
   }
   if (command === "init")
     return `Initialized ${result.data.root}\nNext steps:\n${result.data.nextSteps.map((s) => `  ${s}`).join("\n")}\n`;

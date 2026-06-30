@@ -1,19 +1,42 @@
-export function localReferences(html) {
+function isExternalOrNonFileUrl(value) {
+  const trimmed = value.trim();
+  return (
+    trimmed === "" ||
+    trimmed.startsWith("#") ||
+    trimmed.startsWith("//") ||
+    /^[a-z][a-z0-9+.-]*:/i.test(trimmed)
+  );
+}
+
+function stripQueryAndHash(value) {
+  const queryIndex = value.indexOf("?");
+  const hashIndex = value.indexOf("#");
+  const indexes = [queryIndex, hashIndex].filter((index) => index >= 0);
+  return value.slice(0, indexes.length > 0 ? Math.min(...indexes) : value.length);
+}
+
+function decodePath(value) {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
+export function localFileReferences(html) {
   const refs = [];
-  const attributePattern = /\b(?:href|src)\s*=\s*(["'])(.*?)\1/gi;
-  let match;
-  while ((match = attributePattern.exec(html))) {
-    const value = match[2];
-    if (
-      !value ||
-      value.startsWith("#") ||
-      /^[a-z][a-z0-9+.-]*:/i.test(value) ||
-      value.startsWith("//")
-    )
-      continue;
-    refs.push(value.split(/[?#]/, 1)[0]);
+  const attributePattern = /\b(?:href|src)\s*=\s*(["'])(.*?)\1/gims;
+  for (const match of html.matchAll(attributePattern)) {
+    const rawValue = match[2];
+    if (isExternalOrNonFileUrl(rawValue)) continue;
+    const localPath = decodePath(stripQueryAndHash(rawValue.trim()));
+    if (localPath) refs.push({ rawValue, localPath });
   }
   return refs;
+}
+
+export function localReferences(html) {
+  return localFileReferences(html).map((reference) => reference.localPath);
 }
 
 export function startTags(html, tagName) {

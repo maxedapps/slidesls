@@ -46,25 +46,25 @@ export function tagsForWrites(writes) {
   return { links, scripts };
 }
 
-export async function performCopies({ source, targetRoot, writes, force = false }) {
+export async function prepareCopies({ source, targetRoot, writes, force = false }) {
   const copiedFiles = [];
   const collisions = [];
+  const prepared = [];
 
   for (const write of writes) {
     const content = await source.readText(write.sourcePath);
     const destination = path.join(targetRoot, write.targetPath);
     const sha256 = sha256Text(content);
+    const file = { ...write, sha256 };
 
     if ((await exists(destination)) && !force) {
       const currentHash = sha256Text(await readFile(destination));
-      if (currentHash !== sha256) collisions.push(write.targetPath);
-      copiedFiles.push({ ...write, sha256, skipped: currentHash === sha256 });
-      continue;
+      file.skipped = currentHash === sha256;
+      if (!file.skipped) collisions.push(write.targetPath);
     }
 
-    await mkdir(path.dirname(destination), { recursive: true });
-    await writeFile(destination, content);
-    copiedFiles.push({ ...write, sha256 });
+    copiedFiles.push(file);
+    prepared.push({ file, destination, content, shouldWrite: force || !file.skipped });
   }
 
   if (collisions.length) {
@@ -76,5 +76,18 @@ export async function performCopies({ source, targetRoot, writes, force = false 
     throw error;
   }
 
-  return copiedFiles;
+  return { copiedFiles, prepared };
+}
+
+export async function commitCopies(preparedCopies) {
+  for (const copy of preparedCopies.prepared) {
+    if (!copy.shouldWrite) continue;
+    await mkdir(path.dirname(copy.destination), { recursive: true });
+    await writeFile(copy.destination, copy.content);
+  }
+  return preparedCopies.copiedFiles;
+}
+
+export async function performCopies(options) {
+  return commitCopies(await prepareCopies(options));
 }

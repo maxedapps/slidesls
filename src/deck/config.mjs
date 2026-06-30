@@ -1,6 +1,6 @@
 import { mkdir, readFile } from "node:fs/promises";
 import path from "node:path";
-import { exists, writeJson } from "../shared/fs.mjs";
+import { assertSafeRelativePath, exists, writeJson } from "../shared/fs.mjs";
 
 export const CONFIG_FILE = "slidesls.json";
 export const DEFAULT_CONFIG = {
@@ -21,13 +21,11 @@ export async function findConfig(startDir) {
 }
 
 export async function readConfig(projectDir, explicit = false) {
-  const configPath = explicit
-    ? path.join(path.resolve(projectDir), CONFIG_FILE)
-    : await findConfig(projectDir);
-  if (!configPath)
-    return { config: null, configPath: null, root: path.resolve(projectDir || process.cwd()) };
-  const config = JSON.parse(await readFile(configPath, "utf8"));
-  return { config: mergeConfig(config), configPath, root: path.dirname(configPath) };
+  const root = path.resolve(projectDir || process.cwd());
+  const configPath = explicit ? path.join(root, CONFIG_FILE) : await findConfig(projectDir);
+  if (!configPath || !(await exists(configPath))) return { config: null, configPath: null, root };
+  const config = validateConfigPaths(mergeConfig(JSON.parse(await readFile(configPath, "utf8"))));
+  return { config, configPath, root: path.dirname(configPath) };
 }
 
 export function mergeConfig(config = {}) {
@@ -38,9 +36,23 @@ export function mergeConfig(config = {}) {
   };
 }
 
+export function validateConfigPaths(config) {
+  const next = mergeConfig(config);
+  try {
+    next.paths = { ...next.paths };
+    for (const key of ["items", "entry", "assets", "snapshots"])
+      next.paths[key] = assertSafeRelativePath(next.paths[key]);
+  } catch (error) {
+    error.code = "invalid_config_path";
+    error.hint = "Use non-empty relative paths that stay inside the project.";
+    throw error;
+  }
+  return next;
+}
+
 export async function writeDefaultConfig(projectDir, overrides = {}) {
   await mkdir(projectDir, { recursive: true });
-  const config = mergeConfig(overrides);
+  const config = validateConfigPaths(mergeConfig(overrides));
   await writeJson(path.join(projectDir, CONFIG_FILE), config);
   return config;
 }

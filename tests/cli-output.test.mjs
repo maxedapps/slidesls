@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { mkdtemp, readFile } from "node:fs/promises";
+import { access, mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
@@ -52,6 +52,99 @@ test("inspect returns snippet HTML for requested templates and components", asyn
 
   const component = JSON.parse((await run([bin, "inspect", "components/card", "--json"])).stdout);
   assert.match(component.data.items.at(-1).snippets[0].html, /class="ls-card"/);
+});
+
+test("add without init uses explicit copy mode", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-copy-"));
+  const dryRun = JSON.parse(
+    (await run([bin, "add", "core/base", "--dir", root, "--dry-run", "--json"])).stdout,
+  );
+  assert.equal(dryRun.ok, true);
+  assert.equal(dryRun.data.root, root);
+  assert.equal(dryRun.data.configFound, false);
+  assert.equal(dryRun.data.mode, "copy");
+  assert.equal(dryRun.data.baseDir, "slidesls");
+
+  const real = JSON.parse(
+    (await run([bin, "add", "core/base", "--dir", root, "--base-dir", "vendor/slides", "--json"]))
+      .stdout,
+  );
+  assert.equal(real.ok, true);
+  assert.equal(real.data.mode, "copy");
+  assert.equal(real.data.baseDir, "vendor/slides");
+});
+
+test("add --dir does not inherit ancestor config", async () => {
+  const parent = await mkdtemp(path.join(os.tmpdir(), "slidesls-parent-"));
+  const child = path.join(parent, "child");
+  await mkdir(child);
+  await run([bin, "init", parent, "--template", "blank"]);
+
+  const result = JSON.parse(
+    (await run([bin, "add", "core/base", "--dir", child, "--dry-run", "--json"])).stdout,
+  );
+  assert.equal(result.ok, true);
+  assert.equal(result.data.root, child);
+  assert.equal(result.data.mode, "copy");
+});
+
+test("catalog --type uses exact normalized type matching", async () => {
+  const component = JSON.parse(
+    (await run([bin, "catalog", "--type", "component", "--json"])).stdout,
+  );
+  assert.ok(component.data.items.length > 0);
+  assert.equal(
+    component.data.items.every((item) => item.type === "ls:component"),
+    true,
+  );
+
+  const prefixed = JSON.parse(
+    (await run([bin, "catalog", "--type", "ls:component", "--json"])).stdout,
+  );
+  assert.deepEqual(prefixed.data.items, component.data.items);
+
+  const suffix = JSON.parse((await run([bin, "catalog", "--type", "e", "--json"])).stdout);
+  assert.equal(suffix.data.items.length, 0);
+});
+
+test("add collisions do not partially copy earlier files", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-add-collision-"));
+  const collision = path.join(root, "slidesls", "registry", "components", "card", "card.css");
+  await mkdir(path.dirname(collision), { recursive: true });
+  await writeFile(collision, "modified");
+
+  await assert.rejects(run([bin, "add", "components/card", "--dir", root]), (error) => {
+    assert.equal(error.code, 1);
+    assert.match(error.stderr, /Refusing to overwrite/);
+    return true;
+  });
+  await assert.rejects(
+    access(path.join(root, "slidesls", "registry", "core", "base", "tokens.css")),
+  );
+});
+
+test("init collisions do not write config first", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-init-collision-"));
+  const collision = path.join(root, "slidesls", "registry", "core", "base", "tokens.css");
+  await mkdir(path.dirname(collision), { recursive: true });
+  await writeFile(collision, "modified");
+
+  await assert.rejects(run([bin, "init", root, "--template", "blank"]), (error) => {
+    assert.equal(error.code, 1);
+    assert.match(error.stderr, /Refusing to overwrite/);
+    return true;
+  });
+  await assert.rejects(access(path.join(root, "slidesls.json")));
+});
+
+test("add accepts existing identical files", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-identical-"));
+  const target = path.join(root, "slidesls", "registry", "core", "base", "tokens.css");
+  await mkdir(path.dirname(target), { recursive: true });
+  await writeFile(target, await readFile(path.resolve("registry/core/base/tokens.css"), "utf8"));
+
+  const result = JSON.parse((await run([bin, "add", "core/base", "--dir", root, "--json"])).stdout);
+  assert.equal(result.ok, true);
 });
 
 test("template add plans dependencies but not snippet files", async () => {

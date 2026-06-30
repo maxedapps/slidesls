@@ -14,12 +14,13 @@ export function labelFromName(name) {
 }
 
 export class RegistrySource {
-  constructor({ registryRoot, registryUrl } = {}) {
+  constructor({ registryRoot, registryUrl, fetchTimeoutMs = 15000 } = {}) {
     this.registryRoot = registryRoot
       ? path.resolve(registryRoot)
       : path.resolve(path.join(import.meta.dirname, "..", ".."));
     this.registryUrl = registryRoot ? null : registryUrl;
     this.mode = registryUrl && !registryRoot ? "remote" : "local";
+    this.fetchTimeoutMs = fetchTimeoutMs;
   }
 
   describe() {
@@ -36,14 +37,22 @@ export class RegistrySource {
       return readFile(filePath, "utf8");
     }
     const url = `${String(this.registryUrl || DEFAULT_REGISTRY_URL).replace(/\/+$/, "")}/${safePath}`;
-    const response = await fetch(url);
+    let response;
+    try {
+      response = await fetch(url, { signal: AbortSignal.timeout(this.fetchTimeoutMs) });
+    } catch (error) {
+      if (error.name === "TimeoutError" || error.name === "AbortError")
+        throw new Error(`Timed out fetching ${url} after ${this.fetchTimeoutMs}ms`);
+      throw error;
+    }
     if (!response.ok) throw new Error(`Could not fetch ${url}: HTTP ${response.status}`);
     return response.text();
   }
 
   async readJson(relativePath) {
+    const text = await this.readText(relativePath);
     try {
-      return JSON.parse(await this.readText(relativePath));
+      return JSON.parse(text);
     } catch (error) {
       throw new Error(`Malformed JSON in ${relativePath}: ${error.message}`);
     }

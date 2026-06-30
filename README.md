@@ -29,6 +29,14 @@ node /absolute/path/to/ls_slides/bin/slidesls.mjs init ./slides/my-deck --templa
 
 `slidesls init` writes `slidesls.json`, `index.html`, and `slidesls/` into the target directory, so only run it at a project root when that root is meant to be the deck.
 
+`init` is optional for copying primitives into an existing project. To use slidesls as a copyable component registry without scaffolding a deck, run:
+
+```sh
+node /absolute/path/to/ls_slides/bin/slidesls.mjs add components/card utilities/layout --dir ./existing-project --base-dir vendor/slidesls
+```
+
+If `--dir` has no `slidesls.json`, `add` uses copy mode and writes assets under the selected base directory.
+
 ## Local use from other projects before publishing
 
 Direct local checkout usage:
@@ -62,7 +70,7 @@ npx slidesls init --template minimal --title "My Deck"
 - `slidesls init [dir]` — initialize a deck in the current directory, or in `[dir]` if supplied.
 - `slidesls catalog --recommended` — list agent-safe recommended items.
 - `slidesls inspect <items...>` — show metadata, dependencies, load guidance, READMEs, and snippet HTML.
-- `slidesls add <items...>` — copy registry items and print load tags.
+- `slidesls add <items...>` — copy registry items into an initialized deck or any existing project in copy mode, and print load tags.
 - `slidesls skill info|show|install|link` — inspect, copy, or symlink the bundled agent skill.
 - `slidesls validate [dir]` — static deck validation.
 - `slidesls preview [dir]` — serve a deck locally.
@@ -81,7 +89,7 @@ Registry items live under `registry/` and are copied into downstream decks. The 
 - `templates/` — paste-ready slide snippets composed from utilities and components.
 - `animations/` and `presets/` — optional enhancements.
 
-Generated projects use `slidesls/` as the default copied asset directory and may freely edit those files.
+Generated projects use `slidesls/` as the default copied asset directory and may freely edit those files. Default validation accepts those edits; `validate --strict` is available when you want copied-file hash drift to fail.
 
 The default remote registry URL points at the future public repository; until the repo is public, use bundled/local registry mode.
 
@@ -91,5 +99,7 @@ The default remote registry URL points at the future public repository; until th
 pnpm check
 npm pack --dry-run
 ```
+
+`slidesls validate` is a lightweight static check, not a full browser render or complete HTML parser. Use `slidesls preview` for manual or agent-browser review; it serves until the process is stopped.
 
 `snapshot` is intentionally deferred to keep the base package lightweight.
