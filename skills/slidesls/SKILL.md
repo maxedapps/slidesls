@@ -75,8 +75,8 @@ Use a custom target if the active agent runtime expects skills elsewhere.
 7. Inspect templates/components with `slidesls inspect <item> --readme --json`; use returned snippet HTML as source-of-truth markup.
 8. Add assets with `slidesls add <items...> --dir <deck> --dry-run --json`, review planned files and load tags, then run without `--dry-run`.
 9. Paste/edit snippets and plain HTML, CSS, and JS directly.
-10. Validate with `slidesls validate <deck> --json` and fix all errors.
-11. Preview with `slidesls preview <deck>`; use browser tools for visual review when needed.
+10. Validate with `slidesls validate <deck> --json` and fix all errors; review warnings.
+11. Preview with `slidesls preview <deck>` and visually inspect representative slides unless the user explicitly opts out. Check the title/section slides, densest content slide, and any table/timeline/progress/code slides.
 12. Run `slidesls doctor --dir <deck> --json` if config, registry, or environment behavior looks wrong.
 
 ## Fast discovery map
@@ -130,5 +130,6 @@ slidesls inspect <item> --readme --json
 - Do not add React, Vite, Tailwind, or another framework unless explicitly requested.
 - Do not make generated decks depend on `slidesls` at runtime.
 - Do not skip `slidesls validate` before finalizing.
+- Do not skip preview/visual inspection after creating or materially editing slides unless the user opts out.
 - Do not assume Lucide icons work unless the deck loads Lucide.
 - Do not edit registry source inside an installed package when the intent is deck customization; edit copied deck files instead.

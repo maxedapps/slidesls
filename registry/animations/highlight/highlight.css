@@ -3,21 +3,27 @@
   .ls-reveal-highlight {
     --ls-highlight-animation-accent: var(--ls-accent);
     --ls-highlight-animation-spread: 0.22em;
+    border-radius: 0.18em;
+    box-shadow: 0 0 0 var(--ls-highlight-static-spread, 0.08em)
+      color-mix(in srgb, var(--ls-highlight-animation-accent) 18%, transparent);
+  }
+
+  .ls-reveal.ls-reveal-highlight {
     animation: ls-highlight-pulse var(--ls-highlight-animation-duration, 1200ms) var(--ls-ease) both;
   }
 
   .ls-deck[data-ls-ready="true"]
     .ls-slide[data-active="true"]
-    .ls-reveal-highlight[data-ls-reveal-state="future"] {
+    .ls-reveal.ls-reveal-highlight[data-ls-reveal-state="future"] {
     animation-play-state: paused;
   }
 
   .ls-deck[data-ls-ready="true"]
     .ls-slide[data-active="true"]
-    .ls-reveal-highlight[data-ls-reveal-state="current"],
+    .ls-reveal.ls-reveal-highlight[data-ls-reveal-state="current"],
   .ls-deck[data-ls-ready="true"]
     .ls-slide[data-active="true"]
-    .ls-reveal-highlight[data-ls-reveal-state="past"] {
+    .ls-reveal.ls-reveal-highlight[data-ls-reveal-state="past"] {
     animation-play-state: running;
   }
 
@@ -32,13 +38,13 @@
     }
 
     100% {
-      box-shadow: 0 0 0 0 color-mix(in srgb, var(--ls-highlight-animation-accent) 0%, transparent);
+      box-shadow: 0 0 0 var(--ls-highlight-static-spread, 0.08em)
+        color-mix(in srgb, var(--ls-highlight-animation-accent) 18%, transparent);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .ls-highlight,
-    .ls-reveal-highlight {
+    .ls-reveal.ls-reveal-highlight {
       animation: none;
     }
   }

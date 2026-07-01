@@ -40,7 +40,15 @@
         "rule": "Use ls-grid with at most one grid modifier."
       }
     ],
-    "classes": ["ls-cluster", "ls-center", "ls-fill", "ls-frame"],
+    "classes": [
+      "ls-cluster",
+      "ls-center",
+      "ls-center-start",
+      "ls-text-start",
+      "ls-fill",
+      "ls-slide-fill",
+      "ls-frame"
+    ],
     "cssVariables": [
       "--ls-stack-gap",
       "--ls-cluster-gap",
@@ -50,6 +58,7 @@
     ],
     "usage": [
       "Use .ls-grid--4 only for short, compact cards or metrics.",
+      "Use .ls-slide-fill as a direct child of .ls-slide__inner for full-slide centered layouts.",
       "Use .ls-fill only when content should intentionally fill the available slide/body area."
     ]
   }

@@ -23,7 +23,10 @@
     }
   ],
   "authoring": {
-    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "usage": [
+      "Paste snippet HTML inside .ls-deck and copy its registryDependencies before use.",
+      "Keep metric labels short; use the progress panel for one concise status indicator."
+    ],
     "classes": [
       "ls-slide",
       "ls-slide__inner",
@@ -38,7 +41,10 @@
       "ls-metric__value",
       "ls-metric__label",
       "ls-progress",
-      "ls-progress__label"
+      "ls-progress__label",
+      "ls-progress__value",
+      "ls-progress__track",
+      "ls-progress__bar"
     ]
   }
 }

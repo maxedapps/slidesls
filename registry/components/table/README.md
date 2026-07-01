@@ -20,7 +20,7 @@ Use `.ls-table` directly on a semantic `<table>`. Native captions are supported 
 </table>
 ```
 
-For a clipped decorative surface, keep captions outside the clipped frame:
+For a clipped decorative surface, keep captions outside the clipped frame. `.ls-table-frame` aligns to the start by default so tables do not stretch misleadingly inside grid/fill regions:
 
 ```html
 <figure>
@@ -35,7 +35,7 @@ For a clipped decorative surface, keep captions outside the clipped frame:
 
 Classes: `.ls-table-frame`, `.ls-table__caption`, `.ls-table__note`, `.ls-table__value`, `.ls-table__muted`.
 
-Attributes: `data-ls-density="compact|comfortable"`, `data-ls-variant="comparison|striped|plain"`.
+Attributes: `data-ls-density="compact"`, `data-ls-variant="striped|plain"`.
 
 Variables: `--ls-table-min-inline`, `--ls-table-cell-padding`, `--ls-table-accent`.
 

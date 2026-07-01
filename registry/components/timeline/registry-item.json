@@ -28,6 +28,7 @@
         "elements": [
           "ls-timeline__item",
           "ls-timeline__marker",
+          "ls-timeline__body",
           "ls-timeline__meta",
           "ls-timeline__title",
           "ls-timeline__text"

@@ -20,6 +20,16 @@
     --ls-panel-bg: color-mix(in oklab, var(--ls-accent), transparent 88%);
   }
 
+  .ls-panel--center {
+    place-items: center;
+    text-align: center;
+  }
+
+  .ls-panel--frame {
+    overflow: hidden;
+    min-block-size: var(--ls-panel-frame-min-block-size, 320px);
+  }
+
   .ls-panel__title {
     margin: 0;
     color: var(--ls-text);

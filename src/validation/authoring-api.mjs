@@ -15,13 +15,17 @@ export function authoringClasses(item) {
 export function buildAuthoringClassIndex(items) {
   const known = new Set();
   const ownerByClass = new Map();
+  const ownersByClass = new Map();
   for (const item of items) {
     for (const className of authoringClasses(item)) {
       known.add(className);
       if (!ownerByClass.has(className)) ownerByClass.set(className, item.name);
+      const owners = ownersByClass.get(className) || new Set();
+      owners.add(item.name);
+      ownersByClass.set(className, owners);
     }
   }
-  return { known, ownerByClass };
+  return { known, ownerByClass, ownersByClass };
 }
 
 export function lsClassTokens(html) {

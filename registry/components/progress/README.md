@@ -33,7 +33,7 @@ Use custom markup when you need labels, card-like composition, or reveal-aware f
 
 Classes: `.ls-progress__track`, `.ls-progress__bar`, `.ls-progress__label`, `.ls-progress__value`.
 
-Attributes: `data-ls-density="compact|comfortable|spacious"`, `data-ls-tone="accent|success|warning"`, `data-ls-animate="fill"`.
+Attributes: `data-ls-density="compact|spacious"`, `data-ls-tone="success|warning|danger"`, `data-ls-animate="fill"`. Omit `data-ls-tone` for the default accent gradient.
 
 Variables: `--ls-progress-value`, `--ls-progress-accent`, `--ls-progress-thickness`, `--ls-progress-label-size`.
 

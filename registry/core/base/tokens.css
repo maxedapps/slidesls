@@ -58,6 +58,11 @@
     --ls-text-2xl: 82px;
     --ls-text-hero: 128px;
 
+    --ls-title-line-height: 0.96;
+    --ls-title-letter-spacing: -0.045em;
+    --ls-slide-padding-block: 92px;
+    --ls-slide-padding-inline: 108px;
+
     --ls-space-1: 8px;
     --ls-space-2: 12px;
     --ls-space-3: 16px;

@@ -28,3 +28,5 @@ Use `data-ls-reveal-sequence` on a group to auto-assign missing `data-step` valu
 ```
 
 `?export=1` or `?export=pdf` reveals all stepped content when JavaScript is available.
+
+Animation variants compose by adding `.ls-reveal` plus at most one transform variant (`ls-reveal-fade`, `ls-reveal-slide-up`, or `ls-reveal-scale-in`) to the same element. Do not stack multiple transform variants; they intentionally share transform state.

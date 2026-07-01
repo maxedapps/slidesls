@@ -3,7 +3,13 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { assertInside, assertSafeRelativePath } from "../shared/fs.mjs";
 import { RegistrySource, loadRegistry, resolveItems } from "../registry/source.mjs";
-import { authoringClasses, buildAuthoringClassIndex, unknownLsClasses } from "./authoring-api.mjs";
+import {
+  authoringClasses,
+  buildAuthoringClassIndex,
+  lsClassTokens,
+  unknownLsClasses,
+} from "./authoring-api.mjs";
+import { validateSnippetStructure } from "./markup-structure.mjs";
 
 const knownTypes = new Set([
   "core",
@@ -181,6 +187,7 @@ export async function validateRegistry({ registryRoot, registryUrl } = {}) {
   }
 
   await validateRegistryAuthoringCoverage({ data, source, errors });
+  await validateRegistryCssContracts({ data, source, errors });
 
   return {
     valid: errors.length === 0,
@@ -272,6 +279,9 @@ async function validateRegistryAuthoringCoverage({ data, source, errors }) {
   if (source.mode !== "local") return;
   const index = buildAuthoringClassIndex(data.items);
   for (const item of data.items) {
+    const dependencyClosure = new Set(
+      resolveItems(data, [item.name]).map((resolved) => resolved.name),
+    );
     for (const snippet of item.snippets || []) {
       const html = await source.readText(snippet.path);
       for (const className of unknownLsClasses(html, index.known))
@@ -281,6 +291,48 @@ async function validateRegistryAuthoringCoverage({ data, source, errors }) {
           "unknown_authoring_class",
           `${snippet.path} uses unknown slidesls class ${className}`,
           { item: item.name, className },
+        );
+      for (const className of lsClassTokens(html)) {
+        const owners = index.ownersByClass.get(className) || new Set();
+        const allowed = [...owners].some((owner) => dependencyClosure.has(owner));
+        if (owners.size && !allowed) {
+          const ownerList = [...owners].join(", ");
+          add(
+            "error",
+            errors,
+            "undeclared_snippet_dependency",
+            `${snippet.path} uses ${className} from ${ownerList}, but ${item.name} does not depend on any owning item`,
+            { item: item.name, className, owners: [...owners] },
+          );
+        }
+      }
+      validateSnippetStructure({ html, sourcePath: snippet.path, errors });
+    }
+  }
+}
+
+async function validateRegistryCssContracts({ data, source, errors }) {
+  if (source.mode !== "local") return;
+  for (const item of data.items) {
+    const cssFiles = (item.files || []).filter((file) => file?.path?.endsWith(".css"));
+    if (!cssFiles.length) continue;
+    const cssByFile = await Promise.all(
+      cssFiles.map(async (file) => ({
+        path: file.path,
+        css: await readFile(path.join(source.registryRoot, file.path), "utf8"),
+      })),
+    );
+    const combinedCss = cssByFile.map((file) => file.css).join("\n");
+    if (!/@container\b/.test(combinedCss)) continue;
+    if (/\bcontainer(?:-type)?\s*:/.test(combinedCss)) continue;
+    for (const file of cssByFile) {
+      if (/@container\b/.test(file.css))
+        add(
+          "error",
+          errors,
+          "container_query_without_contract",
+          `${file.path} contains @container rules without declaring a query container contract in the same registry item`,
+          { item: item.name },
         );
     }
   }

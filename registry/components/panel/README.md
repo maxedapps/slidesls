@@ -15,3 +15,5 @@ Standalone visual container for grouped slide content. Panels work anywhere and 
 
 - `.ls-panel--muted`
 - `.ls-panel--accent`
+- `.ls-panel--center` for centered visual anchors
+- `.ls-panel--frame` for clipped media/diagram frames

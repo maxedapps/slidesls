@@ -8,7 +8,7 @@ This preset remaps heading and display roles to the core serif stack while keepi
 
 ```html
 <link rel="stylesheet" href="./registry/presets/fonts/editorial-serif/font.css" />
-<body class="ls-page" data-ls-font="editorial-serif"></body>
+<html data-ls-font="editorial-serif"></html>
 ```
 
 For one slide only:
@@ -17,4 +17,4 @@ For one slide only:
 <section class="ls-slide" data-ls-font="editorial-serif"></section>
 ```
 
-Large serif display titles can need deck-specific line-height or letter-spacing adjustments.
+The preset also relaxes title line-height and letter-spacing through `--ls-title-line-height` and `--ls-title-letter-spacing`; still visually review very large serif titles.

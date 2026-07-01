@@ -8,4 +8,4 @@ Use `.ls-divider`, preferably on `<hr>` for semantic separation. Optional `.ls-d
 
 ## Copy
 
-Copy this item CSS after `registry/core/base` styles. Animation variants should load after `registry/animations/reveal`.
+Copy this item CSS after `registry/core/base` styles.

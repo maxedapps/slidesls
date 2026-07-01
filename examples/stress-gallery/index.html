@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en" data-ls-font="editorial-serif">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>slidesls stress gallery</title>
+    <link rel="stylesheet" href="../../registry/core/base/reset.css" />
+    <link rel="stylesheet" href="../../registry/core/base/tokens.css" />
+    <link rel="stylesheet" href="../../registry/presets/fonts/editorial-serif/font.css" />
+    <link rel="stylesheet" href="../../registry/core/base/slide.css" />
+    <link rel="stylesheet" href="../../registry/utilities/layout/layout.css" />
+    <link rel="stylesheet" href="../../registry/components/badge/badge.css" />
+    <link rel="stylesheet" href="../../registry/components/card/card.css" />
+    <link rel="stylesheet" href="../../registry/components/panel/panel.css" />
+    <link rel="stylesheet" href="../../registry/components/progress/progress.css" />
+    <link rel="stylesheet" href="../../registry/components/quote/quote.css" />
+    <link rel="stylesheet" href="../../registry/components/table/table.css" />
+    <link rel="stylesheet" href="../../registry/components/timeline/timeline.css" />
+    <script type="module" src="../../registry/core/base/slide-runtime.js"></script>
+  </head>
+  <body class="ls-page">
+    <main class="ls-deck" data-ls-deck aria-label="Stress gallery">
+      <section class="ls-slide" data-ls-density="compact" aria-label="Dense content stress slide">
+        <div class="ls-slide__inner">
+          <header class="ls-stack ls-stack--sm">
+            <p class="ls-eyebrow">Stress test</p>
+            <h1 class="ls-title">
+              A longer editorial serif title that still needs room for real slide content.
+            </h1>
+            <p class="ls-subtitle">Compact density is opt-in and still requires visual review.</p>
+          </header>
+          <div class="ls-grid ls-grid--4" style="--ls-grid-gap: var(--ls-space-3)">
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h2 class="ls-card__title">Longer label</h2>
+                <p class="ls-card__text">
+                  A realistic second line of explanatory copy should still fit in a compact
+                  four-card grid.
+                </p>
+              </div>
+            </article>
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h2 class="ls-card__title">Timeline</h2>
+                <p class="ls-card__text">
+                  Canonical marker and body wrappers keep process labels from colliding.
+                </p>
+              </div>
+            </article>
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h2 class="ls-card__title">Progress</h2>
+                <p class="ls-card__text">
+                  Bars need labels, values, tracks, fills, and accessible progress attributes.
+                </p>
+              </div>
+            </article>
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h2 class="ls-card__title">Citation</h2>
+                <p class="ls-card__text">
+                  Quote source classes make attribution typography deterministic across themes.
+                </p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="ls-slide" data-ls-density="compact" aria-label="Component stress slide">
+        <div class="ls-slide__inner">
+          <header class="ls-stack ls-stack--sm">
+            <p class="ls-eyebrow">Components</p>
+            <h2 class="ls-title">Timeline, progress, table, and citation on one reviewed slide.</h2>
+          </header>
+          <div class="ls-grid ls-grid--2">
+            <ol class="ls-timeline" data-ls-progress="true" data-ls-density="compact">
+              <li class="ls-timeline__item">
+                <span class="ls-timeline__marker">1</span>
+                <div class="ls-timeline__body">
+                  <strong class="ls-timeline__title">Audit</strong>
+                  <span class="ls-timeline__text">Read source snippets and examples.</span>
+                </div>
+              </li>
+              <li class="ls-timeline__item">
+                <span class="ls-timeline__marker">2</span>
+                <div class="ls-timeline__body">
+                  <strong class="ls-timeline__title">Harden</strong>
+                  <span class="ls-timeline__text">Add targeted static validators.</span>
+                </div>
+              </li>
+            </ol>
+            <div class="ls-stack">
+              <div
+                class="ls-progress"
+                data-ls-density="compact"
+                style="--ls-progress-value: 76%"
+                role="progressbar"
+                aria-label="Fix coverage"
+                aria-valuenow="76"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <div class="ls-progress__label">
+                  <span>Fix coverage</span>
+                  <span class="ls-progress__value">76%</span>
+                </div>
+                <div class="ls-progress__track"><div class="ls-progress__bar"></div></div>
+              </div>
+              <table class="ls-table" data-ls-density="compact" data-ls-variant="striped">
+                <thead>
+                  <tr>
+                    <th>Check</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Snippets</td>
+                    <td class="ls-table__value">Canonical</td>
+                  </tr>
+                  <tr>
+                    <td>Examples</td>
+                    <td class="ls-table__value">Recursive</td>
+                  </tr>
+                </tbody>
+              </table>
+              <figure class="ls-quote">
+                <blockquote class="ls-quote__text">
+                  Trustworthy snippets beat clever inference.
+                </blockquote>
+                <figcaption class="ls-quote__source"><cite>slidesls audit</cite></figcaption>
+              </figure>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

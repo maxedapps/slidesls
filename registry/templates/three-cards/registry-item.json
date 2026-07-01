@@ -17,7 +17,10 @@
     }
   ],
   "authoring": {
-    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "usage": [
+      "Paste snippet HTML inside .ls-deck and copy its registryDependencies before use.",
+      "Use compact copy: one short title and one sentence per card."
+    ],
     "classes": [
       "ls-slide",
       "ls-slide__inner",
@@ -29,7 +32,8 @@
       "ls-grid--3",
       "ls-card",
       "ls-card__title",
-      "ls-card__text"
+      "ls-card__text",
+      "ls-card__body"
     ]
   }
 }

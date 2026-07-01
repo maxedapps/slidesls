@@ -51,8 +51,8 @@ function blankSlides(title) {
 function minimalSlides(title) {
   return `      <section class="ls-slide" aria-label="Opening">
         <div class="ls-slide__inner">
-          <div class="ls-grid ls-grid--wide-left ls-fill">
-            <header class="ls-stack ls-center" style="text-align: left; place-items: center start;">
+          <div class="ls-grid ls-grid--wide-left ls-slide-fill">
+            <header class="ls-stack ls-center-start ls-text-start">
               <div class="ls-cluster">
                 <span class="ls-badge">slidesls</span>
                 <span class="ls-badge">Plain HTML</span>
@@ -60,7 +60,7 @@ function minimalSlides(title) {
               <h1 class="ls-title">${title}</h1>
               <p class="ls-subtitle ls-reveal" data-step="1">A plain HTML/CSS/JS deck you can edit directly.</p>
             </header>
-            <div class="ls-panel ls-panel--accent ls-center">
+            <div class="ls-panel ls-panel--accent ls-panel--center">
               <p class="ls-eyebrow">Agent-safe primitives</p>
               <p class="ls-panel__text">Compose slides with utilities, standalone components, and inspectable templates.</p>
             </div>

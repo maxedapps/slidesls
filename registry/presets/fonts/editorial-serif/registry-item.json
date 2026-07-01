@@ -18,7 +18,7 @@
     "attributes": [
       {
         "name": "data-ls-font",
-        "scope": "body or section",
+        "scope": "html, body, or section",
         "value": "editorial-serif"
       }
     ],

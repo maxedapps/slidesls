@@ -40,10 +40,15 @@ export function localReferences(html) {
 }
 
 export function startTags(html, tagName) {
+  return startTagRecords(html, tagName).map((tag) => tag.attributes);
+}
+
+export function startTagRecords(html, tagName = "[a-z][a-z0-9:-]*") {
   const tags = [];
-  const pattern = new RegExp(`<${tagName}\\b([^>]*)>`, "gi");
+  const pattern = new RegExp(`<(${tagName})\\b([^>]*)>`, "gi");
   let match;
-  while ((match = pattern.exec(html))) tags.push(parseAttributes(match[1] || ""));
+  while ((match = pattern.exec(html)))
+    tags.push({ name: match[1].toLowerCase(), attributes: parseAttributes(match[2] || "") });
   return tags;
 }
 

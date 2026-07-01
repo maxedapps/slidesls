@@ -131,6 +131,6 @@ pnpm check
 npm pack --dry-run
 ```
 
-`slidesls validate` is a lightweight static check, not a full browser render or complete HTML parser. Use `slidesls preview` for manual or agent-browser review; it serves until the process is stopped.
+`slidesls validate` is a lightweight static check, not a full browser render or complete HTML parser. It now catches common registry contract issues such as broken custom progress markup, raw timeline shorthand, reveal animation conflicts, and unknown copied classes, but it does not prove visual fit. After creating or materially editing slides, use `slidesls preview` for manual or agent-browser review of representative slides; it serves until the process is stopped.
 
 `snapshot` is intentionally deferred to keep the base package lightweight.

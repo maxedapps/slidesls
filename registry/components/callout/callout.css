@@ -1,10 +1,10 @@
 @layer components {
   .ls-callout {
     display: grid;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: 1fr;
     gap: var(--ls-space-3);
     align-items: start;
-    padding: 22px 24px;
+    padding: var(--ls-callout-padding, 22px 24px);
     border: 1px solid
       color-mix(in srgb, var(--ls-callout-accent, var(--ls-accent)) 34%, var(--ls-border));
     border-radius: var(--ls-radius-lg);
@@ -15,8 +15,8 @@
     );
   }
 
-  .ls-callout:not(:has(.ls-callout__icon)) {
-    grid-template-columns: 1fr;
+  .ls-callout--with-icon {
+    grid-template-columns: auto 1fr;
   }
 
   .ls-callout__icon {
@@ -35,14 +35,14 @@
   }
 
   .ls-callout__title {
-    font-size: 27px;
+    font-size: var(--ls-callout-title-size, 27px);
     font-weight: 760;
     letter-spacing: -0.025em;
   }
 
   .ls-callout__text {
     color: var(--ls-muted);
-    font-size: 22px;
+    font-size: var(--ls-callout-text-size, 22px);
     line-height: 1.32;
   }
 

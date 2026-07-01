@@ -38,5 +38,7 @@
 
   .ls-code-block[data-ls-density="dense"] {
     --ls-code-font-size: 17px;
+    --ls-code-padding: 18px;
+    --ls-code-max-block-size: 460px;
   }
 }

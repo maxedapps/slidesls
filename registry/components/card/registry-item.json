@@ -29,6 +29,7 @@
         "modifiers": ["ls-card--row"]
       }
     ],
+    "cssVariables": ["--ls-card-padding", "--ls-card-title-size", "--ls-card-text-size"],
     "usage": ["Use for compact content blocks inside grids or stacks."]
   }
 }

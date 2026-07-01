@@ -22,7 +22,10 @@
     }
   ],
   "authoring": {
-    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "usage": [
+      "Paste snippet HTML inside .ls-deck and copy its registryDependencies before use.",
+      "Keep code excerpts short; prefer dense code settings only after visual review."
+    ],
     "classes": [
       "ls-slide",
       "ls-slide__inner",
@@ -35,7 +38,8 @@
       "ls-code-block",
       "ls-card",
       "ls-card__title",
-      "ls-card__text"
+      "ls-card__text",
+      "ls-card__body"
     ]
   }
 }

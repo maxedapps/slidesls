@@ -20,5 +20,6 @@ Theme presets are copied like other registry items, but they are inert until the
 
 - Use exactly one theme per deck.
 - Keep fonts separate with `presets/fonts/*`.
+- Treat themes as visual token presets, not automatic density/layout systems; choose `data-ls-density="compact"` on individual slides when needed.
 - Prefer solid surfaces, subtle borders, restrained shadows, and minimal texture.
-- Avoid heavy gradients, glow stacks, neon fog, and backgrounds that compete with slide content.
+- Avoid overriding `--ls-slide-bg-image` or adding heavy gradients, glow stacks, neon fog, and backgrounds that compete with slide content unless explicitly requested.

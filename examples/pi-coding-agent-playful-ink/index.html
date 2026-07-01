@@ -23,8 +23,8 @@
     <main class="ls-deck" data-ls-deck aria-label="Pi Coding Agent theme example">
       <section class="ls-slide" aria-label="Pi Coding Agent overview">
         <div class="ls-slide__inner">
-          <div class="ls-grid ls-grid--wide-left ls-fill">
-            <header class="ls-stack ls-center" style="text-align: left; place-items: center start">
+          <div class="ls-grid ls-grid--wide-left ls-slide-fill">
+            <header class="ls-stack ls-center-start ls-text-start">
               <div class="ls-cluster">
                 <span class="ls-badge">Pi Coding Agent</span>
                 <span class="ls-badge">Playful Ink</span>
@@ -36,7 +36,7 @@
                 and agent skills into one careful implementation loop.
               </p>
             </header>
-            <div class="ls-panel ls-panel--accent ls-center">
+            <div class="ls-panel ls-panel--accent ls-panel--center">
               <p class="ls-eyebrow">Core promise</p>
               <p class="ls-panel__text">
                 Give the agent enough context, tools, and verification paths to make real project
@@ -159,18 +159,48 @@ git diff --check</code></pre>
               </div>
             </div>
             <div class="ls-panel ls-stack">
-              <div class="ls-progress" data-ls-tone="success" style="--ls-progress-value: 92%">
-                <div class="ls-progress__label"><span>Context gathered</span><span>92%</span></div>
-                <div class="ls-progress__track"><div class="ls-progress__bar"></div></div>
-              </div>
-              <div class="ls-progress" style="--ls-progress-value: 84%">
+              <div
+                class="ls-progress"
+                data-ls-tone="success"
+                style="--ls-progress-value: 92%"
+                role="progressbar"
+                aria-label="Context gathered"
+                aria-valuenow="92"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
                 <div class="ls-progress__label">
-                  <span>Implementation confidence</span><span>84%</span>
+                  <span>Context gathered</span><span class="ls-progress__value">92%</span>
                 </div>
                 <div class="ls-progress__track"><div class="ls-progress__bar"></div></div>
               </div>
-              <div class="ls-progress" data-ls-tone="warning" style="--ls-progress-value: 38%">
-                <div class="ls-progress__label"><span>Open risk</span><span>38%</span></div>
+              <div
+                class="ls-progress"
+                style="--ls-progress-value: 84%"
+                role="progressbar"
+                aria-label="Implementation confidence"
+                aria-valuenow="84"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <div class="ls-progress__label">
+                  <span>Implementation confidence</span><span class="ls-progress__value">84%</span>
+                </div>
+                <div class="ls-progress__track"><div class="ls-progress__bar"></div></div>
+              </div>
+              <div
+                class="ls-progress"
+                data-ls-tone="warning"
+                style="--ls-progress-value: 38%"
+                role="progressbar"
+                aria-label="Open risk"
+                aria-valuenow="38"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <div class="ls-progress__label">
+                  <span>Open risk</span><span class="ls-progress__value">38%</span>
+                </div>
                 <div class="ls-progress__track"><div class="ls-progress__bar"></div></div>
               </div>
             </div>

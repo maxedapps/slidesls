@@ -20,6 +20,7 @@
         "base": "ls-reveal-slide-up"
       }
     ],
-    "cssVariables": ["--ls-slide-up-distance", "--ls-slide-up-duration", "--ls-slide-up-ease"]
+    "cssVariables": ["--ls-slide-up-distance", "--ls-slide-up-duration", "--ls-slide-up-ease"],
+    "usage": ["Combine with .ls-reveal and do not stack with another reveal transform variant."]
   }
 }

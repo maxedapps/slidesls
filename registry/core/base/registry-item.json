@@ -64,6 +64,11 @@
         "name": "data-step"
       },
       {
+        "name": "data-ls-density",
+        "scope": "section.ls-slide",
+        "values": ["compact"]
+      },
+      {
         "name": "data-ls-reveal-sequence"
       },
       {
@@ -81,6 +86,16 @@
       "--ls-accent-text",
       "--ls-space-3",
       "--ls-space-6",
+      "--ls-slide-padding-block",
+      "--ls-slide-padding-inline",
+      "--ls-title-line-height",
+      "--ls-title-letter-spacing",
+      "--ls-card-padding",
+      "--ls-card-title-size",
+      "--ls-card-text-size",
+      "--ls-callout-padding",
+      "--ls-callout-title-size",
+      "--ls-callout-text-size",
       "--ls-font-heading",
       "--ls-font-body"
     ],

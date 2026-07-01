@@ -20,6 +20,9 @@
         "base": "ls-reveal-fade"
       }
     ],
-    "usage": ["Combine with reveal sequencing classes/attributes for fade transitions."]
+    "usage": [
+      "Combine with reveal sequencing classes/attributes for fade transitions.",
+      "Combine with .ls-reveal and do not stack with another reveal transform variant."
+    ]
   }
 }

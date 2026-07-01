@@ -17,16 +17,19 @@
     }
   ],
   "authoring": {
-    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "usage": [
+      "Paste snippet HTML inside .ls-deck and copy its registryDependencies before use.",
+      "Use .ls-slide-fill as the direct full-slide wrapper."
+    ],
     "classes": [
       "ls-slide",
       "ls-slide__inner",
       "ls-center",
-      "ls-fill",
       "ls-stack",
       "ls-badge",
       "ls-title",
-      "ls-subtitle"
+      "ls-subtitle",
+      "ls-slide-fill"
     ]
   }
 }

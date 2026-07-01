@@ -23,11 +23,11 @@ If installed from a local tarball in the target project, use `npx slidesls ...`.
 - `slidesls skill show [--reference <name>] [--all]` — print the bundled agent `SKILL.md`, a named reference such as `catalog`, or all bundled docs.
 - `slidesls skill install [dir] [--dry-run] [--force]` — copy the bundled skill to `[dir]` or `./.claude/skills/slidesls`.
 - `slidesls skill link [dir] [--force]` — symlink the bundled skill to `[dir]` or `./.claude/skills/slidesls`.
-- `slidesls validate [dir] [--strict]` — validate deck config, entry markup, local assets, and manifest files. `--strict` also treats copied-file hash drift as an error.
+- `slidesls validate [dir] [--strict]` — validate deck config, entry markup, local assets, manifest files, and targeted component/reveal structure. `--strict` also treats copied-file hash drift and deck-level structural warnings as errors.
 - `slidesls preview [dir] [--host <host>] [--port <port>]` — serve a local preview until the process is stopped.
 - `slidesls doctor [--dir <project>] [--registry-root <path> | --registry-url <url>]` — check Node/package/config/registry/project health.
 - `slidesls validate-registry [--registry-root <path> | --registry-url <url>]` — repo/package registry validation.
-- `slidesls validate-examples` — repo example/template validation.
+- `slidesls validate-examples` — recursive repo example/template validation.
 - `slidesls generate-catalog [--registry-root <path> | --registry-url <url>] [--check]` — internal agent catalog generation/check.
 
 All commands support `--help`. Agent-facing commands support `--json` where useful. Key text outputs include `For AI agents:` command recipes, and JSON outputs for `init`, `add`, `catalog`, `inspect`, and `validate` include additive `agentInstructions` data.
@@ -112,7 +112,7 @@ slidesls inspect components/card --readme --json
 slidesls add utilities/layout components/panel components/card --dry-run --json
 ```
 
-Treat each item’s `authoring` metadata as the quick source of truth for public classes, modifiers, data attributes, theme/font attributes, and CSS variables. Use `inspect --json` when you need exact snippet markup or README details. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and `--strict` errors.
+Treat each item’s `authoring` metadata as the quick source of truth for public classes, modifiers, data attributes, theme/font attributes, and CSS variables. Use `inspect --json` when you need exact snippet markup or README details. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and `--strict` errors. Static validation does not replace preview; after material slide edits, run `slidesls preview <deck>` and visually inspect representative slides unless intentionally skipped.
 
 ## Naming
 

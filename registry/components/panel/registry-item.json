@@ -26,10 +26,16 @@
       {
         "base": "ls-panel",
         "elements": ["ls-panel__title", "ls-panel__text"],
-        "modifiers": ["ls-panel--muted", "ls-panel--accent"]
+        "modifiers": ["ls-panel--muted", "ls-panel--accent", "ls-panel--center", "ls-panel--frame"]
       }
     ],
-    "cssVariables": ["--ls-panel-gap", "--ls-panel-padding", "--ls-panel-border", "--ls-panel-bg"],
+    "cssVariables": [
+      "--ls-panel-gap",
+      "--ls-panel-padding",
+      "--ls-panel-border",
+      "--ls-panel-bg",
+      "--ls-panel-frame-min-block-size"
+    ],
     "usage": ["Use muted/accent modifiers sparingly to create hierarchy."]
   }
 }

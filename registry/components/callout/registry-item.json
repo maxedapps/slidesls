@@ -30,7 +30,8 @@
           "ls-callout__body",
           "ls-callout__title",
           "ls-callout__text"
-        ]
+        ],
+        "modifiers": ["ls-callout--with-icon"]
       }
     ],
     "dataAttributes": [
@@ -39,7 +40,15 @@
         "values": ["success", "warning", "danger"]
       }
     ],
-    "cssVariables": ["--ls-callout-accent"],
-    "usage": ["Use data-ls-tone for semantic status callouts."]
+    "cssVariables": [
+      "--ls-callout-accent",
+      "--ls-callout-padding",
+      "--ls-callout-title-size",
+      "--ls-callout-text-size"
+    ],
+    "usage": [
+      "Use data-ls-tone for semantic status callouts.",
+      "Add .ls-callout--with-icon only when an .ls-callout__icon is present."
+    ]
   }
 }

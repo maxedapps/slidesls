@@ -1,0 +1,129 @@
+import { startTagRecords } from "../shared/html.mjs";
+
+const revealTransformVariants = ["ls-reveal-fade", "ls-reveal-slide-up", "ls-reveal-scale-in"];
+
+function classList(attributes) {
+  return String(attributes.get("class") || "")
+    .split(/\s+/)
+    .filter(Boolean);
+}
+
+function hasClass(attributes, className) {
+  return classList(attributes).includes(className);
+}
+
+function push(list, code, message, details = {}) {
+  list.push({ code, message, ...details });
+}
+
+function isCustomProgress(tag) {
+  return tag.name !== "progress" && hasClass(tag.attributes, "ls-progress");
+}
+
+export function validateSnippetStructure({ html, sourcePath, errors }) {
+  const tags = startTagRecords(html);
+  if (tags.some(isCustomProgress)) {
+    if (!html.includes("ls-progress__track") || !html.includes("ls-progress__bar"))
+      push(
+        errors,
+        "invalid_progress_structure",
+        `${sourcePath} custom .ls-progress markup must include .ls-progress__track and .ls-progress__bar.`,
+      );
+  }
+
+  if (html.includes("ls-timeline__item")) {
+    if (!html.includes("ls-timeline__marker") || !html.includes("ls-timeline__body"))
+      push(
+        errors,
+        "invalid_timeline_structure",
+        `${sourcePath} .ls-timeline__item markup must include .ls-timeline__marker and .ls-timeline__body.`,
+      );
+  }
+
+  if (html.includes("ls-quote")) {
+    if (!html.includes("ls-quote__text") || !html.includes("ls-quote__source"))
+      push(
+        errors,
+        "invalid_quote_structure",
+        `${sourcePath} .ls-quote markup must include .ls-quote__text and .ls-quote__source.`,
+      );
+  }
+}
+
+function deckIssue({ strict, errors, warnings, code, message, hint }) {
+  const entry = { code, message, ...(hint ? { hint } : {}) };
+  if (strict) errors.push(entry);
+  else warnings.push(entry);
+}
+
+export function validateDeckStructure({ html, strict = false, errors, warnings }) {
+  const tags = startTagRecords(html);
+  if (tags.some(isCustomProgress)) {
+    const progressCount = tags.filter(isCustomProgress).length;
+    const trackCount = tags.filter((tag) => hasClass(tag.attributes, "ls-progress__track")).length;
+    const barCount = tags.filter((tag) => hasClass(tag.attributes, "ls-progress__bar")).length;
+    if (trackCount < progressCount || barCount < progressCount)
+      deckIssue({
+        strict,
+        errors,
+        warnings,
+        code: "progress_structure",
+        message:
+          "Custom .ls-progress markup should include .ls-progress__track and .ls-progress__bar for each progress component.",
+        hint: 'Use the components/progress snippet or native <progress class="ls-progress">.',
+      });
+  }
+
+  if (
+    /<li\b[^>]*class=["'][^"']*\bls-timeline__item\b[^"']*["'][^>]*>\s*<strong(?![^>]*\bls-timeline__title\b)[\s\S]*?<span(?![^>]*\bls-timeline__(?:meta|text)\b)/i.test(
+      html,
+    )
+  )
+    deckIssue({
+      strict,
+      errors,
+      warnings,
+      code: "timeline_structure",
+      message:
+        "Timeline items should use .ls-timeline__marker and .ls-timeline__body instead of raw strong/span shorthand.",
+      hint: "Use the components/timeline snippet.",
+    });
+
+  for (const tag of tags) {
+    const classes = classList(tag.attributes);
+    if (classes.includes("ls-reveal-highlight") && !classes.includes("ls-reveal"))
+      deckIssue({
+        strict,
+        errors,
+        warnings,
+        code: "reveal_highlight_without_reveal",
+        message:
+          ".ls-reveal-highlight should be combined with .ls-reveal for reveal-timed highlight behavior.",
+        hint: "Use .ls-highlight for static emphasis, or .ls-reveal.ls-reveal-highlight with data-step.",
+      });
+
+    const variants = classes.filter((className) => revealTransformVariants.includes(className));
+    if (variants.length > 1)
+      deckIssue({
+        strict,
+        errors,
+        warnings,
+        code: "multiple_reveal_transform_variants",
+        message: `Use at most one reveal transform variant per element (${variants.join(", ")}).`,
+        hint: "Choose one of ls-reveal-fade, ls-reveal-slide-up, or ls-reveal-scale-in.",
+      });
+  }
+
+  for (const match of html.matchAll(/<code\b[^>]*>([\s\S]*?)<\/code>/gi)) {
+    const text = match[1].replace(/<[^>]*>/g, "");
+    const lines = text.split(/\r?\n/).length;
+    if (lines > 18 || text.length > 1800) {
+      warnings.push({
+        code: "large_code_block",
+        message: "A code block is large enough to require visual fit review.",
+        hint: 'Shorten the excerpt, split it, or use data-ls-density="dense" / code sizing variables after previewing.',
+      });
+      break;
+    }
+  }
+}

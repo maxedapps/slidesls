@@ -7,6 +7,7 @@ export const agentCommandRecipes = {
   inspectReadmeJson: "slidesls inspect <item> --readme --json",
   addDryRunJson: "slidesls add <items...> --dir <deck-or-project> --dry-run --json",
   validateJson: "slidesls validate <deck> --json",
+  preview: "slidesls preview <deck>",
   skillShow: "slidesls skill show",
   skillShowCatalog: "slidesls skill show --reference catalog",
 };
@@ -24,7 +25,9 @@ export function agentHelpBlock() {
   4. Copy safely:
      ${agentCommandRecipes.addDryRunJson}
   5. Validate after editing:
-     ${agentCommandRecipes.validateJson}`;
+     ${agentCommandRecipes.validateJson}
+  6. Preview and visually inspect representative slides unless the user opts out:
+     ${agentCommandRecipes.preview}`;
 }
 
 export function catalogAgentInstructions() {
@@ -68,6 +71,7 @@ export function addAgentInstructions({ dryRun = false, root = "<deck-or-project>
       "Insert returned links/scripts into the entry HTML manually when needed.",
       "Inspect templates/components for exact snippet HTML.",
       "Validate after editing markup or copied assets.",
+      "Preview and visually inspect representative slides after material slide edits unless the user opts out.",
     ],
     nextCommands: [
       dryRun
@@ -85,7 +89,7 @@ export function initAgentInstructions(root = "<deck>") {
     rules: [
       "Use the catalog before adding classes or visual presets.",
       "Inspect templates/components for exact markup before editing slides.",
-      "Validate after edits; preview is a long-running server command.",
+      "Validate after edits; preview is a long-running server command and should be used for visual inspection unless the user opts out.",
     ],
     nextCommands: [
       agentCommandRecipes.catalogRecommendedJson,
@@ -103,11 +107,13 @@ export function validateAgentInstructions(root = "<deck>") {
       "Fix errors first; review warnings even when the deck is otherwise valid.",
       "Use --strict when you need stricter checks for CI or registry drift.",
       "Use catalog and inspect before changing ls-* classes or snippets.",
+      "Static validation does not replace preview; inspect title/section, densest content, and table/timeline/progress/code slides.",
     ],
     nextCommands: [
       agentCommandRecipes.catalogJson,
       agentCommandRecipes.inspectReadmeJson,
       `slidesls add <item> --dir ${root} --dry-run --json`,
     ],
+    longRunningCommands: [`slidesls preview ${root}`],
   };
 }

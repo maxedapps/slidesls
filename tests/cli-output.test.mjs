@@ -208,6 +208,7 @@ test("init and validate JSON include agentInstructions without removing existing
   assert.ok(Array.isArray(validation.data.errors));
   assert.ok(Array.isArray(validation.data.warnings));
   assert.ok(Array.isArray(validation.data.agentInstructions.nextCommands));
+  assert.ok(Array.isArray(validation.data.agentInstructions.longRunningCommands));
 });
 
 test("validate text shows warnings on otherwise valid decks", async () => {
@@ -252,6 +253,7 @@ test("documented agent command recipes execute with placeholder substitutions", 
     const command = substitute(recipe, substitutions);
     if (!command.startsWith("slidesls ")) continue;
     if (command.includes("skill install") || command.includes("skill link")) continue;
+    if (command.includes(" preview ")) continue;
     await run(commandToArgs(command));
   }
   await run([bin, "validate", root, "--json"]);

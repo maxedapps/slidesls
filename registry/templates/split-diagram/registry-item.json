@@ -33,10 +33,12 @@
       "ls-grid",
       "ls-grid--wide-left",
       "ls-panel",
-      "ls-frame",
       "ls-callout",
       "ls-callout__title",
-      "ls-callout__text"
+      "ls-callout__text",
+      "ls-panel--frame",
+      "ls-panel--center",
+      "ls-callout__body"
     ]
   }
 }

@@ -17,15 +17,16 @@
     }
   ],
   "authoring": {
-    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "usage": [
+      "Paste snippet HTML inside .ls-deck and copy its registryDependencies before use.",
+      "Use .ls-slide-fill for full-slide centering; keep title copy concise enough for one or two lines."
+    ],
     "classes": [
       "ls-slide",
       "ls-slide__inner",
       "ls-grid",
       "ls-grid--wide-left",
-      "ls-fill",
       "ls-stack",
-      "ls-center",
       "ls-cluster",
       "ls-badge",
       "ls-title",
@@ -33,7 +34,11 @@
       "ls-panel",
       "ls-panel--accent",
       "ls-eyebrow",
-      "ls-panel__text"
+      "ls-panel__text",
+      "ls-slide-fill",
+      "ls-center-start",
+      "ls-text-start",
+      "ls-panel--center"
     ]
   }
 }

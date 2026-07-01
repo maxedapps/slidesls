@@ -37,6 +37,7 @@ import {
 import { deckTemplate } from "../deck/templates.mjs";
 import { validateRegistry } from "../validation/registry.mjs";
 import { validateExamples } from "../validation/examples.mjs";
+import { validateDeckStructure } from "../validation/markup-structure.mjs";
 import {
   buildAuthoringClassIndex,
   itemNamesForClasses,
@@ -565,6 +566,7 @@ For AI agents:
       errors,
       warnings,
     });
+    validateDeckStructure({ html, strict: args.strict, errors, warnings });
   }
   if (manifest) {
     for (const file of manifest.copiedFiles || []) {
@@ -955,7 +957,8 @@ export function textFor(command, result) {
           "Use `slidesls inspect <item> --readme --json` for exact snippets.",
         ])
       : agentTextBlock([
-          "No static issues found. Use `slidesls preview <deck>` for visual review.",
+          "No static issues found. Static validation does not replace preview.",
+          "Run `slidesls preview <deck>` and inspect representative title/section, dense-content, table/timeline/progress/code slides unless intentionally skipped.",
         ]);
     return `${summary}\n${findings ? `${findings}\n` : ""}${guidance}`;
   }

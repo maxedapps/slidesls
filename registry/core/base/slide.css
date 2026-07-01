@@ -79,7 +79,7 @@
     gap: var(--ls-space-6);
     inline-size: 100%;
     block-size: 100%;
-    padding: 92px 108px;
+    padding: var(--ls-slide-padding-block) var(--ls-slide-padding-inline);
   }
 
   .ls-slide__header {
@@ -107,8 +107,8 @@
     font-family: var(--ls-font-heading);
     font-size: var(--ls-text-2xl);
     font-weight: 780;
-    letter-spacing: -0.045em;
-    line-height: 0.96;
+    letter-spacing: var(--ls-title-letter-spacing);
+    line-height: var(--ls-title-line-height);
   }
 
   .ls-subtitle {
@@ -127,6 +127,25 @@
 
   .ls-accent-text {
     color: var(--ls-accent-text);
+  }
+
+  .ls-slide[data-ls-density="compact"] {
+    --ls-text-2xl: 70px;
+    --ls-text-xl: 50px;
+    --ls-text-lg: 36px;
+    --ls-text-md: 27px;
+    --ls-text-sm: 22px;
+    --ls-space-4: 20px;
+    --ls-space-5: 26px;
+    --ls-space-6: 38px;
+    --ls-slide-padding-block: 72px;
+    --ls-slide-padding-inline: 88px;
+    --ls-card-padding: 20px;
+    --ls-card-title-size: 25px;
+    --ls-card-text-size: 19px;
+    --ls-callout-padding: 18px 20px;
+    --ls-callout-title-size: 24px;
+    --ls-callout-text-size: 20px;
   }
 
   @media print {

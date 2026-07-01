@@ -11,3 +11,5 @@ Useful classes:
 - `.ls-card__body`
 - `.ls-card__title`
 - `.ls-card__text`
+
+Sizing variables: `--ls-card-padding`, `--ls-card-title-size`, `--ls-card-text-size`. Compact slide density scopes smaller defaults for dense card grids.

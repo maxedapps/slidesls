@@ -31,8 +31,12 @@ Load font presets after `core/base/tokens.css` and before or alongside other reg
 ## Global deck usage
 
 ```html
-<body class="ls-page" data-ls-font="editorial-serif"></body>
+<html data-ls-font="editorial-serif">
+  <body class="ls-page"></body>
+</html>
 ```
+
+You may also scope deck-wide font presets to `body.ls-page` if that better matches your project shell.
 
 ## Per-slide usage
 

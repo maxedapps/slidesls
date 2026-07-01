@@ -33,7 +33,7 @@ Variables:
 - `--ls-code-max-block-size`
 - `--ls-code-font-size`
 
-Padding is applied to the actual `<pre>` scroll surface in both root patterns, so wrapper mode does not double-pad the frame.
+Padding is applied to the actual `<pre>` scroll surface in both root patterns, so wrapper mode does not double-pad the frame. Overflow scrollbars are intentional for authoring safety but are not presentation/PDF-safe; keep snippets short enough to fit visually, or use `data-ls-density="dense"`, `--ls-code-font-size`, and `--ls-code-max-block-size` for reviewed compact excerpts.
 
 ## Copy
 

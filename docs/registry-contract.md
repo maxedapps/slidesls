@@ -34,7 +34,7 @@ Supported fields:
 - `attributes` — important deck-level attributes such as `data-ls-theme` or `data-ls-font`.
 - `usage` — short authoring rules for agents.
 
-Registry validation checks authoring shape and, for local CSS-backed items, verifies listed classes exist in item CSS. Example validation fails on unsupported real `ls-*` class attributes.
+Registry validation checks authoring shape and, for local CSS-backed items, verifies listed classes exist in item CSS. It also checks snippet dependency closure, targeted canonical snippet structures, and `@container` usage without a query-container contract. Example validation recursively fails on unsupported real `ls-*` class attributes.
 
 ## Theme presets
 
@@ -63,7 +63,7 @@ Apply themes deck-wide on `<html>`:
 
 Themes control visual language: colors, surfaces, backgrounds, borders, radii, shadows, code colors, table striping, status colors, and progress accents. They must not encode slide structure or force font families. Font presets remain separate and may be recommended with `pairsWith` metadata.
 
-Theme CSS should prefer solid colors, subtle borders, restrained shadows, and minimal texture. Avoid large gradient blobs, neon fog, glow stacks, and decorative backgrounds that compete with content.
+Theme CSS should prefer solid colors, subtle borders, restrained shadows, and minimal texture. Avoid overriding `--ls-slide-bg-image` or adding large gradient blobs, neon fog, glow stacks, and decorative backgrounds that compete with content unless explicitly requested. Themes are not density systems; use slide-scoped density attributes or component variables for dense content.
 
 ## Copy/load order
 
@@ -71,7 +71,7 @@ Use `slidesls add`; it resolves dependencies, copies files, and updates the mani
 
 ## Snippets
 
-Snippets are source-of-truth markup examples. Agents should prefer:
+Snippets are source-of-truth markup examples and must declare/copy all registry dependencies for any `ls-*` classes they contain. Agents should prefer:
 
 ```sh
 slidesls inspect templates/split --json

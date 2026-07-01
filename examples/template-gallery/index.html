@@ -21,7 +21,7 @@
     <main class="ls-deck" data-ls-deck aria-label="slidesls template gallery">
       <section class="ls-slide" aria-label="Template gallery intro">
         <div class="ls-slide__inner">
-          <div class="ls-center ls-fill">
+          <div class="ls-center ls-slide-fill">
             <header class="ls-stack">
               <span class="ls-badge">Templates</span>
               <h1 class="ls-title">Start from complete slide skeletons.</h1>
@@ -40,7 +40,7 @@
             <h2 class="ls-title">Use explicit grids instead of hidden layout contracts.</h2>
           </header>
           <div class="ls-grid ls-grid--wide-left">
-            <div class="ls-panel ls-panel--accent ls-center">
+            <div class="ls-panel ls-panel--accent ls-panel--center">
               <p class="ls-panel__text">Primary visual</p>
             </div>
             <div class="ls-stack">
@@ -95,8 +95,20 @@
               </div>
             </div>
             <div class="ls-panel">
-              <div class="ls-progress" style="--ls-progress-value: 100%">
-                <span class="ls-progress__label">agent-safe path</span>
+              <div
+                class="ls-progress"
+                style="--ls-progress-value: 100%"
+                role="progressbar"
+                aria-label="Agent-safe path"
+                aria-valuenow="100"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <div class="ls-progress__label">
+                  <span>Agent-safe path</span>
+                  <span class="ls-progress__value">100%</span>
+                </div>
+                <div class="ls-progress__track"><div class="ls-progress__bar"></div></div>
               </div>
             </div>
           </div>

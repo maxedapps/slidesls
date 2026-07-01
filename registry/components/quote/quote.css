@@ -36,7 +36,7 @@
     line-height: 1.3;
   }
 
-  .ls-quote:has(cite) cite {
+  .ls-quote__source cite {
     color: var(--ls-accent-text);
     font-style: normal;
   }

@@ -158,6 +158,68 @@ test("validate rejects removed layout classes", async () => {
   assert.ok(result.data.errors.some((error) => error.code === "removed_layout_class"));
 });
 
+test("validate warns for broken progress structure and strict mode errors", async () => {
+  const root = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<div class="ls-progress" style="--ls-progress-value: 60%"><span class="ls-progress__label">Progress</span></div>`,
+  );
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.ok(result.data.warnings.some((warning) => warning.code === "progress_structure"));
+
+  const strict = await validateCommand([root, "--strict"]);
+  assert.equal(strict.data.valid, false);
+  assert.ok(strict.data.errors.some((error) => error.code === "progress_structure"));
+});
+
+test("validate still checks broken custom progress when native progress also exists", async () => {
+  const root = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<progress class="ls-progress" value="50" max="100"></progress><div class="ls-progress"><span class="ls-progress__label">Broken</span></div>`,
+  );
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.ok(result.data.warnings.some((warning) => warning.code === "progress_structure"));
+});
+
+test("validate warns for raw timeline shorthand", async () => {
+  const root = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<ol class="ls-timeline"><li class="ls-timeline__item"><strong>Plan</strong><span>Choose.</span></li></ol>`,
+  );
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.ok(result.data.warnings.some((warning) => warning.code === "timeline_structure"));
+});
+
+test("validate warns for invalid reveal animation combinations", async () => {
+  const root = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<p class="ls-reveal-highlight" data-step="1">Highlight</p><p class="ls-reveal ls-reveal-fade ls-reveal-slide-up" data-step="2">Too many</p>`,
+  );
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.ok(
+    result.data.warnings.some((warning) => warning.code === "reveal_highlight_without_reveal"),
+  );
+  assert.ok(
+    result.data.warnings.some((warning) => warning.code === "multiple_reveal_transform_variants"),
+  );
+});
+
+test("validate warns for very large code blocks", async () => {
+  const code = Array.from({ length: 20 }, (_, index) => `const value${index} = ${index};`).join(
+    "\n",
+  );
+  const root = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<pre class="ls-code-block"><code>${code}</code></pre>`,
+  );
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.ok(result.data.warnings.some((warning) => warning.code === "large_code_block"));
+});
+
 async function deckWithHtml(runtimeScript, slideContent = "") {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-validate-"));
   await writeFile(

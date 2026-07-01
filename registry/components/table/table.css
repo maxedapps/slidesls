@@ -1,5 +1,6 @@
 @layer components {
   .ls-table-frame {
+    align-self: start;
     overflow: hidden;
     border: 1px solid var(--ls-border);
     border-radius: var(--ls-radius-lg);

@@ -77,6 +77,10 @@ function code(value) {
   return `\`${value}\``;
 }
 
+function markdownText(value) {
+  return String(value).replaceAll("_", "\\_");
+}
+
 function codeList(values) {
   return values.map(code).join(", ");
 }
@@ -89,7 +93,7 @@ function authoringLines(authoring) {
     for (const group of authoring.classGroups) {
       const parts = [...(group.elements || []), ...(group.modifiers || [])];
       lines.push(`  - ${code(group.base)}: ${parts.length ? codeList(parts) : "base only"}`);
-      if (group.rule) lines.push(`    - Rule: ${group.rule}`);
+      if (group.rule) lines.push(`    - Rule: ${markdownText(group.rule)}`);
     }
   }
   if (authoring.classes?.length) lines.push(`- Classes: ${codeList(authoring.classes)}`);
@@ -119,7 +123,8 @@ function authoringLines(authoring) {
     );
   if (authoring.cssVariables?.length)
     lines.push(`- CSS variables: ${codeList(authoring.cssVariables)}`);
-  if (authoring.usage?.length) lines.push(`- Usage: ${authoring.usage.join(" ")}`);
+  if (authoring.usage?.length)
+    lines.push(`- Usage: ${authoring.usage.map(markdownText).join(" ")}`);
   return lines;
 }
 

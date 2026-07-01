@@ -2,5 +2,7 @@
   [data-ls-font="editorial-serif"] {
     --ls-font-heading: var(--ls-font-serif);
     --ls-font-display: var(--ls-font-serif);
+    --ls-title-line-height: 1.02;
+    --ls-title-letter-spacing: -0.025em;
   }
 }

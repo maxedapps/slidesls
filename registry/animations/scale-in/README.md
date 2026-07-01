@@ -4,8 +4,14 @@ Reveal-compatible scale/opacity entrance variant.
 
 ## Usage
 
-Combine `.ls-reveal ls-reveal-scale-in` with `data-step`. Variables: `--ls-scale-in-start`, `--ls-scale-in-duration`, `--ls-scale-in-ease`. Load after `animations/reveal`; the variant intentionally relies on that source order to replace the reveal start transform.
+Load after `animations/reveal`, then combine with reveal markup. Use `.ls-reveal` plus at most one transform variant (`ls-reveal-fade`, `ls-reveal-slide-up`, or `ls-reveal-scale-in`) on an element.
+
+```html
+<p class="ls-reveal ls-reveal-scale-in" data-step="1">Scale in</p>
+```
+
+Variables: `--ls-scale-in-start`, `--ls-scale-in-duration`, `--ls-scale-in-ease`.
 
 ## Copy
 
-Copy this item CSS after `registry/core/base` styles. Animation variants should load after `registry/animations/reveal`.
+Copy `scale-in.css` after `core/base` and `animations/reveal` styles.

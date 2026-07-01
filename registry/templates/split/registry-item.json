@@ -29,11 +29,12 @@
       "ls-grid--wide-left",
       "ls-panel",
       "ls-panel--accent",
-      "ls-center",
       "ls-panel__text",
       "ls-card",
       "ls-card__title",
-      "ls-card__text"
+      "ls-card__text",
+      "ls-panel--center",
+      "ls-card__body"
     ]
   }
 }

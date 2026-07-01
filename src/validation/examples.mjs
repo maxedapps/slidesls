@@ -5,6 +5,7 @@ import { assertInside } from "../shared/fs.mjs";
 import { localFileReferences } from "../shared/html.mjs";
 import { RegistrySource, loadRegistry } from "../registry/source.mjs";
 import { buildAuthoringClassIndex, unknownLsClasses } from "./authoring-api.mjs";
+import { validateDeckStructure } from "./markup-structure.mjs";
 
 async function fileExists(filePath) {
   try {
@@ -15,16 +16,21 @@ async function fileExists(filePath) {
   }
 }
 
-async function exampleHtmlFiles(root) {
-  const examplesRoot = path.join(root, "examples");
-  const entries = await readdir(examplesRoot, { withFileTypes: true }).catch(() => []);
+async function collectHtmlFiles(dir) {
+  const entries = await readdir(dir, { withFileTypes: true }).catch(() => []);
   const files = [];
   for (const entry of entries) {
-    if (!entry.isDirectory()) continue;
-    const indexPath = path.join(examplesRoot, entry.name, "index.html");
-    if (await fileExists(indexPath)) files.push(indexPath);
+    const entryPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) files.push(...(await collectHtmlFiles(entryPath)));
+    else if (entry.isFile() && entry.name.endsWith(".html")) files.push(entryPath);
   }
-  return files.sort((a, b) => a.localeCompare(b));
+  return files;
+}
+
+async function exampleHtmlFiles(root) {
+  const examplesRoot = path.join(root, "examples");
+  const files = await collectHtmlFiles(examplesRoot);
+  return files.sort((a, b) => path.relative(root, a).localeCompare(path.relative(root, b)));
 }
 
 function push(list, code, message, details = {}) {
@@ -83,6 +89,7 @@ export async function validateExamples({ root = process.cwd() } = {}) {
         "missing_layout_utilities",
         `${relative} uses ls-grid but does not reference utilities/layout/layout.css.`,
       );
+    validateDeckStructure({ html, strict: true, errors, warnings });
   }
 
   return { valid: errors.length === 0, root, checkedExamples: files.length, errors, warnings };

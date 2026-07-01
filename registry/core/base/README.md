@@ -13,6 +13,12 @@ Copy/load order:
 
 Load this item before layouts, components, animations, and presets. It establishes the cascade layer contract.
 
+## Slide shell
+
+Use either a header/body shell (`.ls-slide__header` plus `.ls-slide__body`) or a full-slide wrapper (`.ls-slide__inner > .ls-slide-fill` from `utilities/layout`). Direct `.ls-fill` does not span the shell rows.
+
+`section.ls-slide[data-ls-density="compact"]` scopes smaller type, spacing, and padding tokens for dense but visually reviewed slides.
+
 ## Font roles
 
-`tokens.css` exposes raw font stacks (`--ls-font-sans`, `--ls-font-serif`, `--ls-font-mono`) plus semantic roles (`--ls-font-body`, `--ls-font-heading`, `--ls-font-display`, `--ls-font-label`, `--ls-font-code`). Layouts and components use semantic roles so optional font presets can remap typography without editing component CSS.
+`tokens.css` exposes raw font stacks (`--ls-font-sans`, `--ls-font-serif`, `--ls-font-mono`) plus semantic roles (`--ls-font-body`, `--ls-font-heading`, `--ls-font-display`, `--ls-font-label`, `--ls-font-code`). Layouts and components use semantic roles so optional font presets can remap typography without editing component CSS. Title metrics are adjustable through `--ls-title-line-height` and `--ls-title-letter-spacing`.
