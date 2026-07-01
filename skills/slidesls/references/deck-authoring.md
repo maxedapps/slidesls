@@ -82,6 +82,7 @@ Do not use `ls-layout-*` classes or hidden ancestor-dependent layout contracts.
 Use recommended catalog and snippets:
 
 ```sh
+slidesls skill show --reference catalog
 slidesls catalog --recommended --json
 slidesls inspect templates/split --readme --json
 slidesls inspect components/card --json

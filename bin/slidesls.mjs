@@ -13,6 +13,7 @@ const globalBooleanOptions = [
   "readme",
   "recommended",
   "check",
+  "all",
 ];
 
 process.stdout.on("error", (error) => {

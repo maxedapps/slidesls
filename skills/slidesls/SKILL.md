@@ -79,6 +79,17 @@ Use a custom target if the active agent runtime expects skills elsewhere.
 11. Preview with `slidesls preview <deck>`; use browser tools for visual review when needed.
 12. Run `slidesls doctor --dir <deck> --json` if config, registry, or environment behavior looks wrong.
 
+## Fast discovery map
+
+- Need the workflow? `slidesls skill show`
+- Need the full class/style/data-attribute catalog? `slidesls skill show --reference catalog`
+- Need machine-readable public APIs? `slidesls catalog --json`
+- Need recommended building blocks? `slidesls catalog --recommended --json`
+- Need themes? `slidesls catalog --type preset --tag theme --json`
+- Need exact markup and docs? `slidesls inspect <item> --readme --json`
+- Need copied files/load tags? `slidesls add <items> --dry-run --json`
+- Need validation/fix feedback? `slidesls validate <deck> --json`
+
 ## Useful commands
 
 ```sh
@@ -104,7 +115,7 @@ slidesls doctor --dir ./slides/my-deck --json
 - `references/deck-authoring.md` — deck shell, reveal contract, icons, and recipes.
 - `references/preview-validation.md` — validation and preview loop.
 - `references/registry-contract.md` — registry metadata and file contract.
-- `references/catalog.md` — generated registry catalog.
+- `references/catalog.md` — generated registry catalog. Also available via `slidesls skill show --reference catalog`.
 
 For current item-specific details, start with `slidesls catalog --recommended --json`; its `authoring` metadata is the quick source of truth for public classes, modifiers, data attributes, theme/font attributes, CSS variables, and usage rules. Use item READMEs and snippets through:
 

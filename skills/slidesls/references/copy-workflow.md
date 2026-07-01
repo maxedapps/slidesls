@@ -18,6 +18,7 @@ npx slidesls add <items...> --dir <deck-or-project>
 
 Important:
 
+- Use `slidesls skill show --reference catalog` for the full generated class/style/API catalog when you need human-readable discovery.
 - Always prefer `--dry-run --json` before copying multiple items or changing an existing deck.
 - `add` copies assets and updates the manifest; it does not rewrite the deck HTML.
 - Insert returned `<link>` and `<script>` tags into the entry HTML when needed.

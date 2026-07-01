@@ -5,9 +5,29 @@ import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
 import test from "node:test";
+import { agentCommandRecipes } from "../src/cli/agent-instructions.mjs";
 
 const execFileAsync = promisify(execFile);
 const bin = path.resolve("bin/slidesls.mjs");
+
+test("root and key command help include AI-agent guidance", async () => {
+  const root = (await run([bin, "--help"])).stdout;
+  assert.match(root, /For AI agents:/);
+  assert.match(root, /slidesls skill install/);
+  assert.match(root, /slidesls skill link/);
+  assert.match(root, /slidesls catalog --json/);
+  assert.match(root, /slidesls inspect <item> --readme --json/);
+
+  const catalog = (await run([bin, "catalog", "--help"])).stdout;
+  assert.match(catalog, /For AI agents:/);
+  assert.match(catalog, /catalog --type preset --tag theme --json/);
+
+  const add = (await run([bin, "add", "--help"])).stdout;
+  assert.match(add, /does not edit HTML/);
+
+  const validate = (await run([bin, "validate", "--help"])).stdout;
+  assert.match(validate, /Unknown ls-\* classes warn/);
+});
 
 test("add --dry-run text output reports planned copies", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-cli-"));
@@ -23,6 +43,7 @@ test("catalog --json returns an agent-friendly result envelope", async () => {
   const result = JSON.parse(stdout);
   assert.equal(result.ok, true);
   assert.equal(typeof result.data.count, "number");
+  assert.ok(Array.isArray(result.data.agentInstructions.nextCommands));
   assert.ok(result.data.items.some((item) => item.name === "core/base"));
   const layout = result.data.items.find((item) => item.name === "utilities/layout");
   assert.ok(layout);
@@ -53,6 +74,7 @@ test("inspect returns snippet HTML for requested templates and components", asyn
   assert.match(requested.snippets[0].html, /<section class="ls-slide"/);
 
   const component = JSON.parse((await run([bin, "inspect", "components/card", "--json"])).stdout);
+  assert.ok(Array.isArray(template.data.agentInstructions.nextCommands));
   assert.match(component.data.items.at(-1).snippets[0].html, /class="ls-card"/);
   assert.ok(
     component.data.items
@@ -71,6 +93,8 @@ test("add without init uses explicit copy mode", async () => {
   assert.equal(dryRun.data.configFound, false);
   assert.equal(dryRun.data.mode, "copy");
   assert.equal(dryRun.data.baseDir, "slidesls");
+  assert.ok(Array.isArray(dryRun.data.agentInstructions.nextCommands));
+  assert.ok(Array.isArray(dryRun.data.agentInstructions.longRunningCommands));
 
   const real = JSON.parse(
     (await run([bin, "add", "core/base", "--dir", root, "--base-dir", "vendor/slides", "--json"]))
@@ -79,6 +103,7 @@ test("add without init uses explicit copy mode", async () => {
   assert.equal(real.ok, true);
   assert.equal(real.data.mode, "copy");
   assert.equal(real.data.baseDir, "vendor/slides");
+  assert.equal(real.data.links.length > 0, true);
 });
 
 test("add --dir does not inherit ancestor config", async () => {
@@ -168,6 +193,70 @@ test("template add plans dependencies but not snippet files", async () => {
   );
 });
 
+test("init and validate JSON include agentInstructions without removing existing fields", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-agent-json-"));
+  const init = JSON.parse((await run([bin, "init", root, "--template", "blank", "--json"])).stdout);
+  assert.equal(init.ok, true);
+  assert.equal(init.data.entry, "index.html");
+  assert.ok(Array.isArray(init.data.nextSteps));
+  assert.ok(Array.isArray(init.data.agentInstructions.nextCommands));
+  assert.ok(Array.isArray(init.data.agentInstructions.longRunningCommands));
+
+  const validation = JSON.parse((await run([bin, "validate", root, "--json"])).stdout);
+  assert.equal(validation.ok, true);
+  assert.equal(validation.data.valid, true);
+  assert.ok(Array.isArray(validation.data.errors));
+  assert.ok(Array.isArray(validation.data.warnings));
+  assert.ok(Array.isArray(validation.data.agentInstructions.nextCommands));
+});
+
+test("validate text shows warnings on otherwise valid decks", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-warning-text-"));
+  await run([bin, "init", root, "--template", "minimal"]);
+  const { stdout } = await run([bin, "validate", root]);
+  assert.match(stdout, /ok with \d+ warning\(s\)/);
+  assert.match(stdout, /- warning:/);
+  assert.match(stdout, /For AI agents:/);
+});
+
+test("catalog and inspect text include AI-agent guidance", async () => {
+  const catalog = (await run([bin, "catalog", "--recommended"])).stdout;
+  assert.match(catalog, /For AI agents:/);
+  assert.match(catalog, /Do not invent ls-\*/);
+
+  const inspect = (await run([bin, "inspect", "utilities/layout"])).stdout;
+  assert.match(inspect, /Authoring: available in --json output/);
+  assert.match(inspect, /For AI agents:/);
+});
+
+test("documented agent command recipes execute with placeholder substitutions", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-recipe-"));
+  await run([bin, "init", root, "--template", "blank", "--json"]);
+  const substitutions = {
+    "<item>": "templates/split",
+    "<items...>": "utilities/layout",
+    "<deck-or-project>": root,
+    "<deck>": root,
+  };
+  const emittedRecipes = [
+    ...Object.values(agentCommandRecipes),
+    ...JSON.parse((await run([bin, "catalog", "--json"])).stdout).data.agentInstructions
+      .nextCommands,
+    ...JSON.parse((await run([bin, "inspect", "templates/split", "--json"])).stdout).data
+      .agentInstructions.nextCommands,
+    ...JSON.parse((await run([bin, "validate", root, "--json"])).stdout).data.agentInstructions
+      .nextCommands,
+  ];
+
+  for (const recipe of emittedRecipes) {
+    const command = substitute(recipe, substitutions);
+    if (!command.startsWith("slidesls ")) continue;
+    if (command.includes("skill install") || command.includes("skill link")) continue;
+    await run(commandToArgs(command));
+  }
+  await run([bin, "validate", root, "--json"]);
+});
+
 test("removed --registry option fails with a usage error", async () => {
   await assert.rejects(run([bin, "catalog", "--registry", "foo"]), (error) => {
     assert.equal(error.code, 2);
@@ -183,6 +272,20 @@ test("canonical help and docs do not mention removed --registry option", async (
   assert.doesNotMatch(stdout, /--registry(?!-(?:root|url))/);
   assert.doesNotMatch(docs, /--registry(?!-(?:root|url))/);
 });
+
+function commandToArgs(command) {
+  const parts = command.split(" ");
+  assert.equal(parts.shift(), "slidesls");
+  return [bin, ...parts];
+}
+
+function substitute(recipe, substitutions) {
+  let command = recipe;
+  for (const [placeholder, value] of Object.entries(substitutions)) {
+    command = command.replaceAll(placeholder, value);
+  }
+  return command;
+}
 
 async function run(args) {
   return execFileAsync(process.execPath, args, { cwd: path.resolve("."), maxBuffer: 1024 * 1024 });

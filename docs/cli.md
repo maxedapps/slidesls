@@ -20,7 +20,7 @@ If installed from a local tarball in the target project, use `npx slidesls ...`.
 - `slidesls catalog [--recommended] [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path> | --registry-url <url>]` — list items and their public `authoring` API in JSON; use `--recommended` for the agent-safe set.
 - `slidesls inspect <items...> [--readme] [--registry-root <path> | --registry-url <url>]` — show metadata, public `authoring` API, load guidance, and snippet HTML for requested items.
 - `slidesls skill info [--json]` — show bundled agent skill metadata.
-- `slidesls skill show` — print the bundled agent `SKILL.md`.
+- `slidesls skill show [--reference <name>] [--all]` — print the bundled agent `SKILL.md`, a named reference such as `catalog`, or all bundled docs.
 - `slidesls skill install [dir] [--dry-run] [--force]` — copy the bundled skill to `[dir]` or `./.claude/skills/slidesls`.
 - `slidesls skill link [dir] [--force]` — symlink the bundled skill to `[dir]` or `./.claude/skills/slidesls`.
 - `slidesls validate [dir] [--strict]` — validate deck config, entry markup, local assets, and manifest files. `--strict` also treats copied-file hash drift as an error.
@@ -30,7 +30,7 @@ If installed from a local tarball in the target project, use `npx slidesls ...`.
 - `slidesls validate-examples` — repo example/template validation.
 - `slidesls generate-catalog [--registry-root <path> | --registry-url <url>] [--check]` — internal agent catalog generation/check.
 
-All commands support `--help`. Agent-facing commands support `--json` where useful.
+All commands support `--help`. Agent-facing commands support `--json` where useful. Key text outputs include `For AI agents:` command recipes, and JSON outputs for `init`, `add`, `catalog`, `inspect`, and `validate` include additive `agentInstructions` data.
 
 ## Init target guidance
 
@@ -103,9 +103,12 @@ slidesls skill install ./.claude/skills/slidesls
 Then use machine-readable discovery before editing decks or copy-mode projects:
 
 ```sh
+slidesls skill show --reference catalog
 slidesls catalog --recommended --json
-slidesls inspect templates/split --json
-slidesls inspect components/card --json
+slidesls catalog --json
+slidesls catalog --type preset --tag theme --json
+slidesls inspect templates/split --readme --json
+slidesls inspect components/card --readme --json
 slidesls add utilities/layout components/panel components/card --dry-run --json
 ```
 

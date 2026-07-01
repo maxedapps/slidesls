@@ -67,11 +67,13 @@ npx slidesls init --template minimal --title "My Deck"
 
 ## Commands
 
+CLI help and key text outputs include explicit `For AI agents:` blocks. JSON outputs for discovery/editing commands include additive `agentInstructions` with rules and next command recipes.
+
 - `slidesls init [dir]` — initialize a deck in the current directory, or in `[dir]` if supplied.
 - `slidesls catalog --recommended` — list agent-safe recommended items; JSON output includes each item’s public `authoring` API.
 - `slidesls inspect <items...>` — show metadata, public `authoring` API, dependencies, load guidance, READMEs, and snippet HTML.
 - `slidesls add <items...>` — copy registry items into an initialized deck or any existing project in copy mode, and print load tags.
-- `slidesls skill info|show|install|link` — inspect, copy, or symlink the bundled agent skill.
+- `slidesls skill info|show|install|link` — inspect, copy, or symlink the bundled agent skill. Use `slidesls skill show --reference catalog` for the generated public class/style/API catalog.
 - `slidesls validate [dir]` — static deck validation.
 - `slidesls preview [dir]` — serve a deck locally.
 - `slidesls doctor [--dir <project>]` — check CLI/project health.

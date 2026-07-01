@@ -44,10 +44,21 @@ import {
 } from "../validation/authoring-api.mjs";
 import { generateCatalogDoc } from "../registry/catalog-doc.mjs";
 import {
+  addAgentInstructions,
+  agentCommandRecipes,
+  agentHelpBlock,
+  catalogAgentInstructions,
+  initAgentInstructions,
+  inspectAgentInstructions,
+  validateAgentInstructions,
+} from "./agent-instructions.mjs";
+import {
   defaultSkillTarget,
   performSkillInstall,
   performSkillLink,
+  readAllSkillMarkdown,
   readSkillMarkdown,
+  readSkillReference,
   skillInfo,
 } from "../skill/agent-skill.mjs";
 
@@ -73,11 +84,7 @@ Commands:
   generate-catalog         Generate/check agent catalog docs
   help                     Show help
 
-Agent usage:
-  slidesls skill install ./.claude/skills/slidesls
-  slidesls catalog --recommended --json
-  slidesls inspect templates/split --json
-  slidesls add utilities/layout components/panel components/card --dry-run --json
+${agentHelpBlock()}
 
 Common options:
   --json           Machine-readable output
@@ -157,7 +164,11 @@ export async function initCommand(argv) {
 
 Initializes the current directory by default. If [dir] is supplied, initializes that directory.
 Use a dedicated deck folder inside larger projects to avoid adding deck files to the project root.
-Use --theme executive-blue to copy a theme preset and set data-ls-theme on the generated <html>.`,
+Use --theme executive-blue to copy a theme preset and set data-ls-theme on the generated <html>.
+
+For AI agents:
+  Start with JSON output: slidesls init <dir> --template minimal --json
+  Then run slidesls catalog --recommended --json and slidesls validate <dir> --json.`,
     });
   rejectRemovedRegistryOption(args);
   const projectRoot = path.resolve(args._[0] || ".");
@@ -234,12 +245,12 @@ Use --theme executive-blue to copy a theme preset and set data-ls-theme on the g
     items: items.map((i) => i.name),
     theme: themeItem ? themeItem.themeAttribute : null,
     nextSteps: [
-      "slidesls catalog --recommended",
-      "slidesls inspect templates/split --json",
-      "slidesls add utilities/layout components/card components/panel",
-      "slidesls validate",
-      "slidesls preview",
+      "slidesls catalog --recommended --json",
+      "slidesls inspect templates/split --readme --json",
+      `slidesls validate ${projectRoot} --json`,
+      `slidesls preview ${projectRoot}`,
     ],
+    agentInstructions: initAgentInstructions(projectRoot),
   });
 }
 
@@ -249,7 +260,13 @@ export async function addCommand(argv) {
     return ok({
       help: `Usage: slidesls add <items...> [--dir <project>] [--base-dir <relative>] [--registry-root <path>] [--registry-url <url>] [--include-docs] [--dry-run] [--force] [--json]
 
-Copies registry items into an initialized deck, or into any existing project in copy mode when --dir has no slidesls.json.`,
+Copies registry items into an initialized deck, or into any existing project in copy mode when --dir has no slidesls.json.
+
+For AI agents:
+  Run slidesls add <items...> --dir <deck-or-project> --dry-run --json first.
+  add copies files and updates the manifest; it does not edit HTML.
+  Add returned load tags to the entry HTML when needed.
+  Use slidesls inspect <item> --readme --json for exact snippets, then slidesls validate <deck> --json.`,
     });
   rejectRemovedRegistryOption(args);
   const names = args._;
@@ -286,6 +303,7 @@ Copies registry items into an initialized deck, or into any existing project in 
       links,
       scripts,
       applyTheme,
+      agentInstructions: addAgentInstructions({ dryRun: true, root }),
     });
   const copiedFiles = await performCopies({
     source: registrySource(args),
@@ -316,6 +334,7 @@ Copies registry items into an initialized deck, or into any existing project in 
     scripts,
     applyTheme,
     snippets: [],
+    agentInstructions: addAgentInstructions({ root }),
   });
 }
 
@@ -325,7 +344,13 @@ export async function catalogCommand(argv) {
     return ok({
       help: `Usage: slidesls catalog [--recommended] [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path>] [--registry-url <url>] [--json]
 
-JSON output includes public authoring metadata for classes, modifiers, data attributes, attributes, CSS variables, and usage rules.`,
+JSON output includes public authoring metadata for classes, modifiers, data attributes, attributes, CSS variables, and usage rules.
+
+For AI agents:
+  Use slidesls catalog --recommended --json for the agent-safe starting set.
+  Use slidesls catalog --json before authoring ls-* markup.
+  Use slidesls catalog --type preset --tag theme --json to discover themes.
+  Use slidesls inspect <item> --readme --json for snippets, load tags, and docs.`,
     });
   rejectRemovedRegistryOption(args);
   const data = await registryData(args);
@@ -343,7 +368,7 @@ JSON output includes public authoring metadata for classes, modifiers, data attr
     );
   }
   if (args.limit) items = items.slice(0, Number(args.limit));
-  return ok({ count: items.length, items });
+  return ok({ count: items.length, items, agentInstructions: catalogAgentInstructions() });
 }
 
 export async function inspectCommand(argv) {
@@ -352,7 +377,11 @@ export async function inspectCommand(argv) {
     return ok({
       help: `Usage: slidesls inspect <items...> [--readme] [--registry-root <path>] [--registry-url <url>] [--json]
 
-Includes public authoring metadata plus load tags, snippets, and optional README content.`,
+Includes public authoring metadata plus load tags, snippets, and optional README content.
+
+For AI agents:
+  Use after catalog to get exact markup and load tags.
+  JSON includes authoring, load.links, load.scripts, snippets[].html, and optional readme.`,
     });
   rejectRemovedRegistryOption(args);
   if (!args._.length) throw usageError("slidesls inspect requires at least one item name");
@@ -381,11 +410,11 @@ Includes public authoring metadata plus load tags, snippets, and optional README
       : item.snippets || [];
     items.push({ ...summary, snippets, load: tags, readme });
   }
-  return ok({ items });
+  return ok({ items, agentInstructions: inspectAgentInstructions(args._) });
 }
 
 export async function skillCommand(argv) {
-  const args = parseArgs(argv, { boolean: ["json", "help", "dry-run", "force"] });
+  const args = parseArgs(argv, { boolean: ["json", "help", "dry-run", "force", "all"] });
   const subcommand = args._[0] || "info";
   const targetDir = args._[1] ? path.resolve(args._[1]) : defaultSkillTarget();
 
@@ -393,7 +422,7 @@ export async function skillCommand(argv) {
     return ok({
       help: `Usage:
   slidesls skill info [--json]
-  slidesls skill show
+  slidesls skill show [--reference <name>] [--all]
   slidesls skill install [dir] [--dry-run] [--force] [--json]
   slidesls skill link [dir] [--force] [--json]
 
@@ -401,13 +430,27 @@ Defaults:
   [dir] defaults to ./.claude/skills/slidesls in the current project.
 
 Local checkout example:
-  node /path/to/ls_slides/bin/slidesls.mjs skill link ./.claude/skills/slidesls`,
+  node /path/to/ls_slides/bin/slidesls.mjs skill link ./.claude/skills/slidesls
+
+References:
+  slidesls skill show --reference catalog
+  slidesls skill show --reference deck-authoring
+  slidesls skill show --reference copy-workflow
+  slidesls skill show --reference preview-validation
+  slidesls skill show --reference registry-contract
+
+For AI agents:
+  Install or link the skill before authoring.
+  Use slidesls skill show for workflow docs.
+  Use slidesls skill show --reference catalog for the generated class/style/API catalog.`,
     });
 
   switch (subcommand) {
     case "info":
       return ok(await skillInfo());
     case "show":
+      if (args.all) return ok({ markdown: await readAllSkillMarkdown() });
+      if (args.reference) return ok({ markdown: await readSkillReference(args.reference) });
       return ok({ markdown: await readSkillMarkdown() });
     case "install":
       return ok(
@@ -431,7 +474,15 @@ Local checkout example:
 
 export async function validateCommand(argv) {
   const args = parseArgs(argv, { boolean: ["strict", "json", "help"] });
-  if (args.help) return ok({ help: `Usage: slidesls validate [dir] [--strict] [--json]` });
+  if (args.help)
+    return ok({
+      help: `Usage: slidesls validate [dir] [--strict] [--json]
+
+For AI agents:
+  Run after every edit: slidesls validate <deck> --json
+  Unknown ls-* classes warn by default and error with --strict.
+  Use slidesls catalog --json for valid classes and slidesls inspect <item> --readme --json for snippets.`,
+    });
   const start = path.resolve(args._[0] || args.dir || ".");
   const { config: foundConfig, root } = await readConfig(start);
   const config = foundConfig || DEFAULT_CONFIG;
@@ -445,7 +496,11 @@ export async function validateCommand(argv) {
     });
   const entryPath = path.join(root, config.paths.entry);
   if (!(await exists(entryPath)))
-    errors.push({ code: "missing_entry", message: `${config.paths.entry} does not exist` });
+    errors.push({
+      code: "missing_entry",
+      message: `${config.paths.entry} does not exist`,
+      hint: "Check slidesls.json paths.entry or create the configured entry HTML file.",
+    });
   let html = "";
   if (await exists(entryPath)) {
     html = await readFile(entryPath, "utf8");
@@ -459,6 +514,7 @@ export async function validateCommand(argv) {
       errors.push({
         code: "missing_runtime",
         message: "slide-runtime.js must be loaded as a module script",
+        hint: "Run slidesls add core/base --dir <deck> --dry-run --json and add the returned script tag.",
       });
     for (const ref of localFileReferences(html)) {
       const target = path.resolve(path.dirname(entryPath), ref.localPath);
@@ -468,11 +524,16 @@ export async function validateCommand(argv) {
         errors.push({
           code: "asset_outside_project",
           message: `${ref.rawValue} resolves outside project`,
+          hint: "Use local href/src paths that stay inside the deck project.",
         });
         continue;
       }
       if (!(await exists(target)))
-        errors.push({ code: "missing_asset", message: `${ref.rawValue} does not exist` });
+        errors.push({
+          code: "missing_asset",
+          message: `${ref.rawValue} does not exist`,
+          hint: "Local href/src paths are resolved relative to the entry HTML file.",
+        });
     }
     if (usesLucideIcons(html) && !hasLucideScript(html))
       warnings.push({
@@ -533,7 +594,15 @@ export async function validateCommand(argv) {
     }
   }
   const valid = errors.length === 0;
-  return ok({ valid, root, entry: config.paths.entry, errors, warnings, customizedFiles });
+  return ok({
+    valid,
+    root,
+    entry: config.paths.entry,
+    errors,
+    warnings,
+    customizedFiles,
+    agentInstructions: validateAgentInstructions(root),
+  });
 }
 
 export async function doctorCommand(argv) {
@@ -663,6 +732,7 @@ function validateKnownClasses({ html, strict, knownClasses, errors, warnings }) 
       code: "removed_layout_class",
       message:
         "ls-layout-* classes are not part of the current registry; use templates and utilities instead.",
+      hint: "Run slidesls catalog --json to see valid public layout utilities.",
     });
 
   for (const className of unknownLsClasses(html, knownClasses)) {
@@ -670,6 +740,7 @@ function validateKnownClasses({ html, strict, knownClasses, errors, warnings }) 
       code: "unknown_ls_class",
       message: `${className} is not listed in the slidesls authoring API catalog`,
       className,
+      hint: "Run slidesls catalog --json to see valid public ls-* classes.",
     };
     if (strict) errors.push(entry);
     else warnings.push(entry);
@@ -683,6 +754,8 @@ function validateClassDependencies({ html, manifest, ownerByClass, warnings }) {
     warnings.push({
       code: "missing_registry_item_for_class",
       message: `${item} should be added when using its classes in HTML`,
+      hint: `Run slidesls add ${item} --dir <deck> --dry-run --json.`,
+      command: `slidesls add ${item} --dir <deck> --dry-run --json`,
     });
   }
 }
@@ -815,13 +888,27 @@ function formatCounts(counts = {}) {
   return `${entries.map(([status, count]) => `${status}: ${count}`).join(", ")}\n`;
 }
 
+function formatFinding(entry, severity) {
+  const hint = entry.hint ? `\n  hint: ${entry.hint}` : "";
+  return `- ${severity}: ${entry.message}${hint}`;
+}
+
+function agentTextBlock(lines) {
+  return `\nFor AI agents:\n${lines.map((line) => `  ${line}`).join("\n")}\n`;
+}
+
 export function textFor(command, result) {
   if (command === "help" || result.data?.help) return `${result.data.help}\n`;
   if (command === "catalog")
     return (
       result.data.items
         .map((item) => `${item.name.padEnd(36)} ${item.type.padEnd(13)} ${item.description || ""}`)
-        .join("\n") + "\n"
+        .join("\n") +
+      agentTextBlock([
+        `Use \`${agentCommandRecipes.catalogRecommendedJson}\` or \`${agentCommandRecipes.catalogJson}\` to read item.authoring metadata.`,
+        `Use \`${agentCommandRecipes.inspectReadmeJson}\` for snippets, load tags, and docs.`,
+        "Do not invent ls-* classes; use listed authoring classes/modifiers.",
+      ])
     );
   if (command === "inspect")
     return (
@@ -833,9 +920,15 @@ export function textFor(command, result) {
           const theme = item.themeAttribute
             ? `\n  Theme: set data-ls-theme="${item.themeAttribute}" on <html>`
             : "";
-          return `${item.name}\n  ${item.description || ""}${theme}\n  Files: ${(item.files || []).map((file) => file.path).join(", ") || "none"}\n  Snippets:\n    ${snippets || "none"}\n  Links:\n    ${(item.load.links || []).join("\n    ")}\n  Scripts:\n    ${(item.load.scripts || []).join("\n    ")}`;
+          const authoring = item.authoring ? "\n  Authoring: available in --json output" : "";
+          return `${item.name}\n  ${item.description || ""}${theme}${authoring}\n  Files: ${(item.files || []).map((file) => file.path).join(", ") || "none"}\n  Snippets:\n    ${snippets || "none"}\n  Links:\n    ${(item.load.links || []).join("\n    ")}\n  Scripts:\n    ${(item.load.scripts || []).join("\n    ")}`;
         })
-        .join("\n\n") + "\n"
+        .join("\n\n") +
+      agentTextBlock([
+        "Use --json for full authoring metadata, snippets, and load tags.",
+        "Copy assets with `slidesls add <items...> --dir <deck-or-project> --dry-run --json`.",
+        "Add returned load tags to the entry HTML, then run `slidesls validate <deck> --json`.",
+      ])
     );
   if (command === "skill") {
     if (result.data.markdown) return result.data.markdown;
@@ -843,10 +936,29 @@ export function textFor(command, result) {
       return `slidesls skill: ${result.data.source}\nFiles: ${result.data.files?.length || 0}\n${result.data.recommendedTargets ? `Recommended target: ${result.data.recommendedTargets[0]}\n` : ""}`;
     return `slidesls skill ${result.data.action}: ${result.data.target}\n${result.data.status ? `status: ${result.data.status}\n` : ""}${formatCounts(result.data.counts)}`;
   }
-  if (command === "validate")
-    return result.data.valid
-      ? `slidesls validate: ok (${result.data.root})\n`
-      : `slidesls validate: failed (${result.data.errors.length} error(s))\n${result.data.errors.map((e) => `- ${e.message}`).join("\n")}\n`;
+  if (command === "validate") {
+    const warnings = result.data.warnings || [];
+    const errors = result.data.errors || [];
+    const findings = [
+      ...errors.map((entry) => formatFinding(entry, "error")),
+      ...warnings.map((entry) => formatFinding(entry, "warning")),
+    ].join("\n");
+    const summary = result.data.valid
+      ? warnings.length
+        ? `slidesls validate: ok with ${warnings.length} warning(s) (${result.data.root})`
+        : `slidesls validate: ok (${result.data.root})`
+      : `slidesls validate: failed (${errors.length} error(s), ${warnings.length} warning(s))`;
+    const guidance = findings
+      ? agentTextBlock([
+          `Unknown ls-* class? Run \`${agentCommandRecipes.catalogJson}\`.`,
+          "Missing registry item? Run `slidesls add <item> --dir <deck> --dry-run --json`.",
+          "Use `slidesls inspect <item> --readme --json` for exact snippets.",
+        ])
+      : agentTextBlock([
+          "No static issues found. Use `slidesls preview <deck>` for visual review.",
+        ]);
+    return `${summary}\n${findings ? `${findings}\n` : ""}${guidance}`;
+  }
   if (command === "add") {
     const links = result.data.links || [];
     const scripts = result.data.scripts || [];
@@ -859,10 +971,23 @@ export function textFor(command, result) {
     const themeNote = result.data.applyTheme
       ? `Apply theme by setting data-ls-theme="${result.data.applyTheme.themeAttribute}" on the <html> element.\n`
       : "";
-    return `${copyModeNote}${action} ${count} file(s). Add these tags if needed:\n${[...links, ...scripts].join("\n")}\n${themeNote}`;
+    return `${copyModeNote}${action} ${count} file(s). Add these tags if needed:\n${[...links, ...scripts].join("\n")}\n${themeNote}${agentTextBlock(
+      [
+        "`add` copied/planned files only; it does not edit HTML.",
+        "Add returned load tags to the deck entry HTML if missing.",
+        `For exact markup, run \`${agentCommandRecipes.inspectReadmeJson}\`.`,
+        "Then run `slidesls validate <dir> --json`.",
+      ],
+    )}`;
   }
   if (command === "init")
-    return `Initialized ${result.data.root}${result.data.theme ? ` with theme ${result.data.theme}` : ""}\nNext steps:\n${result.data.nextSteps.map((s) => `  ${s}`).join("\n")}\n`;
+    return `Initialized ${result.data.root}${result.data.theme ? ` with theme ${result.data.theme}` : ""}\nNext steps:\n${result.data.nextSteps.map((s) => `  ${s}`).join("\n")}\n${agentTextBlock(
+      [
+        `Use \`${agentCommandRecipes.catalogRecommendedJson}\` before adding classes or presets.`,
+        "Use `slidesls inspect templates/split --readme --json` for exact markup.",
+        `Run \`slidesls validate ${result.data.root} --json\` after editing.`,
+      ],
+    )}`;
   if (command === "preview") return `Serving ${result.data.root} at ${result.data.url}\n`;
   if (command === "doctor")
     return result.data.ok

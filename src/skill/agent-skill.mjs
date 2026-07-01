@@ -58,8 +58,38 @@ export async function skillInfo() {
   };
 }
 
+export const skillReferenceFiles = {
+  catalog: "references/catalog.md",
+  "deck-authoring": "references/deck-authoring.md",
+  "copy-workflow": "references/copy-workflow.md",
+  "preview-validation": "references/preview-validation.md",
+  "registry-contract": "references/registry-contract.md",
+};
+
 export async function readSkillMarkdown() {
   return readFile(path.join(bundledSkillRoot(), "SKILL.md"), "utf8");
+}
+
+export async function readSkillReference(name) {
+  const file = skillReferenceFiles[name];
+  if (!file) {
+    const error = new Error(
+      `Unknown skill reference: ${name}. Valid references: ${Object.keys(skillReferenceFiles).join(", ")}`,
+    );
+    error.code = "usage_error";
+    error.exitCode = 2;
+    throw error;
+  }
+  return readFile(path.join(bundledSkillRoot(), file), "utf8");
+}
+
+export async function readAllSkillMarkdown() {
+  const root = bundledSkillRoot();
+  const sections = [{ title: "SKILL.md", markdown: await readSkillMarkdown() }];
+  for (const file of Object.values(skillReferenceFiles)) {
+    sections.push({ title: file, markdown: await readFile(path.join(root, file), "utf8") });
+  }
+  return sections.map((section) => `<!-- ${section.title} -->\n${section.markdown}`).join("\n\n");
 }
 
 export async function planSkillInstall({

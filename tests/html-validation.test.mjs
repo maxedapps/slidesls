@@ -53,9 +53,12 @@ test("validate warns when utility classes are used without their registry item",
   );
   const result = await validateCommand([root]);
   assert.equal(result.data.valid, true);
-  assert.ok(
-    result.data.warnings.some((warning) => warning.code === "missing_registry_item_for_class"),
+  const warning = result.data.warnings.find(
+    (entry) => entry.code === "missing_registry_item_for_class",
   );
+  assert.ok(warning);
+  assert.match(warning.hint, /slidesls add utilities\/layout/);
+  assert.match(warning.command, /--dry-run --json/);
 });
 
 test("validate accepts percent-encoded local asset paths", async () => {
@@ -131,7 +134,11 @@ test("validate warns for unknown slidesls classes and strict mode errors", async
   );
   const result = await validateCommand([root]);
   assert.equal(result.data.valid, true);
-  assert.ok(result.data.warnings.some((warning) => warning.code === "unknown_ls_class"));
+  const unknownWarning = result.data.warnings.find(
+    (warning) => warning.code === "unknown_ls_class",
+  );
+  assert.ok(unknownWarning);
+  assert.match(unknownWarning.hint, /slidesls catalog --json/);
   assert.ok(result.data.warnings.some((warning) => warning.className === "ls-grdi"));
   assert.ok(!result.data.warnings.some((warning) => warning.className === "ls-not-a-class"));
   assert.ok(!result.data.warnings.some((warning) => warning.className === "ls-also-not-real"));

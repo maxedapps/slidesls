@@ -25,6 +25,7 @@ test("root and skill help expose skill commands", async () => {
   const skillHelp = await run(["skill", "--help"]);
   assert.match(skillHelp.stdout, /slidesls skill info/);
   assert.match(skillHelp.stdout, /slidesls skill show/);
+  assert.match(skillHelp.stdout, /--reference catalog/);
   assert.match(skillHelp.stdout, /slidesls skill install/);
   assert.match(skillHelp.stdout, /slidesls skill link/);
 });
@@ -40,6 +41,25 @@ test("skill info and show expose bundled skill metadata", async () => {
   const { stdout: showStdout } = await run(["skill", "show"]);
   assert.match(showStdout, /name: slidesls/);
   assert.match(showStdout, /slidesls skill link/);
+
+  const { stdout: catalogStdout } = await run(["skill", "show", "--reference", "catalog"]);
+  assert.match(catalogStdout, /# slidesls Agent Catalog/);
+
+  const { stdout: deckAuthoringStdout } = await run([
+    "skill",
+    "show",
+    "--reference",
+    "deck-authoring",
+  ]);
+  assert.match(deckAuthoringStdout, /# Deck authoring/);
+
+  await assert.rejects(run(["skill", "show", "--reference", "unknown"]), (error) => {
+    assert.equal(error.code, 2);
+    assert.match(error.stderr, /Unknown skill reference/);
+    assert.match(error.stderr, /catalog/);
+    assert.match(error.stderr, /deck-authoring/);
+    return true;
+  });
 });
 
 test("skill install copies files and is idempotent", async () => {
