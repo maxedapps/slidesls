@@ -27,7 +27,8 @@ export function agentHelpBlock() {
   5. Validate after editing:
      ${agentCommandRecipes.validateJson}
   6. Preview and visually inspect representative slides unless the user opts out:
-     ${agentCommandRecipes.preview}`;
+     ${agentCommandRecipes.preview}
+     agent-browser screenshot ./slides-visual-check.png   # after opening the preview URL`;
 }
 
 export function catalogAgentInstructions() {
@@ -71,7 +72,7 @@ export function addAgentInstructions({ dryRun = false, root = "<deck-or-project>
       "Insert returned links/scripts into the entry HTML manually when needed.",
       "Inspect templates/components for exact snippet HTML.",
       "Validate after editing markup or copied assets.",
-      "Preview and visually inspect representative slides after material slide edits unless the user opts out.",
+      "Preview and visually inspect representative slides after material slide edits unless the user opts out; agents should use agent-browser screenshots/browser checks.",
     ],
     nextCommands: [
       dryRun
@@ -89,7 +90,7 @@ export function initAgentInstructions(root = "<deck>") {
     rules: [
       "Use the catalog before adding classes or visual presets.",
       "Inspect templates/components for exact markup before editing slides.",
-      "Validate after edits; preview is a long-running server command and should be used for visual inspection unless the user opts out.",
+      "Validate after edits; preview is a long-running server command and should be checked visually with agent-browser unless the user opts out.",
     ],
     nextCommands: [
       agentCommandRecipes.catalogRecommendedJson,
@@ -107,7 +108,7 @@ export function validateAgentInstructions(root = "<deck>") {
       "Fix errors first; review warnings even when the deck is otherwise valid.",
       "Use --strict when you need stricter checks for CI or registry drift.",
       "Use catalog and inspect before changing ls-* classes or snippets.",
-      "Static validation does not replace preview; inspect title/section, densest content, and table/timeline/progress/code slides.",
+      "Static validation does not replace preview; use agent-browser to inspect title/section, densest content, and table/timeline/progress/code slides.",
     ],
     nextCommands: [
       agentCommandRecipes.catalogJson,

@@ -14,10 +14,10 @@ Copied registry files are intentionally editable. Default validation reports cha
 
 ## Static validation limits
 
-Validation is a lightweight static check, not a full HTML parser, browser render, or visual regression tool. It catches common contract and asset issues in generated/plain decks, but it does not prove visual fit or typography. Use `slidesls preview` plus manual or browser-agent review for visual correctness.
+Validation is a lightweight static check, not a full HTML parser, browser render, or visual regression tool. It catches common contract and asset issues in generated/plain decks, but it does not prove visual fit or typography. Use `slidesls preview` plus manual or `agent-browser` review for visual correctness.
 
-After creating or materially editing slides, preview and inspect representative slides unless intentionally skipped: title/section slides, the densest content slide, and any table/timeline/progress/code slides.
+After creating or materially editing slides, preview and inspect representative slides unless intentionally skipped: title/section slides, the densest content slide, and any table/timeline/progress/code slides. Agents should capture browser screenshots with `agent-browser` so layout decisions are based on rendered output, not inferred HTML/CSS.
 
 ## Preview and snapshots
 
-`slidesls preview` serves files locally for manual or agent-browser review and keeps running until the process is stopped. Snapshot generation is deferred post-MVP and should remain optional/no-heavy-dependency.
+`slidesls preview` serves files locally for manual or `agent-browser` review and keeps running until the process is stopped. Snapshot generation is deferred post-MVP and should remain optional/no-heavy-dependency.

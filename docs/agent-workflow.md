@@ -26,7 +26,7 @@ Use `skill install` instead if a copied skill is preferred. If installed from a 
 6. Run `slidesls add ... --dry-run --json`, review planned files and load tags, then run without `--dry-run`.
 7. Paste/edit snippet HTML directly; add returned `<link>` and `<script>` tags to the entry HTML when needed.
 8. Run `slidesls validate <dir> --json` and fix errors.
-9. Run `slidesls preview <dir>` and use browser automation/screenshots for visual review when needed.
+9. Run `slidesls preview <dir>` and use `agent-browser` screenshots/browser checks for visual review unless intentionally skipped.
 10. Run `slidesls doctor --dir <dir> --json` for environment/config issues.
 
 Prefer templates, utilities, and standalone components. Do not introduce structural layout macros, a framework, bundler, Tailwind, or runtime package dependency unless the user explicitly asks for one. Generated decks should remain standalone plain HTML/CSS/JS.

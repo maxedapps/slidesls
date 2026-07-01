@@ -958,7 +958,7 @@ export function textFor(command, result) {
         ])
       : agentTextBlock([
           "No static issues found. Static validation does not replace preview.",
-          "Run `slidesls preview <deck>` and inspect representative title/section, dense-content, table/timeline/progress/code slides unless intentionally skipped.",
+          "Run `slidesls preview <deck>` and use agent-browser or another browser to inspect representative title/section, dense-content, table/timeline/progress/code slides unless intentionally skipped.",
         ]);
     return `${summary}\n${findings ? `${findings}\n` : ""}${guidance}`;
   }
