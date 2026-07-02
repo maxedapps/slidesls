@@ -9,7 +9,7 @@ import { validateRegistry } from "../src/validation/registry.mjs";
 
 const execFileAsync = promisify(execFile);
 const bin = path.resolve("bin/slidesls.mjs");
-const themes = ["executive-blue", "boardroom-navy", "technical-deep", "playful-ink"];
+const themes = ["executive-blue", "clean-light", "boardroom-navy", "technical-deep", "playful-ink"];
 
 test("theme presets expose metadata and are tag-filterable", async () => {
   const catalog = JSON.parse(

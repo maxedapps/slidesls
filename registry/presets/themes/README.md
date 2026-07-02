@@ -12,6 +12,7 @@ Theme presets are copied like other registry items, but they are inert until the
 ## Themes
 
 - `executive-blue` — balanced professional/product decks.
+- `clean-light` — bright product, teaching, and print-friendly decks.
 - `boardroom-navy` — formal strategy, executive, and reporting decks.
 - `technical-deep` — engineering, architecture, and code-heavy decks.
 - `playful-ink` — friendly workshop/community/product decks.

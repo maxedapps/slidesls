@@ -1,0 +1,59 @@
+{
+  "name": "components/terminal",
+  "type": "ls:component",
+  "description": "Static terminal-style command and output component.",
+  "tags": ["technical", "cli", "code", "terminal"],
+  "files": [
+    {
+      "path": "registry/components/terminal/terminal.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/terminal/README.md",
+  "rootClass": "ls-terminal",
+  "safeAnywhere": true,
+  "agentRecommended": false,
+  "snippets": [
+    {
+      "label": "Basic terminal",
+      "path": "registry/components/terminal/snippets/basic.html"
+    }
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-terminal",
+        "elements": [
+          "ls-terminal__header",
+          "ls-terminal__controls",
+          "ls-terminal__control",
+          "ls-terminal__title",
+          "ls-terminal__body",
+          "ls-terminal__line",
+          "ls-terminal__prompt",
+          "ls-terminal__output"
+        ]
+      }
+    ],
+    "dataAttributes": [
+      {
+        "name": "data-ls-density",
+        "values": ["compact"]
+      },
+      {
+        "name": "data-ls-tone",
+        "values": ["danger", "warning", "success"],
+        "scope": ".ls-terminal__control"
+      }
+    ],
+    "cssVariables": [
+      "--ls-terminal-font-size",
+      "--ls-terminal-padding",
+      "--ls-terminal-max-block-size"
+    ],
+    "usage": ["Use for static CLI excerpts; do not imply interactive terminal behavior."]
+  }
+}

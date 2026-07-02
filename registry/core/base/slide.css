@@ -149,10 +149,30 @@
   }
 
   @media print {
+    @page {
+      size: 1600px 900px;
+      margin: 0;
+    }
+
     body.ls-page,
     .ls-page {
+      --ls-page-bg: var(--ls-print-bg);
+      --ls-page-bg-image: none;
+      --ls-slide-bg: #fff;
+      --ls-slide-bg-image: none;
+      --ls-panel-bg: #fff;
+      --ls-surface: #f8fafc;
+      --ls-surface-strong: #eef2f7;
+      --ls-surface-muted: rgb(15 23 42 / 4%);
+      --ls-border: rgb(15 23 42 / 16%);
+      --ls-border-strong: rgb(15 23 42 / 24%);
+      --ls-text: #111827;
+      --ls-muted: #4b5563;
+      --ls-subtle: #6b7280;
+      --ls-accent-text: #1d4ed8;
       background-color: var(--ls-print-bg);
       background-image: none;
+      color: var(--ls-text);
     }
 
     .ls-deck[data-ls-ready="true"],
@@ -167,9 +187,18 @@
       position: relative;
       inset: auto;
       display: block;
+      overflow: visible;
       transform: none;
+      border-radius: 0;
+      box-shadow: none;
       page-break-after: always;
       break-after: page;
+    }
+
+    .ls-deck[data-ls-ready="true"] .ls-slide:last-child,
+    .ls-deck[data-ls-export="true"] .ls-slide:last-child {
+      page-break-after: auto;
+      break-after: auto;
     }
   }
 }

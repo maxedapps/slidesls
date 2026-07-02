@@ -80,6 +80,7 @@ slidesls init ./my-deck --template minimal --theme technical-deep --title "Archi
 Available initial themes:
 
 - `executive-blue` — balanced professional/product decks.
+- `clean-light` — bright product, teaching, and print-friendly decks.
 - `boardroom-navy` — formal strategy, executive, and reporting decks.
 - `technical-deep` — engineering and code-heavy decks.
 - `playful-ink` — friendlier workshop/community decks.
@@ -126,7 +127,7 @@ slidesls inspect components/card --readme --json
 slidesls add utilities/layout components/panel components/card --dry-run --json
 ```
 
-Treat each item’s `authoring` metadata as the quick source of truth for public classes, modifiers, data attributes, theme/font attributes, and CSS variables. Unless the user asks for static slides, copy/load `animations/reveal` plus one subtle variant such as `animations/slide-up` or `animations/fade` and use `.ls-reveal` with `data-step` or `data-ls-reveal-sequence`. Use `inspect --json` when you need exact snippet markup or README details. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and `--strict` errors. Static validation does not replace preview; after material slide edits, run `slidesls preview <deck>` and visually inspect representative slides unless intentionally skipped.
+Treat each item’s `authoring` metadata as the quick source of truth for public classes, modifiers, data attributes, theme/font attributes, and CSS variables. Unless the user asks for static slides, copy/load `animations/reveal` plus one subtle variant such as `animations/slide-up` or `animations/fade` and use `.ls-reveal` with `data-step` or `data-ls-reveal-sequence`. Use `inspect --json` when you need exact snippet markup or README details. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and `--strict` errors. Static validation does not replace preview; after material slide edits, run `slidesls preview <deck>` and visually inspect representative slides unless intentionally skipped. Preview URLs can deep-link to normal-mode state with `#slide=2&step=1` (`slide` is 1-based; `step` is 0-based). Export mode still renders all slides/reveals and ignores the hash.
 
 ## Naming
 

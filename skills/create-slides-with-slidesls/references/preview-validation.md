@@ -31,10 +31,10 @@ agent-browser --session slidesls-review wait --load networkidle
 agent-browser --session slidesls-review screenshot ./slides-export-review.png
 ```
 
-Use normal mode for interactive reveal-step coherence. `ArrowRight` may advance reveal steps before changing slides:
+Use normal mode for interactive reveal-step coherence. `ArrowRight` may advance reveal steps before changing slides. New copied runtimes also support deep links such as `#slide=2&step=1` (`slide` is 1-based, `step` is 0-based):
 
 ```sh
-agent-browser --session slidesls-review open http://127.0.0.1:4321
+agent-browser --session slidesls-review open 'http://127.0.0.1:4321/#slide=1&step=0'
 agent-browser --session slidesls-review wait --load networkidle
 agent-browser --session slidesls-review screenshot ./slide-1-step-0.png
 agent-browser --session slidesls-review press ArrowRight
@@ -64,15 +64,9 @@ Inspect screenshots and iterate until visually acceptable; do not merely capture
 This catches some fit issues but cannot judge aesthetic balance; screenshots remain authoritative.
 
 ```sh
-agent-browser --session slidesls-review eval --stdin <<'EOF'
-JSON.stringify([...document.querySelectorAll('.ls-slide[data-active="true"] *')]
-  .filter((el) => el.scrollHeight > el.clientHeight + 1 || el.scrollWidth > el.clientWidth + 1)
-  .map((el) => ({
-    tag: el.tagName,
-    class: el.className,
-    text: el.textContent.trim().slice(0, 80)
-  })))
-EOF
+node scripts/visual-qa-report.mjs --eval | agent-browser --session slidesls-review eval --stdin
 ```
+
+Review the JSON for native deck dimensions, current slide state, and overflow candidates. Intentional scroll surfaces such as table frames, code blocks, and terminal bodies are flagged separately.
 
 Navigate through the deck or open representative slide URLs as needed, and capture screenshots for any slide you changed materially. If the browser session already exists or multiple agents may be running, use a named `agent-browser --session <name>`.

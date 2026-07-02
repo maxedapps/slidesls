@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en" data-ls-theme="clean-light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Clean Light</title>
+    <link rel="stylesheet" href="../../registry/core/base/reset.css" />
+    <link rel="stylesheet" href="../../registry/core/base/tokens.css" />
+    <link rel="stylesheet" href="../../registry/presets/themes/clean-light/theme.css" />
+    <link rel="stylesheet" href="../../registry/core/base/slide.css" />
+    <link rel="stylesheet" href="../../registry/utilities/layout/layout.css" />
+    <link rel="stylesheet" href="../../registry/components/badge/badge.css" />
+    <link rel="stylesheet" href="../../registry/components/card/card.css" />
+    <link rel="stylesheet" href="../../registry/components/callout/callout.css" />
+    <link rel="stylesheet" href="../../registry/components/code-block/code-block.css" />
+    <link rel="stylesheet" href="../../registry/components/panel/panel.css" />
+    <link rel="stylesheet" href="../../registry/components/progress/progress.css" />
+    <link rel="stylesheet" href="../../registry/components/table/table.css" />
+    <script type="module" src="../../registry/core/base/slide-runtime.js"></script>
+  </head>
+  <body class="ls-page">
+    <main class="ls-deck" data-ls-deck aria-label="Clean Light">
+      <section class="ls-slide" aria-label="Clean Light">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Clean Light</p>
+            <h1 class="ls-title">Clear product walkthrough</h1>
+            <p class="ls-subtitle">
+              A compact visual QA slide for theme tokens, surfaces, code, tables, and progress.
+            </p>
+          </header>
+          <div class="ls-grid ls-grid--2">
+            <div class="ls-panel ls-stack">
+              <span class="ls-badge">On track</span>
+              <div class="ls-card">
+                <h2 class="ls-card__title">Pipeline health</h2>
+                <p class="ls-card__text">
+                  Theme surfaces should support content without decorative noise.
+                </p>
+              </div>
+              <div
+                class="ls-progress"
+                data-ls-tone="success"
+                style="--ls-progress-value: 84%"
+                role="progressbar"
+                aria-label="Implementation confidence"
+                aria-valuenow="84"
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                <div class="ls-progress__label">
+                  <span>Progress</span><span class="ls-progress__value">84%</span>
+                </div>
+                <div class="ls-progress__track"><div class="ls-progress__bar"></div></div>
+              </div>
+            </div>
+            <div class="ls-stack">
+              <div class="ls-callout" data-ls-tone="warning">
+                <div class="ls-callout__body">
+                  <strong class="ls-callout__title">Visual check</strong>
+                  <p class="ls-callout__text">
+                    Muted text, warnings, and borders should remain readable.
+                  </p>
+                </div>
+              </div>
+              <pre class="ls-code-block"><code>slidesls add presets/themes/clean-light
+&lt;html data-ls-theme="clean-light"&gt;</code></pre>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

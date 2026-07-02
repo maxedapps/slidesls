@@ -41,6 +41,35 @@ function getMaxStep(slide) {
   return Math.max(0, ...revealSteps);
 }
 
+function parseHashState(hash) {
+  const rawHash = String(hash || "").replace(/^#/, "");
+  const parameters = new URLSearchParams(rawHash);
+  const slide = Number.parseInt(parameters.get("slide") || "", 10);
+  const step = Number.parseInt(parameters.get("step") || "", 10);
+
+  return {
+    slide: Number.isFinite(slide) ? slide : 1,
+    step: Number.isFinite(step) ? step : 0,
+  };
+}
+
+function formatHashState(index, step) {
+  return `#slide=${index + 1}&step=${step}`;
+}
+
+function clampState(state, slides) {
+  const slideCount = slides.length;
+  if (slideCount === 0) return { index: 0, step: 0 };
+
+  const requestedSlide = Number.isFinite(state?.slide) ? Math.trunc(state.slide) : 1;
+  const requestedStep = Number.isFinite(state?.step) ? Math.trunc(state.step) : 0;
+  const index = Math.min(Math.max(requestedSlide - 1, 0), slideCount - 1);
+  const maxStep = getMaxStep(slides[index]);
+  const step = Math.min(Math.max(requestedStep, 0), maxStep);
+
+  return { index, step };
+}
+
 function updateRevealState(slide, currentStep, exportMode = false) {
   for (const element of getSteppedElements(slide)) {
     if (exportMode) {
@@ -102,6 +131,14 @@ function setSlideState(slides, activeIndex, step) {
   deck.dataset.lsCurrentStep = String(step);
 }
 
+function updateHash(index, step) {
+  const nextHash = formatHashState(index, step);
+  if (window.location.hash === nextHash) return;
+
+  const nextUrl = `${window.location.pathname}${window.location.search}${nextHash}`;
+  window.history.replaceState(window.history.state, "", nextUrl);
+}
+
 function shouldIgnoreKey(event) {
   return event.target instanceof Element && Boolean(event.target.closest(interactiveSelector));
 }
@@ -129,6 +166,17 @@ function initializeDeck() {
   let activeIndex = 0;
   let currentStep = exportMode ? getMaxStep(slides[0]) : 0;
 
+  function applyState(nextState, options = {}) {
+    const state = clampState(nextState, slides);
+    activeIndex = state.index;
+    currentStep = state.step;
+    setSlideState(slides, activeIndex, currentStep);
+
+    if (options.updateHash) {
+      updateHash(activeIndex, currentStep);
+    }
+  }
+
   deck.dataset.lsReady = "true";
   deck.dataset.lsExport = exportMode ? "true" : "false";
   deck.setAttribute("tabindex", "-1");
@@ -143,7 +191,10 @@ function initializeDeck() {
     }
   } else {
     updateScale();
-    setSlideState(slides, activeIndex, currentStep);
+    applyState(parseHashState(window.location.hash), { updateHash: window.location.hash !== "" });
+    window.addEventListener("hashchange", () =>
+      applyState(parseHashState(window.location.hash), { updateHash: true }),
+    );
   }
 
   window.addEventListener("resize", updateScale);
@@ -159,37 +210,37 @@ function initializeDeck() {
     if (event.key === "ArrowRight" || event.key === " ") {
       event.preventDefault();
       if (currentStep < maxStep) {
-        currentStep += 1;
+        applyState({ slide: activeIndex + 1, step: currentStep + 1 }, { updateHash: true });
       } else if (activeIndex < slides.length - 1) {
-        activeIndex += 1;
-        currentStep = 0;
+        applyState({ slide: activeIndex + 2, step: 0 }, { updateHash: true });
       }
-      setSlideState(slides, activeIndex, currentStep);
     }
 
     if (event.key === "ArrowLeft") {
       event.preventDefault();
       if (currentStep > 0) {
-        currentStep -= 1;
+        applyState({ slide: activeIndex + 1, step: currentStep - 1 }, { updateHash: true });
       } else if (activeIndex > 0) {
-        activeIndex -= 1;
-        currentStep = getMaxStep(slides[activeIndex]);
+        const previousIndex = activeIndex - 1;
+        applyState(
+          { slide: previousIndex + 1, step: getMaxStep(slides[previousIndex]) },
+          { updateHash: true },
+        );
       }
-      setSlideState(slides, activeIndex, currentStep);
     }
 
     if (event.key === "Home") {
       event.preventDefault();
-      activeIndex = 0;
-      currentStep = 0;
-      setSlideState(slides, activeIndex, currentStep);
+      applyState({ slide: 1, step: 0 }, { updateHash: true });
     }
 
     if (event.key === "End") {
       event.preventDefault();
-      activeIndex = slides.length - 1;
-      currentStep = getMaxStep(slides[activeIndex]);
-      setSlideState(slides, activeIndex, currentStep);
+      const lastIndex = slides.length - 1;
+      applyState(
+        { slide: lastIndex + 1, step: getMaxStep(slides[lastIndex]) },
+        { updateHash: true },
+      );
     }
   });
 

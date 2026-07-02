@@ -1,0 +1,50 @@
+{
+  "name": "templates/api-flow",
+  "type": "ls:template",
+  "description": "API flow slide combining HTTP exchange and focused code diff primitives.",
+  "files": [],
+  "registryDependencies": [
+    "core/base",
+    "utilities/layout",
+    "components/http-exchange",
+    "components/code-diff"
+  ],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/templates/api-flow/README.md",
+  "rootClass": null,
+  "safeAnywhere": false,
+  "agentRecommended": false,
+  "snippets": [
+    {
+      "label": "API flow slide",
+      "path": "registry/templates/api-flow/snippet.html"
+    }
+  ],
+  "authoring": {
+    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "classes": [
+      "ls-slide",
+      "ls-slide__inner",
+      "ls-stack",
+      "ls-stack--sm",
+      "ls-eyebrow",
+      "ls-title",
+      "ls-grid",
+      "ls-grid--2",
+      "ls-http-exchange",
+      "ls-http-exchange__block",
+      "ls-http-exchange__header",
+      "ls-http-exchange__method",
+      "ls-http-exchange__status",
+      "ls-http-exchange__url",
+      "ls-code-diff",
+      "ls-code-diff__header",
+      "ls-code-diff__body",
+      "ls-code-diff__line",
+      "ls-code-diff__number",
+      "ls-code-diff__code",
+      "ls-code-diff__marker"
+    ]
+  }
+}

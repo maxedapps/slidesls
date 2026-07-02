@@ -11,5 +11,7 @@ Current items:
 - `three-cards/`
 - `code-plus-notes/`
 - `metric-dashboard/`
+- `technical-walkthrough/`
+- `api-flow/`
 
 Templates expose HTML through `snippets` metadata and `slidesls inspect <template> --json`. They intentionally do not copy snippet HTML into deck assets through `slidesls add`.

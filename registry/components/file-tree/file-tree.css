@@ -1,0 +1,61 @@
+@layer components {
+  .ls-file-tree {
+    margin: 0;
+    padding: var(--ls-file-tree-padding, 22px);
+    border: 1px solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background: var(--ls-surface);
+    color: var(--ls-text);
+    font-family: var(--ls-font-code);
+    font-size: var(--ls-file-tree-font-size, 20px);
+    line-height: 1.45;
+    list-style: none;
+  }
+
+  .ls-file-tree ul {
+    margin: 6px 0 0;
+    padding-inline-start: 24px;
+    list-style: none;
+  }
+
+  .ls-file-tree__item {
+    position: relative;
+    padding-block: 4px;
+    color: var(--ls-muted);
+  }
+
+  .ls-file-tree__item::before {
+    content: "";
+    position: absolute;
+    inset-block-start: 0.9em;
+    inset-inline-start: -18px;
+    inline-size: 10px;
+    border-block-start: 1px solid var(--ls-border);
+  }
+
+  .ls-file-tree__name {
+    color: var(--ls-text);
+  }
+
+  .ls-file-tree__meta {
+    color: var(--ls-subtle);
+  }
+
+  .ls-file-tree__item[data-ls-kind="folder"] > .ls-file-tree__name {
+    color: var(--ls-accent-text);
+    font-weight: 700;
+  }
+
+  .ls-file-tree__item[data-ls-state="active"] {
+    color: var(--ls-text);
+  }
+
+  .ls-file-tree__item[data-ls-state="active"] > .ls-file-tree__name {
+    color: var(--ls-accent-text);
+  }
+
+  .ls-file-tree[data-ls-density="compact"] {
+    --ls-file-tree-font-size: 17px;
+    --ls-file-tree-padding: 18px;
+  }
+}

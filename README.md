@@ -129,6 +129,7 @@ slidesls add presets/themes/technical-deep --dir ./existing-project
 Initial themes:
 
 - `executive-blue` — balanced professional/product decks.
+- `clean-light` — bright product, teaching, and print-friendly decks.
 - `boardroom-navy` — formal strategy, executive, and reporting decks.
 - `technical-deep` — engineering, architecture, and code-heavy decks.
 - `playful-ink` — friendlier workshop/community/product decks.
@@ -145,5 +146,7 @@ npm pack --dry-run
 ```
 
 `slidesls validate` is a lightweight static check, not a full browser render or complete HTML parser. It now catches common registry contract issues such as broken custom progress markup, raw timeline shorthand, reveal animation conflicts, and unknown copied classes, but it does not prove visual fit. After creating or materially editing slides, use `slidesls preview` for manual or agent-browser review of representative slides; it serves until the process is stopped.
+
+Deck URLs support optional deep links in the form `#slide=2&step=1` (`slide` is 1-based, `step` is 0-based). New decks get this behavior through copied `slide-runtime.js`; existing decks must recopy/update that owned asset to opt in.
 
 `snapshot` is intentionally deferred to keep the base package lightweight.

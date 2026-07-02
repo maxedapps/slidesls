@@ -1,0 +1,72 @@
+@layer components {
+  .ls-http-exchange {
+    display: grid;
+    gap: var(--ls-space-3);
+  }
+
+  .ls-http-exchange__block {
+    overflow: hidden;
+    border: 1px solid var(--ls-code-border);
+    border-radius: var(--ls-radius-lg);
+    background: var(--ls-code-bg);
+    color: var(--ls-code-text);
+    box-shadow: var(--ls-shadow-sm);
+  }
+
+  .ls-http-exchange__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ls-space-3);
+    padding: 14px 18px;
+    border-block-end: 1px solid var(--ls-code-border);
+    background: var(--ls-code-header-bg);
+    color: var(--ls-subtle);
+    font-family: var(--ls-font-code);
+    font-size: 17px;
+  }
+
+  .ls-http-exchange__method,
+  .ls-http-exchange__status {
+    color: var(--ls-accent-text);
+    font-weight: 760;
+  }
+
+  .ls-http-exchange__status[data-ls-tone="success"] {
+    color: var(--ls-status-success);
+  }
+
+  .ls-http-exchange__status[data-ls-tone="warning"] {
+    color: var(--ls-status-warning);
+  }
+
+  .ls-http-exchange__status[data-ls-tone="danger"] {
+    color: var(--ls-status-danger);
+  }
+
+  .ls-http-exchange__url {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+    text-align: end;
+  }
+
+  .ls-http-exchange pre {
+    overflow: auto;
+    max-block-size: var(--ls-http-max-block-size, 300px);
+    margin: 0;
+    padding: var(--ls-http-padding, 20px);
+  }
+
+  .ls-http-exchange code {
+    font-family: var(--ls-font-code);
+    font-size: var(--ls-http-font-size, 18px);
+    line-height: 1.5;
+    white-space: pre;
+  }
+
+  .ls-http-exchange[data-ls-density="compact"] {
+    --ls-http-font-size: 16px;
+    --ls-http-padding: 16px;
+    --ls-http-max-block-size: 240px;
+  }
+}

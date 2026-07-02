@@ -118,6 +118,24 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Snippets: Basic code block (registry/components/code-block/snippets/basic.html)
 - Docs: registry/components/code-block/README.md
 
+### components/code-diff
+
+- Label: Code Diff
+- Type: ls:component
+- Description: Compact static code-diff component for implementation change explanations.
+- Agent recommended: no
+- Root class: ls-code-diff
+- Safe anywhere: yes
+- Class groups:
+  - `ls-code-diff`: `ls-code-diff__header`, `ls-code-diff__body`, `ls-code-diff__line`, `ls-code-diff__number`, `ls-code-diff__code`, `ls-code-diff__marker`
+- Data attributes: `data-ls-density=compact`, `data-ls-diff=add|remove|focus`
+- CSS variables: `--ls-code-diff-font-size`, `--ls-code-diff-padding-block`, `--ls-code-diff-max-block-size`
+- Usage: Use for short static diffs; avoid dense, full-file excerpts on a slide.
+- Registry dependencies: core/base
+- Files: registry/components/code-diff/code-diff.css
+- Snippets: Basic code diff (registry/components/code-diff/snippets/basic.html)
+- Docs: registry/components/code-diff/README.md
+
 ### components/divider
 
 - Label: Divider
@@ -134,6 +152,42 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Files: registry/components/divider/divider.css
 - Snippets: Basic divider (registry/components/divider/snippets/basic.html)
 - Docs: registry/components/divider/README.md
+
+### components/file-tree
+
+- Label: File Tree
+- Type: ls:component
+- Description: Static file and folder tree component for project structure slides.
+- Agent recommended: no
+- Root class: ls-file-tree
+- Safe anywhere: yes
+- Class groups:
+  - `ls-file-tree`: `ls-file-tree__item`, `ls-file-tree__name`, `ls-file-tree__meta`
+- Data attributes: `data-ls-density=compact`, `data-ls-kind=folder|file`, `data-ls-state=active`
+- CSS variables: `--ls-file-tree-font-size`, `--ls-file-tree-padding`
+- Usage: Use for short static project structures; keep nesting shallow for slide fit.
+- Registry dependencies: core/base
+- Files: registry/components/file-tree/file-tree.css
+- Snippets: Basic file tree (registry/components/file-tree/snippets/basic.html)
+- Docs: registry/components/file-tree/README.md
+
+### components/http-exchange
+
+- Label: Http Exchange
+- Type: ls:component
+- Description: Static request and response blocks for API walkthrough slides.
+- Agent recommended: no
+- Root class: ls-http-exchange
+- Safe anywhere: yes
+- Class groups:
+  - `ls-http-exchange`: `ls-http-exchange__block`, `ls-http-exchange__header`, `ls-http-exchange__method`, `ls-http-exchange__status`, `ls-http-exchange__url`
+- Data attributes: `data-ls-density=compact`, `data-ls-tone=success|warning|danger`
+- CSS variables: `--ls-http-font-size`, `--ls-http-padding`, `--ls-http-max-block-size`
+- Usage: Use for compact static API request/response examples.
+- Registry dependencies: core/base
+- Files: registry/components/http-exchange/http-exchange.css
+- Snippets: Basic HTTP exchange (registry/components/http-exchange/snippets/basic.html)
+- Docs: registry/components/http-exchange/README.md
 
 ### components/image-card
 
@@ -236,6 +290,24 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Files: registry/components/table/table.css
 - Snippets: Basic table (registry/components/table/snippets/basic.html)
 - Docs: registry/components/table/README.md
+
+### components/terminal
+
+- Label: Terminal
+- Type: ls:component
+- Description: Static terminal-style command and output component.
+- Agent recommended: no
+- Root class: ls-terminal
+- Safe anywhere: yes
+- Class groups:
+  - `ls-terminal`: `ls-terminal__header`, `ls-terminal__controls`, `ls-terminal__control`, `ls-terminal__title`, `ls-terminal__body`, `ls-terminal__line`, `ls-terminal__prompt`, `ls-terminal__output`
+- Data attributes: `data-ls-density=compact`, `data-ls-tone=danger|warning|success`
+- CSS variables: `--ls-terminal-font-size`, `--ls-terminal-padding`, `--ls-terminal-max-block-size`
+- Usage: Use for static CLI excerpts; do not imply interactive terminal behavior.
+- Registry dependencies: core/base
+- Files: registry/components/terminal/terminal.css
+- Snippets: Basic terminal (registry/components/terminal/snippets/basic.html)
+- Docs: registry/components/terminal/README.md
 
 ### components/timeline
 
@@ -398,6 +470,23 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Snippets: none
 - Docs: registry/presets/themes/executive-blue/README.md
 
+### presets/themes/clean-light
+
+- Label: Clean Light
+- Type: ls:preset
+- Description: Clean light theme for product, teaching, and print-friendly decks.
+- Agent recommended: yes
+- Theme attribute: clean-light
+- Style tone: clean professional light
+- Pairs with: presets/fonts/system-humanist
+- Safe anywhere: yes
+- Attributes: `data-ls-theme="clean-light"`
+- Usage: Apply exactly one theme per deck on the html element.
+- Registry dependencies: core/base
+- Files: registry/presets/themes/clean-light/theme.css
+- Snippets: none
+- Docs: registry/presets/themes/clean-light/README.md
+
 ### presets/themes/boardroom-navy
 
 - Label: Boardroom Navy
@@ -450,6 +539,20 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Docs: registry/presets/themes/playful-ink/README.md
 
 ## Templates
+
+### templates/api-flow
+
+- Label: Api Flow
+- Type: ls:template
+- Description: API flow slide combining HTTP exchange and focused code diff primitives.
+- Agent recommended: no
+- Safe anywhere: no
+- Classes: `ls-slide`, `ls-slide__inner`, `ls-stack`, `ls-stack--sm`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--2`, `ls-http-exchange`, `ls-http-exchange__block`, `ls-http-exchange__header`, `ls-http-exchange__method`, `ls-http-exchange__status`, `ls-http-exchange__url`, `ls-code-diff`, `ls-code-diff__header`, `ls-code-diff__body`, `ls-code-diff__line`, `ls-code-diff__number`, `ls-code-diff__code`, `ls-code-diff__marker`
+- Usage: Paste snippet HTML inside .ls-deck and copy its registryDependencies before use.
+- Registry dependencies: core/base, utilities/layout, components/http-exchange, components/code-diff
+- Files: none
+- Snippets: API flow slide (registry/templates/api-flow/snippet.html)
+- Docs: registry/templates/api-flow/README.md
 
 ### templates/code-plus-notes
 
@@ -548,3 +651,17 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Files: none
 - Snippets: Title hero slide (registry/templates/title-hero/snippet.html)
 - Docs: registry/templates/title-hero/README.md
+
+### templates/technical-walkthrough
+
+- Label: Technical Walkthrough
+- Type: ls:template
+- Description: Technical walkthrough slide combining a file tree with terminal output.
+- Agent recommended: no
+- Safe anywhere: no
+- Classes: `ls-slide`, `ls-slide__inner`, `ls-stack`, `ls-stack--sm`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--wide-left`, `ls-file-tree`, `ls-file-tree__item`, `ls-file-tree__name`, `ls-file-tree__meta`, `ls-terminal`, `ls-terminal__header`, `ls-terminal__title`, `ls-terminal__body`, `ls-terminal__line`, `ls-terminal__prompt`, `ls-terminal__output`
+- Usage: Paste snippet HTML inside .ls-deck and copy its registryDependencies before use.
+- Registry dependencies: core/base, utilities/layout, components/file-tree, components/terminal
+- Files: none
+- Snippets: Technical walkthrough slide (registry/templates/technical-walkthrough/snippet.html)
+- Docs: registry/templates/technical-walkthrough/README.md

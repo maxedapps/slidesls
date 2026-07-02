@@ -1,0 +1,48 @@
+{
+  "name": "templates/technical-walkthrough",
+  "type": "ls:template",
+  "description": "Technical walkthrough slide combining a file tree with terminal output.",
+  "files": [],
+  "registryDependencies": [
+    "core/base",
+    "utilities/layout",
+    "components/file-tree",
+    "components/terminal"
+  ],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/templates/technical-walkthrough/README.md",
+  "rootClass": null,
+  "safeAnywhere": false,
+  "agentRecommended": false,
+  "snippets": [
+    {
+      "label": "Technical walkthrough slide",
+      "path": "registry/templates/technical-walkthrough/snippet.html"
+    }
+  ],
+  "authoring": {
+    "usage": ["Paste snippet HTML inside .ls-deck and copy its registryDependencies before use."],
+    "classes": [
+      "ls-slide",
+      "ls-slide__inner",
+      "ls-stack",
+      "ls-stack--sm",
+      "ls-eyebrow",
+      "ls-title",
+      "ls-grid",
+      "ls-grid--wide-left",
+      "ls-file-tree",
+      "ls-file-tree__item",
+      "ls-file-tree__name",
+      "ls-file-tree__meta",
+      "ls-terminal",
+      "ls-terminal__header",
+      "ls-terminal__title",
+      "ls-terminal__body",
+      "ls-terminal__line",
+      "ls-terminal__prompt",
+      "ls-terminal__output"
+    ]
+  }
+}

@@ -11,10 +11,14 @@
     <link rel="stylesheet" href="../../registry/utilities/layout/layout.css" />
     <link rel="stylesheet" href="../../registry/components/badge/badge.css" />
     <link rel="stylesheet" href="../../registry/components/card/card.css" />
+    <link rel="stylesheet" href="../../registry/components/code-diff/code-diff.css" />
+    <link rel="stylesheet" href="../../registry/components/file-tree/file-tree.css" />
+    <link rel="stylesheet" href="../../registry/components/http-exchange/http-exchange.css" />
     <link rel="stylesheet" href="../../registry/components/panel/panel.css" />
     <link rel="stylesheet" href="../../registry/components/progress/progress.css" />
     <link rel="stylesheet" href="../../registry/components/quote/quote.css" />
     <link rel="stylesheet" href="../../registry/components/table/table.css" />
+    <link rel="stylesheet" href="../../registry/components/terminal/terminal.css" />
     <link rel="stylesheet" href="../../registry/components/timeline/timeline.css" />
     <script type="module" src="../../registry/core/base/slide-runtime.js"></script>
   </head>
@@ -63,6 +67,122 @@
                 </p>
               </div>
             </article>
+          </div>
+        </div>
+      </section>
+      <section
+        class="ls-slide"
+        data-ls-density="compact"
+        aria-label="Technical primitive stress slide"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-stack ls-stack--sm">
+            <p class="ls-eyebrow">Technical primitives</p>
+            <h2 class="ls-title">Terminal output and focused diffs should fit without JS.</h2>
+          </header>
+          <div class="ls-grid ls-grid--2">
+            <figure class="ls-terminal" data-ls-density="compact">
+              <figcaption class="ls-terminal__header">
+                <span class="ls-terminal__controls" aria-hidden="true">
+                  <span class="ls-terminal__control" data-ls-tone="danger"></span>
+                  <span class="ls-terminal__control" data-ls-tone="warning"></span>
+                  <span class="ls-terminal__control" data-ls-tone="success"></span>
+                </span>
+                <span class="ls-terminal__title">qa-pass.sh</span>
+              </figcaption>
+              <div class="ls-terminal__body">
+                <p class="ls-terminal__line">
+                  <span class="ls-terminal__prompt">$</span> pnpm check
+                </p>
+                <p class="ls-terminal__line ls-terminal__output">
+                  84 tests passed · registry ok · examples ok
+                </p>
+                <p class="ls-terminal__line">
+                  <span class="ls-terminal__prompt">$</span> slidesls preview
+                  examples/stress-gallery
+                </p>
+                <p class="ls-terminal__line ls-terminal__output">
+                  Preview ready for visual review.
+                </p>
+              </div>
+            </figure>
+            <figure class="ls-code-diff" data-ls-density="compact">
+              <figcaption class="ls-code-diff__header">
+                <span>slide-runtime.js</span>
+                <span>state path</span>
+              </figcaption>
+              <div class="ls-code-diff__body" role="list" aria-label="Runtime state diff excerpt">
+                <div class="ls-code-diff__line" role="listitem">
+                  <span class="ls-code-diff__number">91</span>
+                  <span class="ls-code-diff__code"
+                    ><span class="ls-code-diff__marker"> </span>const state = clampState(next,
+                    slides);</span
+                  >
+                </div>
+                <div class="ls-code-diff__line" data-ls-diff="add" role="listitem">
+                  <span class="ls-code-diff__number">92</span>
+                  <span class="ls-code-diff__code"
+                    ><span class="ls-code-diff__marker">+</span>setSlideState(slides, state.index,
+                    state.step);</span
+                  >
+                </div>
+                <div class="ls-code-diff__line" data-ls-diff="focus" role="listitem">
+                  <span class="ls-code-diff__number">93</span>
+                  <span class="ls-code-diff__code"
+                    ><span class="ls-code-diff__marker"> </span>updateHash(state.index,
+                    state.step);</span
+                  >
+                </div>
+              </div>
+            </figure>
+          </div>
+        </div>
+      </section>
+      <section
+        class="ls-slide"
+        data-ls-density="compact"
+        aria-label="API and file tree stress slide"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-stack ls-stack--sm">
+            <p class="ls-eyebrow">Architecture primitives</p>
+            <h2 class="ls-title">File trees and API exchanges should stay compact.</h2>
+          </header>
+          <div class="ls-grid ls-grid--2">
+            <ul class="ls-file-tree" data-ls-density="compact" aria-label="Project structure">
+              <li class="ls-file-tree__item" data-ls-kind="folder">
+                <span class="ls-file-tree__name">slidesls/</span>
+                <ul>
+                  <li class="ls-file-tree__item" data-ls-state="active">
+                    <span class="ls-file-tree__name">index.html</span>
+                    <span class="ls-file-tree__meta">entry</span>
+                  </li>
+                  <li class="ls-file-tree__item" data-ls-kind="folder">
+                    <span class="ls-file-tree__name">registry/</span>
+                    <span class="ls-file-tree__meta">copyable</span>
+                  </li>
+                  <li class="ls-file-tree__item">
+                    <span class="ls-file-tree__name">manifest.json</span>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+            <div class="ls-http-exchange" data-ls-density="compact">
+              <figure class="ls-http-exchange__block">
+                <figcaption class="ls-http-exchange__header">
+                  <span class="ls-http-exchange__method">GET</span>
+                  <span class="ls-http-exchange__url">/registry.json</span>
+                </figcaption>
+                <pre><code>{ "items": ["core/base", "components/card"] }</code></pre>
+              </figure>
+              <figure class="ls-http-exchange__block">
+                <figcaption class="ls-http-exchange__header">
+                  <span class="ls-http-exchange__status" data-ls-tone="success">200 OK</span>
+                  <span class="ls-http-exchange__url">application/json</span>
+                </figcaption>
+                <pre><code>{ "source": "bundled", "count": 40 }</code></pre>
+              </figure>
+            </div>
           </div>
         </div>
       </section>

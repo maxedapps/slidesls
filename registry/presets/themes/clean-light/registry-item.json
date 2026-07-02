@@ -1,0 +1,32 @@
+{
+  "name": "presets/themes/clean-light",
+  "type": "ls:preset",
+  "description": "Clean light theme for product, teaching, and print-friendly decks.",
+  "tags": ["theme", "professional", "light", "print-friendly"],
+  "files": [
+    {
+      "path": "registry/presets/themes/clean-light/theme.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/presets/themes/clean-light/README.md",
+  "safeAnywhere": true,
+  "agentRecommended": true,
+  "styleTone": "clean professional light",
+  "useCases": ["product walkthroughs", "teaching decks", "print-friendly reports"],
+  "pairsWith": ["presets/fonts/system-humanist"],
+  "themeAttribute": "clean-light",
+  "authoring": {
+    "attributes": [
+      {
+        "name": "data-ls-theme",
+        "scope": "html",
+        "value": "clean-light"
+      }
+    ],
+    "usage": ["Apply exactly one theme per deck on the html element."]
+  }
+}

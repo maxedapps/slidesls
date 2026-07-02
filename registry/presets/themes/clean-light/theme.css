@@ -1,0 +1,38 @@
+@layer tokens {
+  :root[data-ls-theme="clean-light"] {
+    --ls-page-bg: #f4f7fb;
+    --ls-page-grid-color: rgb(30 41 59 / 6%);
+    --ls-slide-bg: #ffffff;
+    --ls-slide-bg-image: none;
+    --ls-panel-bg: #f8fafc;
+    --ls-surface: #f8fafc;
+    --ls-surface-strong: #eef2f7;
+    --ls-surface-muted: rgb(15 23 42 / 4%);
+    --ls-surface-highlight: 0 1px 0 rgb(255 255 255 / 80%) inset;
+    --ls-border: rgb(15 23 42 / 12%);
+    --ls-border-strong: rgb(37 99 235 / 24%);
+    --ls-text: #101828;
+    --ls-muted: #475467;
+    --ls-subtle: #667085;
+    --ls-accent: #2563eb;
+    --ls-accent-2: #0891b2;
+    --ls-accent-text: #1d4ed8;
+    --ls-accent-bg: rgb(37 99 235 / 9%);
+    --ls-accent-border: rgb(37 99 235 / 22%);
+    --ls-code-bg: #0f172a;
+    --ls-code-text: #e0f2fe;
+    --ls-code-header-bg: #111c33;
+    --ls-code-border: rgb(15 23 42 / 14%);
+    --ls-table-stripe-bg: rgb(15 23 42 / 3.5%);
+    --ls-status-success: #16a34a;
+    --ls-status-warning: #d97706;
+    --ls-status-danger: #dc2626;
+    --ls-progress-accent: var(--ls-accent);
+    --ls-progress-accent-2: var(--ls-accent-2);
+    --ls-radius-lg: 18px;
+    --ls-radius-xl: 24px;
+    --ls-radius-slide: 22px;
+    --ls-shadow-sm: 0 10px 26px rgb(15 23 42 / 9%);
+    --ls-shadow-md: 0 22px 54px rgb(15 23 42 / 12%);
+  }
+}
