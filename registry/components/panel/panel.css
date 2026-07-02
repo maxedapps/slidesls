@@ -22,7 +22,14 @@
 
   .ls-panel--center {
     place-items: center;
+    align-content: center;
     text-align: center;
+  }
+
+  .ls-panel--fit {
+    align-self: center;
+    block-size: auto;
+    min-block-size: var(--ls-panel-fit-min-block-size, auto);
   }
 
   .ls-panel--frame {

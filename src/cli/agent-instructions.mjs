@@ -1,22 +1,28 @@
 export const agentCommandRecipes = {
-  skillInstall: "slidesls skill install ./.claude/skills/slidesls",
-  skillLink: "slidesls skill link ./.claude/skills/slidesls",
+  skillShowAll: "slidesls skill show --all",
+  skillInstall: "slidesls skill install <your-agent-skill-dir>/create-slides-with-slidesls",
+  skillLink: "slidesls skill link <your-agent-skill-dir>/create-slides-with-slidesls",
   catalogRecommendedJson: "slidesls catalog --recommended --json",
   catalogJson: "slidesls catalog --json",
   themeCatalogJson: "slidesls catalog --type preset --tag theme --json",
   inspectReadmeJson: "slidesls inspect <item> --readme --json",
   addDryRunJson: "slidesls add <items...> --dir <deck-or-project> --dry-run --json",
+  addAnimationsJson:
+    "slidesls add animations/reveal animations/slide-up --dir <deck> --dry-run --json",
   validateJson: "slidesls validate <deck> --json",
-  preview: "slidesls preview <deck>",
+  preview: "slidesls preview <deck> --host 127.0.0.1 --port 4321",
   skillShow: "slidesls skill show",
   skillShowCatalog: "slidesls skill show --reference catalog",
 };
 
 export function agentHelpBlock() {
   return `For AI agents:
-  1. Install or link the bundled skill before authoring:
+  1. Read the bundled skill before authoring (runtime-neutral):
+     ${agentCommandRecipes.skillShowAll}
+     Or install to your runtime-specific skill directory:
      ${agentCommandRecipes.skillInstall}
-     ${agentCommandRecipes.skillLink}   # local checkout/dev workflow
+     Example for Claude Code project-local skills:
+     slidesls skill install ./.claude/skills/create-slides-with-slidesls
   2. Discover valid public classes, modifiers, themes, fonts, data attributes, and CSS variables:
      ${agentCommandRecipes.catalogRecommendedJson}
      ${agentCommandRecipes.catalogJson}
@@ -24,11 +30,17 @@ export function agentHelpBlock() {
      ${agentCommandRecipes.inspectReadmeJson}
   4. Copy safely:
      ${agentCommandRecipes.addDryRunJson}
-  5. Validate after editing:
+  5. Prefer subtle reveal animations unless the user asks for static slides:
+     ${agentCommandRecipes.addAnimationsJson}
+  6. Validate after editing:
      ${agentCommandRecipes.validateJson}
-  6. Preview and visually inspect representative slides unless the user opts out:
+  7. Preview and visually inspect representative slides unless the user opts out.
+     Keep preview running while browser commands execute:
      ${agentCommandRecipes.preview}
-     agent-browser screenshot ./slides-visual-check.png   # after opening the preview URL`;
+     agent-browser open http://127.0.0.1:4321/?export=1
+     agent-browser set viewport 1600 900
+     agent-browser wait --load networkidle
+     agent-browser screenshot ./slides-visual-check.png`;
 }
 
 export function catalogAgentInstructions() {
@@ -90,10 +102,12 @@ export function initAgentInstructions(root = "<deck>") {
     rules: [
       "Use the catalog before adding classes or visual presets.",
       "Inspect templates/components for exact markup before editing slides.",
+      "Unless the user asks for static slides, use progressive disclosure via animations/reveal plus one subtle variant such as animations/slide-up or animations/fade.",
       "Validate after edits; preview is a long-running server command and should be checked visually with agent-browser unless the user opts out.",
     ],
     nextCommands: [
       agentCommandRecipes.catalogRecommendedJson,
+      agentCommandRecipes.addAnimationsJson,
       "slidesls inspect templates/split --readme --json",
       `slidesls validate ${root} --json`,
     ],

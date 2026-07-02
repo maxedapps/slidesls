@@ -15,7 +15,7 @@ export function groupName(type = "") {
 }
 
 export function defaultCatalogOutput(root = process.cwd()) {
-  return path.resolve(root, "skills/slidesls/references/catalog.md");
+  return path.resolve(root, "skills/create-slides-with-slidesls/references/catalog.md");
 }
 
 export function renderCatalog(registryData) {

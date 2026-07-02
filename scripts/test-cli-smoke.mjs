@@ -86,7 +86,12 @@ try {
     run([command, "--help"]);
   }
   run(["skill", "info", "--json"]);
-  run(["skill", "install", path.join(tmp, ".claude", "skills", "slidesls"), "--json"]);
+  run([
+    "skill",
+    "install",
+    path.join(tmp, "agent-skills", "create-slides-with-slidesls"),
+    "--json",
+  ]);
   run(["init", tmp, "--template", "minimal", "--title", "Smoke Deck", "--json"]);
   run(["doctor", "--dir", tmp, "--json"]);
   run(["catalog", "--json"]);

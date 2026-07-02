@@ -15,7 +15,7 @@ export function deckTemplate({
   const utilityLink =
     template === "blank"
       ? ""
-      : `    <link rel="stylesheet" href="./${baseDir}/registry/utilities/layout/layout.css" />\n    <link rel="stylesheet" href="./${baseDir}/registry/components/badge/badge.css" />\n    <link rel="stylesheet" href="./${baseDir}/registry/components/panel/panel.css" />`;
+      : `    <link rel="stylesheet" href="./${baseDir}/registry/utilities/layout/layout.css" />\n    <link rel="stylesheet" href="./${baseDir}/registry/components/badge/badge.css" />\n    <link rel="stylesheet" href="./${baseDir}/registry/components/panel/panel.css" />\n    <link rel="stylesheet" href="./${baseDir}/registry/animations/reveal/reveal.css" />`;
   return `<!doctype html>
 <html lang="en"${safeTheme ? ` data-ls-theme="${safeTheme}"` : ""}>
   <head>
@@ -60,7 +60,7 @@ function minimalSlides(title) {
               <h1 class="ls-title">${title}</h1>
               <p class="ls-subtitle ls-reveal" data-step="1">A plain HTML/CSS/JS deck you can edit directly.</p>
             </header>
-            <div class="ls-panel ls-panel--accent ls-panel--center">
+            <div class="ls-panel ls-panel--accent ls-panel--center ls-panel--fit">
               <p class="ls-eyebrow">Agent-safe primitives</p>
               <p class="ls-panel__text">Compose slides with utilities, standalone components, and inspectable templates.</p>
             </div>

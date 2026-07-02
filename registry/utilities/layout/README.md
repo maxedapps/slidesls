@@ -10,8 +10,8 @@ Reusable layout utilities for safe slide composition. These classes work anywher
 - `.ls-grid` — generic grid container.
 - `.ls-grid--2` / `.ls-grid--3` / `.ls-grid--4` — equal column grids. Use `.ls-grid--4` only for short, compact cards or metrics.
 - `.ls-grid--wide-left` / `.ls-grid--wide-right` — asymmetric two-column grids.
-- `.ls-center` — center content in both axes.
-- `.ls-center-start` — center vertically while aligning inline content to the start.
+- `.ls-center` — center the content cluster in both axes.
+- `.ls-center-start` — center the content cluster vertically while aligning inline content to the start.
 - `.ls-text-start` — start-align text when composing with centering utilities.
 - `.ls-fill` — fill the available block size inside a known parent area.
 - `.ls-slide-fill` — direct child of `.ls-slide__inner` for true full-slide content that spans the shell rows.

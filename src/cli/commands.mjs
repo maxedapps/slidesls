@@ -54,7 +54,6 @@ import {
   validateAgentInstructions,
 } from "./agent-instructions.mjs";
 import {
-  defaultSkillTarget,
   performSkillInstall,
   performSkillLink,
   readAllSkillMarkdown,
@@ -64,7 +63,13 @@ import {
 } from "../skill/agent-skill.mjs";
 
 const coreItems = ["core/base"];
-const minimalItems = ["core/base", "utilities/layout", "components/badge", "components/panel"];
+const minimalItems = [
+  "core/base",
+  "utilities/layout",
+  "components/badge",
+  "components/panel",
+  "animations/reveal",
+];
 
 export const help = `slidesls — plain HTML/CSS/JS slide authoring CLI
 
@@ -417,21 +422,25 @@ For AI agents:
 export async function skillCommand(argv) {
   const args = parseArgs(argv, { boolean: ["json", "help", "dry-run", "force", "all"] });
   const subcommand = args._[0] || "info";
-  const targetDir = args._[1] ? path.resolve(args._[1]) : defaultSkillTarget();
+  const targetDir = args._[1] ? path.resolve(args._[1]) : undefined;
 
   if (args.help)
     return ok({
       help: `Usage:
   slidesls skill info [--json]
   slidesls skill show [--reference <name>] [--all]
-  slidesls skill install [dir] [--dry-run] [--force] [--json]
-  slidesls skill link [dir] [--force] [--json]
+  slidesls skill install <dir> [--dry-run] [--force] [--json]
+  slidesls skill link <dir> [--force] [--json]
 
-Defaults:
-  [dir] defaults to ./.claude/skills/slidesls in the current project.
+Target directory:
+  Choose the skill directory required by your agent runtime.
+  Runtime-neutral no-install option: slidesls skill show --all
 
-Local checkout example:
-  node /path/to/ls_slides/bin/slidesls.mjs skill link ./.claude/skills/slidesls
+Example for Claude Code project-local skills:
+  slidesls skill install ./.claude/skills/create-slides-with-slidesls
+
+Local checkout/dev example:
+  node /path/to/ls_slides/bin/slidesls.mjs skill link <your-agent-skill-dir>/create-slides-with-slidesls
 
 References:
   slidesls skill show --reference catalog
@@ -934,9 +943,19 @@ export function textFor(command, result) {
     );
   if (command === "skill") {
     if (result.data.markdown) return result.data.markdown;
-    if (!result.data.action)
-      return `slidesls skill: ${result.data.source}\nFiles: ${result.data.files?.length || 0}\n${result.data.recommendedTargets ? `Recommended target: ${result.data.recommendedTargets[0]}\n` : ""}`;
-    return `slidesls skill ${result.data.action}: ${result.data.target}\n${result.data.status ? `status: ${result.data.status}\n` : ""}${formatCounts(result.data.counts)}`;
+    if (!result.data.action) {
+      const examples = (result.data.exampleTargets || [])
+        .map((target) => `Example target (${target.runtime}): ${target.path}`)
+        .join("\n");
+      return `slidesls skill: ${result.data.source}\nFiles: ${result.data.files?.length || 0}\n${examples ? `${examples}\n` : ""}${result.data.runtimeNeutralInstruction || ""}\n`;
+    }
+    const warnings = result.data.warnings?.length
+      ? `\nWarnings:\n${result.data.warnings.map((warning) => `- ${warning}`).join("\n")}\n`
+      : "";
+    const next = result.data.postInstallInstructions?.length
+      ? `\nNext for agents:\n- Fully read: ${result.data.skillPath}\n- Then read relevant references in ${result.data.referencesPath}/\n- If your agent runtime did not auto-load it, run: slidesls skill show --all\n`
+      : "";
+    return `slidesls skill ${result.data.action}: ${result.data.target}\n${result.data.status ? `status: ${result.data.status}\n` : ""}${formatCounts(result.data.counts)}${warnings}${next}`;
   }
   if (command === "validate") {
     const warnings = result.data.warnings || [];

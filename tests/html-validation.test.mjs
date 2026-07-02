@@ -7,6 +7,20 @@ import { initCommand, validateCommand } from "../src/cli/commands.mjs";
 
 const runtimePath = "slidesls/registry/core/base/slide-runtime.js";
 
+test("fresh minimal init validates without missing reveal animation warning", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-minimal-valid-"));
+  await initCommand([root, "--template", "minimal"]);
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.equal(
+    result.data.warnings.some(
+      (entry) =>
+        entry.code === "missing_registry_item_for_class" && /animations\/reveal/.test(entry.hint),
+    ),
+    false,
+  );
+});
+
 test("validate accepts module runtime script with type before src", async () => {
   const root = await deckWithHtml(`<script type="module" src="./${runtimePath}"></script>`);
   const result = await validateCommand([root]);

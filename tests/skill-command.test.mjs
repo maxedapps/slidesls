@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { execFile } from "node:child_process";
-import { lstat, mkdtemp, readFile, writeFile } from "node:fs/promises";
+import { lstat, mkdir, mkdtemp, readFile, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { promisify } from "node:util";
@@ -34,12 +34,18 @@ test("skill info and show expose bundled skill metadata", async () => {
   const { stdout: infoStdout } = await run(["skill", "info", "--json"]);
   const info = JSON.parse(infoStdout);
   assert.equal(info.ok, true);
-  assert.equal(info.data.name, "slidesls");
+  assert.equal(info.data.name, "create-slides-with-slidesls");
   assert.ok(info.data.files.some((file) => file.path === "SKILL.md"));
-  assert.ok(info.data.recommendedTargets.includes(".claude/skills/slidesls"));
+  assert.deepEqual(info.data.exampleTargets, [
+    {
+      runtime: "Claude Code project-local",
+      path: ".claude/skills/create-slides-with-slidesls",
+    },
+  ]);
+  assert.match(info.data.runtimeNeutralInstruction, /slidesls skill show --all/);
 
   const { stdout: showStdout } = await run(["skill", "show"]);
-  assert.match(showStdout, /name: slidesls/);
+  assert.match(showStdout, /name: create-slides-with-slidesls/);
   assert.match(showStdout, /slidesls skill link/);
 
   const { stdout: catalogStdout } = await run(["skill", "show", "--reference", "catalog"]);
@@ -62,7 +68,19 @@ test("skill info and show expose bundled skill metadata", async () => {
   });
 });
 
-test("skill install copies files and is idempotent", async () => {
+test("skill install and link require an explicit runtime target", async () => {
+  for (const subcommand of ["install", "link"]) {
+    await assert.rejects(run(["skill", subcommand]), (error) => {
+      assert.equal(error.code, 2);
+      assert.match(error.stderr, /Missing skill target directory/);
+      assert.match(error.stderr, /Choose the skill directory required by your agent runtime/);
+      assert.match(error.stderr, /slidesls skill show --all/);
+      return true;
+    });
+  }
+});
+
+test("skill install copies files, emits read instructions, and is idempotent", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-skill-"));
   const target = path.join(root, "skill");
 
@@ -71,12 +89,25 @@ test("skill install copies files and is idempotent", async () => {
   const result = JSON.parse(stdout);
   assert.equal(result.ok, true);
   assert.equal(result.data.counts.created, fileCount);
+  assert.equal(result.data.skillPath, path.join(target, "SKILL.md"));
+  assert.ok(result.data.postInstallInstructions.some((line) => line.includes("Fully read")));
+  assert.equal(
+    await readFile(path.join(target, ".slidesls-skill.json"), "utf8").then(
+      (text) => JSON.parse(text).skillName,
+    ),
+    "create-slides-with-slidesls",
+  );
   assert.equal(
     await readFile(path.join(target, "SKILL.md"), "utf8").then((text) =>
-      /name: slidesls/.test(text),
+      /name: create-slides-with-slidesls/.test(text),
     ),
     true,
   );
+
+  const { stdout: textOutput } = await run(["skill", "install", target]);
+  assert.match(textOutput, /Fully read/);
+  assert.match(textOutput, /SKILL\.md/);
+  assert.match(textOutput, /slidesls skill show --all/);
 
   const second = JSON.parse((await run(["skill", "install", target, "--json"])).stdout);
   assert.equal(second.data.counts.unchanged, fileCount);
@@ -93,7 +124,35 @@ test("skill install dry-run does not write files", async () => {
   assert.equal(result.ok, true);
   assert.equal(result.data.dryRun, true);
   assert.equal(result.data.counts["would-create"], fileCount);
+  assert.equal(result.data.skillPath, undefined);
+  assert.equal(result.data.postInstallInstructions, undefined);
+  const text = (await run(["skill", "install", target, "--dry-run"])).stdout;
+  assert.doesNotMatch(text, /Fully read/);
   await assert.rejects(readFile(path.join(target, "SKILL.md"), "utf8"));
+});
+
+test("skill install warns about older sibling slidesls skills", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-skill-sibling-"));
+  const target = path.join(root, "create-slides-with-slidesls");
+  await mkdir(path.join(root, "create-slides"));
+  await writeFile(
+    path.join(root, "create-slides", "SKILL.md"),
+    "---\nname: create-slides\n---\nbootstrap slidesls",
+    "utf8",
+  );
+
+  const result = JSON.parse((await run(["skill", "install", target, "--json"])).stdout);
+  assert.equal(result.ok, true);
+  assert.ok(result.data.warnings.some((warning) => warning.includes("create-slides")));
+});
+
+test("skill install does not warn when the target itself is named create-slides", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-skill-self-"));
+  const target = path.join(root, "create-slides");
+
+  const result = JSON.parse((await run(["skill", "install", target, "--json"])).stdout);
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.data.warnings, []);
 });
 
 test("skill install protects changed files unless forced", async () => {
@@ -119,6 +178,8 @@ test("skill link creates an idempotent symlink", async () => {
   try {
     const first = JSON.parse((await run(["skill", "link", target, "--json"])).stdout);
     assert.equal(first.data.status, "created");
+    assert.equal(first.data.skillPath, path.join(target, "SKILL.md"));
+    assert.ok(first.data.postInstallInstructions.some((line) => line.includes("Fully read")));
     assert.equal((await lstat(target)).isSymbolicLink(), true);
 
     const second = JSON.parse((await run(["skill", "link", target, "--json"])).stdout);

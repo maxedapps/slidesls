@@ -4,9 +4,19 @@ Agent-primary slide authoring CLI and copyable registry for plain HTML/CSS/JS de
 
 `slidesls` helps agents and humans initialize deck folders, inspect recommended templates/snippets, copy registry primitives, validate decks, preview them locally, and install/link the bundled agent skill. The package is an authoring tool only; generated decks remain editable vanilla files with no runtime package dependency.
 
-Package: `@maxedapps/slidesls` (binary: `slidesls`). Publishing remains manual until explicitly approved.
+Package: `@maxedapps/slidesls` (binary: `slidesls`).
 
 ## Quickstart
+
+After publishing/installing from npm:
+
+```sh
+npx -y @maxedapps/slidesls@latest init ./my-deck --template minimal --theme executive-blue --title "My Deck"
+cd my-deck
+npx slidesls catalog --recommended
+npx slidesls validate
+npx slidesls preview
+```
 
 Local repo checkout, from a dedicated deck folder:
 
@@ -43,15 +53,18 @@ Direct local checkout usage:
 
 ```sh
 node /absolute/path/to/ls_slides/bin/slidesls.mjs --help
-node /absolute/path/to/ls_slides/bin/slidesls.mjs skill link ./.claude/skills/slidesls
+node /absolute/path/to/ls_slides/bin/slidesls.mjs skill show --all
+node /absolute/path/to/ls_slides/bin/slidesls.mjs skill link <your-agent-skill-dir>/create-slides-with-slidesls
 node /absolute/path/to/ls_slides/bin/slidesls.mjs skill info --json
 ```
 
-For local-only agent work, `skill link` is usually best because the target project points at the current checkout skill. Use `skill install` instead when a copy is preferred:
+For local-only agent work, `skill link` is usually best because the target project points at the current checkout skill. Choose the target directory required by your agent runtime. Claude Code project-local example:
 
 ```sh
-node /absolute/path/to/ls_slides/bin/slidesls.mjs skill install ./.claude/skills/slidesls
+node /absolute/path/to/ls_slides/bin/slidesls.mjs skill install ./.claude/skills/create-slides-with-slidesls
 ```
+
+After installing or linking, agents should fully read the installed `SKILL.md` and relevant `references/` files before authoring.
 
 Optional local tarball workflow:
 
@@ -59,11 +72,11 @@ Optional local tarball workflow:
 cd /path/to/ls_slides
 npm pack
 cd /path/to/other-project
-npm install /path/to/ls_slides/maxedapps-slidesls-0.1.0.tgz
+npm install /path/to/ls_slides/maxedapps-slidesls-0.2.0.tgz
 npx slidesls init --template minimal --title "My Deck"
 ```
 
-`private: true` blocks npm publishing, but it does not block `npm pack` or local tarball installation.
+Use the packed tarball for pre-publish smoke tests and release-candidate installs.
 
 ## Commands
 

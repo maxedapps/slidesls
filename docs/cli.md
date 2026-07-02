@@ -4,14 +4,14 @@
 
 ## Local checkout usage
 
-Before public npm publishing, invoke the CLI from this checkout when working in another project:
+Invoke the CLI from this checkout when working in another project:
 
 ```sh
 node /absolute/path/to/ls_slides/bin/slidesls.mjs --help
 node /absolute/path/to/ls_slides/bin/slidesls.mjs init --template minimal --title "My Deck"
 ```
 
-If installed from a local tarball in the target project, use `npx slidesls ...`.
+If installed from npm or a local tarball in the target project, use `npx slidesls ...` or `npx -y @maxedapps/slidesls@latest ...`.
 
 ## Commands
 
@@ -21,8 +21,8 @@ If installed from a local tarball in the target project, use `npx slidesls ...`.
 - `slidesls inspect <items...> [--readme] [--registry-root <path> | --registry-url <url>]` — show metadata, public `authoring` API, load guidance, and snippet HTML for requested items.
 - `slidesls skill info [--json]` — show bundled agent skill metadata.
 - `slidesls skill show [--reference <name>] [--all]` — print the bundled agent `SKILL.md`, a named reference such as `catalog`, or all bundled docs.
-- `slidesls skill install [dir] [--dry-run] [--force]` — copy the bundled skill to `[dir]` or `./.claude/skills/slidesls`.
-- `slidesls skill link [dir] [--force]` — symlink the bundled skill to `[dir]` or `./.claude/skills/slidesls`.
+- `slidesls skill install <dir> [--dry-run] [--force]` — copy the bundled skill to the explicit skill directory required by your agent runtime.
+- `slidesls skill link <dir> [--force]` — symlink the bundled skill to the explicit skill directory required by your agent runtime.
 - `slidesls validate [dir] [--strict]` — validate deck config, entry markup, local assets, manifest files, and targeted component/reveal structure. `--strict` also treats copied-file hash drift and deck-level structural warnings as errors.
 - `slidesls preview [dir] [--host <host>] [--port <port>]` — serve a local preview until the process is stopped.
 - `slidesls doctor [--dir <project>] [--registry-root <path> | --registry-url <url>]` — check Node/package/config/registry/project health.
@@ -88,17 +88,31 @@ Font presets remain separate; use `data-ls-font` only when you want a font role 
 
 ## Agent skill workflow
 
-For local-only development, link the skill so it always tracks the current checkout:
+Runtime-neutral no-install path:
 
 ```sh
-slidesls skill link ./.claude/skills/slidesls
+slidesls skill show --all
+```
+
+For local-only development, link the skill so it always tracks the current checkout. Choose the skill directory required by your agent runtime:
+
+```sh
+slidesls skill link <your-agent-skill-dir>/create-slides-with-slidesls
 ```
 
 Use a copy when symlinks are undesirable:
 
 ```sh
-slidesls skill install ./.claude/skills/slidesls
+slidesls skill install <your-agent-skill-dir>/create-slides-with-slidesls
 ```
+
+Example for Claude Code project-local skills:
+
+```sh
+slidesls skill install ./.claude/skills/create-slides-with-slidesls
+```
+
+After installing or linking, agents should fully read the installed `SKILL.md`, relevant files in `references/`, or `slidesls skill show --all` before authoring.
 
 Then use machine-readable discovery before editing decks or copy-mode projects:
 
@@ -112,7 +126,7 @@ slidesls inspect components/card --readme --json
 slidesls add utilities/layout components/panel components/card --dry-run --json
 ```
 
-Treat each item’s `authoring` metadata as the quick source of truth for public classes, modifiers, data attributes, theme/font attributes, and CSS variables. Use `inspect --json` when you need exact snippet markup or README details. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and `--strict` errors. Static validation does not replace preview; after material slide edits, run `slidesls preview <deck>` and visually inspect representative slides unless intentionally skipped.
+Treat each item’s `authoring` metadata as the quick source of truth for public classes, modifiers, data attributes, theme/font attributes, and CSS variables. Unless the user asks for static slides, copy/load `animations/reveal` plus one subtle variant such as `animations/slide-up` or `animations/fade` and use `.ls-reveal` with `data-step` or `data-ls-reveal-sequence`. Use `inspect --json` when you need exact snippet markup or README details. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and `--strict` errors. Static validation does not replace preview; after material slide edits, run `slidesls preview <deck>` and visually inspect representative slides unless intentionally skipped.
 
 ## Naming
 

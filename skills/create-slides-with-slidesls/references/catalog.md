@@ -178,9 +178,9 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Root class: ls-panel
 - Safe anywhere: yes
 - Class groups:
-  - `ls-panel`: `ls-panel__title`, `ls-panel__text`, `ls-panel--muted`, `ls-panel--accent`, `ls-panel--center`, `ls-panel--frame`
-- CSS variables: `--ls-panel-gap`, `--ls-panel-padding`, `--ls-panel-border`, `--ls-panel-bg`, `--ls-panel-frame-min-block-size`
-- Usage: Use muted/accent modifiers sparingly to create hierarchy.
+  - `ls-panel`: `ls-panel__title`, `ls-panel__text`, `ls-panel--muted`, `ls-panel--accent`, `ls-panel--center`, `ls-panel--fit`, `ls-panel--frame`
+- CSS variables: `--ls-panel-gap`, `--ls-panel-padding`, `--ls-panel-border`, `--ls-panel-bg`, `--ls-panel-fit-min-block-size`, `--ls-panel-frame-min-block-size`
+- Usage: Use muted/accent modifiers sparingly to create hierarchy. Use .ls-panel--fit for short text-only callouts that should not stretch to full column height. Use .ls-panel--frame for screenshots, diagrams, code, or media frames that should have visual mass.
 - Registry dependencies: core/base
 - Files: registry/components/panel/panel.css
 - Snippets: Basic panel (registry/components/panel/snippets/basic.html)
@@ -302,7 +302,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Usage: Use .ls-reveal with data-step or data-ls-reveal-sequence for progressive disclosure.
 - Registry dependencies: core/base
 - Files: registry/animations/reveal/reveal.css
-- Snippets: none
+- Snippets: Sequenced reveal (registry/animations/reveal/snippets/basic.html)
 - Docs: registry/animations/reveal/README.md
 
 ### animations/scale-in
@@ -542,8 +542,8 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Description: Opening slide template with a clear title, subtitle, and badges.
 - Agent recommended: yes
 - Safe anywhere: no
-- Classes: `ls-slide`, `ls-slide__inner`, `ls-grid`, `ls-grid--wide-left`, `ls-stack`, `ls-cluster`, `ls-badge`, `ls-title`, `ls-subtitle`, `ls-panel`, `ls-panel--accent`, `ls-eyebrow`, `ls-panel__text`, `ls-slide-fill`, `ls-center-start`, `ls-text-start`, `ls-panel--center`
-- Usage: Paste snippet HTML inside .ls-deck and copy its registryDependencies before use. Use .ls-slide-fill for full-slide centering; keep title copy concise enough for one or two lines.
+- Classes: `ls-slide`, `ls-slide__inner`, `ls-grid`, `ls-grid--wide-left`, `ls-stack`, `ls-cluster`, `ls-badge`, `ls-title`, `ls-subtitle`, `ls-panel`, `ls-panel--accent`, `ls-eyebrow`, `ls-panel__text`, `ls-slide-fill`, `ls-center-start`, `ls-text-start`, `ls-panel--center`, `ls-panel--fit`
+- Usage: Paste snippet HTML inside .ls-deck and copy its registryDependencies before use. Use .ls-slide-fill for full-slide centering; keep title copy concise enough for one or two lines. Use .ls-panel--fit for short text-only right panels; use .ls-panel--frame for screenshots, diagrams, or media anchors.
 - Registry dependencies: core/base, utilities/layout, components/badge, components/panel
 - Files: none
 - Snippets: Title hero slide (registry/templates/title-hero/snippet.html)

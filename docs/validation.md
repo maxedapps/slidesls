@@ -21,3 +21,15 @@ After creating or materially editing slides, preview and inspect representative 
 ## Preview and snapshots
 
 `slidesls preview` serves files locally for manual or `agent-browser` review and keeps running until the process is stopped. Snapshot generation is deferred post-MVP and should remain optional/no-heavy-dependency.
+
+For stable agent QA, keep preview running and use a pinned viewport:
+
+```sh
+slidesls preview <deck> --host 127.0.0.1 --port 4321
+agent-browser open http://127.0.0.1:4321/?export=1
+agent-browser set viewport 1600 900
+agent-browser wait --load networkidle
+agent-browser screenshot ./slides-visual-check.png
+```
+
+Use `?export=1` for layout QA with all reveal content visible; use normal mode plus `ArrowRight` screenshots for reveal-step coherence.

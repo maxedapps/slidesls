@@ -26,7 +26,13 @@
       {
         "base": "ls-panel",
         "elements": ["ls-panel__title", "ls-panel__text"],
-        "modifiers": ["ls-panel--muted", "ls-panel--accent", "ls-panel--center", "ls-panel--frame"]
+        "modifiers": [
+          "ls-panel--muted",
+          "ls-panel--accent",
+          "ls-panel--center",
+          "ls-panel--fit",
+          "ls-panel--frame"
+        ]
       }
     ],
     "cssVariables": [
@@ -34,8 +40,13 @@
       "--ls-panel-padding",
       "--ls-panel-border",
       "--ls-panel-bg",
+      "--ls-panel-fit-min-block-size",
       "--ls-panel-frame-min-block-size"
     ],
-    "usage": ["Use muted/accent modifiers sparingly to create hierarchy."]
+    "usage": [
+      "Use muted/accent modifiers sparingly to create hierarchy.",
+      "Use .ls-panel--fit for short text-only callouts that should not stretch to full column height.",
+      "Use .ls-panel--frame for screenshots, diagrams, code, or media frames that should have visual mass."
+    ]
   }
 }

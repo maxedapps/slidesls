@@ -12,6 +12,12 @@
   "dependencies": [],
   "devDependencies": [],
   "docs": "registry/animations/reveal/README.md",
+  "snippets": [
+    {
+      "label": "Sequenced reveal",
+      "path": "registry/animations/reveal/snippets/basic.html"
+    }
+  ],
   "safeAnywhere": true,
   "agentRecommended": true,
   "authoring": {

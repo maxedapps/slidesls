@@ -19,7 +19,8 @@
   "authoring": {
     "usage": [
       "Paste snippet HTML inside .ls-deck and copy its registryDependencies before use.",
-      "Use .ls-slide-fill for full-slide centering; keep title copy concise enough for one or two lines."
+      "Use .ls-slide-fill for full-slide centering; keep title copy concise enough for one or two lines.",
+      "Use .ls-panel--fit for short text-only right panels; use .ls-panel--frame for screenshots, diagrams, or media anchors."
     ],
     "classes": [
       "ls-slide",
@@ -38,7 +39,8 @@
       "ls-slide-fill",
       "ls-center-start",
       "ls-text-start",
-      "ls-panel--center"
+      "ls-panel--center",
+      "ls-panel--fit"
     ]
   }
 }

@@ -1,7 +1,6 @@
 {
   "name": "@maxedapps/slidesls",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.2.0",
   "description": "Agent-primary vanilla HTML/CSS/JS slide deck authoring CLI and registry.",
   "keywords": [
     "agents",
@@ -11,9 +10,17 @@
     "registry",
     "slides"
   ],
+  "homepage": "https://github.com/maxedapps/slidesls#readme",
+  "bugs": {
+    "url": "https://github.com/maxedapps/slidesls/issues"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maxedapps/slidesls.git"
+  },
   "bin": {
-    "slidesls": "./bin/slidesls.mjs"
+    "slidesls": "bin/slidesls.mjs"
   },
   "files": [
     "bin",
@@ -28,6 +35,9 @@
     "registry.json"
   ],
   "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "serve:examples": "node scripts/serve-examples.mjs",
     "serve:deck": "node bin/slidesls.mjs preview",

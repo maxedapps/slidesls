@@ -2,14 +2,20 @@ import { mkdir, readFile, readdir, realpath, rm, symlink } from "node:fs/promise
 import path from "node:path";
 import { exists, sha256File, writeText } from "../shared/fs.mjs";
 
-const DEFAULT_TARGET = ".claude/skills/slidesls";
+const SKILL_NAME = "create-slides-with-slidesls";
+const EXAMPLE_TARGETS = [
+  { runtime: "Claude Code project-local", path: `.claude/skills/${SKILL_NAME}` },
+];
+const POST_INSTALL_INSTRUCTIONS = [
+  "Fully read the installed SKILL.md before authoring slides.",
+  "Read relevant bundled references, especially deck-authoring.md and preview-validation.md.",
+  "If your runtime does not auto-load this skill, run slidesls skill show --all and read the full output.",
+];
 
-export function defaultSkillTarget(cwd = process.cwd()) {
-  return path.resolve(cwd, DEFAULT_TARGET);
-}
+export { SKILL_NAME };
 
 export function bundledSkillRoot() {
-  return path.resolve(import.meta.dirname, "..", "..", "skills", "slidesls");
+  return path.resolve(import.meta.dirname, "..", "..", "skills", SKILL_NAME);
 }
 
 export async function packageInfo() {
@@ -49,12 +55,14 @@ export async function skillInfo() {
   const source = bundledSkillRoot();
   const files = await listSkillFiles(source);
   return {
-    name: "slidesls",
+    name: SKILL_NAME,
     package: pkg.name,
     cliVersion: pkg.version,
     source,
     files: files.map(({ path, sha256 }) => ({ path, sha256 })),
-    recommendedTargets: [DEFAULT_TARGET],
+    exampleTargets: EXAMPLE_TARGETS,
+    runtimeNeutralInstruction:
+      "Use slidesls skill show --all to read the complete bundled skill without installing it.",
   };
 }
 
@@ -92,11 +100,8 @@ export async function readAllSkillMarkdown() {
   return sections.map((section) => `<!-- ${section.title} -->\n${section.markdown}`).join("\n\n");
 }
 
-export async function planSkillInstall({
-  targetDir = defaultSkillTarget(),
-  dryRun = false,
-  force = false,
-} = {}) {
+export async function planSkillInstall({ targetDir, dryRun = false, force = false } = {}) {
+  assertExplicitSkillTarget(targetDir);
   const source = bundledSkillRoot();
   const target = path.resolve(targetDir);
   const files = await listSkillFiles(source);
@@ -122,14 +127,18 @@ export async function planSkillInstall({
     });
   }
 
-  return { action: "install", source, target, dryRun, hasConflicts, files: planned };
+  return {
+    action: "install",
+    source,
+    target,
+    dryRun,
+    hasConflicts,
+    warnings: await siblingSkillWarnings(target),
+    files: planned,
+  };
 }
 
-export async function performSkillInstall({
-  targetDir = defaultSkillTarget(),
-  dryRun = false,
-  force = false,
-} = {}) {
+export async function performSkillInstall({ targetDir, dryRun = false, force = false } = {}) {
   const plan = await planSkillInstall({ targetDir, dryRun, force });
   const conflicts = plan.files.filter(
     (file) => file.status === "conflict" || file.status === "would-conflict",
@@ -149,12 +158,16 @@ export async function performSkillInstall({
       await writeText(file.targetPath, await readFile(file.sourcePath, "utf8"));
       if (file.status === "conflict" || file.status === "would-update") file.status = "updated";
     }
+    await writeSkillManifest(plan.target, plan.source);
   }
 
-  return summarizePlan({ ...plan, forced: force });
+  return withPostInstallDetails(summarizePlan({ ...plan, forced: force }), {
+    includeNextSteps: !dryRun,
+  });
 }
 
-export async function performSkillLink({ targetDir = defaultSkillTarget(), force = false } = {}) {
+export async function performSkillLink({ targetDir, force = false } = {}) {
+  assertExplicitSkillTarget(targetDir);
   const source = bundledSkillRoot();
   const target = path.resolve(targetDir);
   let status = "created";
@@ -179,13 +192,14 @@ export async function performSkillLink({ targetDir = defaultSkillTarget(), force
     await symlink(source, target, "dir");
   }
 
-  return {
+  return withPostInstallDetails({
     action: "link",
     source,
     target,
     status,
+    warnings: await siblingSkillWarnings(target),
     files: (await listSkillFiles(source)).map(({ path, sha256 }) => ({ path, sha256 })),
-  };
+  });
 }
 
 async function realTarget(target) {
@@ -206,11 +220,83 @@ function summarizePlan(plan) {
     dryRun: plan.dryRun,
     forced: plan.forced,
     counts,
+    warnings: plan.warnings || [],
     files: plan.files.map(({ path, targetPath, sha256, status }) => ({
       path,
       targetPath,
       sha256,
       status,
     })),
+  };
+}
+
+function assertExplicitSkillTarget(targetDir) {
+  if (targetDir) return;
+  const error = new Error(
+    "Missing skill target directory. Choose the skill directory required by your agent runtime.",
+  );
+  error.code = "usage_error";
+  error.exitCode = 2;
+  error.hint = [
+    "Example for Claude Code project-local skills:",
+    "  slidesls skill install ./.claude/skills/create-slides-with-slidesls",
+    "Runtime-neutral no-install option:",
+    "  slidesls skill show --all",
+  ].join("\n");
+  throw error;
+}
+
+async function siblingSkillWarnings(target) {
+  const parent = path.dirname(target);
+  const legacyNames = ["slidesls", "create-slides"];
+  const warnings = [];
+  for (const name of legacyNames) {
+    const sibling = path.join(parent, name);
+    if (sibling === target || !(await exists(sibling))) continue;
+    const manifestPath = path.join(sibling, ".slidesls-skill.json");
+    const skillPath = path.join(sibling, "SKILL.md");
+    if (await exists(manifestPath)) {
+      warnings.push(
+        `Found older likely slidesls skill directory at ${sibling}; consider replacing it with ${SKILL_NAME}.`,
+      );
+    } else if (await exists(skillPath)) {
+      const markdown = await readFile(skillPath, "utf8");
+      if (markdown.includes("slidesls"))
+        warnings.push(
+          `Found possible older slidesls skill directory at ${sibling}; check for duplicate active skills.`,
+        );
+    }
+  }
+  return warnings;
+}
+
+async function writeSkillManifest(target, source) {
+  const pkg = await packageInfo();
+  await writeText(
+    path.join(target, ".slidesls-skill.json"),
+    `${JSON.stringify(
+      {
+        package: pkg.name,
+        version: pkg.version,
+        skillName: SKILL_NAME,
+        source,
+      },
+      null,
+      2,
+    )}\n`,
+  );
+}
+
+function withPostInstallDetails(result, { includeNextSteps = true } = {}) {
+  return {
+    ...result,
+    skillName: SKILL_NAME,
+    ...(includeNextSteps
+      ? {
+          skillPath: path.join(result.target, "SKILL.md"),
+          referencesPath: path.join(result.target, "references"),
+          postInstallInstructions: POST_INSTALL_INSTRUCTIONS,
+        }
+      : {}),
   };
 }

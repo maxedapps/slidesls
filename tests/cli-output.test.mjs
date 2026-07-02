@@ -13,10 +13,15 @@ const bin = path.resolve("bin/slidesls.mjs");
 test("root and key command help include AI-agent guidance", async () => {
   const root = (await run([bin, "--help"])).stdout;
   assert.match(root, /For AI agents:/);
-  assert.match(root, /slidesls skill install/);
-  assert.match(root, /slidesls skill link/);
+  assert.match(root, /slidesls skill show --all/);
+  assert.match(root, /slidesls skill install <your-agent-skill-dir>\/create-slides-with-slidesls/);
+  assert.match(root, /Example for Claude Code project-local skills:/);
   assert.match(root, /slidesls catalog --json/);
   assert.match(root, /slidesls inspect <item> --readme --json/);
+  assert.match(root, /agent-browser open http:\/\/127\.0\.0\.1:4321\/\?export=1/);
+  assert.match(root, /agent-browser set viewport 1600 900/);
+  assert.match(root, /agent-browser wait --load networkidle/);
+  assert.match(root, /agent-browser screenshot \.\/slides-visual-check\.png/);
 
   const catalog = (await run([bin, "catalog", "--help"])).stdout;
   assert.match(catalog, /For AI agents:/);
@@ -211,12 +216,12 @@ test("init and validate JSON include agentInstructions without removing existing
   assert.ok(Array.isArray(validation.data.agentInstructions.longRunningCommands));
 });
 
-test("validate text shows warnings on otherwise valid decks", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-warning-text-"));
+test("validate text shows no-warning guidance on a valid minimal deck", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-valid-text-"));
   await run([bin, "init", root, "--template", "minimal"]);
   const { stdout } = await run([bin, "validate", root]);
-  assert.match(stdout, /ok with \d+ warning\(s\)/);
-  assert.match(stdout, /- warning:/);
+  assert.match(stdout, /slidesls validate: ok/);
+  assert.doesNotMatch(stdout, /missing_registry_item_for_class/);
   assert.match(stdout, /For AI agents:/);
 });
 

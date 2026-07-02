@@ -30,6 +30,7 @@ slidesls init ./slides/my-deck --template minimal --theme executive-blue --title
     <link rel="stylesheet" href="./slidesls/registry/presets/themes/executive-blue/theme.css" />
     <link rel="stylesheet" href="./slidesls/registry/core/base/slide.css" />
     <link rel="stylesheet" href="./slidesls/registry/utilities/layout/layout.css" />
+    <link rel="stylesheet" href="./slidesls/registry/animations/reveal/reveal.css" />
     <script type="module" src="./slidesls/registry/core/base/slide-runtime.js"></script>
   </head>
   <body class="ls-page">
@@ -75,7 +76,7 @@ Use:
 - utilities for layout, e.g. `utilities/layout` with `.ls-stack` and `.ls-grid`;
 - standalone components for content, e.g. `components/card` and `components/panel`.
 
-Do not use `ls-layout-*` classes or hidden ancestor-dependent layout contracts.
+Do not use `ls-layout-*` classes or hidden ancestor-dependent layout contracts. Centering utilities such as `.ls-center` and `.ls-center-start` center the content cluster; they should not strand headings, subtitles, and badges at opposite ends of a full-height column. Use `.ls-panel--fit` for short text-only callouts and `.ls-panel--frame` for screenshots, diagrams, code, or media frames that intentionally need visual mass.
 
 ## Adding registry items
 
@@ -92,7 +93,23 @@ Treat `catalog --json` `authoring` metadata as the quick source of truth for pub
 
 Use `add --dry-run --json` before copying. After copying, add any returned `<link>` or `<script>` tags to the entry HTML. `add` does not mutate HTML for you.
 
-## Reveal contract
+## Animation and reveal contract
+
+Unless the user asks for a static deck, prefer progressive disclosure with `animations/reveal` and one subtle variant:
+
+```sh
+slidesls add animations/reveal animations/slide-up --dir <deck> --dry-run --json
+slidesls add animations/reveal animations/slide-up --dir <deck>
+```
+
+```html
+<div data-ls-reveal-sequence>
+  <article class="ls-card ls-reveal ls-reveal-slide-up">...</article>
+  <article class="ls-card ls-reveal ls-reveal-slide-up">...</article>
+</div>
+```
+
+Use animation to reveal ideas, not decorate every element. Prefer `slide-up` for cards/lists, `fade` for captions/secondary notes, and `scale-in` sparingly for metrics/hero callouts. Do not stack transform variants.
 
 - Add `.ls-reveal` and `data-step="N"` to elements that should reveal.
 - Runtime writes `data-ls-step` on the active slide.
