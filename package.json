@@ -1,6 +1,6 @@
 {
   "name": "@maxedapps/slidesls",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Agent-primary vanilla HTML/CSS/JS slide deck authoring CLI and registry.",
   "keywords": [
     "agents",

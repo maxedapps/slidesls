@@ -72,7 +72,7 @@ Optional local tarball workflow:
 cd /path/to/ls_slides
 npm pack
 cd /path/to/other-project
-npm install /path/to/ls_slides/maxedapps-slidesls-0.2.0.tgz
+npm install /path/to/ls_slides/maxedapps-slidesls-*.tgz
 npx -y @maxedapps/slidesls@latest init --template minimal --title "My Deck"
 ```
 
