@@ -32,6 +32,32 @@ test("preview rejects malformed URLs and keeps serving", async () => {
   }
 });
 
+test("preview JSON includes exportUrl and serves HEAD with no-store", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-preview-"));
+  await writeFile(
+    path.join(root, "slidesls.json"),
+    JSON.stringify({ paths: { entry: "index.html" } }),
+  );
+  await writeFile(path.join(root, "index.html"), "<!doctype html><p>ok</p>");
+
+  const child = spawn(process.execPath, [bin, "preview", root, "--port", "0", "--json"], {
+    cwd: path.resolve("."),
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+
+  try {
+    const result = await readJsonFromStdout(child);
+    assert.equal(result.data.exportUrl, `${result.data.url}?export=1`);
+    assert.ok(Array.isArray(result.data.agentInstructions.longRunningCommands));
+    const response = await fetch(result.data.url, { method: "HEAD" });
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("cache-control"), "no-store");
+    assert.equal(await response.text(), "");
+  } finally {
+    child.kill("SIGTERM");
+  }
+});
+
 test("preview serves percent-encoded filenames inside the deck root", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-preview-"));
   await mkdir(path.join(root, "assets"), { recursive: true });

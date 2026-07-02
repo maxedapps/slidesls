@@ -48,6 +48,9 @@
 
   .ls-progress[data-ls-animate="fill"][data-ls-reveal-state="current"] .ls-progress__bar,
   .ls-progress[data-ls-animate="fill"][data-ls-reveal-state="past"] .ls-progress__bar,
+  .ls-slide[data-active="true"]
+    .ls-progress[data-ls-animate="fill"]:not([data-step])
+    .ls-progress__bar,
   .ls-deck[data-ls-export="true"] .ls-progress[data-ls-animate="fill"] .ls-progress__bar,
   .ls-deck:not([data-ls-ready]) .ls-progress[data-ls-animate="fill"] .ls-progress__bar {
     transform: scaleX(1);

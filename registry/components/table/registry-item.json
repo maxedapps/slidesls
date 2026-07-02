@@ -37,6 +37,11 @@
       {
         "name": "data-ls-variant",
         "values": ["striped", "plain"]
+      },
+      {
+        "name": "data-ls-overflow",
+        "values": ["clip"],
+        "scope": ".ls-table-frame"
       }
     ],
     "cssVariables": [

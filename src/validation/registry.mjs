@@ -313,6 +313,7 @@ async function validateRegistryAuthoringCoverage({ data, source, errors }) {
 
 async function validateRegistryCssContracts({ data, source, errors }) {
   if (source.mode !== "local") return;
+  const globalIndex = buildAuthoringClassIndex(data.items);
   for (const item of data.items) {
     const cssFiles = (item.files || []).filter((file) => file?.path?.endsWith(".css"));
     if (!cssFiles.length) continue;
@@ -323,19 +324,43 @@ async function validateRegistryCssContracts({ data, source, errors }) {
       })),
     );
     const combinedCss = cssByFile.map((file) => file.css).join("\n");
-    if (!/@container\b/.test(combinedCss)) continue;
-    if (/\bcontainer(?:-type)?\s*:/.test(combinedCss)) continue;
-    for (const file of cssByFile) {
-      if (/@container\b/.test(file.css))
+    if (/@container\b/.test(combinedCss) && !/\bcontainer(?:-type)?\s*:/.test(combinedCss)) {
+      for (const file of cssByFile) {
+        if (/@container\b/.test(file.css))
+          add(
+            "error",
+            errors,
+            "container_query_without_contract",
+            `${file.path} contains @container rules without declaring a query container contract in the same registry item`,
+            { item: item.name },
+          );
+      }
+    }
+
+    const dependencyClosure = new Set(
+      resolveItems(data, [item.name]).map((resolved) => resolved.name),
+    );
+    for (const className of publicCssClasses(combinedCss)) {
+      const owners = globalIndex.ownersByClass.get(className) || new Set();
+      if (![...owners].some((owner) => dependencyClosure.has(owner)))
         add(
           "error",
           errors,
-          "container_query_without_contract",
-          `${file.path} contains @container rules without declaring a query container contract in the same registry item`,
-          { item: item.name },
+          "css_class_missing_authoring_metadata",
+          `${item.name} CSS defines .${className}, but no owning item in its dependency closure lists it in authoring metadata`,
+          { item: item.name, className },
         );
     }
   }
+}
+
+function publicCssClasses(css) {
+  const withoutComments = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  return [
+    ...new Set(
+      [...withoutComments.matchAll(/\.((?:ls-)[A-Za-z0-9_-]+)/g)].map((match) => match[1]),
+    ),
+  ];
 }
 
 async function validateThemePreset({ item, itemPath, source, errors }) {
@@ -394,6 +419,18 @@ async function validateItemMetadata({ item, itemPath, source, errors, warnings }
         `${itemPath} templates must declare snippets`,
       );
   }
+
+  if (
+    item.agentRecommended === true &&
+    ["ls:component", "ls:utility", "ls:animation", "ls:template"].includes(item.type) &&
+    (!Array.isArray(item.snippets) || item.snippets.length === 0)
+  )
+    add(
+      "error",
+      errors,
+      "recommended_item_missing_snippet",
+      `${itemPath} agentRecommended ${item.type} items must provide a snippet or be explicitly demoted`,
+    );
 
   if (item.name?.startsWith("presets/themes/"))
     await validateThemePreset({ item, itemPath, source, errors });

@@ -7,14 +7,53 @@
   "properties": {
     "schemaVersion": { "const": 2 },
     "cliVersion": { "type": "string" },
-    "registrySource": { "type": "object" },
-    "entry": { "type": "string" },
-    "baseDir": { "type": "string" },
+    "registrySource": {
+      "type": "object",
+      "oneOf": [
+        {
+          "required": ["mode", "root"],
+          "properties": { "mode": { "const": "local" }, "root": { "type": "string" } },
+          "additionalProperties": false
+        },
+        {
+          "required": ["mode", "url"],
+          "properties": {
+            "mode": { "const": "remote" },
+            "url": { "type": "string", "format": "uri" }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "entry": { "$ref": "#/$defs/safeRelativePath" },
+    "baseDir": { "$ref": "#/$defs/safeRelativePath" },
     "requestedItems": { "type": "array", "items": { "type": "string" } },
     "dependencyOrder": { "type": "array", "items": { "type": "string" } },
-    "copiedFiles": { "type": "array" },
+    "copiedFiles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["item", "sourcePath", "targetPath", "fileType", "sha256"],
+        "properties": {
+          "item": { "type": "string" },
+          "sourcePath": { "$ref": "#/$defs/safeRelativePath" },
+          "targetPath": { "$ref": "#/$defs/safeRelativePath" },
+          "fileType": { "type": "string" },
+          "sha256": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+          "skipped": { "type": "boolean" }
+        },
+        "additionalProperties": false
+      }
+    },
     "links": { "type": "array", "items": { "type": "string" } },
     "scripts": { "type": "array", "items": { "type": "string" } },
-    "updatedAt": { "type": "string" }
+    "updatedAt": { "type": "string", "format": "date-time" }
+  },
+  "$defs": {
+    "safeRelativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    }
   }
 }

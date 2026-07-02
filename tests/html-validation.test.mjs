@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -209,7 +209,7 @@ test("validate warns for raw timeline shorthand", async () => {
 test("validate warns for invalid reveal animation combinations", async () => {
   const root = await deckWithHtml(
     `<script type="module" src="./${runtimePath}"></script>`,
-    `<p class="ls-reveal-highlight" data-step="1">Highlight</p><p class="ls-reveal ls-reveal-fade ls-reveal-slide-up" data-step="2">Too many</p>`,
+    `<p class="ls-reveal-highlight" data-step="1">Highlight</p><p class="ls-reveal-fade" data-step="2">Missing base</p><p class="ls-reveal ls-reveal-fade ls-reveal-slide-up" data-step="3">Too many</p>`,
   );
   const result = await validateCommand([root]);
   assert.equal(result.data.valid, true);
@@ -217,8 +217,109 @@ test("validate warns for invalid reveal animation combinations", async () => {
     result.data.warnings.some((warning) => warning.code === "reveal_highlight_without_reveal"),
   );
   assert.ok(
+    result.data.warnings.some((warning) => warning.code === "reveal_variant_without_reveal"),
+  );
+  assert.ok(
     result.data.warnings.some((warning) => warning.code === "multiple_reveal_transform_variants"),
   );
+});
+
+test("validate checks srcset, poster, inline style URLs, and stylesheet URLs", async () => {
+  const root = await deckWithHtml(
+    `<link rel="stylesheet" href="./styles/main.css" /><script type="module" src="./${runtimePath}"></script>`,
+    `<img srcset="assets/missing-small.png 1x, https://example.com/remote.png 2x" alt="" />
+     <video poster="assets/missing-poster.png"></video>
+     <div style="background-image: url('assets/missing-bg.png')"></div>`,
+  );
+  await mkdir(path.join(root, "styles"), { recursive: true });
+  await writeFile(
+    path.join(root, "styles", "main.css"),
+    `.hero { background: url('../assets/missing-css.png'); }`,
+  );
+
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, false);
+  const messages = result.data.errors.map((error) => error.message).join("\n");
+  assert.match(messages, /missing-small\.png/);
+  assert.match(messages, /missing-poster\.png/);
+  assert.match(messages, /missing-bg\.png/);
+  assert.match(messages, /missing-css\.png/);
+});
+
+test("validate ignores removed layout and HTML examples inside non-rendered code blocks", async () => {
+  const root = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<pre><code>&lt;div class=&quot;ls-layout-detail-split&quot;&gt;&lt;/div&gt;</code></pre>
+     <pre><img src="missing.png"><button><i data-lucide="menu"></i></button><ol class="ls-timeline"><li class="ls-timeline__item"><strong>Raw</strong><span>Example</span></li></ol></pre>`,
+  );
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.ok(!result.data.errors.some((error) => error.code === "removed_layout_class"));
+  assert.ok(!result.data.warnings.some((warning) => warning.code === "image_missing_alt"));
+  assert.ok(!result.data.warnings.some((warning) => warning.code === "timeline_structure"));
+});
+
+test("validate warns for copied registry CSS that is not loaded", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-load-tags-"));
+  await initCommand([root, "--template", "blank"]);
+  const htmlPath = path.join(root, "index.html");
+  const html = await readFile(htmlPath, "utf8");
+  await writeFile(htmlPath, html.replace(/.*icons\.css.*\n/, ""));
+
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.ok(result.data.warnings.some((warning) => warning.code === "copied_asset_not_loaded"));
+});
+
+test("validate warns for accessibility issues and strict mode escalates", async () => {
+  const root = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<img src="assets/pic.png"><button><i data-lucide="menu"></i></button>`,
+  );
+  await mkdir(path.join(root, "assets"), { recursive: true });
+  await writeFile(path.join(root, "assets", "pic.png"), "image");
+
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.ok(result.data.warnings.some((warning) => warning.code === "image_missing_alt"));
+  assert.ok(result.data.warnings.some((warning) => warning.code === "control_accessible_name"));
+
+  const strict = await validateCommand([root, "--strict"]);
+  assert.equal(strict.data.valid, false);
+  assert.ok(strict.data.errors.some((error) => error.code === "image_missing_alt"));
+});
+
+test("validate strict keeps structural accessible-name guidance as warnings", async () => {
+  const root = await deckWithHtml(`<script type="module" src="./${runtimePath}"></script>`);
+  const strict = await validateCommand([root, "--strict"]);
+  assert.equal(strict.data.valid, true);
+  assert.ok(strict.data.warnings.some((warning) => warning.code === "deck_accessible_name"));
+});
+
+test("validate reports registry source hint without fetching remote manifest registry by default", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-registry-source-"));
+  await initCommand([root, "--template", "blank"]);
+  const manifestPath = path.join(root, "slidesls", "manifest.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  manifest.registrySource = { mode: "remote", url: "https://example.invalid/slidesls" };
+  await writeFile(manifestPath, JSON.stringify(manifest, null, 2));
+
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.equal(result.data.registrySourceUsed.mode, "local");
+  assert.match(result.data.registrySourceHint, /default validation stays offline/);
+});
+
+test("validate warns when discovering an ancestor config from a nested start path", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-ancestor-"));
+  await initCommand([root, "--template", "blank"]);
+  const nested = path.join(root, "nested");
+  await mkdir(nested);
+
+  const result = await validateCommand([nested]);
+  assert.equal(result.data.valid, true);
+  assert.equal(result.data.configDiscovery, "ancestor");
+  assert.ok(result.data.warnings.some((warning) => warning.code === "ancestor_config_discovered"));
 });
 
 test("validate warns for very large code blocks", async () => {

@@ -25,6 +25,7 @@ export function deckTemplate({
     <link rel="stylesheet" href="./${baseDir}/registry/core/base/reset.css" />
     <link rel="stylesheet" href="./${baseDir}/registry/core/base/tokens.css" />
 ${themeLink}    <link rel="stylesheet" href="./${baseDir}/registry/core/base/slide.css" />
+    <link rel="stylesheet" href="./${baseDir}/registry/core/base/icons.css" />
 ${utilityLink}
     <script type="module" src="./${baseDir}/registry/core/base/slide-runtime.js"></script>
   </head>

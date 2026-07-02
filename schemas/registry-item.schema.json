@@ -22,8 +22,19 @@
       "type": "string",
       "enum": ["ls:core", "ls:utility", "ls:component", "ls:animation", "ls:preset", "ls:template"]
     },
+    "title": {
+      "type": "string"
+    },
     "description": {
       "type": "string"
+    },
+    "tags": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "useCases": {
+      "type": "array",
+      "items": { "type": "string" }
     },
     "files": {
       "type": "array",
@@ -71,6 +82,21 @@
     },
     "agentRecommended": {
       "type": "boolean"
+    },
+    "styleTone": {
+      "type": "string"
+    },
+    "pairsWith": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "themeAttribute": {
+      "type": "string"
+    },
+    "structure": {
+      "type": "object",
+      "description": "Optional structural contract metadata for future generalized validators.",
+      "additionalProperties": true
     },
     "snippets": {
       "type": "array",

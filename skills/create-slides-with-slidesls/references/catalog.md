@@ -230,7 +230,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Class groups:
   - `ls-table`: `ls-table__caption`, `ls-table__value`, `ls-table__muted`, `ls-table__note`
 - Classes: `ls-table-frame`
-- Data attributes: `data-ls-density=compact`, `data-ls-variant=striped|plain`
+- Data attributes: `data-ls-density=compact`, `data-ls-variant=striped|plain`, `data-ls-overflow=clip`
 - CSS variables: `--ls-table-cell-padding`, `--ls-table-min-inline`, `--ls-table-accent`, `--ls-table-stripe-bg`
 - Registry dependencies: core/base
 - Files: registry/components/table/table.css
@@ -268,7 +268,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Usage: Combine with reveal sequencing classes/attributes for fade transitions. Combine with .ls-reveal and do not stack with another reveal transform variant.
 - Registry dependencies: core/base, animations/reveal
 - Files: registry/animations/fade/fade.css
-- Snippets: none
+- Snippets: Fade reveal sequence (registry/animations/fade/snippets/basic.html)
 - Docs: registry/animations/fade/README.md
 
 ### animations/highlight
@@ -318,7 +318,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Usage: Combine with .ls-reveal and do not stack with another reveal transform variant.
 - Registry dependencies: core/base, animations/reveal
 - Files: registry/animations/scale-in/scale-in.css
-- Snippets: none
+- Snippets: Scale-in reveal sequence (registry/animations/scale-in/snippets/basic.html)
 - Docs: registry/animations/scale-in/README.md
 
 ### animations/slide-up
@@ -334,7 +334,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Usage: Combine with .ls-reveal and do not stack with another reveal transform variant.
 - Registry dependencies: core/base, animations/reveal
 - Files: registry/animations/slide-up/slide-up.css
-- Snippets: none
+- Snippets: Slide-up reveal sequence (registry/animations/slide-up/snippets/basic.html)
 - Docs: registry/animations/slide-up/README.md
 
 ## Presets

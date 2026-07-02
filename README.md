@@ -13,9 +13,9 @@ After publishing/installing from npm:
 ```sh
 npx -y @maxedapps/slidesls@latest init ./my-deck --template minimal --theme executive-blue --title "My Deck"
 cd my-deck
-npx slidesls catalog --recommended
-npx slidesls validate
-npx slidesls preview
+npx -y @maxedapps/slidesls@latest catalog --recommended
+npx -y @maxedapps/slidesls@latest validate
+npx -y @maxedapps/slidesls@latest preview
 ```
 
 Local repo checkout, from a dedicated deck folder:
@@ -73,7 +73,7 @@ cd /path/to/ls_slides
 npm pack
 cd /path/to/other-project
 npm install /path/to/ls_slides/maxedapps-slidesls-0.2.0.tgz
-npx slidesls init --template minimal --title "My Deck"
+npx -y @maxedapps/slidesls@latest init --template minimal --title "My Deck"
 ```
 
 Use the packed tarball for pre-publish smoke tests and release-candidate installs.

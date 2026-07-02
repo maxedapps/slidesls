@@ -14,6 +14,12 @@
   "docs": "registry/animations/fade/README.md",
   "safeAnywhere": true,
   "agentRecommended": true,
+  "snippets": [
+    {
+      "label": "Fade reveal sequence",
+      "path": "registry/animations/fade/snippets/basic.html"
+    }
+  ],
   "authoring": {
     "classGroups": [
       {

@@ -1,4 +1,4 @@
-import { startTagRecords } from "../shared/html.mjs";
+import { startTagRecords, stripNonRenderedCode } from "../shared/html.mjs";
 
 const revealTransformVariants = ["ls-reveal-fade", "ls-reveal-slide-up", "ls-reveal-scale-in"];
 
@@ -57,7 +57,8 @@ function deckIssue({ strict, errors, warnings, code, message, hint }) {
 }
 
 export function validateDeckStructure({ html, strict = false, errors, warnings }) {
-  const tags = startTagRecords(html);
+  const renderedHtml = stripNonRenderedCode(html);
+  const tags = startTagRecords(renderedHtml);
   if (tags.some(isCustomProgress)) {
     const progressCount = tags.filter(isCustomProgress).length;
     const trackCount = tags.filter((tag) => hasClass(tag.attributes, "ls-progress__track")).length;
@@ -76,7 +77,7 @@ export function validateDeckStructure({ html, strict = false, errors, warnings }
 
   if (
     /<li\b[^>]*class=["'][^"']*\bls-timeline__item\b[^"']*["'][^>]*>\s*<strong(?![^>]*\bls-timeline__title\b)[\s\S]*?<span(?![^>]*\bls-timeline__(?:meta|text)\b)/i.test(
-      html,
+      renderedHtml,
     )
   )
     deckIssue({
@@ -103,6 +104,15 @@ export function validateDeckStructure({ html, strict = false, errors, warnings }
       });
 
     const variants = classes.filter((className) => revealTransformVariants.includes(className));
+    if (variants.length && !classes.includes("ls-reveal"))
+      deckIssue({
+        strict,
+        errors,
+        warnings,
+        code: "reveal_variant_without_reveal",
+        message: `Reveal variant classes require .ls-reveal (${variants.join(", ")}).`,
+        hint: "Use .ls-reveal plus exactly one transform variant and data-step or data-ls-reveal-sequence.",
+      });
     if (variants.length > 1)
       deckIssue({
         strict,

@@ -11,7 +11,7 @@ node /absolute/path/to/ls_slides/bin/slidesls.mjs --help
 node /absolute/path/to/ls_slides/bin/slidesls.mjs init --template minimal --title "My Deck"
 ```
 
-If installed from npm or a local tarball in the target project, use `npx slidesls ...` or `npx -y @maxedapps/slidesls@latest ...`.
+If the package is already installed in the target project, use `npx slidesls ...`. For one-off npm execution without prior install, use `npx -y @maxedapps/slidesls@latest ...` to avoid resolving an unrelated unscoped package.
 
 ## Commands
 

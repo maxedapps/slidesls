@@ -5,17 +5,29 @@
   "type": "object",
   "properties": {
     "$schema": { "type": "string" },
-    "registry": { "type": "string" },
+    "registry": {
+      "type": "string",
+      "description": "Human-readable registry hint. Validation stays bundled/offline unless explicit registry flags are used.",
+      "default": "bundled"
+    },
     "paths": {
       "type": "object",
+      "description": "Project-local relative paths. Absolute paths and parent traversal are invalid.",
       "properties": {
-        "items": { "type": "string" },
-        "entry": { "type": "string" },
-        "assets": { "type": "string" },
-        "snapshots": { "type": "string" }
+        "items": { "$ref": "#/$defs/safeRelativePath", "default": "slidesls" },
+        "entry": { "$ref": "#/$defs/safeRelativePath", "default": "index.html" },
+        "assets": { "$ref": "#/$defs/safeRelativePath", "default": "assets" },
+        "snapshots": { "$ref": "#/$defs/safeRelativePath", "default": "snapshots" }
       },
       "additionalProperties": false
     }
   },
-  "additionalProperties": false
+  "additionalProperties": false,
+  "$defs": {
+    "safeRelativePath": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^(?!/)(?![A-Za-z]:)(?!.*(?:^|/)\\.\\.(?:/|$)).+$"
+    }
+  }
 }

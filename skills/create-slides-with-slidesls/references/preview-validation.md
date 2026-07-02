@@ -8,7 +8,7 @@ slidesls preview <deck> --host 127.0.0.1 --port 4321
 slidesls doctor --dir <deck> --json
 ```
 
-Fix all `validate` errors before visual review. Treat warnings as issues to review, especially missing registry items, broken progress/timeline/reveal structures, large code blocks, missing Lucide scripts, or reveal-step problems. Default JSON output may include `customizedFiles` for edited copied registry files; that is allowed unless `--strict` is required.
+Fix all `validate` errors before visual review. Treat warnings as issues to review, especially missing load tags, missing registry items, broken progress/timeline/reveal structures, large code blocks, accessibility gaps, missing Lucide scripts, or reveal-step problems. Default JSON output may include `customizedFiles` for edited copied registry files; that is allowed unless `--strict` is required.
 
 Validation is static and lightweight, not a full HTML parser or browser render. It does not replace preview. Unless the user opts out, inspect representative slides after static validation:
 
@@ -21,7 +21,7 @@ Validation is static and lightweight, not a full HTML parser or browser render. 
 
 For AI agents, prefer `agent-browser` for the visual pass so you can see actual rendered slides instead of inferring layout from HTML/CSS. `slidesls preview` is long-running: start it in the background or another terminal and keep it running while browser commands execute. If `agent-browser` is not on PATH, use `npx -y agent-browser ...` or follow the installed `agent-browser` skill, which recommends `agent-browser skills get core --full` for current CLI-matched instructions.
 
-Use a pinned viewport for stable review. Use `?export=1` for layout QA with all reveal content visible:
+Use a pinned viewport for stable review. JSON preview output includes both `url` and `exportUrl`. Use `?export=1` / `exportUrl` for layout QA with all reveal content visible:
 
 ```sh
 slidesls preview <deck> --host 127.0.0.1 --port 4321
@@ -54,6 +54,8 @@ Inspect screenshots and iterate until visually acceptable; do not merely capture
 - repeated cards have consistent rhythm, but not excessive empty height;
 - code and tables are legible at the actual slide scale;
 - contrast is readable;
+- images have meaningful alt text or are explicitly decorative;
+- slides and icon-only controls have accessible names;
 - icons/fonts are loaded or gracefully absent;
 - reveal steps produce meaningful intermediate states.
 

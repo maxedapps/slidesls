@@ -15,7 +15,7 @@ import {
   hasElementWithClass,
   hasLucideScript,
   hasModuleRuntimeScript,
-  localFileReferences,
+  stripNonRenderedCode,
   usesLucideIcons,
 } from "../shared/html.mjs";
 import { RegistrySource, loadRegistry, resolveItems, summarizeItem } from "../registry/source.mjs";
@@ -38,6 +38,9 @@ import { deckTemplate } from "../deck/templates.mjs";
 import { validateRegistry } from "../validation/registry.mjs";
 import { validateExamples } from "../validation/examples.mjs";
 import { validateDeckStructure } from "../validation/markup-structure.mjs";
+import { validateLocalAssets } from "../validation/assets.mjs";
+import { validateLoadTags } from "../validation/load-tags.mjs";
+import { validateAccessibility } from "../validation/accessibility.mjs";
 import {
   buildAuthoringClassIndex,
   itemNamesForClasses,
@@ -483,19 +486,28 @@ For AI agents:
 }
 
 export async function validateCommand(argv) {
-  const args = parseArgs(argv, { boolean: ["strict", "json", "help"] });
+  const args = parseArgs(argv, {
+    boolean: ["strict", "json", "help", "use-manifest-registry"],
+  });
   if (args.help)
     return ok({
-      help: `Usage: slidesls validate [dir] [--strict] [--json]
+      help: `Usage: slidesls validate [dir] [--strict] [--registry-root <path>] [--registry-url <url>] [--use-manifest-registry] [--json]
 
 For AI agents:
   Run after every edit: slidesls validate <deck> --json
   Unknown ls-* classes warn by default and error with --strict.
+  Default validation is offline/deterministic and uses the bundled registry unless an explicit registry source is provided.
   Use slidesls catalog --json for valid classes and slidesls inspect <item> --readme --json for snippets.`,
     });
+  rejectRemovedRegistryOption(args);
   const start = path.resolve(args._[0] || args.dir || ".");
-  const { config: foundConfig, root } = await readConfig(start);
+  const { config: foundConfig, configPath, root } = await readConfig(start);
   const config = foundConfig || DEFAULT_CONFIG;
+  const configDiscovery = configPath
+    ? path.resolve(start) === root
+      ? "explicit"
+      : "ancestor"
+    : "default";
   const errors = [],
     warnings = [],
     customizedFiles = [];
@@ -504,7 +516,28 @@ For AI agents:
       code: "missing_config",
       message: "slidesls.json was not found; using defaults for explicit validation.",
     });
+  else if (configDiscovery === "ancestor")
+    warnings.push({
+      code: "ancestor_config_discovered",
+      message: `Using ${CONFIG_FILE} from ancestor ${root} for start path ${start}`,
+      hint: "Run from the deck root or pass the intended deck directory explicitly.",
+    });
   const entryPath = path.join(root, config.paths.entry);
+  const manifest = await readManifest(root, config);
+  const registryChoice = registrySourceForValidation({ args, manifest });
+  const registrySourceUsed = registryChoice.source.describe();
+  const registrySourceHint = registryChoice.hint;
+  let activeRegistry = null;
+  try {
+    activeRegistry = await loadRegistry(registryChoice.source);
+  } catch (error) {
+    warnings.push({
+      code: "registry_source_unavailable",
+      message: `Could not load validation registry source: ${error.message}`,
+      hint: "Class, load-tag, and dependency checks may be incomplete.",
+    });
+  }
+
   if (!(await exists(entryPath)))
     errors.push({
       code: "missing_entry",
@@ -526,25 +559,7 @@ For AI agents:
         message: "slide-runtime.js must be loaded as a module script",
         hint: "Run slidesls add core/base --dir <deck> --dry-run --json and add the returned script tag.",
       });
-    for (const ref of localFileReferences(html)) {
-      const target = path.resolve(path.dirname(entryPath), ref.localPath);
-      try {
-        assertInside(root, target);
-      } catch {
-        errors.push({
-          code: "asset_outside_project",
-          message: `${ref.rawValue} resolves outside project`,
-          hint: "Use local href/src paths that stay inside the deck project.",
-        });
-        continue;
-      }
-      if (!(await exists(target)))
-        errors.push({
-          code: "missing_asset",
-          message: `${ref.rawValue} does not exist`,
-          hint: "Local href/src paths are resolved relative to the entry HTML file.",
-        });
-    }
+    await validateLocalAssets({ html, root, entryPath, errors });
     if (usesLucideIcons(html) && !hasLucideScript(html))
       warnings.push({
         code: "lucide_missing",
@@ -556,11 +571,8 @@ For AI agents:
         message: "Reveal elements should use data-step or data-ls-reveal-sequence.",
       });
   }
-  const manifest = await readManifest(root, config);
-  if (html) {
-    const authoringIndex = buildAuthoringClassIndex(
-      (await loadRegistry(new RegistrySource())).items,
-    );
+  if (html && activeRegistry) {
+    const authoringIndex = buildAuthoringClassIndex(activeRegistry.items);
     validateKnownClasses({
       html,
       strict: args.strict,
@@ -576,6 +588,11 @@ For AI agents:
       warnings,
     });
     validateDeckStructure({ html, strict: args.strict, errors, warnings });
+    validateAccessibility({ html, strict: args.strict, errors, warnings });
+    await validateLoadTags({ html, manifest, registryData: activeRegistry, root, warnings });
+  } else if (html) {
+    validateDeckStructure({ html, strict: args.strict, errors, warnings });
+    validateAccessibility({ html, strict: args.strict, errors, warnings });
   }
   if (manifest) {
     for (const file of manifest.copiedFiles || []) {
@@ -603,17 +620,56 @@ For AI agents:
         }
       }
     }
+    if (activeRegistry) {
+      const knownItems = new Set(activeRegistry.items.map((item) => item.name));
+      for (const item of manifest.dependencyOrder || []) {
+        if (!knownItems.has(item))
+          warnings.push({
+            code: "manifest_unknown_item",
+            message: `${item} is listed in the manifest but not found in the active registry source`,
+          });
+      }
+    }
   }
   const valid = errors.length === 0;
   return ok({
     valid,
+    start,
     root,
+    configPath: configPath ? path.relative(root, configPath) : null,
+    configDiscovery,
     entry: config.paths.entry,
+    registrySourceUsed,
+    registrySourceHint,
+    manifestPresent: Boolean(manifest),
+    manifestBaseDir: manifest?.baseDir || null,
+    customizedFilesCount: customizedFiles.length,
     errors,
     warnings,
     customizedFiles,
     agentInstructions: validateAgentInstructions(root),
   });
+}
+
+function registrySourceForValidation({ args, manifest }) {
+  if (args["registry-root"] || args["registry-url"])
+    return { source: registrySource(args), hint: null };
+  const manifestSource = manifest?.registrySource;
+  if (args["use-manifest-registry"] && manifestSource?.mode === "local" && manifestSource.root)
+    return { source: new RegistrySource({ registryRoot: manifestSource.root }), hint: null };
+  if (args["use-manifest-registry"] && manifestSource?.mode === "remote" && manifestSource.url)
+    return { source: new RegistrySource({ registryUrl: manifestSource.url }), hint: null };
+  if (manifestSource?.mode === "local" && manifestSource.root)
+    return {
+      source: new RegistrySource(),
+      hint: `Manifest references local registry ${manifestSource.root}; pass --use-manifest-registry or --registry-root to validate against it.`,
+    };
+  if (manifestSource?.mode === "remote")
+    return {
+      source: new RegistrySource(),
+      hint: `Manifest references remote registry ${manifestSource.url}; default validation stays offline. Pass --use-manifest-registry or --registry-url to fetch explicitly.`,
+    };
+  return { source: new RegistrySource(), hint: null };
 }
 
 export async function doctorCommand(argv) {
@@ -738,7 +794,8 @@ function themeApplication(items) {
 }
 
 function validateKnownClasses({ html, strict, knownClasses, errors, warnings }) {
-  if (/\bls-layout-[\w-]+/.test(html))
+  const renderedHtml = stripNonRenderedCode(html);
+  if (/\bls-layout-[\w-]+/.test(renderedHtml))
     errors.push({
       code: "removed_layout_class",
       message:
@@ -746,7 +803,7 @@ function validateKnownClasses({ html, strict, knownClasses, errors, warnings }) 
       hint: "Run slidesls catalog --json to see valid public layout utilities.",
     });
 
-  for (const className of unknownLsClasses(html, knownClasses)) {
+  for (const className of unknownLsClasses(renderedHtml, knownClasses)) {
     const entry = {
       code: "unknown_ls_class",
       message: `${className} is not listed in the slidesls authoring API catalog`,
@@ -838,15 +895,28 @@ Starts a local server, prints the URL, and keeps running until stopped.`,
   const realRoot = await realpath(root);
   const server = createServer(async (request, response) => {
     try {
+      if (!["GET", "HEAD"].includes(request.method || "GET")) {
+        response.statusCode = 405;
+        response.setHeader("Allow", "GET, HEAD");
+        response.end("Method not allowed");
+        return;
+      }
       const url = new URL(request.url || "/", `http://${host}`);
       const relative =
         url.pathname === "/" ? config.paths.entry : decodeURIComponent(url.pathname.slice(1));
+      if (relative.endsWith("/")) {
+        response.statusCode = 404;
+        response.end("Not found");
+        return;
+      }
       const target = path.join(root, relative);
       assertInside(root, target);
       const realTarget = await realpath(target);
       assertInside(realRoot, realTarget);
       response.setHeader("Content-Type", contentType(target));
-      response.end(await readFile(realTarget));
+      response.setHeader("Cache-Control", "no-store");
+      if (request.method === "HEAD") response.end();
+      else response.end(await readFile(realTarget));
     } catch (error) {
       response.statusCode = error instanceof URIError || error instanceof TypeError ? 400 : 404;
       response.end(response.statusCode === 400 ? "Bad request" : "Not found");
@@ -856,12 +926,21 @@ Starts a local server, prints the URL, and keeps running until stopped.`,
   const url = `http://${host}:${port}/`;
   return ok({
     url,
+    exportUrl: `${url}?export=1`,
     root,
     entry: config.paths.entry,
     host,
     port,
     pid: process.pid,
     note: "Server keeps running until this process is stopped.",
+    agentInstructions: {
+      purpose: "Preview and visually inspect a slidesls deck.",
+      rules: [
+        "Keep this long-running server active while using browser automation.",
+        "Inspect both normal and export mode.",
+      ],
+      longRunningCommands: [`slidesls preview ${root} --host ${host} --port ${port}`],
+    },
   });
 }
 
@@ -878,7 +957,10 @@ function contentType(filePath) {
       ".jpg": "image/jpeg",
       ".jpeg": "image/jpeg",
       ".webp": "image/webp",
+      ".avif": "image/avif",
       ".gif": "image/gif",
+      ".ico": "image/x-icon",
+      ".woff2": "font/woff2",
     }[path.extname(filePath).toLowerCase()] || "application/octet-stream"
   );
 }

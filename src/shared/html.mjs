@@ -25,18 +25,62 @@ function decodePath(value) {
 
 export function localFileReferences(html) {
   const refs = [];
-  const attributePattern = /\b(?:href|src)\s*=\s*(["'])(.*?)\1/gims;
+  const attributePattern = /\b(href|src|poster)\s*=\s*(["'])(.*?)\2/gims;
   for (const match of html.matchAll(attributePattern)) {
-    const rawValue = match[2];
-    if (isExternalOrNonFileUrl(rawValue)) continue;
-    const localPath = decodePath(stripQueryAndHash(rawValue.trim()));
-    if (localPath) refs.push({ rawValue, localPath });
+    const attribute = match[1].toLowerCase();
+    addLocalRef(refs, match[3], { attribute, kind: attribute });
+  }
+  const srcsetPattern = /\bsrcset\s*=\s*(["'])(.*?)\1/gims;
+  for (const match of html.matchAll(srcsetPattern)) {
+    for (const candidate of match[2].split(",")) {
+      const rawValue = candidate.trim().split(/\s+/, 1)[0];
+      addLocalRef(refs, rawValue, { attribute: "srcset", kind: "srcset" });
+    }
+  }
+  const stylePattern = /\bstyle\s*=\s*(["'])(.*?)\1/gims;
+  for (const match of html.matchAll(stylePattern)) {
+    for (const url of cssUrlValues(match[2]))
+      addLocalRef(refs, url, { attribute: "style", kind: "style-url" });
   }
   return refs;
 }
 
+function addLocalRef(refs, rawValue, details = {}) {
+  if (isExternalOrNonFileUrl(rawValue)) return;
+  const localPath = decodePath(stripQueryAndHash(String(rawValue).trim()));
+  if (localPath) refs.push({ rawValue, localPath, ...details });
+}
+
+function cssUrlValues(source) {
+  const urls = [];
+  for (const match of String(source).matchAll(
+    /url\(\s*(?:"([^"]*)"|'([^']*)'|([^)'"\s][^)]*?))\s*\)/gims,
+  ))
+    urls.push((match[1] ?? match[2] ?? match[3] ?? "").trim());
+  return urls;
+}
+
 export function localReferences(html) {
   return localFileReferences(html).map((reference) => reference.localPath);
+}
+
+export function stylesheetHrefs(html) {
+  return startTags(html, "link")
+    .filter((attributes) =>
+      String(attributes.get("rel") || "")
+        .toLowerCase()
+        .split(/\s+/)
+        .includes("stylesheet"),
+    )
+    .map((attributes) => attributes.get("href") || "")
+    .filter(Boolean);
+}
+
+export function moduleScriptSrcs(html) {
+  return startTags(html, "script")
+    .filter((attributes) => attributes.get("type")?.toLowerCase() === "module")
+    .map((attributes) => attributes.get("src") || "")
+    .filter(Boolean);
 }
 
 export function startTags(html, tagName) {
@@ -62,9 +106,13 @@ export function parseAttributes(source) {
   return attributes;
 }
 
+export function stripNonRenderedCode(html) {
+  return String(html).replace(/<(code|pre|script|style)\b[\s\S]*?<\/\1>/gim, "");
+}
+
 export function classTokens(html) {
   const tokens = [];
-  for (const attributes of startTags(html, "[a-z][a-z0-9:-]*")) {
+  for (const attributes of startTags(stripNonRenderedCode(html), "[a-z][a-z0-9:-]*")) {
     for (const token of String(attributes.get("class") || "").split(/\s+/)) {
       if (token) tokens.push(token);
     }
