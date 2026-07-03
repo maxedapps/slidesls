@@ -9,6 +9,10 @@
 - Unknown CLI flags now fail with exit code 2 instead of being treated as implicit value options.
 - Registry metadata no longer stores `agentRecommended`; it is computed from the new `agentLevel` (`starter`/`recommended`).
 
+### Fixed
+
+- `validate` no longer reports a false `copied_asset_not_loaded` warning for module scripts (including `slide-runtime.js`) on every generated deck, and now detects loaded-but-unlisted JS assets via `loaded_asset_missing_manifest_item`.
+
 ### Added
 
 - `agentLevel` metadata with `--starter` and `--level <level>` catalog filters.

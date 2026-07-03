@@ -16,7 +16,9 @@ export async function validateLoadTags({ html, manifest, registryData, root, war
   if (!manifest) return;
   const renderedHtml = stripNonRenderedCode(html);
   const loadedLinks = new Set(stylesheetHrefs(renderedHtml).map(normalizeRef));
-  const loadedScripts = new Set(moduleScriptSrcs(renderedHtml).map(normalizeRef));
+  // Script srcs must come from the raw HTML: stripNonRenderedCode removes whole
+  // <script> elements, so scanning the stripped HTML never sees real module scripts.
+  const loadedScripts = new Set(moduleScriptSrcs(html).map(normalizeRef));
   const copiedItems = [...new Set(manifest.dependencyOrder || [])];
 
   for (const tag of [...(manifest.links || []), ...(manifest.scripts || [])]) {

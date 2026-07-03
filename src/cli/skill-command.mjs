@@ -1,5 +1,6 @@
 import path from "node:path";
 import { parseArgs, usageError } from "../shared/args.mjs";
+import { commandOptionSpecs } from "./option-specs.mjs";
 import { ok } from "../shared/result.mjs";
 import {
   performSkillInstall,
@@ -11,10 +12,7 @@ import {
 } from "../skill/agent-skill.mjs";
 
 export async function skillCommand(argv) {
-  const args = parseArgs(argv, {
-    boolean: ["json", "help", "dry-run", "force", "all"],
-    value: ["reference"],
-  });
+  const args = parseArgs(argv, commandOptionSpecs.skill);
   const subcommand = args._[0] || "info";
   const targetDir = args._[1] ? path.resolve(args._[1]) : undefined;
 

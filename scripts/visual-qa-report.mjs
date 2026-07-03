@@ -18,7 +18,14 @@ if (process.argv.includes("--help") || process.argv.includes("-h")) {
 
 if (process.argv.includes("--analyze")) {
   const input = await readStdin();
-  const payload = JSON.parse(input || "{}");
+  // agent-browser eval prints the payload as a JSON string literal, so the
+  // first parse may yield a string that itself contains the payload JSON.
+  let payload = JSON.parse(input || "{}");
+  if (typeof payload === "string") payload = JSON.parse(payload);
+  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+    process.stderr.write("Expected collected visual QA JSON with a slides array on stdin.\n");
+    process.exit(1);
+  }
   stdout.write(`${JSON.stringify(analyzeVisualRhythm(payload), null, 2)}\n`);
   process.exit(0);
 }
@@ -117,6 +124,11 @@ stdout.write(String.raw`(() => {
       const headerRect = rectFor(header, slideRect);
       const titleRect = rectFor(title, slideRect);
       const bodyRect = rectFor(body, slideRect);
+      // Headers sit at the inner's content box, not its border box: the inner
+      // spans the slide and positions content via padding-block.
+      const innerPaddingTop = inner ? parseFloat(getComputedStyle(inner).paddingTop) || 0 : 0;
+      const expectedHeaderOffsetTop =
+        innerRect === null ? null : innerRect.offsetTop + innerPaddingTop;
       return {
         index: index + 1,
         id: slide.id || null,
@@ -136,6 +148,7 @@ stdout.write(String.raw`(() => {
         titleRect,
         bodyRect,
         innerOffsetTop: innerRect?.offsetTop ?? null,
+        expectedHeaderOffsetTop,
         headerOffsetTop: headerRect?.offsetTop ?? null,
         titleOffsetTop: titleRect?.offsetTop ?? null,
         bodyOffsetTop: bodyRect?.offsetTop ?? null,

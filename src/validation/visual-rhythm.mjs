@@ -6,21 +6,28 @@ export function analyzeVisualRhythm(payload, options = {}) {
   const tolerance = options.headerOffsetTolerance ?? HEADER_OFFSET_TOLERANCE;
   const ratioLimit = options.maxContentHeaderRatio ?? MAX_CONTENT_HEADER_RATIO;
   const medianTolerance = options.medianTolerance ?? MEDIAN_TOLERANCE;
+  // Precedence: browser-resolved kind, then the raw data-ls-slide-kind attribute,
+  // then fact-based inference for payloads collected without kind resolution.
   const slides = (payload.slides || []).map((slide) => ({
     ...slide,
-    inferredKind: slide.kind || inferKind(slide),
+    inferredKind: slide.kind || slide.slideKind || inferKind(slide),
   }));
   const warnings = [];
   const contentSlides = slides.filter((slide) => slide.inferredKind === "content");
 
   for (const slide of contentSlides) {
-    if (number(slide.headerOffsetTop) && number(slide.innerOffsetTop)) {
-      const delta = Math.abs(slide.headerOffsetTop - slide.innerOffsetTop);
+    // The inner spans the slide and positions its header via padding, so the
+    // expected header top is the inner's content-box top when collected.
+    const expected = number(slide.expectedHeaderOffsetTop)
+      ? slide.expectedHeaderOffsetTop
+      : slide.innerOffsetTop;
+    if (number(slide.headerOffsetTop) && number(expected)) {
+      const delta = Math.abs(slide.headerOffsetTop - expected);
       if (delta > tolerance)
         warnings.push({
           code: "content_header_offset",
           slide: slide.index,
-          message: `Content slide ${slide.index} header starts ${Math.round(delta)}px from expected inner top.`,
+          message: `Content slide ${slide.index} header starts ${Math.round(delta)}px from its expected top position.`,
         });
     }
     const slideHeight = slide.rect?.height || slide.clientHeight || 0;
@@ -64,7 +71,6 @@ export function analyzeVisualRhythm(payload, options = {}) {
 }
 
 function inferKind(slide) {
-  if (slide.slideKind) return slide.slideKind;
   if (slide.hasSlideFill && slide.centerInFill) return "section";
   if (slide.hasSlideFill && slide.centerStartInFill) return "hero";
   return "content";

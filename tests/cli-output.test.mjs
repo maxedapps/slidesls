@@ -6,6 +6,7 @@ import path from "node:path";
 import { promisify } from "node:util";
 import test from "node:test";
 import { agentCommandRecipes } from "../src/cli/agent-instructions.mjs";
+import { commandOptionSpecs } from "../src/cli/option-specs.mjs";
 
 const execFileAsync = promisify(execFile);
 const bin = path.resolve("bin/slidesls.mjs");
@@ -344,7 +345,7 @@ async function run(args) {
   return execFileAsync(process.execPath, args, { cwd: path.resolve("."), maxBuffer: 1024 * 1024 });
 }
 
-test("agent guidance avoids stale primary commands", async () => {
+async function guidanceFiles() {
   const { stdout } = await execFileAsync(
     "git",
     ["ls-files", "src/**/*.mjs", "docs/**/*.md", "skills/**/*.md", "README.md"],
@@ -352,7 +353,60 @@ test("agent guidance avoids stale primary commands", async () => {
       cwd: path.resolve("."),
     },
   );
-  for (const file of stdout.trim().split(/\n/).filter(Boolean)) {
+  return stdout.trim().split(/\n/).filter(Boolean);
+}
+
+function commandFlagViolations(text, specs) {
+  const violations = [];
+  for (const [index, line] of text.split(/\n/).entries()) {
+    for (const commandMatch of line.matchAll(/slidesls(?:\.mjs)?\s+([a-z][a-z0-9-]*)/g)) {
+      const spec = specs[commandMatch[1]];
+      if (!spec) continue;
+      const allowed = new Set([...(spec.boolean || []), ...(spec.value || [])]);
+      // Attribute flags only up to the end of the invocation: a closing
+      // backtick/quote ends a code span or string literal, and a following
+      // `slidesls` starts the next invocation on the same line.
+      const rest = line.slice(commandMatch.index + commandMatch[0].length);
+      const spanEnd = rest.split(/[`"']/, 1)[0];
+      const nextCommand = spanEnd.search(/slidesls/);
+      const segment = nextCommand === -1 ? spanEnd : spanEnd.slice(0, nextCommand);
+      for (const flag of segment.matchAll(/--([a-z][a-z0-9-]*)/g)) {
+        if (flag[1] === "help" || allowed.has(flag[1])) continue;
+        violations.push({
+          line: index + 1,
+          command: commandMatch[1],
+          flag: flag[1],
+          text: line.trim(),
+        });
+      }
+    }
+  }
+  return violations;
+}
+
+test("documented command invocations use only declared flags", async () => {
+  for (const file of await guidanceFiles()) {
+    const text = await readFile(path.resolve(file), "utf8");
+    const violations = commandFlagViolations(text, commandOptionSpecs);
+    assert.deepEqual(
+      violations,
+      [],
+      `${file} documents flags the strict parser rejects: ${JSON.stringify(violations)}`,
+    );
+  }
+});
+
+test("command flag sweep detects undeclared flags", () => {
+  const violations = commandFlagViolations(
+    "Run `slidesls catalog --bogus-flag --json` first.",
+    commandOptionSpecs,
+  );
+  assert.equal(violations.length, 1);
+  assert.equal(violations[0].flag, "bogus-flag");
+});
+
+test("agent guidance avoids stale primary commands", async () => {
+  for (const file of await guidanceFiles()) {
     const text = await readFile(path.resolve(file), "utf8");
     assert.doesNotMatch(text, /inspect <item> --readme --json/);
     assert.doesNotMatch(text, /catalog --recommended --json/);

@@ -378,6 +378,56 @@ test("validate warns for very large code blocks", async () => {
   assert.ok(result.data.warnings.some((warning) => warning.code === "large_code_block"));
 });
 
+test("freshly generated decks validate with zero errors and zero warnings", async () => {
+  for (const template of ["minimal", "blank"]) {
+    const root = await mkdtemp(path.join(os.tmpdir(), `slidesls-fresh-${template}-`));
+    await initCommand([root, "--template", template]);
+    const result = await validateCommand([root]);
+    assert.equal(result.data.valid, true, `${template} deck should be valid`);
+    assert.deepEqual(
+      result.data.warnings,
+      [],
+      `${template} deck should have zero warnings, got: ${JSON.stringify(result.data.warnings)}`,
+    );
+  }
+});
+
+test("validate still warns when a copied runtime script is not loaded", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-unloaded-script-"));
+  await initCommand([root, "--template", "minimal"]);
+  const entryPath = path.join(root, "index.html");
+  const html = await readFile(entryPath, "utf8");
+  await writeFile(entryPath, html.replace(/^.*slide-runtime\.js.*\n/m, ""));
+
+  const result = await validateCommand([root]);
+  assert.ok(
+    result.data.warnings.some(
+      (warning) =>
+        warning.code === "copied_asset_not_loaded" && /slide-runtime\.js/.test(warning.message),
+    ),
+  );
+});
+
+test("validate detects loaded module scripts for items missing from the manifest", async () => {
+  const root = await deckWithHtml(`<script type="module" src="./${runtimePath}"></script>`);
+  await writeFile(
+    path.join(root, "slidesls", "manifest.json"),
+    JSON.stringify(
+      { schemaVersion: 2, baseDir: "slidesls", dependencyOrder: [], links: [], scripts: [] },
+      null,
+      2,
+    ),
+  );
+
+  const result = await validateCommand([root]);
+  assert.ok(
+    result.data.warnings.some(
+      (warning) =>
+        warning.code === "loaded_asset_missing_manifest_item" && warning.item === "core/base",
+    ),
+  );
+});
+
 async function deckWithHtml(runtimeScript, slideContent = "", slideAttributes = "") {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-validate-"));
   await writeFile(

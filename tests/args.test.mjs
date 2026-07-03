@@ -4,6 +4,7 @@ import path from "node:path";
 import { promisify } from "node:util";
 import test from "node:test";
 import { parseArgs } from "../src/shared/args.mjs";
+import { commandOptionSpecs } from "../src/cli/option-specs.mjs";
 
 const execFileAsync = promisify(execFile);
 const bin = path.resolve("bin/slidesls.mjs");
@@ -68,47 +69,12 @@ async function run(args) {
 }
 
 test("documented help flags stay in the declared command option set", async () => {
-  const commandFlags = {
-    init: new Set(["template", "theme", "title", "registry-root", "registry-url", "force", "json"]),
-    add: new Set([
-      "dir",
-      "base-dir",
-      "registry-root",
-      "registry-url",
-      "include-docs",
-      "dry-run",
-      "force",
-      "json",
+  const commandFlags = Object.fromEntries(
+    Object.entries(commandOptionSpecs).map(([command, spec]) => [
+      command,
+      new Set([...(spec.boolean || []), ...(spec.value || [])]),
     ]),
-    catalog: new Set([
-      "recommended",
-      "starter",
-      "level",
-      "api",
-      "type",
-      "tag",
-      "query",
-      "limit",
-      "registry-root",
-      "registry-url",
-      "json",
-    ]),
-    inspect: new Set([
-      "api",
-      "with-dependencies",
-      "readme",
-      "registry-root",
-      "registry-url",
-      "json",
-    ]),
-    validate: new Set(["strict", "registry-root", "registry-url", "use-manifest-registry", "json"]),
-    preview: new Set(["host", "port", "json"]),
-    doctor: new Set(["dir", "registry-root", "registry-url", "json"]),
-    "validate-registry": new Set(["registry-root", "registry-url", "json"]),
-    "validate-examples": new Set(["dir", "json"]),
-    "generate-catalog": new Set(["registry-root", "registry-url", "output", "check", "json"]),
-    skill: new Set(["reference", "all", "dry-run", "force", "json"]),
-  };
+  );
 
   for (const command of Object.keys(commandFlags)) {
     const { stdout } = await run([command, "--help"]);

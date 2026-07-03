@@ -1,6 +1,7 @@
 import path from "node:path";
 import { readFile } from "node:fs/promises";
-import { parseArgs, REGISTRY_VALUE_OPTIONS, usageError } from "../shared/args.mjs";
+import { parseArgs, usageError } from "../shared/args.mjs";
+import { commandOptionSpecs } from "./option-specs.mjs";
 import { ok } from "../shared/result.mjs";
 import { assertInside, assertSafeRelativePath, exists, writeText } from "../shared/fs.mjs";
 import {
@@ -58,10 +59,7 @@ async function precheckNewFiles(root, filePaths) {
 }
 
 export async function initCommand(argv) {
-  const args = parseArgs(argv, {
-    boolean: ["force", "json", "help"],
-    value: ["template", "theme", "title", ...REGISTRY_VALUE_OPTIONS],
-  });
+  const args = parseArgs(argv, commandOptionSpecs.init);
   if (args.help)
     return ok({
       help: `Usage: slidesls init [dir] [--template blank|minimal] [--theme <theme>] [--title <text>] [--registry-root <path>] [--registry-url <url>] [--force] [--json]
@@ -159,10 +157,7 @@ For AI agents:
 }
 
 export async function addCommand(argv) {
-  const args = parseArgs(argv, {
-    boolean: ["include-docs", "dry-run", "force", "json", "help"],
-    value: ["dir", "base-dir", ...REGISTRY_VALUE_OPTIONS],
-  });
+  const args = parseArgs(argv, commandOptionSpecs.add);
   if (args.help)
     return ok({
       help: `Usage: slidesls add <items...> [--dir <project>] [--base-dir <relative>] [--registry-root <path>] [--registry-url <url>] [--include-docs] [--dry-run] [--force] [--json]
@@ -246,10 +241,7 @@ For AI agents:
 }
 
 export async function catalogCommand(argv) {
-  const args = parseArgs(argv, {
-    boolean: ["json", "help", "recommended", "starter", "api"],
-    value: ["type", "tag", "query", "limit", "level", ...REGISTRY_VALUE_OPTIONS],
-  });
+  const args = parseArgs(argv, commandOptionSpecs.catalog);
   if (args.help)
     return ok({
       help: `Usage: slidesls catalog [--recommended] [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path>] [--registry-url <url>] [--json]
@@ -294,10 +286,7 @@ For AI agents:
 }
 
 export async function inspectCommand(argv) {
-  const args = parseArgs(argv, {
-    boolean: ["json", "help", "readme", "api", "with-dependencies"],
-    value: REGISTRY_VALUE_OPTIONS,
-  });
+  const args = parseArgs(argv, commandOptionSpecs.inspect);
   if (args.help)
     return ok({
       help: `Usage: slidesls inspect <items...> [--api] [--with-dependencies] [--readme] [--registry-root <path>] [--registry-url <url>] [--json]

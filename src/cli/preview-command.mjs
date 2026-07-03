@@ -2,11 +2,12 @@ import { createServer } from "node:http";
 import path from "node:path";
 import { readFile, realpath } from "node:fs/promises";
 import { parseArgs } from "../shared/args.mjs";
+import { commandOptionSpecs } from "./option-specs.mjs";
 import { ok } from "../shared/result.mjs";
 import { assertInside } from "../shared/fs.mjs";
 import { DEFAULT_CONFIG, readConfig } from "../deck/config.mjs";
 export async function previewCommand(argv) {
-  const args = parseArgs(argv, { boolean: ["json", "help"], value: ["dir", "host", "port"] });
+  const args = parseArgs(argv, commandOptionSpecs.preview);
   if (args.help)
     return ok({
       help: `Usage: slidesls preview [dir] [--host <host>] [--port <port>] [--json]

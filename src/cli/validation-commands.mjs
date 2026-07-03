@@ -1,6 +1,7 @@
 import path from "node:path";
 import { access, readFile } from "node:fs/promises";
-import { parseArgs, REGISTRY_VALUE_OPTIONS } from "../shared/args.mjs";
+import { parseArgs } from "../shared/args.mjs";
+import { commandOptionSpecs } from "./option-specs.mjs";
 import { ok } from "../shared/result.mjs";
 import { exists, sha256File } from "../shared/fs.mjs";
 import {
@@ -30,10 +31,7 @@ import { validateAgentInstructions } from "./agent-instructions.mjs";
 import { registryData, registrySource, rejectRemovedRegistryOption } from "./registry-options.mjs";
 
 export async function validateCommand(argv) {
-  const args = parseArgs(argv, {
-    boolean: ["strict", "json", "help", "use-manifest-registry"],
-    value: ["dir", ...REGISTRY_VALUE_OPTIONS],
-  });
+  const args = parseArgs(argv, commandOptionSpecs.validate);
   if (args.help)
     return ok({
       help: `Usage: slidesls validate [dir] [--strict] [--registry-root <path>] [--registry-url <url>] [--use-manifest-registry] [--json]
@@ -218,10 +216,7 @@ function registrySourceForValidation({ args, manifest }) {
 }
 
 export async function doctorCommand(argv) {
-  const args = parseArgs(argv, {
-    boolean: ["json", "help"],
-    value: ["dir", ...REGISTRY_VALUE_OPTIONS],
-  });
+  const args = parseArgs(argv, commandOptionSpecs.doctor);
   if (args.help)
     return ok({
       help: `Usage: slidesls doctor [--dir <project>] [--registry-root <path>] [--registry-url <url>] [--json]`,
@@ -357,7 +352,7 @@ function compareVersions(actual, required) {
 }
 
 export async function validateRegistryCommand(argv) {
-  const args = parseArgs(argv, { boolean: ["json", "help"], value: REGISTRY_VALUE_OPTIONS });
+  const args = parseArgs(argv, commandOptionSpecs["validate-registry"]);
   if (args.help)
     return ok({
       help: `Usage: slidesls validate-registry [--registry-root <path>] [--registry-url <url>] [--json]`,
@@ -371,16 +366,13 @@ export async function validateRegistryCommand(argv) {
 }
 
 export async function validateExamplesCommand(argv) {
-  const args = parseArgs(argv, { boolean: ["json", "help"], value: ["dir"] });
+  const args = parseArgs(argv, commandOptionSpecs["validate-examples"]);
   if (args.help) return ok({ help: `Usage: slidesls validate-examples [--dir <repo>] [--json]` });
   return ok(await validateExamples({ root: args.dir || args._[0] || process.cwd() }));
 }
 
 export async function generateCatalogCommand(argv) {
-  const args = parseArgs(argv, {
-    boolean: ["json", "help", "check"],
-    value: ["output", ...REGISTRY_VALUE_OPTIONS],
-  });
+  const args = parseArgs(argv, commandOptionSpecs["generate-catalog"]);
   if (args.help)
     return ok({
       help: `Usage: slidesls generate-catalog [--registry-root <path>] [--registry-url <url>] [--output <path>] [--check] [--json]`,
