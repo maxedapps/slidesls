@@ -32,6 +32,10 @@ export const commandOptionSpecs = {
     boolean: ["json", "help"],
     value: ["dir", "host", "port"],
   },
+  "visual-qa": {
+    boolean: ["eval", "analyze", "json", "help"],
+    value: ["input"],
+  },
   doctor: {
     boolean: ["json", "help"],
     value: ["dir", ...REGISTRY_VALUE_OPTIONS],

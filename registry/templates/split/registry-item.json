@@ -36,6 +36,15 @@
       "ls-card__body"
     ]
   },
+  "composition": {
+    "contentDensity": ["sparse", "balanced"],
+    "layoutBehavior": "content-sized",
+    "copyGuidance": "Put a real visual, diagram, or key statement in the panel column and 2-3 supporting cards in the stack.",
+    "avoidWhen": ["there is no real visual or anchor content for the panel column"],
+    "alternatives": [
+      { "when": "the slide is a plain list of short points", "use": "templates/feature-rows" }
+    ]
+  },
   "agentLevel": "starter",
   "useCases": ["Explain one concept with a visual plus supporting points."]
 }

@@ -2,7 +2,7 @@
 
 Generated from `registry.json` and per-item metadata. Do not edit manually; run `slidesls generate-catalog`.
 
-Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `slidesls inspect <item> --json` (snippet) first.
+Deep reference for per-item lookup only; it is large, so do not read it end-to-end. For normal authoring use `slidesls catalog --json` (brief) and `slidesls inspect <item> --json` (snippet) first, and open this file only to look up one item.
 
 ## Core
 
@@ -19,8 +19,8 @@ Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `
   - `ls-deck`: base only
   - `ls-slide`: `ls-slide__inner`, `ls-slide__header`, `ls-slide__body`
 - Classes: `ls-stage`, `ls-eyebrow`, `ls-title`, `ls-subtitle`, `ls-muted`, `ls-subtle`, `ls-accent-text`, `ls-icon`, `ls-icon-badge`, `ls-icon-mark`
-- Data attributes: `data-ls-deck`, `data-step`, `data-ls-density=compact`, `data-ls-reveal-sequence`, `data-ls-sequence-skip`, `data-ls-slide-kind=content|hero|section`
-- CSS variables: `--ls-slide-width`, `--ls-slide-height`, `--ls-slide-bg`, `--ls-page-bg`, `--ls-text`, `--ls-muted`, `--ls-accent`, `--ls-accent-text`, `--ls-space-3`, `--ls-space-6`, `--ls-slide-padding-block`, `--ls-slide-padding-inline`, `--ls-title-line-height`, `--ls-title-letter-spacing`, `--ls-card-padding`, `--ls-card-title-size`, `--ls-card-text-size`, `--ls-callout-padding`, `--ls-callout-title-size`, `--ls-callout-text-size`, `--ls-font-heading`, `--ls-font-body`, `--ls-slide-header-gap`, `--ls-slide-header-max-inline-size`
+- Data attributes: `data-ls-deck`, `data-step`, `data-ls-density=compact|spacious`, `data-ls-reveal-sequence`, `data-ls-sequence-skip`, `data-ls-slide-kind=content|hero|section`, `data-ls-lint=off`
+- CSS variables: `--ls-slide-width` (default 1600px, not override-safe), `--ls-slide-height` (default 900px, not override-safe), `--ls-slide-bg` (default #111318, override-safe), `--ls-page-bg` (default #0b0d12, override-safe), `--ls-text` (default #f5f7fb, override-safe), `--ls-muted` (default #bcc3d0, override-safe), `--ls-accent` (default #3b82f6, override-safe), `--ls-accent-2` (default #22d3ee, override-safe), `--ls-accent-text` (default #bfdbfe, override-safe), `--ls-space-3` (default 16px, override-safe), `--ls-space-6` (default 48px, override-safe), `--ls-slide-padding-block` (default 92px, override-safe), `--ls-slide-padding-inline` (default 108px, override-safe), `--ls-title-line-height` (default 0.96, override-safe), `--ls-title-letter-spacing` (default -0.045em, override-safe), `--ls-card-padding` (default 24px, override-safe), `--ls-card-title-size` (default 28px, override-safe), `--ls-card-text-size` (default 21px, override-safe), `--ls-callout-padding` (default 22px 24px, override-safe), `--ls-callout-title-size` (default 27px, override-safe), `--ls-callout-text-size` (default 22px, override-safe), `--ls-font-heading` (default var(--ls-font-sans), override-safe), `--ls-font-body` (default var(--ls-font-sans), override-safe), `--ls-slide-header-gap` (default var(--ls-space-2), override-safe), `--ls-slide-header-max-inline-size` (default 1080px, override-safe)
 - Usage: Use body.ls-page, a .ls-deck[data-ls-deck] wrapper, and one or more .ls-slide sections. Runtime state attributes such as data-ls-ready and data-active are managed by slide-runtime.js. Set data-ls-slide-kind on slides: content slides use .ls-slide\_\_header; hero/section slides may intentionally use centered full-slide layouts.
 - Registry dependencies: none
 - Files: registry/core/base/reset.css, registry/core/base/tokens.css, registry/core/base/slide.css, registry/core/base/icons.css, registry/core/base/slide-runtime.js
@@ -38,19 +38,28 @@ Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `
 - Agent recommended: yes
 - Root class: ls-stack
 - Safe anywhere: no
+- Composition:
+  - Layout behavior: content-sized
+  - Copy: Grids and stacks size rows to content by default; ls-grid--fill restores stretch for intentional full-area layouts.
+  - Avoid when:
+    - adding ls-grid--fill to grids of sparse text cards
+  - Alternatives:
+    - 4-6 short items need a grid: `templates/icon-grid`
+    - 3-5 one-liner points need rows: `templates/feature-rows`
 - Class groups:
   - `ls-stack`: `ls-stack--sm`, `ls-stack--lg`
     - Rule: Use one optional stack gap modifier.
-  - `ls-grid`: `ls-grid--2`, `ls-grid--3`, `ls-grid--4`, `ls-grid--wide-left`, `ls-grid--wide-right`
-    - Rule: Use ls-grid with at most one grid modifier.
+  - `ls-grid`: `ls-grid--2`, `ls-grid--3`, `ls-grid--4`, `ls-grid--wide-left`, `ls-grid--wide-right`, `ls-grid--start`, `ls-grid--fill`
+    - Rule: Use ls-grid with at most one column modifier; ls-grid--start and ls-grid--fill adjust vertical behavior and combine with column modifiers.
 - Classes: `ls-cluster`, `ls-center`, `ls-center-start`, `ls-text-start`, `ls-fill`, `ls-slide-fill`, `ls-frame`
 - Class metadata:
+  - `ls-grid--fill`: scope `within-constrained-area`, safe anywhere no — Restores stretch-to-fill grid rows for intentional full-area layouts (frames, diagrams, dashboards). Not for sparse card grids — stretched sparse cards trap dead space.
   - `ls-slide-fill`: scope `direct-child-of-slide-inner`, safe anywhere no — Full-slide layouts that intentionally span the slide header/body rows. Not for ordinary content slides.
   - `ls-center`: scope `centers-content-cluster`, safe anywhere no — Intentional centering only (hero/section).
   - `ls-center-start`: scope `centers-content-cluster`, safe anywhere no — Intentional start-aligned centering (hero).
   - `ls-fill`: scope `within-constrained-area`, safe anywhere no — Fills a height-constrained parent area.
-- CSS variables: `--ls-stack-gap`, `--ls-cluster-gap`, `--ls-cluster-align`, `--ls-grid-gap`, `--ls-frame-min-block-size`
-- Usage: Use .ls-grid--4 only for short, compact cards or metrics. Use .ls-slide-fill as a direct child of .ls-slide\_\_inner for full-slide centered layouts. Use .ls-fill only when content should intentionally fill the available slide/body area.
+- CSS variables: `--ls-stack-gap` (default var(--ls-space-4), override-safe), `--ls-cluster-gap` (default var(--ls-space-3), override-safe), `--ls-cluster-align` (default center, override-safe), `--ls-grid-gap` (default var(--ls-space-5), override-safe), `--ls-grid-align-content` (default center, override-safe), `--ls-stack-align-content` (default start, override-safe), `--ls-frame-min-block-size` (default 320px, override-safe)
+- Usage: Grid rows size to content and center vertically by default; add .ls-grid--fill only for grids that intentionally fill the body area (frames, diagrams, dashboards) and .ls-grid--start for top-anchored editorial layouts. Use .ls-grid--4 only for short, compact cards or metrics. Use .ls-slide-fill as a direct child of .ls-slide\_\_inner for full-slide centered layouts. Use .ls-fill only when content should intentionally fill the available slide/body area.
 - Registry dependencies: core/base
 - Files: registry/utilities/layout/layout.css
 - Snippets: Basic utility layouts (registry/utilities/layout/snippets/basic.html)
@@ -103,10 +112,20 @@ Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `
 - Agent recommended: yes
 - Root class: ls-card
 - Safe anywhere: yes
+- Composition:
+  - Content density: balanced
+  - Layout behavior: content-sized
+  - Copy: 2-4 sentences or a visual per card; one-liner points fit components/icon-item better.
+  - Avoid when:
+    - a grid of cards where each holds only a title plus one short sentence
+    - more than 4 cards in one grid
+  - Alternatives:
+    - one-liner points: `components/icon-item`
+    - 4-6 short items in a grid: `templates/icon-grid`
 - Class groups:
-  - `ls-card`: `ls-card__body`, `ls-card__title`, `ls-card__text`, `ls-card--row`
-- CSS variables: `--ls-card-padding`, `--ls-card-title-size`, `--ls-card-text-size`
-- Usage: Use for compact content blocks inside grids or stacks.
+  - `ls-card`: `ls-card__body`, `ls-card__title`, `ls-card__text`, `ls-card--row`, `ls-card--center`
+- CSS variables: `--ls-card-padding` (default 24px, override-safe), `--ls-card-title-size` (default 28px, override-safe), `--ls-card-text-size` (default 21px, override-safe)
+- Usage: Use for content blocks inside grids or stacks; give each card 2-4 sentences or a visual. Add ls-card--center only when a card sits in a stretched context (ls-grid--fill) and its content should center vertically.
 - Registry dependencies: core/base
 - Files: registry/components/card/card.css
 - Snippets: Basic card (registry/components/card/snippets/basic.html)
@@ -206,6 +225,33 @@ Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `
 - Snippets: Basic HTTP exchange (registry/components/http-exchange/snippets/basic.html)
 - Docs: registry/components/http-exchange/README.md
 
+### components/icon-item
+
+- Label: Icon Item
+- Type: ls:component
+- Description: Compact icon + title + one-liner tile for short-copy grids and rows.
+- Agent level: recommended
+- Agent recommended: yes
+- Root class: ls-icon-item
+- Pairs with: templates/icon-grid, templates/feature-rows
+- Safe anywhere: yes
+- Composition:
+  - Content density: sparse
+  - Layout behavior: content-sized
+  - Copy: One short title and one sentence per item; longer copy belongs in components/card.
+  - Avoid when:
+    - a point needs multiple sentences of explanation or a large visual
+  - Alternatives:
+    - each point carries 2-4 sentences or a visual: `components/card`
+- Class groups:
+  - `ls-icon-item`: `ls-icon-item__body`, `ls-icon-item__title`, `ls-icon-item__text`, `ls-icon-item--boxed`
+- CSS variables: `--ls-icon-item-padding` (default 20px, override-safe), `--ls-icon-item-title-size` (default 26px, override-safe), `--ls-icon-item-text-size` (default 21px, override-safe)
+- Usage: Use for short points: one title plus one sentence, optionally with an icon glyph in .ls-icon-badge. Content-sized by design; grids and stacks of icon items compose as balanced bands.
+- Registry dependencies: core/base
+- Files: registry/components/icon-item/icon-item.css
+- Snippets: Basic icon item (registry/components/icon-item/snippets/basic.html)
+- Docs: registry/components/icon-item/README.md
+
 ### components/image-card
 
 - Label: Image Card
@@ -233,6 +279,14 @@ Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `
 - Agent recommended: yes
 - Root class: ls-metric
 - Safe anywhere: yes
+- Composition:
+  - Content density: sparse
+  - Layout behavior: content-sized
+  - Copy: One number plus a short label; the value carries the slide.
+  - Avoid when:
+    - narrative or multi-sentence content
+  - Alternatives:
+    - points need explanation: `components/card`
 - Class groups:
   - `ls-metric`: `ls-metric__label`, `ls-metric__value`, `ls-metric__delta`
 - Data attributes: `data-ls-compact=true`
@@ -251,6 +305,14 @@ Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `
 - Agent recommended: yes
 - Root class: ls-panel
 - Safe anywhere: yes
+- Composition:
+  - Content density: sparse, balanced
+  - Layout behavior: content-sized
+  - Copy: Use one panel as a visual anchor or grouped block; ls-panel--frame keeps visual mass for media.
+  - Avoid when:
+    - a grid of small text panels where each holds one short sentence
+  - Alternatives:
+    - several one-liner points: `components/icon-item`
 - Class groups:
   - `ls-panel`: `ls-panel__title`, `ls-panel__text`, `ls-panel--muted`, `ls-panel--accent`, `ls-panel--center`, `ls-panel--fit`, `ls-panel--frame`
 - CSS variables: `--ls-panel-gap`, `--ls-panel-padding`, `--ls-panel-border`, `--ls-panel-bg`, `--ls-panel-fit-min-block-size`, `--ls-panel-frame-min-block-size`
@@ -608,6 +670,58 @@ Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `
 - Snippets: Code plus notes slide (registry/templates/code-plus-notes/snippet.html)
 - Docs: registry/templates/code-plus-notes/README.md
 
+### templates/feature-rows
+
+- Label: Feature Rows
+- Type: ls:template
+- Description: Stacked full-width rows template for 3-5 one-liner points.
+- Agent level: starter
+- Agent recommended: yes
+- Safe anywhere: no
+- Composition:
+  - Content density: sparse
+  - Layout behavior: content-sized
+  - Item count: 3-5 one-liner points; for 4-6 very short items use templates/icon-grid.
+  - Copy: One keyword or short title plus one sentence per row.
+  - Avoid when:
+    - points carry 2-4 sentences or visuals
+    - there are more than 5 rows
+  - Alternatives:
+    - 3 items with 2-4 sentences or visuals each: `templates/three-cards`
+    - 4-6 very short items: `templates/icon-grid`
+- Classes: `ls-slide`, `ls-slide__inner`, `ls-slide__header`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-icon-item`, `ls-icon-item--boxed`, `ls-icon-item__body`, `ls-icon-item__title`, `ls-icon-item__text`, `ls-icon-badge`
+- Usage: Paste snippet HTML inside .ls-deck and copy its registryDependencies before use. Keep 3-5 rows with one sentence each; the single-column .ls-grid centers the block vertically.
+- Registry dependencies: core/base, utilities/layout, components/icon-item
+- Files: none
+- Snippets: Feature rows slide (registry/templates/feature-rows/snippet.html)
+- Docs: registry/templates/feature-rows/README.md
+
+### templates/icon-grid
+
+- Label: Icon Grid
+- Type: ls:template
+- Description: Compact icon-tile grid template for 4-6 short items.
+- Agent level: starter
+- Agent recommended: yes
+- Safe anywhere: no
+- Composition:
+  - Content density: sparse
+  - Layout behavior: content-sized
+  - Item count: 4-6 short items; for 3 richer points use templates/three-cards, for one-liner rows use templates/feature-rows.
+  - Copy: One title plus one sentence per tile; icons carry the visual weight.
+  - Avoid when:
+    - each item needs 2-4 sentences or a visual
+    - there are more than 6 items (split across two slides instead)
+  - Alternatives:
+    - 3 items with 2-4 sentences or visuals each: `templates/three-cards`
+    - 3-5 one-liner points that read as a list: `templates/feature-rows`
+- Classes: `ls-slide`, `ls-slide__inner`, `ls-slide__header`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--3`, `ls-icon-item`, `ls-icon-item--boxed`, `ls-icon-item__body`, `ls-icon-item__title`, `ls-icon-item__text`, `ls-icon-badge`
+- Usage: Paste snippet HTML inside .ls-deck and copy its registryDependencies before use. Use .ls-grid--3 for 5-6 items and .ls-grid--2 for 4 items; keep each tile to one title and one sentence.
+- Registry dependencies: core/base, utilities/layout, components/icon-item
+- Files: none
+- Snippets: Icon grid slide (registry/templates/icon-grid/snippet.html)
+- Docs: registry/templates/icon-grid/README.md
+
 ### templates/metric-dashboard
 
 - Label: Metric Dashboard
@@ -616,6 +730,16 @@ Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `
 - Agent level: recommended
 - Agent recommended: yes
 - Safe anywhere: no
+- Composition:
+  - Content density: sparse, balanced
+  - Layout behavior: content-sized
+  - Item count: 2-4 metric or progress cells in one band; add a second row only when the data warrants it.
+  - Copy: One number plus a short label per cell; explanation belongs in a split layout.
+  - Avoid when:
+    - the numbers need narrative explanation
+    - only one metric matters
+  - Alternatives:
+    - numbers need a narrative next to them: `templates/split`
 - Classes: `ls-slide`, `ls-slide__inner`, `ls-stack`, `ls-stack--sm`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--3`, `ls-panel`, `ls-metric`, `ls-metric__value`, `ls-metric__label`, `ls-progress`, `ls-progress__label`, `ls-progress__value`, `ls-progress__track`, `ls-progress__bar`
 - Usage: Paste snippet HTML inside .ls-deck and copy its registryDependencies before use. Keep metric labels short; use the progress panel for one concise status indicator.
 - Registry dependencies: core/base, utilities/layout, components/metric, components/progress, components/panel
@@ -646,6 +770,14 @@ Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `
 - Agent level: starter
 - Agent recommended: yes
 - Safe anywhere: no
+- Composition:
+  - Content density: sparse, balanced
+  - Layout behavior: content-sized
+  - Copy: Put a real visual, diagram, or key statement in the panel column and 2-3 supporting cards in the stack.
+  - Avoid when:
+    - there is no real visual or anchor content for the panel column
+  - Alternatives:
+    - the slide is a plain list of short points: `templates/feature-rows`
 - Classes: `ls-slide`, `ls-slide__inner`, `ls-stack`, `ls-stack--sm`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--wide-left`, `ls-panel`, `ls-panel--accent`, `ls-panel__text`, `ls-card`, `ls-card__title`, `ls-card__text`, `ls-panel--center`, `ls-card__body`
 - Usage: Paste snippet HTML inside .ls-deck and copy its registryDependencies before use.
 - Registry dependencies: core/base, utilities/layout, components/panel, components/card
@@ -676,8 +808,19 @@ Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `
 - Agent level: starter
 - Agent recommended: yes
 - Safe anywhere: no
+- Composition:
+  - Content density: balanced
+  - Layout behavior: content-sized
+  - Item count: 3 cards; for 4-6 short items use templates/icon-grid.
+  - Copy: Works when each card carries 2-4 sentences or a visual; for one-liners use templates/feature-rows.
+  - Avoid when:
+    - each card has only a title plus one short sentence and no visual
+    - more than 4 items would wrap into stretched rows
+  - Alternatives:
+    - 4-6 short items: `templates/icon-grid`
+    - 3-5 one-liner points: `templates/feature-rows`
 - Classes: `ls-slide`, `ls-slide__inner`, `ls-stack`, `ls-stack--sm`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--3`, `ls-card`, `ls-card__title`, `ls-card__text`, `ls-card__body`
-- Usage: Paste snippet HTML inside .ls-deck and copy its registryDependencies before use. Use compact copy: one short title and one sentence per card.
+- Usage: Paste snippet HTML inside .ls-deck and copy its registryDependencies before use. Give each card 2-4 sentences or a visual; for one-liner points use templates/feature-rows and for 4-6 short items use templates/icon-grid.
 - Registry dependencies: core/base, utilities/layout, components/card
 - Files: none
 - Snippets: Three cards slide (registry/templates/three-cards/snippet.html)
@@ -691,7 +834,15 @@ Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `
 - Agent level: starter
 - Agent recommended: yes
 - Safe anywhere: no
-- Classes: `ls-slide`, `ls-slide__inner`, `ls-grid`, `ls-grid--wide-left`, `ls-stack`, `ls-cluster`, `ls-badge`, `ls-title`, `ls-subtitle`, `ls-panel`, `ls-panel--accent`, `ls-eyebrow`, `ls-panel__text`, `ls-slide-fill`, `ls-center-start`, `ls-text-start`, `ls-panel--center`, `ls-panel--fit`
+- Composition:
+  - Content density: sparse
+  - Layout behavior: fills-area
+  - Copy: One concise title, one subtitle, and a visual anchor; hero slides intentionally span the full slide.
+  - Avoid when:
+    - the slide is an ordinary content slide with a header/body shell
+  - Alternatives:
+    - presenting regular content under a header: `templates/split`
+- Classes: `ls-slide`, `ls-slide__inner`, `ls-grid`, `ls-grid--wide-left`, `ls-grid--fill`, `ls-stack`, `ls-cluster`, `ls-badge`, `ls-title`, `ls-subtitle`, `ls-panel`, `ls-panel--accent`, `ls-eyebrow`, `ls-panel__text`, `ls-slide-fill`, `ls-center-start`, `ls-text-start`, `ls-panel--center`, `ls-panel--fit`
 - Usage: Paste snippet HTML inside .ls-deck and copy its registryDependencies before use. Use .ls-slide-fill for full-slide centering; keep title copy concise enough for one or two lines. Use .ls-panel--fit for short text-only right panels; use .ls-panel--frame for screenshots, diagrams, or media anchors.
 - Registry dependencies: core/base, utilities/layout, components/badge, components/panel
 - Files: none

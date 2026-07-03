@@ -48,5 +48,12 @@
       "Use .ls-panel--frame for screenshots, diagrams, code, or media frames that should have visual mass."
     ]
   },
+  "composition": {
+    "contentDensity": ["sparse", "balanced"],
+    "layoutBehavior": "content-sized",
+    "copyGuidance": "Use one panel as a visual anchor or grouped block; ls-panel--frame keeps visual mass for media.",
+    "avoidWhen": ["a grid of small text panels where each holds one short sentence"],
+    "alternatives": [{ "when": "several one-liner points", "use": "components/icon-item" }]
+  },
   "agentLevel": "recommended"
 }

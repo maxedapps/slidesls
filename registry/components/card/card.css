@@ -10,6 +10,13 @@
     box-shadow: var(--ls-surface-highlight);
   }
 
+  .ls-card--center {
+    /* For cards that must sit in a stretched context (ls-grid--fill grids or
+       decks copied before content-sized grids): centers content vertically
+       instead of pinning it to the card top. */
+    align-content: center;
+  }
+
   .ls-card--row {
     grid-template-columns: auto 1fr;
     align-items: start;

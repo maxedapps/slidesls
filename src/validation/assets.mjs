@@ -51,8 +51,10 @@ export function localCssUrlReferences(css) {
 
 export async function validateLocalAssets({ html, root, entryPath, errors }) {
   const renderedHtml = stripNonRenderedCode(html);
+  const outside = [];
+  const missing = [];
   for (const ref of localFileReferences(renderedHtml)) {
-    await checkReference({ root, baseDir: path.dirname(entryPath), ref, errors });
+    await checkReference({ root, baseDir: path.dirname(entryPath), ref, outside, missing });
   }
 
   for (const href of stylesheetHrefs(renderedHtml)) {
@@ -67,23 +69,41 @@ export async function validateLocalAssets({ html, root, entryPath, errors }) {
     if (!(await exists(stylesheetPath))) continue;
     const css = await readFile(stylesheetPath, "utf8");
     for (const ref of localCssUrlReferences(css)) {
-      await checkReference({ root, baseDir: path.dirname(stylesheetPath), ref, errors });
+      await checkReference({ root, baseDir: path.dirname(stylesheetPath), ref, outside, missing });
     }
   }
+
+  // Group per code with one hint and a paths list; identical hints repeated
+  // per finding bloat agent-facing JSON.
+  if (outside.length)
+    add(
+      errors,
+      "asset_outside_project",
+      `${outside.length} asset reference(s) resolve outside the project: ${outside.join(", ")}`,
+      {
+        paths: outside,
+        hint: "Use local asset paths that stay inside the deck project.",
+      },
+    );
+  if (missing.length)
+    add(
+      errors,
+      "missing_asset",
+      `${missing.length} local asset reference(s) do not exist: ${missing.join(", ")}`,
+      {
+        paths: missing,
+        hint: "Local asset paths are resolved relative to the file that references them.",
+      },
+    );
 }
 
-async function checkReference({ root, baseDir, ref, errors }) {
+async function checkReference({ root, baseDir, ref, outside, missing }) {
   const target = path.resolve(baseDir, ref.localPath);
   try {
     assertInside(root, target);
   } catch {
-    add(errors, "asset_outside_project", `${ref.rawValue} resolves outside project`, {
-      hint: "Use local asset paths that stay inside the deck project.",
-    });
+    if (!outside.includes(ref.rawValue)) outside.push(ref.rawValue);
     return;
   }
-  if (!(await exists(target)))
-    add(errors, "missing_asset", `${ref.rawValue} does not exist`, {
-      hint: "Local asset paths are resolved relative to the file that references them.",
-    });
+  if (!(await exists(target)) && !missing.includes(ref.rawValue)) missing.push(ref.rawValue);
 }

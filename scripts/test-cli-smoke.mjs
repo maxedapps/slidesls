@@ -78,6 +78,7 @@ try {
     "skill",
     "validate",
     "preview",
+    "visual-qa",
     "doctor",
     "validate-registry",
     "validate-examples",
@@ -100,6 +101,14 @@ try {
   run(["add", "components/card", "--dir", tmp, "--dry-run", "--json"]);
   run(["add", "components/card", "--dir", tmp, "--json"]);
   run(["validate", tmp, "--json"]);
+  run(["visual-qa", "--eval"]);
+  run([
+    "visual-qa",
+    "--analyze",
+    "--input",
+    path.join(root, "tests", "fixtures", "composition-visual-qa.json"),
+    "--json",
+  ]);
   run(["validate-registry", "--json"]);
   run(["validate-examples", "--json"]);
   await previewSmoke();

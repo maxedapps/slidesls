@@ -23,8 +23,9 @@ If the package is already installed in the target project, use `npx slidesls ...
 - `slidesls skill show [--reference <name>] [--all]` — print the bundled agent `SKILL.md`, a named reference such as `catalog`, or all bundled docs.
 - `slidesls skill install <dir> [--dry-run] [--force]` — copy the bundled skill to the explicit skill directory required by your agent runtime.
 - `slidesls skill link <dir> [--force]` — symlink the bundled skill to the explicit skill directory required by your agent runtime.
-- `slidesls validate [dir] [--strict]` — validate deck config, entry markup, local assets, manifest files, and targeted component/reveal structure. `--strict` also treats copied-file hash drift and deck-level structural warnings as errors.
-- `slidesls preview [dir] [--host <host>] [--port <port>]` — serve a local preview until the process is stopped.
+- `slidesls validate [dir] [--strict]` — validate deck config, entry markup, local assets, manifest files, and targeted component/reveal structure, plus advisory design-lint composition warnings (never promoted by `--strict`; suppress per slide with `data-ls-lint="off"`). `--strict` also treats copied-file hash drift and deck-level structural warnings as errors.
+- `slidesls preview [dir] [--host <host>] [--port <port>]` — serve a local preview until the process is stopped. JSON output includes `exportUrl` and per-slide `slideLinks` deep links.
+- `slidesls visual-qa [--eval | --analyze] [--input <collected.json>]` — browser-fact visual QA: `--eval` prints the dependency-free collector script for `agent-browser eval`; `--analyze` turns collected JSON into advisory per-slide composition findings with deep links (see `docs/validation.md`).
 - `slidesls doctor [--dir <project>] [--registry-root <path> | --registry-url <url>]` — check Node/package/config/registry/project health.
 - `slidesls validate-registry [--registry-root <path> | --registry-url <url>]` — repo/package registry validation.
 - `slidesls validate-examples` — recursive repo example/template validation.
@@ -132,7 +133,7 @@ slidesls inspect components/card --json
 slidesls add utilities/layout components/panel components/card --dry-run --json
 ```
 
-Use `catalog --api --json` or `inspect <item> --api --json` for low-level public classes, modifiers, data attributes, theme/font attributes, and CSS variables. Unless the user asks for static slides, copy/load `animations/reveal` plus one subtle variant such as `animations/slide-up` or `animations/fade` and use `.ls-reveal` with `data-step` or `data-ls-reveal-sequence`. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and `--strict` errors. Static validation does not replace preview; after material slide edits, run `slidesls preview <deck>` and visually inspect representative slides unless intentionally skipped. Preview URLs can deep-link to normal-mode state with `#slide=2&step=1` (`slide` is 1-based; `step` is 0-based). Export mode still renders all slides/reveals and ignores the hash.
+Use `catalog --api --json` or `inspect <item> --api --json` for low-level public classes, modifiers, data attributes, theme/font attributes, and CSS variables. Unless the user asks for static slides, copy/load `animations/reveal` plus one subtle variant such as `animations/slide-up` or `animations/fade` and use `.ls-reveal` with `data-step` or `data-ls-reveal-sequence`. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and `--strict` errors. Static validation does not replace rendered review; after material slide edits, run the per-slide visual QA loop (`slidesls preview <deck>` plus `slidesls visual-qa`) documented in the bundled skill's `references/preview-validation.md`. Preview URLs can deep-link to normal-mode state with `#slide=2&step=1` (`slide` is 1-based; `step` is 0-based); `preview --json` returns them as `slideLinks`. Export mode still renders all slides/reveals and ignores the hash.
 
 ## Naming
 

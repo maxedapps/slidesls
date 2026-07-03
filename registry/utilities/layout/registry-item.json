@@ -34,9 +34,11 @@
           "ls-grid--3",
           "ls-grid--4",
           "ls-grid--wide-left",
-          "ls-grid--wide-right"
+          "ls-grid--wide-right",
+          "ls-grid--start",
+          "ls-grid--fill"
         ],
-        "rule": "Use ls-grid with at most one grid modifier."
+        "rule": "Use ls-grid with at most one column modifier; ls-grid--start and ls-grid--fill adjust vertical behavior and combine with column modifiers."
       }
     ],
     "classes": [
@@ -49,18 +51,26 @@
       "ls-frame"
     ],
     "cssVariables": [
-      "--ls-stack-gap",
-      "--ls-cluster-gap",
-      "--ls-cluster-align",
-      "--ls-grid-gap",
-      "--ls-frame-min-block-size"
+      { "name": "--ls-stack-gap", "default": "var(--ls-space-4)", "overrideSafe": true },
+      { "name": "--ls-cluster-gap", "default": "var(--ls-space-3)", "overrideSafe": true },
+      { "name": "--ls-cluster-align", "default": "center", "overrideSafe": true },
+      { "name": "--ls-grid-gap", "default": "var(--ls-space-5)", "overrideSafe": true },
+      { "name": "--ls-grid-align-content", "default": "center", "overrideSafe": true },
+      { "name": "--ls-stack-align-content", "default": "start", "overrideSafe": true },
+      { "name": "--ls-frame-min-block-size", "default": "320px", "overrideSafe": true }
     ],
     "usage": [
+      "Grid rows size to content and center vertically by default; add .ls-grid--fill only for grids that intentionally fill the body area (frames, diagrams, dashboards) and .ls-grid--start for top-anchored editorial layouts.",
       "Use .ls-grid--4 only for short, compact cards or metrics.",
       "Use .ls-slide-fill as a direct child of .ls-slide__inner for full-slide centered layouts.",
       "Use .ls-fill only when content should intentionally fill the available slide/body area."
     ],
     "classMetadata": {
+      "ls-grid--fill": {
+        "scopeType": "within-constrained-area",
+        "safeAnywhere": false,
+        "description": "Restores stretch-to-fill grid rows for intentional full-area layouts (frames, diagrams, dashboards). Not for sparse card grids — stretched sparse cards trap dead space."
+      },
       "ls-slide-fill": {
         "scopeType": "direct-child-of-slide-inner",
         "safeAnywhere": false,
@@ -82,6 +92,15 @@
         "description": "Fills a height-constrained parent area."
       }
     }
+  },
+  "composition": {
+    "layoutBehavior": "content-sized",
+    "copyGuidance": "Grids and stacks size rows to content by default; ls-grid--fill restores stretch for intentional full-area layouts.",
+    "avoidWhen": ["adding ls-grid--fill to grids of sparse text cards"],
+    "alternatives": [
+      { "when": "4-6 short items need a grid", "use": "templates/icon-grid" },
+      { "when": "3-5 one-liner points need rows", "use": "templates/feature-rows" }
+    ]
   },
   "agentLevel": "recommended"
 }

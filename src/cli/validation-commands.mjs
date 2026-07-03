@@ -18,6 +18,7 @@ import { readManifest } from "../deck/manifest.mjs";
 import { validateRegistry } from "../validation/registry.mjs";
 import { validateExamples } from "../validation/examples.mjs";
 import { validateDeckStructure } from "../validation/markup-structure.mjs";
+import { validateDesignComposition } from "../validation/design-lint.mjs";
 import { validateLocalAssets } from "../validation/assets.mjs";
 import { validateLoadTags } from "../validation/load-tags.mjs";
 import { validateAccessibility } from "../validation/accessibility.mjs";
@@ -137,6 +138,9 @@ For AI agents:
     validateDeckStructure({ html, strict: args.strict, errors, warnings });
     validateAccessibility({ html, strict: args.strict, errors, warnings });
   }
+  // Advisory composition lint: warnings only, never promoted by --strict, and
+  // suppressible per slide with data-ls-lint="off".
+  if (html) validateDesignComposition({ html, manifest, warnings });
   if (manifest) {
     for (const file of manifest.copiedFiles || []) {
       const target = path.join(root, file.targetPath);
@@ -330,15 +334,20 @@ function validateKnownClasses({ html, strict, knownClasses, errors, warnings }) 
 
 function validateClassDependencies({ html, manifest, ownerByClass, warnings }) {
   const copied = new Set(manifest?.dependencyOrder || []);
-  for (const item of itemNamesForClasses(html, ownerByClass)) {
-    if (item === "core/base" || copied.has(item)) continue;
-    warnings.push({
-      code: "missing_registry_item_for_class",
-      message: `${item} should be added when using its classes in HTML`,
-      hint: `Inspect with slidesls inspect ${item} --api --json, then run slidesls add ${item} --dir <deck> --dry-run --json.`,
-      command: `slidesls add ${item} --dir <deck> --dry-run --json`,
-    });
-  }
+  // One grouped warning instead of one per item: identical hints repeated per
+  // finding bloat agent-facing JSON without adding information.
+  const missing = [...itemNamesForClasses(html, ownerByClass)].filter(
+    (item) => item !== "core/base" && !copied.has(item),
+  );
+  if (!missing.length) return;
+  const list = missing.join(" ");
+  warnings.push({
+    code: "missing_registry_item_for_class",
+    message: `${missing.length} registry item(s) should be added when using their classes in HTML: ${missing.join(", ")}`,
+    items: missing,
+    hint: `Inspect with slidesls inspect <item> --api --json, then run slidesls add ${list} --dir <deck> --dry-run --json.`,
+    command: `slidesls add ${list} --dir <deck> --dry-run --json`,
+  });
 }
 
 function compareVersions(actual, required) {

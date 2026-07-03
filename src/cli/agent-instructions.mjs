@@ -13,6 +13,8 @@ export const agentCommandRecipes = {
     "slidesls add animations/reveal animations/slide-up --dir <deck> --dry-run --json",
   validateJson: "slidesls validate <deck> --json",
   preview: "slidesls preview <deck> --host 127.0.0.1 --port 4321",
+  visualQaEval: "slidesls visual-qa --eval",
+  visualQaAnalyze: "slidesls visual-qa --analyze --input <collected.json> --json",
   skillShow: "slidesls skill show",
   skillShowCatalog: "slidesls skill show --reference catalog",
 };
@@ -57,6 +59,7 @@ export function catalogAgentInstructions({ api = false } = {}) {
     ],
     rules: [
       "Use useCases, agentLevel, type, and tags to choose candidate items.",
+      "Check avoidWhen before choosing a template; when it matches your content, use the item its alternatives point to.",
       "Do not invent ls-* classes; inspect snippets first and use --api only for low-level class details.",
       "Inspect items for exact snippets and load tags before copying markup.",
     ],
@@ -80,6 +83,7 @@ export function inspectAgentInstructions(requestedItems = ["<item>"], { api = fa
     ],
     rules: [
       "Use snippets[].html as source-of-truth markup for requested items.",
+      "Check composition.avoidWhen before using a template; composition.alternatives names better-fitting items.",
       "After copying assets, add returned load.links and load.scripts to the deck entry HTML when needed.",
       "Use --api authoring metadata instead of guessing classes or attributes.",
     ],
@@ -134,14 +138,16 @@ export function validateAgentInstructions(root = "<deck>") {
     purpose: "Fix static validation feedback after editing a slidesls deck.",
     rules: [
       "Fix errors first; review warnings even when the deck is otherwise valid.",
+      "Design-lint warnings (many_cards_in_grid, stretched_grid_with_cards, card_grid_check_density) are advisory composition pointers; fix or explicitly justify them.",
       "Use --strict when you need stricter checks for CI or registry drift.",
       "Use catalog and inspect before changing ls-* classes or snippets.",
-      "Static validation does not replace preview; use agent-browser to inspect title/section, densest content, and table/timeline/progress/code slides.",
+      "Static validation does not replace rendered review; run slidesls visual-qa against a live preview for per-slide composition findings.",
     ],
     nextCommands: [
       agentCommandRecipes.catalogApiJson,
       agentCommandRecipes.inspectJson,
       `slidesls add <item> --dir ${root} --dry-run --json`,
+      agentCommandRecipes.visualQaAnalyze,
     ],
     longRunningCommands: [`slidesls preview ${root}`],
   };

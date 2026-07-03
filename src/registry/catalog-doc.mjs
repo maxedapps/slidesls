@@ -39,7 +39,7 @@ export function renderCatalog(registryData) {
     "",
     "Generated from `registry.json` and per-item metadata. Do not edit manually; run `slidesls generate-catalog`.",
     "",
-    "Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `slidesls inspect <item> --json` (snippet) first.",
+    "Deep reference for per-item lookup only; it is large, so do not read it end-to-end. For normal authoring use `slidesls catalog --json` (brief) and `slidesls inspect <item> --json` (snippet) first, and open this file only to look up one item.",
     "",
   ];
 
@@ -60,6 +60,7 @@ export function renderCatalog(registryData) {
       if (item.styleTone) lines.push(`- Style tone: ${item.styleTone}`);
       if (item.pairsWith?.length) lines.push(`- Pairs with: ${item.pairsWith.join(", ")}`);
       lines.push(`- Safe anywhere: ${item.safeAnywhere ? "yes" : "no"}`);
+      lines.push(...compositionLines(item.composition));
       lines.push(...authoringLines(item.authoring));
       lines.push(
         `- Registry dependencies: ${(item.registryDependencies || []).join(", ") || "none"}`,
@@ -86,6 +87,37 @@ function markdownText(value) {
 
 function codeList(values) {
   return values.map(code).join(", ");
+}
+
+function cssVariableDoc(variable) {
+  if (typeof variable === "string") return code(variable);
+  const details = [
+    variable.default !== undefined ? `default ${variable.default}` : null,
+    variable.overrideSafe === true ? "override-safe" : null,
+    variable.overrideSafe === false ? "not override-safe" : null,
+  ].filter(Boolean);
+  return details.length ? `${code(variable.name)} (${details.join(", ")})` : code(variable.name);
+}
+
+function compositionLines(composition) {
+  if (!composition) return [];
+  const lines = ["- Composition:"];
+  if (composition.contentDensity?.length)
+    lines.push(`  - Content density: ${composition.contentDensity.join(", ")}`);
+  if (composition.layoutBehavior) lines.push(`  - Layout behavior: ${composition.layoutBehavior}`);
+  if (composition.itemCountGuidance)
+    lines.push(`  - Item count: ${markdownText(composition.itemCountGuidance)}`);
+  if (composition.copyGuidance) lines.push(`  - Copy: ${markdownText(composition.copyGuidance)}`);
+  if (composition.avoidWhen?.length) {
+    lines.push("  - Avoid when:");
+    for (const entry of composition.avoidWhen) lines.push(`    - ${markdownText(entry)}`);
+  }
+  if (composition.alternatives?.length) {
+    lines.push("  - Alternatives:");
+    for (const alternative of composition.alternatives)
+      lines.push(`    - ${markdownText(alternative.when)}: ${code(alternative.use)}`);
+  }
+  return lines.length > 1 ? lines : [];
 }
 
 function authoringLines(authoring) {
@@ -132,7 +164,7 @@ function authoringLines(authoring) {
         .join(", ")}`,
     );
   if (authoring.cssVariables?.length)
-    lines.push(`- CSS variables: ${codeList(authoring.cssVariables)}`);
+    lines.push(`- CSS variables: ${authoring.cssVariables.map(cssVariableDoc).join(", ")}`);
   if (authoring.usage?.length)
     lines.push(`- Usage: ${authoring.usage.map(markdownText).join(" ")}`);
   return lines;

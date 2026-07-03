@@ -1,0 +1,915 @@
+{
+  "url": "http://127.0.0.1:4399/examples/composition/index.html?export=1",
+  "viewport": {
+    "width": 1600,
+    "height": 900
+  },
+  "deck": {
+    "ready": "true",
+    "export": "true",
+    "currentSlide": null,
+    "currentStep": null,
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 1600,
+      "height": 6300,
+      "top": 0,
+      "right": 1600,
+      "bottom": 6300,
+      "left": 0
+    }
+  },
+  "nativeSlide": {
+    "width": "1600px",
+    "height": "900px",
+    "scale": "1"
+  },
+  "slides": [
+    {
+      "index": 1,
+      "id": null,
+      "label": "Composition gallery intro",
+      "active": "true",
+      "step": "0",
+      "density": null,
+      "slideKind": "section",
+      "kind": "section",
+      "kindSource": "explicit",
+      "collected": true,
+      "hasSlideFill": true,
+      "hasCenter": true,
+      "hasCenterStart": false,
+      "centerInFill": true,
+      "centerStartInFill": false,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 900,
+        "top": 0,
+        "right": 1600,
+        "bottom": 900,
+        "left": 0
+      },
+      "innerRect": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 900,
+        "top": 0,
+        "right": 1600,
+        "bottom": 900,
+        "left": 0,
+        "offsetTop": 0
+      },
+      "headerRect": {
+        "x": 246.3046875,
+        "y": 348.4375,
+        "width": 1107.3828125,
+        "height": 203.1171875,
+        "top": 348.4375,
+        "right": 1353.6875,
+        "bottom": 551.5546875,
+        "left": 246.3046875,
+        "offsetTop": 348.4375
+      },
+      "titleRect": {
+        "x": 246.3046875,
+        "y": 410.4375,
+        "width": 1107.3828125,
+        "height": 78.71875,
+        "top": 410.4375,
+        "right": 1353.6875,
+        "bottom": 489.15625,
+        "left": 246.3046875,
+        "offsetTop": 410.4375
+      },
+      "bodyRect": null,
+      "innerOffsetTop": 0,
+      "expectedHeaderOffsetTop": 92,
+      "headerOffsetTop": 348.4375,
+      "titleOffsetTop": 410.4375,
+      "bodyOffsetTop": null,
+      "scrollWidth": 1600,
+      "scrollHeight": 900,
+      "clientWidth": 1600,
+      "clientHeight": 900,
+      "textLength": 124,
+      "minBodyFontSize": 30,
+      "containers": [],
+      "grids": []
+    },
+    {
+      "index": 2,
+      "id": null,
+      "label": "Balanced three cards",
+      "active": "true",
+      "step": "0",
+      "density": null,
+      "slideKind": "content",
+      "kind": "content",
+      "kindSource": "explicit",
+      "collected": true,
+      "hasSlideFill": false,
+      "hasCenter": false,
+      "hasCenterStart": false,
+      "centerInFill": false,
+      "centerStartInFill": false,
+      "rect": {
+        "x": 0,
+        "y": 900,
+        "width": 1600,
+        "height": 900,
+        "top": 900,
+        "right": 1600,
+        "bottom": 1800,
+        "left": 0
+      },
+      "innerRect": {
+        "x": 0,
+        "y": 900,
+        "width": 1600,
+        "height": 900,
+        "top": 900,
+        "right": 1600,
+        "bottom": 1800,
+        "left": 0,
+        "offsetTop": 0
+      },
+      "headerRect": {
+        "x": 108,
+        "y": 992,
+        "width": 1080,
+        "height": 189.4375,
+        "top": 992,
+        "right": 1188,
+        "bottom": 1181.4375,
+        "left": 108,
+        "offsetTop": 92
+      },
+      "titleRect": {
+        "x": 108,
+        "y": 1024,
+        "width": 1080,
+        "height": 157.4375,
+        "top": 1024,
+        "right": 1188,
+        "bottom": 1181.4375,
+        "left": 108,
+        "offsetTop": 124
+      },
+      "bodyRect": null,
+      "innerOffsetTop": 0,
+      "expectedHeaderOffsetTop": 92,
+      "headerOffsetTop": 92,
+      "titleOffsetTop": 124,
+      "bodyOffsetTop": null,
+      "scrollWidth": 1600,
+      "scrollHeight": 900,
+      "clientWidth": 1600,
+      "clientHeight": 900,
+      "textLength": 542,
+      "minBodyFontSize": 21,
+      "containers": [
+        {
+          "selector": "article.ls-card",
+          "height": 196.27,
+          "width": 440,
+          "innerHeight": 148.27,
+          "contentHeight": 146.27,
+          "contentFillRatio": 0.99,
+          "textLength": 174,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "article.ls-card",
+          "height": 196.27,
+          "width": 440,
+          "innerHeight": 148.27,
+          "contentHeight": 146.27,
+          "contentFillRatio": 0.99,
+          "textLength": 151,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "article.ls-card",
+          "height": 196.27,
+          "width": 440,
+          "innerHeight": 148.27,
+          "contentHeight": 146.27,
+          "contentFillRatio": 0.99,
+          "textLength": 158,
+          "bodyFontSize": 21
+        }
+      ],
+      "grids": [
+        {
+          "selector": "div.ls-grid.ls-grid--3",
+          "classes": ["ls-grid", "ls-grid--3"],
+          "childCount": 3,
+          "children": [
+            {
+              "selector": "article.ls-card",
+              "height": 196.27,
+              "textLength": 174
+            },
+            {
+              "selector": "article.ls-card",
+              "height": 196.27,
+              "textLength": 151
+            },
+            {
+              "selector": "article.ls-card",
+              "height": 196.27,
+              "textLength": 158
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 3,
+      "id": null,
+      "label": "Feature rows",
+      "active": "true",
+      "step": "0",
+      "density": null,
+      "slideKind": "content",
+      "kind": "content",
+      "kindSource": "explicit",
+      "collected": true,
+      "hasSlideFill": false,
+      "hasCenter": false,
+      "hasCenterStart": false,
+      "centerInFill": false,
+      "centerStartInFill": false,
+      "rect": {
+        "x": 0,
+        "y": 1800,
+        "width": 1600,
+        "height": 900,
+        "top": 1800,
+        "right": 1600,
+        "bottom": 2700,
+        "left": 0
+      },
+      "innerRect": {
+        "x": 0,
+        "y": 1800,
+        "width": 1600,
+        "height": 900,
+        "top": 1800,
+        "right": 1600,
+        "bottom": 2700,
+        "left": 0,
+        "offsetTop": 0
+      },
+      "headerRect": {
+        "x": 108,
+        "y": 1892,
+        "width": 1080,
+        "height": 189.4375,
+        "top": 1892,
+        "right": 1188,
+        "bottom": 2081.4375,
+        "left": 108,
+        "offsetTop": 92
+      },
+      "titleRect": {
+        "x": 108,
+        "y": 1924,
+        "width": 1080,
+        "height": 157.4375,
+        "top": 1924,
+        "right": 1188,
+        "bottom": 2081.4375,
+        "left": 108,
+        "offsetTop": 124
+      },
+      "bodyRect": null,
+      "innerOffsetTop": 0,
+      "expectedHeaderOffsetTop": 92,
+      "headerOffsetTop": 92,
+      "titleOffsetTop": 124,
+      "bodyOffsetTop": null,
+      "scrollWidth": 1600,
+      "scrollHeight": 900,
+      "clientWidth": 1600,
+      "clientHeight": 900,
+      "textLength": 346,
+      "minBodyFontSize": 21,
+      "containers": [
+        {
+          "selector": "div.ls-icon-item.ls-icon-item--boxed",
+          "height": 102.31,
+          "width": 1384,
+          "innerHeight": 62.31,
+          "contentHeight": 60.31,
+          "contentFillRatio": 0.97,
+          "textLength": 72,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "div.ls-icon-item.ls-icon-item--boxed",
+          "height": 102.31,
+          "width": 1384,
+          "innerHeight": 62.31,
+          "contentHeight": 60.31,
+          "contentFillRatio": 0.97,
+          "textLength": 68,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "div.ls-icon-item.ls-icon-item--boxed",
+          "height": 102.31,
+          "width": 1384,
+          "innerHeight": 62.31,
+          "contentHeight": 60.31,
+          "contentFillRatio": 0.97,
+          "textLength": 68,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "div.ls-icon-item.ls-icon-item--boxed",
+          "height": 102.31,
+          "width": 1384,
+          "innerHeight": 62.31,
+          "contentHeight": 60.31,
+          "contentFillRatio": 0.97,
+          "textLength": 81,
+          "bodyFontSize": 21
+        }
+      ],
+      "grids": [
+        {
+          "selector": "div.ls-grid",
+          "classes": ["ls-grid"],
+          "childCount": 4,
+          "children": [
+            {
+              "selector": "div.ls-icon-item.ls-icon-item--boxed",
+              "height": 102.31,
+              "textLength": 72
+            },
+            {
+              "selector": "div.ls-icon-item.ls-icon-item--boxed",
+              "height": 102.31,
+              "textLength": 68
+            },
+            {
+              "selector": "div.ls-icon-item.ls-icon-item--boxed",
+              "height": 102.31,
+              "textLength": 68
+            },
+            {
+              "selector": "div.ls-icon-item.ls-icon-item--boxed",
+              "height": 102.31,
+              "textLength": 81
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 4,
+      "id": null,
+      "label": "Icon grid",
+      "active": "true",
+      "step": "0",
+      "density": null,
+      "slideKind": "content",
+      "kind": "content",
+      "kindSource": "explicit",
+      "collected": true,
+      "hasSlideFill": false,
+      "hasCenter": false,
+      "hasCenterStart": false,
+      "centerInFill": false,
+      "centerStartInFill": false,
+      "rect": {
+        "x": 0,
+        "y": 2700,
+        "width": 1600,
+        "height": 900,
+        "top": 2700,
+        "right": 1600,
+        "bottom": 3600,
+        "left": 0
+      },
+      "innerRect": {
+        "x": 0,
+        "y": 2700,
+        "width": 1600,
+        "height": 900,
+        "top": 2700,
+        "right": 1600,
+        "bottom": 3600,
+        "left": 0,
+        "offsetTop": 0
+      },
+      "headerRect": {
+        "x": 108,
+        "y": 2792,
+        "width": 1080,
+        "height": 189.4375,
+        "top": 2792,
+        "right": 1188,
+        "bottom": 2981.4375,
+        "left": 108,
+        "offsetTop": 92
+      },
+      "titleRect": {
+        "x": 108,
+        "y": 2824,
+        "width": 1080,
+        "height": 157.4375,
+        "top": 2824,
+        "right": 1188,
+        "bottom": 2981.4375,
+        "left": 108,
+        "offsetTop": 124
+      },
+      "bodyRect": null,
+      "innerOffsetTop": 0,
+      "expectedHeaderOffsetTop": 92,
+      "headerOffsetTop": 92,
+      "titleOffsetTop": 124,
+      "bodyOffsetTop": null,
+      "scrollWidth": 1600,
+      "scrollHeight": 900,
+      "clientWidth": 1600,
+      "clientHeight": 900,
+      "textLength": 392,
+      "minBodyFontSize": 21,
+      "containers": [
+        {
+          "selector": "div.ls-icon-item.ls-icon-item--boxed",
+          "height": 130.03,
+          "width": 440,
+          "innerHeight": 90.03,
+          "contentHeight": 88.03,
+          "contentFillRatio": 0.98,
+          "textLength": 50,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "div.ls-icon-item.ls-icon-item--boxed",
+          "height": 130.03,
+          "width": 440,
+          "innerHeight": 90.03,
+          "contentHeight": 88.03,
+          "contentFillRatio": 0.98,
+          "textLength": 52,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "div.ls-icon-item.ls-icon-item--boxed",
+          "height": 130.03,
+          "width": 440,
+          "innerHeight": 90.03,
+          "contentHeight": 88.03,
+          "contentFillRatio": 0.98,
+          "textLength": 60,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "div.ls-icon-item.ls-icon-item--boxed",
+          "height": 130.03,
+          "width": 440,
+          "innerHeight": 90.03,
+          "contentHeight": 88.03,
+          "contentFillRatio": 0.98,
+          "textLength": 59,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "div.ls-icon-item.ls-icon-item--boxed",
+          "height": 130.03,
+          "width": 440,
+          "innerHeight": 90.03,
+          "contentHeight": 88.03,
+          "contentFillRatio": 0.98,
+          "textLength": 59,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "div.ls-icon-item.ls-icon-item--boxed",
+          "height": 130.03,
+          "width": 440,
+          "innerHeight": 90.03,
+          "contentHeight": 88.03,
+          "contentFillRatio": 0.98,
+          "textLength": 55,
+          "bodyFontSize": 21
+        }
+      ],
+      "grids": [
+        {
+          "selector": "div.ls-grid.ls-grid--3",
+          "classes": ["ls-grid", "ls-grid--3"],
+          "childCount": 6,
+          "children": [
+            {
+              "selector": "div.ls-icon-item.ls-icon-item--boxed",
+              "height": 130.03,
+              "textLength": 50
+            },
+            {
+              "selector": "div.ls-icon-item.ls-icon-item--boxed",
+              "height": 130.03,
+              "textLength": 52
+            },
+            {
+              "selector": "div.ls-icon-item.ls-icon-item--boxed",
+              "height": 130.03,
+              "textLength": 60
+            },
+            {
+              "selector": "div.ls-icon-item.ls-icon-item--boxed",
+              "height": 130.03,
+              "textLength": 59
+            },
+            {
+              "selector": "div.ls-icon-item.ls-icon-item--boxed",
+              "height": 130.03,
+              "textLength": 59
+            },
+            {
+              "selector": "div.ls-icon-item.ls-icon-item--boxed",
+              "height": 130.03,
+              "textLength": 55
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 5,
+      "id": null,
+      "label": "Spacious density",
+      "active": "true",
+      "step": "0",
+      "density": "spacious",
+      "slideKind": "content",
+      "kind": "content",
+      "kindSource": "explicit",
+      "collected": true,
+      "hasSlideFill": false,
+      "hasCenter": false,
+      "hasCenterStart": false,
+      "centerInFill": false,
+      "centerStartInFill": false,
+      "rect": {
+        "x": 0,
+        "y": 3600,
+        "width": 1600,
+        "height": 900,
+        "top": 3600,
+        "right": 1600,
+        "bottom": 4500,
+        "left": 0
+      },
+      "innerRect": {
+        "x": 0,
+        "y": 3600,
+        "width": 1600,
+        "height": 900,
+        "top": 3600,
+        "right": 1600,
+        "bottom": 4500,
+        "left": 0,
+        "offsetTop": 0
+      },
+      "headerRect": {
+        "x": 108,
+        "y": 3692,
+        "width": 1080,
+        "height": 110.71875,
+        "top": 3692,
+        "right": 1188,
+        "bottom": 3802.71875,
+        "left": 108,
+        "offsetTop": 92
+      },
+      "titleRect": {
+        "x": 108,
+        "y": 3724,
+        "width": 1080,
+        "height": 78.71875,
+        "top": 3724,
+        "right": 1188,
+        "bottom": 3802.71875,
+        "left": 108,
+        "offsetTop": 124
+      },
+      "bodyRect": null,
+      "innerOffsetTop": 0,
+      "expectedHeaderOffsetTop": 92,
+      "headerOffsetTop": 92,
+      "titleOffsetTop": 124,
+      "bodyOffsetTop": null,
+      "scrollWidth": 1600,
+      "scrollHeight": 900,
+      "clientWidth": 1600,
+      "clientHeight": 900,
+      "textLength": 269,
+      "minBodyFontSize": 24,
+      "containers": [
+        {
+          "selector": "article.ls-card",
+          "height": 200.63,
+          "width": 672,
+          "innerHeight": 136.63,
+          "contentHeight": 134.63,
+          "contentFillRatio": 0.99,
+          "textLength": 137,
+          "bodyFontSize": 24
+        },
+        {
+          "selector": "article.ls-card",
+          "height": 200.63,
+          "width": 672,
+          "innerHeight": 136.63,
+          "contentHeight": 102.95,
+          "contentFillRatio": 0.75,
+          "textLength": 83,
+          "bodyFontSize": 24
+        }
+      ],
+      "grids": [
+        {
+          "selector": "div.ls-grid.ls-grid--2",
+          "classes": ["ls-grid", "ls-grid--2"],
+          "childCount": 2,
+          "children": [
+            {
+              "selector": "article.ls-card",
+              "height": 200.63,
+              "textLength": 137
+            },
+            {
+              "selector": "article.ls-card",
+              "height": 200.63,
+              "textLength": 83
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 6,
+      "id": null,
+      "label": "Intentional fill diagram",
+      "active": "true",
+      "step": "0",
+      "density": null,
+      "slideKind": "content",
+      "kind": "content",
+      "kindSource": "explicit",
+      "collected": true,
+      "hasSlideFill": false,
+      "hasCenter": false,
+      "hasCenterStart": false,
+      "centerInFill": false,
+      "centerStartInFill": false,
+      "rect": {
+        "x": 0,
+        "y": 4500,
+        "width": 1600,
+        "height": 900,
+        "top": 4500,
+        "right": 1600,
+        "bottom": 5400,
+        "left": 0
+      },
+      "innerRect": {
+        "x": 0,
+        "y": 4500,
+        "width": 1600,
+        "height": 900,
+        "top": 4500,
+        "right": 1600,
+        "bottom": 5400,
+        "left": 0,
+        "offsetTop": 0
+      },
+      "headerRect": {
+        "x": 108,
+        "y": 4592,
+        "width": 1080,
+        "height": 189.4375,
+        "top": 4592,
+        "right": 1188,
+        "bottom": 4781.4375,
+        "left": 108,
+        "offsetTop": 92
+      },
+      "titleRect": {
+        "x": 108,
+        "y": 4624,
+        "width": 1080,
+        "height": 157.4375,
+        "top": 4624,
+        "right": 1188,
+        "bottom": 4781.4375,
+        "left": 108,
+        "offsetTop": 124
+      },
+      "bodyRect": null,
+      "innerOffsetTop": 0,
+      "expectedHeaderOffsetTop": 92,
+      "headerOffsetTop": 92,
+      "titleOffsetTop": 124,
+      "bodyOffsetTop": null,
+      "scrollWidth": 1600,
+      "scrollHeight": 900,
+      "clientWidth": 1600,
+      "clientHeight": 900,
+      "textLength": 284,
+      "minBodyFontSize": 22,
+      "containers": [
+        {
+          "selector": "div.ls-panel.ls-panel--frame.ls-panel--center",
+          "height": 478.56,
+          "width": 845,
+          "innerHeight": 414.56,
+          "contentHeight": 260,
+          "contentFillRatio": 0.63,
+          "textLength": 0,
+          "bodyFontSize": null
+        },
+        {
+          "selector": "aside.ls-callout",
+          "height": 228.7,
+          "width": 507,
+          "innerHeight": 184.7,
+          "contentHeight": 182.7,
+          "contentFillRatio": 0.99,
+          "textLength": 234,
+          "bodyFontSize": 22
+        }
+      ],
+      "grids": [
+        {
+          "selector": "div.ls-grid.ls-grid--wide-left.ls-grid--fill",
+          "classes": ["ls-grid", "ls-grid--wide-left", "ls-grid--fill"],
+          "childCount": 2,
+          "children": [
+            {
+              "selector": "div.ls-panel.ls-panel--frame.ls-panel--center",
+              "height": 478.56,
+              "textLength": 0
+            },
+            {
+              "selector": "div.ls-grid",
+              "height": 478.56,
+              "textLength": 234
+            }
+          ]
+        },
+        {
+          "selector": "div.ls-grid",
+          "classes": ["ls-grid"],
+          "childCount": 1,
+          "children": [
+            {
+              "selector": "aside.ls-callout",
+              "height": 228.7,
+              "textLength": 234
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 7,
+      "id": null,
+      "label": "Metric band",
+      "active": "true",
+      "step": "0",
+      "density": null,
+      "slideKind": "content",
+      "kind": "content",
+      "kindSource": "explicit",
+      "collected": true,
+      "hasSlideFill": false,
+      "hasCenter": false,
+      "hasCenterStart": false,
+      "centerInFill": false,
+      "centerStartInFill": false,
+      "rect": {
+        "x": 0,
+        "y": 5400,
+        "width": 1600,
+        "height": 900,
+        "top": 5400,
+        "right": 1600,
+        "bottom": 6300,
+        "left": 0
+      },
+      "innerRect": {
+        "x": 0,
+        "y": 5400,
+        "width": 1600,
+        "height": 900,
+        "top": 5400,
+        "right": 1600,
+        "bottom": 6300,
+        "left": 0,
+        "offsetTop": 0
+      },
+      "headerRect": {
+        "x": 108,
+        "y": 5492,
+        "width": 1080,
+        "height": 189.4375,
+        "top": 5492,
+        "right": 1188,
+        "bottom": 5681.4375,
+        "left": 108,
+        "offsetTop": 92
+      },
+      "titleRect": {
+        "x": 108,
+        "y": 5524,
+        "width": 1080,
+        "height": 157.4375,
+        "top": 5524,
+        "right": 1188,
+        "bottom": 5681.4375,
+        "left": 108,
+        "offsetTop": 124
+      },
+      "bodyRect": null,
+      "innerOffsetTop": 0,
+      "expectedHeaderOffsetTop": 92,
+      "headerOffsetTop": 92,
+      "titleOffsetTop": 124,
+      "bodyOffsetTop": null,
+      "scrollWidth": 1600,
+      "scrollHeight": 900,
+      "clientWidth": 1600,
+      "clientHeight": 900,
+      "textLength": 117,
+      "minBodyFontSize": null,
+      "containers": [
+        {
+          "selector": "div.ls-metric",
+          "height": 154.09,
+          "width": 440,
+          "innerHeight": 106.09,
+          "contentHeight": 104.09,
+          "contentFillRatio": 0.98,
+          "textLength": 23,
+          "bodyFontSize": null
+        },
+        {
+          "selector": "div.ls-metric",
+          "height": 154.09,
+          "width": 440,
+          "innerHeight": 106.09,
+          "contentHeight": 104.09,
+          "contentFillRatio": 0.98,
+          "textLength": 22,
+          "bodyFontSize": null
+        },
+        {
+          "selector": "div.ls-panel",
+          "height": 154.09,
+          "width": 440,
+          "innerHeight": 90.09,
+          "contentHeight": 88.09,
+          "contentFillRatio": 0.98,
+          "textLength": 20,
+          "bodyFontSize": null
+        }
+      ],
+      "grids": [
+        {
+          "selector": "div.ls-grid.ls-grid--3",
+          "classes": ["ls-grid", "ls-grid--3"],
+          "childCount": 3,
+          "children": [
+            {
+              "selector": "div.ls-metric",
+              "height": 154.09,
+              "textLength": 23
+            },
+            {
+              "selector": "div.ls-metric",
+              "height": 154.09,
+              "textLength": 22
+            },
+            {
+              "selector": "div.ls-panel",
+              "height": 154.09,
+              "textLength": 20
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "overflowCandidates": []
+}

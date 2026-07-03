@@ -45,6 +45,42 @@ test("renderCatalog emits typed sections for current item types", () => {
   assert.doesNotMatch(markdown, /^## Other$/m);
 });
 
+test("renderCatalog emits composition blocks and enriched CSS variables", () => {
+  const enriched = {
+    ...item("templates/three-cards", "ls:template"),
+    composition: {
+      contentDensity: ["balanced"],
+      layoutBehavior: "content-sized",
+      itemCountGuidance: "3 cards; for 4-6 short items use templates/icon-grid.",
+      copyGuidance: "2-4 sentences per card.",
+      avoidWhen: ["each card has only a one-liner"],
+      alternatives: [{ when: "4-6 short items", use: "templates/icon-grid" }],
+    },
+    authoring: {
+      cssVariables: [
+        "--ls-legacy-var",
+        { name: "--ls-card-padding", default: "24px", overrideSafe: true },
+        { name: "--ls-slide-width", default: "1600px", overrideSafe: false },
+      ],
+    },
+  };
+  const markdown = renderCatalog({ items: [enriched] });
+  assert.match(markdown, /- Composition:/);
+  assert.match(markdown, /- Content density: balanced/);
+  assert.match(markdown, /- Layout behavior: content-sized/);
+  assert.match(markdown, /- Avoid when:/);
+  assert.match(markdown, /each card has only a one-liner/);
+  assert.match(markdown, /4-6 short items: `templates\/icon-grid`/);
+  assert.match(markdown, /`--ls-legacy-var`/);
+  assert.match(markdown, /`--ls-card-padding` \(default 24px, override-safe\)/);
+  assert.match(markdown, /`--ls-slide-width` \(default 1600px, not override-safe\)/);
+});
+
+test("renderCatalog omits the composition block for items without one", () => {
+  const markdown = renderCatalog({ items: [item("components/card", "ls:component")] });
+  assert.doesNotMatch(markdown, /- Composition:/);
+});
+
 function item(name, type) {
   return {
     name,

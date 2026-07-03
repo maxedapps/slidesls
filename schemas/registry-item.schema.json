@@ -101,6 +101,55 @@
       "description": "Optional structural contract metadata for future generalized validators.",
       "additionalProperties": true
     },
+    "composition": {
+      "type": "object",
+      "description": "Advisory density/composition guidance surfaced by catalog and inspect.",
+      "additionalProperties": false,
+      "properties": {
+        "contentDensity": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["sparse", "balanced", "dense"]
+          }
+        },
+        "layoutBehavior": {
+          "type": "string",
+          "enum": ["content-sized", "fills-area", "fixed"]
+        },
+        "itemCountGuidance": {
+          "type": "string"
+        },
+        "copyGuidance": {
+          "type": "string"
+        },
+        "avoidWhen": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "alternatives": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["when", "use"],
+            "additionalProperties": false,
+            "properties": {
+              "when": {
+                "type": "string",
+                "minLength": 1
+              },
+              "use": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
     "snippets": {
       "type": "array",
       "items": {
@@ -221,8 +270,29 @@
         "cssVariables": {
           "type": "array",
           "items": {
-            "type": "string",
-            "minLength": 1
+            "oneOf": [
+              {
+                "type": "string",
+                "minLength": 1
+              },
+              {
+                "type": "object",
+                "required": ["name"],
+                "additionalProperties": false,
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "default": {
+                    "type": "string"
+                  },
+                  "overrideSafe": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            ]
           }
         },
         "attributes": {

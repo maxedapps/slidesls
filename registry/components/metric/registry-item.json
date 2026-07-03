@@ -35,5 +35,12 @@
     ],
     "usage": ["Use for one prominent KPI or numeric proof point."]
   },
+  "composition": {
+    "contentDensity": ["sparse"],
+    "layoutBehavior": "content-sized",
+    "copyGuidance": "One number plus a short label; the value carries the slide.",
+    "avoidWhen": ["narrative or multi-sentence content"],
+    "alternatives": [{ "when": "points need explanation", "use": "components/card" }]
+  },
   "agentLevel": "recommended"
 }

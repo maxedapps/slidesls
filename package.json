@@ -1,6 +1,6 @@
 {
   "name": "@maxedapps/slidesls",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Agent-primary vanilla HTML/CSS/JS slide deck authoring CLI and registry.",
   "keywords": [
     "agents",
@@ -53,7 +53,8 @@
     "check": "pnpm lint && pnpm fmt:check && pnpm test && pnpm validate:registry && pnpm validate:skills && pnpm validate:examples && pnpm cli:smoke",
     "test": "node --test tests/**/*.test.mjs",
     "cli:smoke": "node scripts/test-cli-smoke.mjs",
-    "pack:check": "pnpm check && npm pack --dry-run"
+    "visual:gate": "node scripts/visual-gate.mjs",
+    "pack:check": "pnpm check && pnpm visual:gate && npm pack --dry-run"
   },
   "devDependencies": {
     "oxfmt": "^0.56.0",

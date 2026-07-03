@@ -10,6 +10,12 @@
 
 The CLI is the authoritative discovery surface for agents: use `slidesls catalog --starter --json`, `slidesls catalog --json`, and `slidesls inspect <item> --json` instead of guessing from file names. Add `--api` when you need public classes, class groups/modifiers, data attributes, CSS variables, theme/font attributes, and short usage rules. Use those values or snippet markup; do not invent `ls-*` classes.
 
+## Composition metadata
+
+Items may declare a `composition` object: `contentDensity` (sparse/balanced/dense), `layoutBehavior` (content-sized/fills-area/fixed), `itemCountGuidance`, `copyGuidance`, `avoidWhen` (conditions under which the item composes badly), and `alternatives` (`{ when, use }` pointers to better-fitting items). Brief `catalog --json` carries `avoidWhen`; default `inspect <item> --json` carries the full object. Check `avoidWhen` before using a template; when it matches your content, use the alternative it names. Items with `avoidWhen` also document the same rules in a `## When not to use` README section.
+
+`authoring.cssVariables` entries are either bare `--name` strings or `{ name, default, overrideSafe }` objects. `overrideSafe: true` marks tokens an agent may freely override in deck CSS (in a deck-level `@layer tokens` block or per element); `overrideSafe: false` marks supported-but-structural knobs such as slide dimensions.
+
 ## Item types
 
 - `ls:core` — mandatory base assets.

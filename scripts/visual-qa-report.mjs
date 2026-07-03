@@ -1,14 +1,19 @@
 #!/usr/bin/env node
 
+// Back-compat delegate. The canonical entry point is `slidesls visual-qa`;
+// this script keeps the pre-0.5 repo-path CLI surface working.
 import { stdin, stdout } from "node:process";
-import { analyzeVisualRhythm } from "../src/validation/visual-rhythm.mjs";
+import { visualQaEvalScript } from "../src/validation/visual-qa-eval.mjs";
+import { analyzeVisualQa } from "../src/validation/visual-rhythm.mjs";
 
 const help = `Usage:
   node scripts/visual-qa-report.mjs --eval
   node scripts/visual-qa-report.mjs --analyze < collected.json
 
+Deprecated in favor of: slidesls visual-qa --eval | --analyze [--input <file>]
+
 Prints a dependency-free browser evaluation payload for agent-browser, or analyzes
-collected JSON for advisory visual rhythm warnings.
+collected JSON for advisory per-slide composition and rhythm warnings.
 `;
 
 if (process.argv.includes("--help") || process.argv.includes("-h")) {
@@ -22,11 +27,24 @@ if (process.argv.includes("--analyze")) {
   // first parse may yield a string that itself contains the payload JSON.
   let payload = JSON.parse(input || "{}");
   if (typeof payload === "string") payload = JSON.parse(payload);
-  if (!payload || typeof payload !== "object" || Array.isArray(payload)) {
+  if (
+    !payload ||
+    typeof payload !== "object" ||
+    Array.isArray(payload) ||
+    !Array.isArray(payload.slides)
+  ) {
     process.stderr.write("Expected collected visual QA JSON with a slides array on stdin.\n");
     process.exit(1);
   }
-  stdout.write(`${JSON.stringify(analyzeVisualRhythm(payload), null, 2)}\n`);
+  // An empty collection means the evaluated page was not a rendered deck;
+  // treating it as "clean" would silently defeat the QA loop.
+  if (payload.slides.length === 0) {
+    process.stderr.write(
+      "Collected visual QA payload contains no slides. Open the deck preview with ?export=1, wait for load, then re-run the collection.\n",
+    );
+    process.exit(1);
+  }
+  stdout.write(`${JSON.stringify(analyzeVisualQa(payload), null, 2)}\n`);
   process.exit(0);
 }
 
@@ -35,133 +53,7 @@ if (!process.argv.includes("--eval")) {
   process.exit(1);
 }
 
-stdout.write(String.raw`(() => {
-  const deck = document.querySelector("[data-ls-deck]");
-  const rootStyles = getComputedStyle(document.documentElement);
-  const slides = [...document.querySelectorAll(".ls-slide")];
-  const intentionalScrollSelector =
-    ".ls-table-frame, pre, .ls-code-block pre, .ls-terminal__body, .ls-code-diff__body";
-
-  function selectorFor(element) {
-    if (element.id) return "#" + element.id;
-    const classes = [...element.classList].slice(0, 4).map((name) => "." + name).join("");
-    return element.localName + classes;
-  }
-
-  function rectFor(element, slideRect) {
-    if (!element) return null;
-    const rect = element.getBoundingClientRect();
-    return {
-      ...rect.toJSON(),
-      offsetTop: rect.top - slideRect.top,
-    };
-  }
-
-  function hasInFill(slide, selector) {
-    const fill = slide.querySelector(".ls-slide-fill");
-    return Boolean(fill && (fill.matches(selector) || fill.querySelector(selector)));
-  }
-
-  function overflowFor(element) {
-    const style = getComputedStyle(element);
-    const rawOverflowX = element.scrollWidth - element.clientWidth;
-    const rawOverflowY = element.scrollHeight - element.clientHeight;
-    const overflowX = style.overflowX === "visible" ? 0 : rawOverflowX;
-    const overflowY = style.overflowY === "visible" ? 0 : rawOverflowY;
-    if (overflowX <= 1 && overflowY <= 1) return null;
-
-    return {
-      selector: selectorFor(element),
-      slide: slides.findIndex((slide) => slide.contains(element)) + 1,
-      overflowX,
-      overflowY,
-      clientWidth: element.clientWidth,
-      clientHeight: element.clientHeight,
-      scrollWidth: element.scrollWidth,
-      scrollHeight: element.scrollHeight,
-      overflowStyle: style.overflowX + " " + style.overflowY,
-      intentional: Boolean(element.closest(intentionalScrollSelector)),
-    };
-  }
-
-  function slideKind(slide) {
-    const explicit = slide.dataset.lsSlideKind || null;
-    if (explicit) return { kind: explicit, kindSource: "explicit" };
-    if (hasInFill(slide, ".ls-center")) return { kind: "section", kindSource: "inferred" };
-    if (hasInFill(slide, ".ls-center-start")) return { kind: "hero", kindSource: "inferred" };
-    return { kind: "content", kindSource: "inferred" };
-  }
-
-  const overflowCandidates = [...document.querySelectorAll("body, [data-ls-deck], .ls-slide, .ls-slide *")]
-    .map(overflowFor)
-    .filter(Boolean);
-
-  return JSON.stringify({
-    url: location.href,
-    viewport: { width: innerWidth, height: innerHeight },
-    deck: deck
-      ? {
-          ready: deck.dataset.lsReady || null,
-          export: deck.dataset.lsExport || null,
-          currentSlide: deck.dataset.lsCurrentSlide || null,
-          currentStep: deck.dataset.lsCurrentStep || null,
-          rect: deck.getBoundingClientRect().toJSON(),
-        }
-      : null,
-    nativeSlide: {
-      width: rootStyles.getPropertyValue("--ls-slide-width").trim(),
-      height: rootStyles.getPropertyValue("--ls-slide-height").trim(),
-      scale: rootStyles.getPropertyValue("--ls-scale").trim(),
-    },
-    slides: slides.map((slide, index) => {
-      const slideRect = slide.getBoundingClientRect();
-      const inner = slide.querySelector(".ls-slide__inner");
-      const header = slide.querySelector("header");
-      const title = slide.querySelector(".ls-title");
-      const body = slide.querySelector(".ls-slide__body");
-      const kind = slideKind(slide);
-      const innerRect = rectFor(inner, slideRect);
-      const headerRect = rectFor(header, slideRect);
-      const titleRect = rectFor(title, slideRect);
-      const bodyRect = rectFor(body, slideRect);
-      // Headers sit at the inner's content box, not its border box: the inner
-      // spans the slide and positions content via padding-block.
-      const innerPaddingTop = inner ? parseFloat(getComputedStyle(inner).paddingTop) || 0 : 0;
-      const expectedHeaderOffsetTop =
-        innerRect === null ? null : innerRect.offsetTop + innerPaddingTop;
-      return {
-        index: index + 1,
-        id: slide.id || null,
-        active: slide.dataset.active || null,
-        step: slide.dataset.lsStep || null,
-        density: slide.dataset.lsDensity || null,
-        slideKind: slide.dataset.lsSlideKind || null,
-        ...kind,
-        hasSlideFill: Boolean(slide.querySelector(".ls-slide-fill")),
-        hasCenter: Boolean(slide.querySelector(".ls-center")),
-        hasCenterStart: Boolean(slide.querySelector(".ls-center-start")),
-        centerInFill: hasInFill(slide, ".ls-center"),
-        centerStartInFill: hasInFill(slide, ".ls-center-start"),
-        rect: slideRect.toJSON(),
-        innerRect,
-        headerRect,
-        titleRect,
-        bodyRect,
-        innerOffsetTop: innerRect?.offsetTop ?? null,
-        expectedHeaderOffsetTop,
-        headerOffsetTop: headerRect?.offsetTop ?? null,
-        titleOffsetTop: titleRect?.offsetTop ?? null,
-        bodyOffsetTop: bodyRect?.offsetTop ?? null,
-        scrollWidth: slide.scrollWidth,
-        scrollHeight: slide.scrollHeight,
-        clientWidth: slide.clientWidth,
-        clientHeight: slide.clientHeight,
-      };
-    }),
-    overflowCandidates,
-  }, null, 2);
-})()
-`);
+stdout.write(visualQaEvalScript());
 
 function readStdin() {
   return new Promise((resolve, reject) => {

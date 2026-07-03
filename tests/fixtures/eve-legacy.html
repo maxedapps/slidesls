@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>eve legacy regression fixture</title>
+    <link rel="stylesheet" href="registry/core/base/reset.css" />
+    <link rel="stylesheet" href="registry/core/base/tokens.css" />
+    <link rel="stylesheet" href="registry/core/base/slide.css" />
+    <link rel="stylesheet" href="registry/core/base/icons.css" />
+    <link rel="stylesheet" href="registry/components/badge/badge.css" />
+    <style>
+      @layer utilities {
+        .ls-stack {
+          display: grid;
+          gap: var(--ls-stack-gap, var(--ls-space-4));
+          min-inline-size: 0;
+        }
+
+        .ls-stack--sm {
+          --ls-stack-gap: var(--ls-space-2);
+        }
+
+        .ls-stack--lg {
+          --ls-stack-gap: var(--ls-space-6);
+        }
+
+        .ls-cluster {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--ls-cluster-gap, var(--ls-space-3));
+          align-items: var(--ls-cluster-align, center);
+          min-inline-size: 0;
+        }
+
+        .ls-grid {
+          display: grid;
+          gap: var(--ls-grid-gap, var(--ls-space-5));
+          min-inline-size: 0;
+          min-block-size: 0;
+        }
+
+        .ls-grid--2 {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .ls-grid--3 {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        .ls-grid--4 {
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .ls-grid--wide-left {
+          grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+        }
+
+        .ls-grid--wide-right {
+          grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+        }
+
+        .ls-center {
+          display: grid;
+          place-items: center;
+          align-content: center;
+          text-align: center;
+          min-inline-size: 0;
+          min-block-size: 0;
+        }
+
+        .ls-center-start {
+          display: grid;
+          place-items: center start;
+          align-content: center;
+          min-inline-size: 0;
+          min-block-size: 0;
+        }
+
+        .ls-text-start {
+          text-align: start;
+        }
+
+        .ls-fill {
+          block-size: 100%;
+          min-block-size: 0;
+        }
+
+        .ls-slide-fill {
+          grid-row: 1 / -1;
+          block-size: 100%;
+          min-block-size: 0;
+        }
+
+        .ls-frame {
+          display: grid;
+          place-items: center;
+          min-block-size: var(--ls-frame-min-block-size, 320px);
+          border-radius: var(--ls-radius-xl);
+          overflow: hidden;
+        }
+      }
+      @layer components {
+        .ls-card {
+          display: grid;
+          align-content: start;
+          gap: var(--ls-space-2);
+          padding: var(--ls-card-padding, 24px);
+          border: 1px solid var(--ls-border);
+          border-radius: var(--ls-radius-lg);
+          background: var(--ls-surface);
+          box-shadow: var(--ls-surface-highlight);
+        }
+
+        .ls-card--row {
+          grid-template-columns: auto 1fr;
+          align-items: start;
+          column-gap: var(--ls-space-3);
+        }
+
+        .ls-card__body {
+          display: grid;
+          gap: 6px;
+          min-inline-size: 0;
+        }
+
+        .ls-card__title {
+          color: var(--ls-text);
+          font-size: var(--ls-card-title-size, 28px);
+          font-weight: 740;
+          letter-spacing: -0.02em;
+          line-height: 1.05;
+        }
+
+        .ls-card__text {
+          color: var(--ls-muted);
+          font-size: var(--ls-card-text-size, 21px);
+          line-height: 1.32;
+        }
+      }
+    </style>
+    <script type="module" src="registry/core/base/slide-runtime.js"></script>
+  </head>
+  <body class="ls-page">
+    <main class="ls-deck" data-ls-deck aria-label="eve legacy fixture">
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Composable files">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Architecture</p>
+            <h2 class="ls-title">Composable files</h2>
+          </header>
+          <div class="ls-grid ls-grid--3">
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h3 class="ls-card__title">Agents</h3>
+                <p class="ls-card__text">Reusable role definitions.</p>
+              </div>
+            </article>
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h3 class="ls-card__title">Skills</h3>
+                <p class="ls-card__text">Focused instruction sets.</p>
+              </div>
+            </article>
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h3 class="ls-card__title">Commands</h3>
+                <p class="ls-card__text">One-shot workflows.</p>
+              </div>
+            </article>
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h3 class="ls-card__title">Hooks</h3>
+                <p class="ls-card__text">Lifecycle interceptors.</p>
+              </div>
+            </article>
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h3 class="ls-card__title">MCP servers</h3>
+                <p class="ls-card__text">External tool bridges.</p>
+              </div>
+            </article>
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h3 class="ls-card__title">Settings</h3>
+                <p class="ls-card__text">Project-level defaults.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Repeated plumbing">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Problem</p>
+            <h2 class="ls-title">Repeated plumbing</h2>
+          </header>
+          <div class="ls-grid ls-grid--3">
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h3 class="ls-card__title">Same prompts</h3>
+                <p class="ls-card__text">Rewritten in every project.</p>
+              </div>
+            </article>
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h3 class="ls-card__title">Same guards</h3>
+                <p class="ls-card__text">Copy-pasted safety rules.</p>
+              </div>
+            </article>
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h3 class="ls-card__title">Same setup</h3>
+                <p class="ls-card__text">Hand-rolled tool wiring.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

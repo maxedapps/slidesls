@@ -328,6 +328,9 @@ For AI agents:
     items.push(
       omitUndefined({
         ...(args.api ? mergeBriefAndRich(item) : summarizeItemBrief(item)),
+        // Default inspect carries the full composition object: it is small and
+        // exactly the guidance an agent needs when grabbing a snippet.
+        composition: item.composition ?? (args.api ? null : undefined),
         docs: item.docs,
         snippets,
         dependencyOrder: closure.map((resolved) => resolved.name),

@@ -18,6 +18,7 @@ Each item has `registry-item.json` with:
 - `agentLevel` — `starter`, `recommended`, `advanced`, or `experimental`; `catalog --recommended` computes inclusion from `starter|recommended`.
 - `snippets` — paste-ready HTML examples loaded by `inspect --json`.
 - `authoring` — public, agent-facing authoring API surfaced by `catalog --api --json` and `inspect --api --json`.
+- `composition` — optional advisory density/composition guidance (see below).
 
 Templates must use `files: []` and expose HTML only through `snippets` so `add templates/x` does not copy snippet files into deck assets.
 
@@ -30,12 +31,24 @@ Supported fields:
 - `classGroups` — base classes plus related BEM elements/modifiers, e.g. `ls-grid` with `ls-grid--2`.
 - `classes` — standalone public classes.
 - `dataAttributes` — public `data-*` attributes and allowed values when enumerable.
-- `cssVariables` — intended local customization knobs.
+- `cssVariables` — intended local customization knobs. Entries are bare `--name` strings (legacy) or `{ name, default, overrideSafe }` objects; prefer the object form so agents can discover safe override points and their defaults from `catalog`/`inspect` output.
 - `attributes` — important deck-level attributes such as `data-ls-theme` or `data-ls-font`.
 - `usage` — short authoring rules for agents.
 - `classMetadata` — optional per-class scope/safety metadata keyed by declared public class token.
 
 Registry validation checks authoring shape and, for local CSS-backed items, verifies listed classes exist in item CSS. It also checks snippet dependency closure, targeted canonical snippet structures, and `@container` usage without a query-container contract. Example validation recursively fails on unsupported real `ls-*` class attributes.
+
+## Composition metadata
+
+`composition` carries advisory density/composition guidance so `catalog`/`inspect` surface it at decision time:
+
+- `contentDensity` — array of `sparse` / `balanced` / `dense` the item suits.
+- `layoutBehavior` — `content-sized`, `fills-area`, or `fixed`.
+- `itemCountGuidance` / `copyGuidance` — short prose rules.
+- `avoidWhen` — conditions under which the item composes badly; surfaced in the brief catalog.
+- `alternatives` — `{ when, use }` pointers to better-fitting registry items.
+
+Integrity checks in `validate-registry`: every `alternatives[].use` must name an existing item; any `category/name` token inside composition strings or `authoring.usage` must resolve to an existing item (or item-name prefix), so guidance cannot silently rot when items are renamed; and an item that declares `avoidWhen` must have a `## When not to use` section in its README so metadata and docs stay paired.
 
 ## Theme presets
 

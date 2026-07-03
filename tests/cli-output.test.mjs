@@ -47,8 +47,10 @@ test("add --dry-run text output reports planned copies", async () => {
 
 test("catalog --json returns an agent-friendly result envelope", async () => {
   const { stdout } = await run([bin, "catalog", "--json"]);
+  // Budget: ~43 items with brief fields plus decision-critical avoidWhen.
+  // Keep the brief catalog comfortably under one agent context "page".
   assert.ok(
-    Buffer.byteLength(stdout) < 12_000,
+    Buffer.byteLength(stdout) < 14_000,
     `brief catalog is ${Buffer.byteLength(stdout)} bytes`,
   );
   const result = JSON.parse(stdout);
@@ -285,11 +287,21 @@ test("catalog and inspect text include AI-agent guidance", async () => {
 test("documented agent command recipes execute with placeholder substitutions", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-recipe-"));
   await run([bin, "init", root, "--template", "blank", "--json"]);
+  const collected = path.join(root, "collected.json");
+  await writeFile(
+    collected,
+    JSON.stringify({
+      url: "http://127.0.0.1:4321/",
+      deck: { export: "true" },
+      slides: [{ index: 1, kind: "content", rect: { height: 900 } }],
+    }),
+  );
   const substitutions = {
     "<item>": "templates/split",
     "<items...>": "utilities/layout",
     "<deck-or-project>": root,
     "<deck>": root,
+    "<collected.json>": collected,
   };
   const emittedRecipes = [
     ...Object.values(agentCommandRecipes),
@@ -309,6 +321,51 @@ test("documented agent command recipes execute with placeholder substitutions", 
     await run(commandToArgs(command));
   }
   await run([bin, "validate", root, "--json"]);
+});
+
+test("visual-qa command exposes eval script, analysis, and help", async () => {
+  const help = (await run([bin, "visual-qa"])).stdout;
+  assert.match(help, /--eval/);
+  assert.match(help, /--analyze/);
+
+  const evalScript = (await run([bin, "visual-qa", "--eval"])).stdout;
+  assert.match(evalScript, /contentFillRatio/);
+  assert.match(evalScript, /minBodyFontSize/);
+  assert.doesNotMatch(evalScript, /^\{/, "text --eval output must be the raw script, not JSON");
+
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-visual-qa-"));
+  const collected = path.join(root, "collected.json");
+  await writeFile(
+    collected,
+    JSON.stringify({
+      url: "http://127.0.0.1:4321/?export=1",
+      deck: { export: "true" },
+      slides: [
+        {
+          index: 1,
+          kind: "content",
+          label: "Sparse",
+          minBodyFontSize: 14,
+          rect: { height: 900 },
+          innerOffsetTop: 0,
+          expectedHeaderOffsetTop: 96,
+          headerOffsetTop: 96,
+        },
+      ],
+    }),
+  );
+  const analysis = JSON.parse(
+    (await run([bin, "visual-qa", "--analyze", "--input", collected, "--json"])).stdout,
+  );
+  assert.equal(analysis.ok, true);
+  assert.ok(analysis.data.warnings.some((warning) => warning.code === "body_text_small"));
+  assert.equal(analysis.data.perSlide[0].deepLink, "http://127.0.0.1:4321/#slide=1");
+  assert.deepEqual(analysis.data.summary.slidesToInspect, [1]);
+  assert.ok(Array.isArray(analysis.data.agentInstructions.nextCommands));
+
+  const text = (await run([bin, "visual-qa", "--analyze", "--input", collected])).stdout;
+  assert.match(text, /body_text_small/);
+  assert.match(text, /#slide=1/);
 });
 
 test("removed --registry option fails with a usage error", async () => {
@@ -403,6 +460,18 @@ test("command flag sweep detects undeclared flags", () => {
   );
   assert.equal(violations.length, 1);
   assert.equal(violations[0].flag, "bogus-flag");
+});
+
+test("SKILL.md lists every bundled theme", async () => {
+  const skill = await readFile(path.resolve("skills/create-slides-with-slidesls/SKILL.md"), "utf8");
+  const registry = JSON.parse(await readFile(path.resolve("registry.json"), "utf8"));
+  const themes = registry.items
+    .filter((item) => item.startsWith("registry/presets/themes/"))
+    .map((item) => item.split("/")[3]);
+  assert.ok(themes.length >= 5);
+  for (const theme of themes) {
+    assert.ok(skill.includes(`\`${theme}\``), `SKILL.md must mention theme ${theme}`);
+  }
 });
 
 test("agent guidance avoids stale primary commands", async () => {

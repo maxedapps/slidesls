@@ -91,6 +91,83 @@ test("registry validation catches agent metadata errors", async () => {
   }
 });
 
+test("registry validation catches composition metadata errors", async () => {
+  for (const [mutate, code] of [
+    [(item) => (item.composition = { avoidwhen: ["typo key"] }), "invalid_composition"],
+    [(item) => (item.composition = { layoutBehaviour: "content-sized" }), "invalid_composition"],
+    [(item) => (item.composition = { layoutBehavior: "stretchy" }), "invalid_composition"],
+    [(item) => (item.composition = { contentDensity: ["airy"] }), "invalid_composition"],
+    [(item) => (item.composition = { avoidWhen: [""] }), "invalid_composition"],
+    [(item) => (item.composition = { alternatives: [{ when: "x" }] }), "invalid_composition"],
+    [
+      (item) => (item.composition = { alternatives: [{ when: "x", use: "components/missing" }] }),
+      "unknown_composition_alternative",
+    ],
+    [
+      (item) => (item.composition = { copyGuidance: "prefer templates/does-not-exist here" }),
+      "unknown_item_in_guidance",
+    ],
+    [
+      (item) => (item.authoring.usage = ["pairs with components/also-missing"]),
+      "unknown_item_in_guidance",
+    ],
+    [
+      // README fixture has no "## When not to use" section.
+      (item) => (item.composition = { avoidWhen: ["sparse one-liners"] }),
+      "avoid_when_missing_readme_section",
+    ],
+    [
+      (item) => (item.authoring.cssVariables = [{ name: "no-dashes" }]),
+      "invalid_authoring_css_variable",
+    ],
+    [
+      (item) => (item.authoring.cssVariables = [{ name: "--ls-x", overrideSafe: "yes" }]),
+      "invalid_authoring_css_variable",
+    ],
+  ]) {
+    const root = await minimalRegistry();
+    const itemPath = path.join(root, "registry", "components", "demo", "registry-item.json");
+    const metadata = JSON.parse(await readFile(itemPath, "utf8"));
+    mutate(metadata);
+    await writeFile(itemPath, JSON.stringify(metadata, null, 2));
+
+    const result = await validateRegistry({ registryRoot: root });
+    assert.equal(result.valid, false, code);
+    assert.ok(
+      result.errors.some((error) => error.code === code),
+      `${code}: ${JSON.stringify(result.errors.map((error) => error.code))}`,
+    );
+  }
+});
+
+test("registry validation accepts valid composition metadata with a paired README", async () => {
+  const root = await minimalRegistry();
+  const itemPath = path.join(root, "registry", "components", "demo", "registry-item.json");
+  const metadata = JSON.parse(await readFile(itemPath, "utf8"));
+  metadata.composition = {
+    contentDensity: ["sparse"],
+    layoutBehavior: "content-sized",
+    copyGuidance: "One line per item; pairs with components/demo.",
+    avoidWhen: ["multi-sentence points"],
+    alternatives: [{ when: "richer copy", use: "components/demo" }],
+  };
+  metadata.authoring.cssVariables = [
+    "--ls-demo-legacy",
+    { name: "--ls-demo-padding", default: "20px", overrideSafe: true },
+  ];
+  await writeFile(itemPath, JSON.stringify(metadata, null, 2));
+  await writeFile(
+    path.join(root, "registry", "components", "demo", "README.md"),
+    "# demo\n\n## When not to use\n\n- multi-sentence points\n",
+  );
+
+  const result = await validateRegistry({ registryRoot: root });
+  assert.deepEqual(
+    result.errors.map((error) => error.code),
+    [],
+  );
+});
+
 test("registry validation catches authoring classes missing from CSS", async () => {
   const root = await minimalRegistry();
   const itemPath = path.join(root, "registry", "components", "demo", "registry-item.json");

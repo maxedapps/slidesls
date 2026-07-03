@@ -88,10 +88,11 @@ export function textFor(command, result) {
           `Unknown ls-* class? Run \`${agentCommandRecipes.catalogApiJson}\`.`,
           "Missing registry item? Run `slidesls add <item> --dir <deck> --dry-run --json`.",
           "Use `slidesls inspect <item> --json` for exact snippets.",
+          "Design-lint warnings are advisory composition pointers; verify flagged slides with `slidesls visual-qa`.",
         ])
       : agentTextBlock([
-          "No static issues found. Static validation does not replace preview.",
-          "Run `slidesls preview <deck>` and use agent-browser or another browser to inspect representative title/section, dense-content, table/timeline/progress/code slides unless intentionally skipped.",
+          "No static issues found. Static validation does not replace rendered review.",
+          "Run `slidesls preview <deck>`, collect facts with `slidesls visual-qa --eval` via agent-browser, then `slidesls visual-qa --analyze --input <collected.json> --json` and inspect flagged slides.",
         ]);
     return `${summary}\n${findings ? `${findings}\n` : ""}${guidance}`;
   }
@@ -124,7 +125,34 @@ export function textFor(command, result) {
         `Run \`slidesls validate ${result.data.root} --json\` after editing.`,
       ],
     )}`;
-  if (command === "preview") return `Serving ${result.data.root} at ${result.data.url}\n`;
+  if (command === "preview") {
+    const slideLinks = (result.data.slideLinks || [])
+      .map((slide) => `  ${slide.url}${slide.label ? `  (${slide.label})` : ""}`)
+      .join("\n");
+    return `Serving ${result.data.root} at ${result.data.url}\nExport mode (all slides rendered): ${result.data.exportUrl}\n${slideLinks ? `Per-slide deep links:\n${slideLinks}\n` : ""}${agentTextBlock(
+      [
+        "Keep this server running while browser commands execute.",
+        "Collect rendered facts: `slidesls visual-qa --eval` piped through agent-browser eval on the export URL.",
+        "Then `slidesls visual-qa --analyze --input <collected.json> --json` and screenshot each flagged deep link.",
+        "Re-run `slidesls validate <deck> --json` after fixes.",
+      ],
+    )}`;
+  }
+  if (command === "visual-qa") {
+    if (result.data.evalScript) return result.data.evalScript;
+    const perSlide = result.data.perSlide || [];
+    const flagged = perSlide.filter((slide) => slide.inspect);
+    const lines = flagged.map(
+      (slide) =>
+        `- slide ${slide.index}${slide.label ? ` (${slide.label})` : ""}: ${slide.warnings
+          .map((warning) => warning.code)
+          .join(", ")}\n  ${slide.deepLink}`,
+    );
+    const summary = result.data.summary
+      ? `slidesls visual-qa: ${result.data.summary.warningCount} advisory finding(s) across ${result.data.summary.slideCount} slide(s)`
+      : "slidesls visual-qa";
+    return `${summary}\n${lines.length ? `Inspect these slides at full size:\n${lines.join("\n")}\n` : "No composition findings; still spot-check representative slides.\n"}`;
+  }
   if (command === "doctor")
     return result.data.ok
       ? `slidesls doctor: ok (${result.data.root})\n${result.data.warnings.map((w) => `- warning: ${w.message}`).join("\n")}${result.data.warnings.length ? "\n" : ""}`

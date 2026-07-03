@@ -3,6 +3,7 @@
 Examples demonstrate the current agent-safe registry model: layout utilities, standalone components, and complete templates/snippets.
 
 - `project-intro/` — small deck using recommended primitives.
+- `composition/` — sparse-content composition gallery: content-sized card grids, feature rows, icon grid, spacious density, intentional `ls-grid--fill`, and a metric band. Also the deck measured by `pnpm visual:gate`.
 - `template-gallery/` — examples of template-style slide compositions.
 - `theme-gallery/` — compact visual QA gallery for all theme presets.
 - `stress-gallery/` — denser content-budget examples for serif titles, four cards, timelines, tables, progress, and citations.

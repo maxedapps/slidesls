@@ -1,0 +1,332 @@
+{
+  "url": "http://127.0.0.1:4399/.tmp-eve-legacy.html?export=1",
+  "viewport": {
+    "width": 1600,
+    "height": 900
+  },
+  "deck": {
+    "ready": "true",
+    "export": "true",
+    "currentSlide": null,
+    "currentStep": null,
+    "rect": {
+      "x": 0,
+      "y": 0,
+      "width": 1600,
+      "height": 1800,
+      "top": 0,
+      "right": 1600,
+      "bottom": 1800,
+      "left": 0
+    }
+  },
+  "nativeSlide": {
+    "width": "1600px",
+    "height": "900px",
+    "scale": "1"
+  },
+  "slides": [
+    {
+      "index": 1,
+      "id": null,
+      "label": "Composable files",
+      "active": "true",
+      "step": "0",
+      "density": null,
+      "slideKind": "content",
+      "kind": "content",
+      "kindSource": "explicit",
+      "collected": true,
+      "hasSlideFill": false,
+      "hasCenter": false,
+      "hasCenterStart": false,
+      "centerInFill": false,
+      "centerStartInFill": false,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 900,
+        "top": 0,
+        "right": 1600,
+        "bottom": 900,
+        "left": 0
+      },
+      "innerRect": {
+        "x": 0,
+        "y": 0,
+        "width": 1600,
+        "height": 900,
+        "top": 0,
+        "right": 1600,
+        "bottom": 900,
+        "left": 0,
+        "offsetTop": 0
+      },
+      "headerRect": {
+        "x": 108,
+        "y": 92,
+        "width": 1080,
+        "height": 110.71875,
+        "top": 92,
+        "right": 1188,
+        "bottom": 202.71875,
+        "left": 108,
+        "offsetTop": 92
+      },
+      "titleRect": {
+        "x": 108,
+        "y": 124,
+        "width": 1080,
+        "height": 78.71875,
+        "top": 124,
+        "right": 1188,
+        "bottom": 202.71875,
+        "left": 108,
+        "offsetTop": 124
+      },
+      "bodyRect": null,
+      "innerOffsetTop": 0,
+      "expectedHeaderOffsetTop": 92,
+      "headerOffsetTop": 92,
+      "titleOffsetTop": 124,
+      "bodyOffsetTop": null,
+      "scrollWidth": 1600,
+      "scrollHeight": 900,
+      "clientWidth": 1600,
+      "clientHeight": 900,
+      "textLength": 217,
+      "minBodyFontSize": 21,
+      "containers": [
+        {
+          "selector": "article.ls-card",
+          "height": 262.64,
+          "width": 440,
+          "innerHeight": 214.64,
+          "contentHeight": 63.12,
+          "contentFillRatio": 0.29,
+          "textLength": 32,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "article.ls-card",
+          "height": 262.64,
+          "width": 440,
+          "innerHeight": 214.64,
+          "contentHeight": 63.12,
+          "contentFillRatio": 0.29,
+          "textLength": 31,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "article.ls-card",
+          "height": 262.64,
+          "width": 440,
+          "innerHeight": 214.64,
+          "contentHeight": 63.12,
+          "contentFillRatio": 0.29,
+          "textLength": 27,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "article.ls-card",
+          "height": 262.64,
+          "width": 440,
+          "innerHeight": 214.64,
+          "contentHeight": 63.12,
+          "contentFillRatio": 0.29,
+          "textLength": 28,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "article.ls-card",
+          "height": 262.64,
+          "width": 440,
+          "innerHeight": 214.64,
+          "contentHeight": 63.12,
+          "contentFillRatio": 0.29,
+          "textLength": 33,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "article.ls-card",
+          "height": 262.64,
+          "width": 440,
+          "innerHeight": 214.64,
+          "contentHeight": 63.12,
+          "contentFillRatio": 0.29,
+          "textLength": 31,
+          "bodyFontSize": 21
+        }
+      ],
+      "grids": [
+        {
+          "selector": "div.ls-grid.ls-grid--3",
+          "classes": ["ls-grid", "ls-grid--3"],
+          "childCount": 6,
+          "children": [
+            {
+              "selector": "article.ls-card",
+              "height": 262.64,
+              "textLength": 32
+            },
+            {
+              "selector": "article.ls-card",
+              "height": 262.64,
+              "textLength": 31
+            },
+            {
+              "selector": "article.ls-card",
+              "height": 262.64,
+              "textLength": 27
+            },
+            {
+              "selector": "article.ls-card",
+              "height": 262.64,
+              "textLength": 28
+            },
+            {
+              "selector": "article.ls-card",
+              "height": 262.64,
+              "textLength": 33
+            },
+            {
+              "selector": "article.ls-card",
+              "height": 262.64,
+              "textLength": 31
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "index": 2,
+      "id": null,
+      "label": "Repeated plumbing",
+      "active": "true",
+      "step": "0",
+      "density": null,
+      "slideKind": "content",
+      "kind": "content",
+      "kindSource": "explicit",
+      "collected": true,
+      "hasSlideFill": false,
+      "hasCenter": false,
+      "hasCenterStart": false,
+      "centerInFill": false,
+      "centerStartInFill": false,
+      "rect": {
+        "x": 0,
+        "y": 900,
+        "width": 1600,
+        "height": 900,
+        "top": 900,
+        "right": 1600,
+        "bottom": 1800,
+        "left": 0
+      },
+      "innerRect": {
+        "x": 0,
+        "y": 900,
+        "width": 1600,
+        "height": 900,
+        "top": 900,
+        "right": 1600,
+        "bottom": 1800,
+        "left": 0,
+        "offsetTop": 0
+      },
+      "headerRect": {
+        "x": 108,
+        "y": 992,
+        "width": 1080,
+        "height": 110.71875,
+        "top": 992,
+        "right": 1188,
+        "bottom": 1102.71875,
+        "left": 108,
+        "offsetTop": 92
+      },
+      "titleRect": {
+        "x": 108,
+        "y": 1024,
+        "width": 1080,
+        "height": 78.71875,
+        "top": 1024,
+        "right": 1188,
+        "bottom": 1102.71875,
+        "left": 108,
+        "offsetTop": 124
+      },
+      "bodyRect": null,
+      "innerOffsetTop": 0,
+      "expectedHeaderOffsetTop": 92,
+      "headerOffsetTop": 92,
+      "titleOffsetTop": 124,
+      "bodyOffsetTop": null,
+      "scrollWidth": 1600,
+      "scrollHeight": 900,
+      "clientWidth": 1600,
+      "clientHeight": 900,
+      "textLength": 137,
+      "minBodyFontSize": 21,
+      "containers": [
+        {
+          "selector": "article.ls-card",
+          "height": 557.28,
+          "width": 440,
+          "innerHeight": 509.28,
+          "contentHeight": 63.12,
+          "contentFillRatio": 0.12,
+          "textLength": 39,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "article.ls-card",
+          "height": 557.28,
+          "width": 440,
+          "innerHeight": 509.28,
+          "contentHeight": 63.12,
+          "contentFillRatio": 0.12,
+          "textLength": 36,
+          "bodyFontSize": 21
+        },
+        {
+          "selector": "article.ls-card",
+          "height": 557.28,
+          "width": 440,
+          "innerHeight": 509.28,
+          "contentHeight": 63.12,
+          "contentFillRatio": 0.12,
+          "textLength": 34,
+          "bodyFontSize": 21
+        }
+      ],
+      "grids": [
+        {
+          "selector": "div.ls-grid.ls-grid--3",
+          "classes": ["ls-grid", "ls-grid--3"],
+          "childCount": 3,
+          "children": [
+            {
+              "selector": "article.ls-card",
+              "height": 557.28,
+              "textLength": 39
+            },
+            {
+              "selector": "article.ls-card",
+              "height": 557.28,
+              "textLength": 36
+            },
+            {
+              "selector": "article.ls-card",
+              "height": 557.28,
+              "textLength": 34
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "overflowCandidates": []
+}

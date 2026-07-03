@@ -98,6 +98,114 @@ test("visual qa --help works", async () => {
   assert.match(stdout, /--analyze/);
 });
 
+test("card_low_fill fires for tall low-fill containers and skips content-sized cards", () => {
+  const result = analyzeVisualRhythm({
+    slides: [
+      {
+        ...content(1, 96),
+        containers: [
+          {
+            selector: "article.ls-card",
+            height: 550,
+            innerHeight: 502,
+            contentHeight: 120,
+            contentFillRatio: 0.24,
+          },
+          {
+            selector: "article.ls-card.ls-card--fine",
+            height: 180,
+            innerHeight: 132,
+            contentHeight: 120,
+            contentFillRatio: 0.91,
+          },
+        ],
+      },
+    ],
+  });
+  const warning = result.warnings.find((entry) => entry.code === "card_low_fill");
+  assert.ok(warning);
+  assert.match(warning.message, /1 tall container/);
+  assert.match(warning.message, /article\.ls-card/);
+});
+
+test("equal_cards_sparse fires for grids of tall sparse boxes only", () => {
+  const sparseGrid = {
+    selector: "div.ls-grid.ls-grid--3",
+    childCount: 3,
+    children: [
+      { height: 420, textLength: 60 },
+      { height: 420, textLength: 55 },
+      { height: 420, textLength: 70 },
+    ],
+  };
+  const flagged = analyzeVisualRhythm({ slides: [{ ...content(1, 96), grids: [sparseGrid] }] });
+  assert.ok(flagged.warnings.some((entry) => entry.code === "equal_cards_sparse"));
+
+  const contentSized = {
+    ...sparseGrid,
+    children: sparseGrid.children.map((child) => ({ ...child, height: 160 })),
+  };
+  const compact = analyzeVisualRhythm({ slides: [{ ...content(1, 96), grids: [contentSized] }] });
+  assert.ok(!compact.warnings.some((entry) => entry.code === "equal_cards_sparse"));
+
+  const richCopy = {
+    ...sparseGrid,
+    children: sparseGrid.children.map((child) => ({ ...child, textLength: 260 })),
+  };
+  const rich = analyzeVisualRhythm({ slides: [{ ...content(1, 96), grids: [richCopy] }] });
+  assert.ok(!rich.warnings.some((entry) => entry.code === "equal_cards_sparse"));
+});
+
+test("body_text_small fires below the legibility floor", () => {
+  const small = analyzeVisualRhythm({ slides: [{ ...content(1, 96), minBodyFontSize: 16 }] });
+  assert.ok(small.warnings.some((entry) => entry.code === "body_text_small"));
+  const fine = analyzeVisualRhythm({ slides: [{ ...content(1, 96), minBodyFontSize: 21 }] });
+  assert.ok(!fine.warnings.some((entry) => entry.code === "body_text_small"));
+});
+
+test("uncollected slides skip measured checks", () => {
+  const result = analyzeVisualRhythm({
+    slides: [
+      {
+        ...content(1, 96),
+        collected: false,
+        minBodyFontSize: 12,
+        containers: [{ selector: "x", height: 900, contentFillRatio: 0 }],
+      },
+    ],
+  });
+  assert.ok(!result.warnings.some((entry) => entry.code === "body_text_small"));
+  assert.ok(!result.warnings.some((entry) => entry.code === "card_low_fill"));
+});
+
+test("analyze emits per-slide findings with deep links", () => {
+  const result = analyzeVisualRhythm({
+    url: "http://127.0.0.1:4321/?export=1",
+    deck: { export: "true" },
+    slides: [
+      { ...content(1, 96), label: "Fine slide" },
+      { ...content(2, 96), label: "Sparse slide", minBodyFontSize: 14 },
+    ],
+  });
+  assert.equal(result.perSlide.length, 2);
+  const [fine, sparse] = result.perSlide;
+  assert.equal(fine.inspect, false);
+  assert.equal(sparse.inspect, true);
+  assert.equal(sparse.label, "Sparse slide");
+  assert.equal(sparse.deepLink, "http://127.0.0.1:4321/#slide=2");
+  assert.deepEqual(result.summary.slidesToInspect, [2]);
+  assert.equal(result.summary.collectedInExportMode, true);
+});
+
+test("new collector fields are present in the eval payload", async () => {
+  const evalPayload = (
+    await execFileAsync(process.execPath, [script, "--eval"], { cwd: path.resolve(".") })
+  ).stdout;
+  assert.match(evalPayload, /contentFillRatio/);
+  assert.match(evalPayload, /minBodyFontSize/);
+  assert.match(evalPayload, /gridMetrics|grids:/);
+});
+
 function content(index, headerOffsetTop) {
   return {
     index,

@@ -4,6 +4,7 @@ import { agentHelpBlock } from "./agent-instructions.mjs";
 import { addCommand, catalogCommand, initCommand, inspectCommand } from "./deck-commands.mjs";
 import { previewCommand } from "./preview-command.mjs";
 import { skillCommand } from "./skill-command.mjs";
+import { visualQaCommand } from "./visual-qa-command.mjs";
 import {
   doctorCommand,
   generateCatalogCommand,
@@ -15,6 +16,7 @@ import {
 export { addCommand, catalogCommand, initCommand, inspectCommand } from "./deck-commands.mjs";
 export { previewCommand } from "./preview-command.mjs";
 export { skillCommand } from "./skill-command.mjs";
+export { visualQaCommand } from "./visual-qa-command.mjs";
 export { textFor } from "./text-output.mjs";
 export {
   doctorCommand,
@@ -37,6 +39,7 @@ Commands:
   skill            Show, install, or link the bundled agent skill
   validate [dir]           Static deck validation
   preview [dir]            Serve a deck locally
+  visual-qa                Browser-fact visual QA (--eval collector, --analyze findings)
   doctor                   Check CLI/project health
   validate-registry        Validate registry metadata and files
   validate-examples        Validate repo example/template references
@@ -66,6 +69,8 @@ export async function runCommand(command, argv) {
       return validateCommand(argv);
     case "preview":
       return previewCommand(argv);
+    case "visual-qa":
+      return visualQaCommand(argv);
     case "doctor":
       return doctorCommand(argv);
     case "validate-registry":

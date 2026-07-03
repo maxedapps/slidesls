@@ -25,11 +25,31 @@
       {
         "base": "ls-card",
         "elements": ["ls-card__body", "ls-card__title", "ls-card__text"],
-        "modifiers": ["ls-card--row"]
+        "modifiers": ["ls-card--row", "ls-card--center"]
       }
     ],
-    "cssVariables": ["--ls-card-padding", "--ls-card-title-size", "--ls-card-text-size"],
-    "usage": ["Use for compact content blocks inside grids or stacks."]
+    "cssVariables": [
+      { "name": "--ls-card-padding", "default": "24px", "overrideSafe": true },
+      { "name": "--ls-card-title-size", "default": "28px", "overrideSafe": true },
+      { "name": "--ls-card-text-size", "default": "21px", "overrideSafe": true }
+    ],
+    "usage": [
+      "Use for content blocks inside grids or stacks; give each card 2-4 sentences or a visual.",
+      "Add ls-card--center only when a card sits in a stretched context (ls-grid--fill) and its content should center vertically."
+    ]
+  },
+  "composition": {
+    "contentDensity": ["balanced"],
+    "layoutBehavior": "content-sized",
+    "copyGuidance": "2-4 sentences or a visual per card; one-liner points fit components/icon-item better.",
+    "avoidWhen": [
+      "a grid of cards where each holds only a title plus one short sentence",
+      "more than 4 cards in one grid"
+    ],
+    "alternatives": [
+      { "when": "one-liner points", "use": "components/icon-item" },
+      { "when": "4-6 short items in a grid", "use": "templates/icon-grid" }
+    ]
   },
   "agentLevel": "recommended"
 }

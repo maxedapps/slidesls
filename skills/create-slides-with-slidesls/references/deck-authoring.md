@@ -78,6 +78,46 @@ Use:
 
 Do not use `ls-layout-*` classes or hidden ancestor-dependent layout contracts. Content slides use `data-ls-slide-kind="content"`, a top `.ls-slide__header`, and body layout below it. Hero and section slides must be marked with `data-ls-slide-kind="hero"` or `"section"` and may intentionally use `.ls-slide-fill` with centering utilities. Do not use `.ls-slide-fill` on ordinary content slides. Centering utilities such as `.ls-center` and `.ls-center-start` center the content cluster; they should not strand headings, subtitles, and badges at opposite ends of a full-height column. Use `.ls-panel--fit` for short text-only callouts and `.ls-panel--frame` for screenshots, diagrams, code, or media frames that intentionally need visual mass.
 
+`.ls-grid` sizes its rows to content and centers the row block vertically in the body area, so sparse content composes as a balanced band instead of stretched boxes. `.ls-grid--start` anchors content-sized rows to the top; `.ls-grid--fill` restores stretch-to-fill rows for grids that intentionally fill the body (frames, diagrams, dashboards, full-slide hero layouts) — never use it for sparse card grids. When a card must sit in a stretched context anyway, `.ls-card--center` centers its content vertically. `.ls-stack` rows are content-sized and top-anchored; set `--ls-stack-align-content: center` to center a stack inside a taller area.
+
+## Density → layout decision table
+
+Choose the layout from item count and copy length; each registry item's `composition` metadata (`avoidWhen`, `alternatives`) encodes the same rules at decision time.
+
+| Content                                      | Layout                                                                          |
+| -------------------------------------------- | ------------------------------------------------------------------------------- |
+| 3-5 one-liner points                         | `templates/feature-rows` — full-width icon rows; not full-height cards          |
+| 4-6 short items (title + one sentence)       | `templates/icon-grid` — compact tiles; never 5+ stretched cards                 |
+| 3 items with 2-4 sentences or a visual each  | `templates/three-cards`                                                         |
+| 1 big idea + sparse support                  | hero/section slide kind, or `templates/split` with `data-ls-density="spacious"` |
+| A real visual/diagram plus supporting points | `templates/split` or `templates/split-diagram`                                  |
+| KPIs and progress                            | `templates/metric-dashboard` — one centered band of 2-4 cells                   |
+| Dense tables/code                            | `data-ls-density="compact"` plus the existing fit rules and visual review       |
+
+Density variants scale the whole slide: `data-ls-density="spacious"` raises card/callout/icon-item type, padding, and gaps so short copy carries weight; `"compact"` scales down for dense slides. Both go on `section.ls-slide`.
+
+## Change accent color and fonts
+
+Customize by overriding token variables, switching presets, or both. Never redefine `.ls-*` selectors in deck CSS outside `@layer` — unlayered rules beat every layered component style and break the upgrade path. Token overrides in a deck-level `@layer tokens` block are the supported boundary:
+
+```html
+<style>
+  @layer tokens {
+    :root {
+      --ls-accent: #e8590c;
+      --ls-accent-2: #f7b267;
+      --ls-accent-text: #ffd9c0;
+      --ls-font-heading: "Avenir Next", var(--ls-font-sans);
+    }
+  }
+</style>
+```
+
+- Themes: copy `presets/themes/<name>` and set `data-ls-theme="<name>"` on `<html>` (exactly one).
+- Fonts: copy a `presets/fonts/*` preset and set `data-ls-font` when you want a font-role remap; or override `--ls-font-heading`/`--ls-font-body` directly as above.
+- Which variables are safe: `slidesls inspect <item> --api --json` lists each item's `cssVariables` with defaults and an `overrideSafe` flag (`core/base` carries the token surface: accents, text colors, spacing, card/callout sizing).
+- Local tuning: set variables on a single element instead of `:root`, e.g. `<div class="ls-grid ls-grid--3" style="--ls-grid-gap: 40px">`.
+
 ## Adding registry items
 
 Use brief catalog and snippet inspect first:
@@ -128,6 +168,7 @@ For offline/dependency-free decks, prefer inline SVG or text markers.
 ## Slide recipes by intent
 
 - Opening/title: `templates/title-hero`, `templates/section-divider`, `components/badge`.
+- Short-copy lists: `templates/feature-rows` (3-5 one-liners), `templates/icon-grid` (4-6 short items), `components/icon-item`.
 - Split explanation: `templates/split`, `utilities/layout`, `components/panel`, `components/card`.
 - Comparison/cards: `templates/three-cards`, `components/card`, `components/table`.
 - Dashboard: `templates/metric-dashboard`, `components/metric`, `components/progress`, `components/panel`.

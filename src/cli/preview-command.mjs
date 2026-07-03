@@ -5,6 +5,7 @@ import { parseArgs } from "../shared/args.mjs";
 import { commandOptionSpecs } from "./option-specs.mjs";
 import { ok } from "../shared/result.mjs";
 import { assertInside } from "../shared/fs.mjs";
+import { slideSegments } from "../shared/html.mjs";
 import { DEFAULT_CONFIG, readConfig } from "../deck/config.mjs";
 export async function previewCommand(argv) {
   const args = parseArgs(argv, commandOptionSpecs.preview);
@@ -59,16 +60,38 @@ Starts a local server, prints the URL, and keeps running until stopped.`,
     host,
     port,
     pid: process.pid,
+    slideLinks: await slideLinksFor(path.join(root, config.paths.entry), url),
     note: "Server keeps running until this process is stopped.",
     agentInstructions: {
       purpose: "Preview and visually inspect a slidesls deck.",
       rules: [
         "Keep this long-running server active while using browser automation.",
-        "Inspect both normal and export mode.",
+        "Collect facts with visual-qa, then screenshot each flagged slideLinks entry at full size.",
+        "Do not judge composition from the full-export overview alone.",
+      ],
+      nextCommands: [
+        "slidesls visual-qa --eval",
+        "slidesls visual-qa --analyze --input <collected.json> --json",
+        `slidesls validate ${root} --json`,
       ],
       longRunningCommands: [`slidesls preview ${root} --host ${host} --port ${port}`],
     },
   });
+}
+
+async function slideLinksFor(entryPath, baseUrl) {
+  // Per-slide deep links make per-slide capture trivially scriptable; the
+  // runtime resolves #slide=N in interactive mode.
+  try {
+    const html = await readFile(entryPath, "utf8");
+    return slideSegments(html).map((segment, index) => ({
+      index: index + 1,
+      label: segment.attributes.get("aria-label") || null,
+      url: `${baseUrl}#slide=${index + 1}`,
+    }));
+  } catch {
+    return [];
+  }
 }
 
 function contentType(filePath) {

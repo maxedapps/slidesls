@@ -58,6 +58,41 @@ test("preview JSON includes exportUrl and serves HEAD with no-store", async () =
   }
 });
 
+test("preview JSON includes per-slide deep links and visual-qa next commands", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-preview-"));
+  await writeFile(
+    path.join(root, "slidesls.json"),
+    JSON.stringify({ paths: { entry: "index.html" } }),
+  );
+  await writeFile(
+    path.join(root, "index.html"),
+    `<!doctype html><body class="ls-page"><main class="ls-deck" data-ls-deck>
+      <section class="ls-slide" aria-label="Opening"></section>
+      <section class="ls-slide" aria-label="Details"></section>
+    </main></body>`,
+  );
+
+  const child = spawn(process.execPath, [bin, "preview", root, "--port", "0", "--json"], {
+    cwd: path.resolve("."),
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+
+  try {
+    const result = await readJsonFromStdout(child);
+    assert.equal(result.data.slideLinks.length, 2);
+    assert.deepEqual(result.data.slideLinks[0], {
+      index: 1,
+      label: "Opening",
+      url: `${result.data.url}#slide=1`,
+    });
+    assert.ok(
+      result.data.agentInstructions.nextCommands.some((command) => command.includes("visual-qa")),
+    );
+  } finally {
+    child.kill("SIGTERM");
+  }
+});
+
 test("preview serves percent-encoded filenames inside the deck root", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-preview-"));
   await mkdir(path.join(root, "assets"), { recursive: true });

@@ -68,8 +68,9 @@ CLI help and key text outputs include explicit `For AI agents:` blocks. JSON out
 - `slidesls inspect <items...>` — show snippet HTML and aggregate load tags; add `--api` for public `authoring` metadata and `--with-dependencies` for dependency details.
 - `slidesls add <items...>` — copy registry items into an initialized deck or any existing project in copy mode, and print load tags.
 - `slidesls skill info|show|install` — inspect or copy the bundled agent skill. Use `slidesls skill show --reference catalog` for the generated public class/style/API catalog.
-- `slidesls validate [dir]` — static deck validation.
-- `slidesls preview [dir]` — serve a deck locally.
+- `slidesls validate [dir]` — static deck validation, including advisory design-lint composition warnings.
+- `slidesls preview [dir]` — serve a deck locally; JSON output includes per-slide deep links.
+- `slidesls visual-qa` — browser-fact visual QA: a dependency-free collector script plus per-slide composition findings.
 - `slidesls doctor [--dir <project>]` — check CLI/project health.
 
 Most agent-facing commands support `--json`.
@@ -118,9 +119,9 @@ Themes intentionally avoid heavy decorative gradients and glow effects. Font pre
 
 ## Validation and preview
 
-`slidesls validate` is a lightweight static check, not a full browser render or complete HTML parser. It catches common registry contract issues such as broken custom progress markup, raw timeline shorthand, reveal animation conflicts, and unknown copied classes, but it does not prove visual fit.
+`slidesls validate` is a lightweight static check, not a full browser render or complete HTML parser. It catches common registry contract issues such as broken custom progress markup, raw timeline shorthand, reveal animation conflicts, and unknown copied classes, plus advisory design-lint warnings for composition anti-patterns (stretched sparse card grids, wrapping card rows), but it does not prove visual fit.
 
-After creating or materially editing slides, use `slidesls preview` for manual or browser-based visual review of representative slides; it serves until the process is stopped.
+After creating or materially editing slides, use `slidesls preview` for visual review; it serves until the process is stopped. For measured review, `slidesls visual-qa --eval` prints a dependency-free browser collector and `slidesls visual-qa --analyze` turns the collected geometry into per-slide findings (low card fill, sparse equal boxes, small body type) with deep links to the slides that need attention.
 
 Deck URLs support optional deep links in the form `#slide=2&step=1` (`slide` is 1-based, `step` is 0-based). New decks get this behavior through copied `slide-runtime.js`; existing decks must recopy/update that owned asset to opt in.
 

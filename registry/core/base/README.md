@@ -17,7 +17,7 @@ Load this item before layouts, components, animations, and presets. It establish
 
 Use either a header/body shell (`.ls-slide__header` plus `.ls-slide__body`) or a full-slide wrapper (`.ls-slide__inner > .ls-slide-fill` from `utilities/layout`). Direct `.ls-fill` does not span the shell rows.
 
-`section.ls-slide[data-ls-density="compact"]` scopes smaller type, spacing, and padding tokens for dense but visually reviewed slides.
+`section.ls-slide[data-ls-density="compact"]` scopes smaller type, spacing, and padding tokens for dense but visually reviewed slides. `section.ls-slide[data-ls-density="spacious"]` scales card/callout type, spacing, and grid gaps up for sparse slides (one big idea, few short points) so short copy still carries visual weight.
 
 ## Font roles
 

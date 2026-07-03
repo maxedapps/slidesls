@@ -26,6 +26,7 @@
       "ls-slide__inner",
       "ls-grid",
       "ls-grid--wide-left",
+      "ls-grid--fill",
       "ls-stack",
       "ls-cluster",
       "ls-badge",
@@ -40,6 +41,18 @@
       "ls-text-start",
       "ls-panel--center",
       "ls-panel--fit"
+    ]
+  },
+  "composition": {
+    "contentDensity": ["sparse"],
+    "layoutBehavior": "fills-area",
+    "copyGuidance": "One concise title, one subtitle, and a visual anchor; hero slides intentionally span the full slide.",
+    "avoidWhen": ["the slide is an ordinary content slide with a header/body shell"],
+    "alternatives": [
+      {
+        "when": "presenting regular content under a header",
+        "use": "templates/split"
+      }
     ]
   },
   "agentLevel": "starter",

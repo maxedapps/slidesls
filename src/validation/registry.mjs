@@ -50,6 +50,8 @@ const classScopeTypes = new Set([
   "within-constrained-area",
   "centers-content-cluster",
 ]);
+const contentDensities = new Set(["sparse", "balanced", "dense"]);
+const layoutBehaviors = new Set(["content-sized", "fills-area", "fixed"]);
 
 async function canRead(source, relativePath) {
   if (source.mode === "local") {
@@ -198,6 +200,7 @@ export async function validateRegistry({ registryRoot, registryUrl } = {}) {
 
   await validateRegistryAuthoringCoverage({ data, source, errors });
   await validateRegistryCssContracts({ data, source, errors });
+  await validateCompositionIntegrity({ data, source, errors });
 
   return {
     valid: errors.length === 0,
@@ -252,12 +255,31 @@ function validateAuthoringMetadataShape({ item, itemPath, errors }) {
       );
   }
   for (const variable of authoring.cssVariables || []) {
-    if (typeof variable !== "string" || !variable.startsWith("--"))
+    // Legacy form is a bare "--name" string; enriched form is
+    // { name, default?, overrideSafe? }. Both stay valid.
+    const isObjectForm = variable && typeof variable === "object" && !Array.isArray(variable);
+    const name = isObjectForm ? variable.name : variable;
+    if (typeof name !== "string" || !name.startsWith("--"))
       add(
         "error",
         errors,
         "invalid_authoring_css_variable",
-        `${itemPath} CSS variable must start with --: ${variable}`,
+        `${itemPath} CSS variable must start with --: ${isObjectForm ? name : variable}`,
+      );
+    if (!isObjectForm) continue;
+    if (variable.default !== undefined && typeof variable.default !== "string")
+      add(
+        "error",
+        errors,
+        "invalid_authoring_css_variable",
+        `${itemPath} CSS variable ${name} default must be a string`,
+      );
+    if (variable.overrideSafe !== undefined && typeof variable.overrideSafe !== "boolean")
+      add(
+        "error",
+        errors,
+        "invalid_authoring_css_variable",
+        `${itemPath} CSS variable ${name} overrideSafe must be boolean`,
       );
   }
   if (authoring.classMetadata !== undefined) {
@@ -453,6 +475,161 @@ async function validateThemePreset({ item, itemPath, source, errors }) {
     );
 }
 
+const compositionKeys = new Set([
+  "contentDensity",
+  "layoutBehavior",
+  "itemCountGuidance",
+  "copyGuidance",
+  "avoidWhen",
+  "alternatives",
+]);
+
+function validateCompositionShape({ item, itemPath, errors }) {
+  const composition = item.composition;
+  if (composition === undefined) return;
+  if (!composition || typeof composition !== "object" || Array.isArray(composition)) {
+    add("error", errors, "invalid_composition", `${itemPath} composition must be an object`);
+    return;
+  }
+  // Reject unknown keys so typos (avoidwhen, layoutBehaviour) fail loudly
+  // instead of silently dropping guidance.
+  for (const key of Object.keys(composition)) {
+    if (!compositionKeys.has(key))
+      add(
+        "error",
+        errors,
+        "invalid_composition",
+        `${itemPath} composition has unknown key: ${key}`,
+      );
+  }
+  if (composition.contentDensity !== undefined) {
+    if (
+      !Array.isArray(composition.contentDensity) ||
+      composition.contentDensity.some((density) => !contentDensities.has(density))
+    )
+      add(
+        "error",
+        errors,
+        "invalid_composition",
+        `${itemPath} composition.contentDensity must be an array of ${[...contentDensities].join(", ")}`,
+      );
+  }
+  if (composition.layoutBehavior !== undefined && !layoutBehaviors.has(composition.layoutBehavior))
+    add(
+      "error",
+      errors,
+      "invalid_composition",
+      `${itemPath} composition.layoutBehavior must be one of ${[...layoutBehaviors].join(", ")}`,
+    );
+  for (const key of ["itemCountGuidance", "copyGuidance"]) {
+    if (composition[key] !== undefined && typeof composition[key] !== "string")
+      add(
+        "error",
+        errors,
+        "invalid_composition",
+        `${itemPath} composition.${key} must be a string`,
+      );
+  }
+  if (composition.avoidWhen !== undefined) {
+    if (
+      !Array.isArray(composition.avoidWhen) ||
+      composition.avoidWhen.some((entry) => typeof entry !== "string" || !entry.trim())
+    )
+      add(
+        "error",
+        errors,
+        "invalid_composition",
+        `${itemPath} composition.avoidWhen must be an array of non-empty strings`,
+      );
+  }
+  if (composition.alternatives !== undefined) {
+    if (!Array.isArray(composition.alternatives)) {
+      add(
+        "error",
+        errors,
+        "invalid_composition",
+        `${itemPath} composition.alternatives must be an array`,
+      );
+    } else {
+      for (const alternative of composition.alternatives) {
+        if (
+          !alternative ||
+          typeof alternative !== "object" ||
+          typeof alternative.when !== "string" ||
+          typeof alternative.use !== "string"
+        )
+          add(
+            "error",
+            errors,
+            "invalid_composition",
+            `${itemPath} composition.alternatives entries must be { when, use } objects`,
+          );
+      }
+    }
+  }
+}
+
+// Item-name tokens inside freeform guidance strings (composition fields and
+// authoring.usage). Matched tokens must name an existing item or an item-name
+// prefix such as "presets/themes" so renames cannot silently rot guidance.
+const guidanceItemTokenPattern =
+  /(?<![\w/])(core|utilities|components|templates|animations|presets)\/[a-z0-9-]+(?:\/[a-z0-9-]+)*/g;
+
+function compositionGuidanceStrings(item) {
+  const composition = item.composition || {};
+  return [
+    composition.itemCountGuidance,
+    composition.copyGuidance,
+    ...(Array.isArray(composition.avoidWhen) ? composition.avoidWhen : []),
+    ...(Array.isArray(composition.alternatives)
+      ? composition.alternatives.flatMap((alternative) => [alternative?.when])
+      : []),
+    ...(item.authoring?.usage || []),
+  ].filter((value) => typeof value === "string");
+}
+
+async function validateCompositionIntegrity({ data, source, errors }) {
+  const knownNames = [...data.byName.keys()];
+  const nameExists = (token) =>
+    data.byName.has(token) || knownNames.some((name) => name.startsWith(`${token}/`));
+
+  for (const item of data.items) {
+    const itemPath = item.registryItemPath;
+    for (const alternative of item.composition?.alternatives || []) {
+      if (alternative?.use && !data.byName.has(alternative.use))
+        add(
+          "error",
+          errors,
+          "unknown_composition_alternative",
+          `${itemPath} composition.alternatives references unknown registry item: ${alternative.use}`,
+        );
+    }
+    for (const text of compositionGuidanceStrings(item)) {
+      for (const match of text.matchAll(guidanceItemTokenPattern)) {
+        if (!nameExists(match[0]))
+          add(
+            "error",
+            errors,
+            "unknown_item_in_guidance",
+            `${itemPath} guidance references unknown registry item: ${match[0]}`,
+          );
+      }
+    }
+    if (item.composition?.avoidWhen?.length && item.docs && source.mode === "local") {
+      const readme = await readFile(path.join(source.registryRoot, item.docs), "utf8").catch(
+        () => "",
+      );
+      if (!/^##\s+When not to use\s*$/m.test(readme))
+        add(
+          "error",
+          errors,
+          "avoid_when_missing_readme_section",
+          `${itemPath} declares composition.avoidWhen but ${item.docs} has no "## When not to use" section`,
+        );
+    }
+  }
+}
+
 async function validateItemMetadata({ item, itemPath, source, errors, warnings }) {
   if (item.agentRecommended !== undefined)
     add(
@@ -521,6 +698,7 @@ async function validateItemMetadata({ item, itemPath, source, errors, warnings }
   if (item.name?.startsWith("presets/themes/"))
     await validateThemePreset({ item, itemPath, source, errors });
 
+  validateCompositionShape({ item, itemPath, errors });
   await validateAuthoringMetadata({ item, itemPath, source, errors });
 
   if (item.snippets === undefined) return;

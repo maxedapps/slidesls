@@ -1,0 +1,53 @@
+{
+  "name": "components/icon-item",
+  "type": "ls:component",
+  "description": "Compact icon + title + one-liner tile for short-copy grids and rows.",
+  "files": [
+    {
+      "path": "registry/components/icon-item/icon-item.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/icon-item/README.md",
+  "rootClass": "ls-icon-item",
+  "safeAnywhere": true,
+  "snippets": [
+    {
+      "label": "Basic icon item",
+      "path": "registry/components/icon-item/snippets/basic.html"
+    }
+  ],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-icon-item",
+        "elements": ["ls-icon-item__body", "ls-icon-item__title", "ls-icon-item__text"],
+        "modifiers": ["ls-icon-item--boxed"]
+      }
+    ],
+    "cssVariables": [
+      { "name": "--ls-icon-item-padding", "default": "20px", "overrideSafe": true },
+      { "name": "--ls-icon-item-title-size", "default": "26px", "overrideSafe": true },
+      { "name": "--ls-icon-item-text-size", "default": "21px", "overrideSafe": true }
+    ],
+    "usage": [
+      "Use for short points: one title plus one sentence, optionally with an icon glyph in .ls-icon-badge.",
+      "Content-sized by design; grids and stacks of icon items compose as balanced bands."
+    ]
+  },
+  "composition": {
+    "contentDensity": ["sparse"],
+    "layoutBehavior": "content-sized",
+    "copyGuidance": "One short title and one sentence per item; longer copy belongs in components/card.",
+    "avoidWhen": ["a point needs multiple sentences of explanation or a large visual"],
+    "alternatives": [
+      { "when": "each point carries 2-4 sentences or a visual", "use": "components/card" }
+    ]
+  },
+  "agentLevel": "recommended",
+  "useCases": ["Present 3-6 short points as compact icon tiles or rows."],
+  "pairsWith": ["templates/icon-grid", "templates/feature-rows"]
+}

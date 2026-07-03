@@ -38,9 +38,13 @@ Templates are complete HTML snippets composed from utilities and components. The
 
 - Keep class names `ls-` prefixed and readable.
 - Prefer semantic tokens from `core/base` before adding item-local variables.
-- Add item-local CSS variables only for meaningful customization points.
+- Add item-local CSS variables only for meaningful customization points; declare them in `authoring.cssVariables` as `{ name, default, overrideSafe }` objects so the customization boundary is discoverable.
 - Use small, predictable modifier sets.
 - Include at least one snippet for every recommended utility/component/template.
+
+## Composition guidance
+
+Items whose misuse produces weak slides (card grids, panels, templates) should declare `composition` metadata (`contentDensity`, `layoutBehavior`, `avoidWhen`, `alternatives`) and mirror `avoidWhen` in a `## When not to use` README section — `validate-registry` enforces the pairing and that referenced item names exist. Layout containers should size to content by default; stretch-to-fill must be an explicit opt-in modifier (`.ls-grid--fill` is the pattern).
 
 ## Decoration
 

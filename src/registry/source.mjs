@@ -119,6 +119,7 @@ export function summarizeItemBrief(item) {
     themeAttribute: item.themeAttribute,
     styleTone: item.styleTone,
     pairsWith: item.pairsWith?.length ? item.pairsWith : undefined,
+    avoidWhen: item.composition?.avoidWhen?.length ? item.composition.avoidWhen : undefined,
   });
 }
 
@@ -143,6 +144,7 @@ export function summarizeItem(item) {
     styleTone: item.styleTone,
     pairsWith: item.pairsWith || [],
     themeAttribute: item.themeAttribute,
+    composition: item.composition || null,
     authoring: item.authoring || null,
     snippets: item.snippets || [],
     registryItemPath: item.registryItemPath,
