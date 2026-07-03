@@ -14,7 +14,6 @@
   "docs": "registry/components/timeline/README.md",
   "rootClass": "ls-timeline",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Basic timeline",
@@ -50,5 +49,6 @@
       }
     ],
     "cssVariables": ["--ls-timeline-gap", "--ls-timeline-marker-size", "--ls-timeline-accent"]
-  }
+  },
+  "agentLevel": "recommended"
 }

@@ -14,7 +14,6 @@
   "docs": "registry/components/table/README.md",
   "rootClass": "ls-table",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Basic table",
@@ -50,5 +49,6 @@
       "--ls-table-accent",
       "--ls-table-stripe-bg"
     ]
-  }
+  },
+  "agentLevel": "recommended"
 }

@@ -15,9 +15,9 @@ Each item has `registry-item.json` with:
 - `docs` — item README path.
 - `rootClass` — primary class for utilities/components when applicable.
 - `safeAnywhere` — whether the item can be used without a specific parent structure.
-- `agentRecommended` — whether `catalog --recommended` should include the item.
+- `agentLevel` — `starter`, `recommended`, `advanced`, or `experimental`; `catalog --recommended` computes inclusion from `starter|recommended`.
 - `snippets` — paste-ready HTML examples loaded by `inspect --json`.
-- `authoring` — public, agent-facing authoring API surfaced by `catalog --json` and `inspect --json`.
+- `authoring` — public, agent-facing authoring API surfaced by `catalog --api --json` and `inspect --api --json`.
 
 Templates must use `files: []` and expose HTML only through `snippets` so `add templates/x` does not copy snippet files into deck assets.
 
@@ -33,6 +33,7 @@ Supported fields:
 - `cssVariables` — intended local customization knobs.
 - `attributes` — important deck-level attributes such as `data-ls-theme` or `data-ls-font`.
 - `usage` — short authoring rules for agents.
+- `classMetadata` — optional per-class scope/safety metadata keyed by declared public class token.
 
 Registry validation checks authoring shape and, for local CSS-backed items, verifies listed classes exist in item CSS. It also checks snippet dependency closure, targeted canonical snippet structures, and `@container` usage without a query-container contract. Example validation recursively fails on unsupported real `ls-*` class attributes.
 

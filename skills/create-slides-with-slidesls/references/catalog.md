@@ -2,6 +2,8 @@
 
 Generated from `registry.json` and per-item metadata. Do not edit manually; run `slidesls generate-catalog`.
 
+Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `slidesls inspect <item> --json` (snippet) first.
+
 ## Core
 
 ### core/base
@@ -9,6 +11,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Base
 - Type: ls:core
 - Description: Mandatory base styles and runtime for slidesls decks.
+- Agent level: starter
 - Agent recommended: yes
 - Safe anywhere: yes
 - Class groups:
@@ -16,9 +19,9 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
   - `ls-deck`: base only
   - `ls-slide`: `ls-slide__inner`, `ls-slide__header`, `ls-slide__body`
 - Classes: `ls-stage`, `ls-eyebrow`, `ls-title`, `ls-subtitle`, `ls-muted`, `ls-subtle`, `ls-accent-text`, `ls-icon`, `ls-icon-badge`, `ls-icon-mark`
-- Data attributes: `data-ls-deck`, `data-step`, `data-ls-density=compact`, `data-ls-reveal-sequence`, `data-ls-sequence-skip`
-- CSS variables: `--ls-slide-width`, `--ls-slide-height`, `--ls-slide-bg`, `--ls-page-bg`, `--ls-text`, `--ls-muted`, `--ls-accent`, `--ls-accent-text`, `--ls-space-3`, `--ls-space-6`, `--ls-slide-padding-block`, `--ls-slide-padding-inline`, `--ls-title-line-height`, `--ls-title-letter-spacing`, `--ls-card-padding`, `--ls-card-title-size`, `--ls-card-text-size`, `--ls-callout-padding`, `--ls-callout-title-size`, `--ls-callout-text-size`, `--ls-font-heading`, `--ls-font-body`
-- Usage: Use body.ls-page, a .ls-deck[data-ls-deck] wrapper, and one or more .ls-slide sections. Runtime state attributes such as data-ls-ready and data-active are managed by slide-runtime.js.
+- Data attributes: `data-ls-deck`, `data-step`, `data-ls-density=compact`, `data-ls-reveal-sequence`, `data-ls-sequence-skip`, `data-ls-slide-kind=content|hero|section`
+- CSS variables: `--ls-slide-width`, `--ls-slide-height`, `--ls-slide-bg`, `--ls-page-bg`, `--ls-text`, `--ls-muted`, `--ls-accent`, `--ls-accent-text`, `--ls-space-3`, `--ls-space-6`, `--ls-slide-padding-block`, `--ls-slide-padding-inline`, `--ls-title-line-height`, `--ls-title-letter-spacing`, `--ls-card-padding`, `--ls-card-title-size`, `--ls-card-text-size`, `--ls-callout-padding`, `--ls-callout-title-size`, `--ls-callout-text-size`, `--ls-font-heading`, `--ls-font-body`, `--ls-slide-header-gap`, `--ls-slide-header-max-inline-size`
+- Usage: Use body.ls-page, a .ls-deck[data-ls-deck] wrapper, and one or more .ls-slide sections. Runtime state attributes such as data-ls-ready and data-active are managed by slide-runtime.js. Set data-ls-slide-kind on slides: content slides use .ls-slide\_\_header; hero/section slides may intentionally use centered full-slide layouts.
 - Registry dependencies: none
 - Files: registry/core/base/reset.css, registry/core/base/tokens.css, registry/core/base/slide.css, registry/core/base/icons.css, registry/core/base/slide-runtime.js
 - Snippets: none
@@ -31,15 +34,21 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Layout
 - Type: ls:utility
 - Description: Reusable layout utilities for stacks, clusters, grids, centering, and fill behavior.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-stack
-- Safe anywhere: yes
+- Safe anywhere: no
 - Class groups:
   - `ls-stack`: `ls-stack--sm`, `ls-stack--lg`
     - Rule: Use one optional stack gap modifier.
   - `ls-grid`: `ls-grid--2`, `ls-grid--3`, `ls-grid--4`, `ls-grid--wide-left`, `ls-grid--wide-right`
     - Rule: Use ls-grid with at most one grid modifier.
 - Classes: `ls-cluster`, `ls-center`, `ls-center-start`, `ls-text-start`, `ls-fill`, `ls-slide-fill`, `ls-frame`
+- Class metadata:
+  - `ls-slide-fill`: scope `direct-child-of-slide-inner`, safe anywhere no — Full-slide layouts that intentionally span the slide header/body rows. Not for ordinary content slides.
+  - `ls-center`: scope `centers-content-cluster`, safe anywhere no — Intentional centering only (hero/section).
+  - `ls-center-start`: scope `centers-content-cluster`, safe anywhere no — Intentional start-aligned centering (hero).
+  - `ls-fill`: scope `within-constrained-area`, safe anywhere no — Fills a height-constrained parent area.
 - CSS variables: `--ls-stack-gap`, `--ls-cluster-gap`, `--ls-cluster-align`, `--ls-grid-gap`, `--ls-frame-min-block-size`
 - Usage: Use .ls-grid--4 only for short, compact cards or metrics. Use .ls-slide-fill as a direct child of .ls-slide\_\_inner for full-slide centered layouts. Use .ls-fill only when content should intentionally fill the available slide/body area.
 - Registry dependencies: core/base
@@ -54,6 +63,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Badge
 - Type: ls:component
 - Description: Compact labels for slide metadata and short attributes.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-badge
 - Safe anywhere: yes
@@ -70,6 +80,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Callout
 - Type: ls:component
 - Description: Callout slide component.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-callout
 - Safe anywhere: yes
@@ -88,6 +99,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Card
 - Type: ls:component
 - Description: Flat feature and explanation cards for slide content.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-card
 - Safe anywhere: yes
@@ -105,6 +117,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Code Block
 - Type: ls:component
 - Description: Code Block slide component.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-code-block
 - Safe anywhere: yes
@@ -123,6 +136,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Code Diff
 - Type: ls:component
 - Description: Compact static code-diff component for implementation change explanations.
+- Agent level: advanced
 - Agent recommended: no
 - Root class: ls-code-diff
 - Safe anywhere: yes
@@ -141,6 +155,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Divider
 - Type: ls:component
 - Description: Content divider component.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-divider
 - Safe anywhere: yes
@@ -158,6 +173,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: File Tree
 - Type: ls:component
 - Description: Static file and folder tree component for project structure slides.
+- Agent level: advanced
 - Agent recommended: no
 - Root class: ls-file-tree
 - Safe anywhere: yes
@@ -176,6 +192,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Http Exchange
 - Type: ls:component
 - Description: Static request and response blocks for API walkthrough slides.
+- Agent level: advanced
 - Agent recommended: no
 - Root class: ls-http-exchange
 - Safe anywhere: yes
@@ -194,6 +211,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Image Card
 - Type: ls:component
 - Description: Image case-study card component.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-image-card
 - Safe anywhere: yes
@@ -211,6 +229,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Metric
 - Type: ls:component
 - Description: Metric slide component.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-metric
 - Safe anywhere: yes
@@ -228,6 +247,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Panel
 - Type: ls:component
 - Description: Standalone visual panel for grouped slide content.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-panel
 - Safe anywhere: yes
@@ -245,6 +265,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Progress
 - Type: ls:component
 - Description: Accessible progress component.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-progress
 - Safe anywhere: yes
@@ -263,6 +284,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Quote
 - Type: ls:component
 - Description: Quote slide component.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-quote
 - Safe anywhere: yes
@@ -278,6 +300,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Table
 - Type: ls:component
 - Description: Presentation-friendly table component.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-table
 - Safe anywhere: yes
@@ -296,6 +319,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Terminal
 - Type: ls:component
 - Description: Static terminal-style command and output component.
+- Agent level: advanced
 - Agent recommended: no
 - Root class: ls-terminal
 - Safe anywhere: yes
@@ -314,6 +338,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Timeline
 - Type: ls:component
 - Description: Reusable timeline component.
+- Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-timeline
 - Safe anywhere: yes
@@ -333,6 +358,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Fade
 - Type: ls:animation
 - Description: Reveal-compatible fade animation utility.
+- Agent level: starter
 - Agent recommended: yes
 - Safe anywhere: yes
 - Class groups:
@@ -348,6 +374,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Highlight
 - Type: ls:animation
 - Description: Static or reveal-timed highlight emphasis.
+- Agent level: advanced
 - Agent recommended: no
 - Safe anywhere: yes
 - Class groups:
@@ -365,6 +392,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Reveal
 - Type: ls:animation
 - Description: Vanilla CSS reveal transitions driven by the core slide runtime.
+- Agent level: starter
 - Agent recommended: yes
 - Safe anywhere: yes
 - Class groups:
@@ -382,6 +410,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Scale In
 - Type: ls:animation
 - Description: Reveal-compatible scale-in animation.
+- Agent level: recommended
 - Agent recommended: yes
 - Safe anywhere: yes
 - Class groups:
@@ -398,6 +427,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Slide Up
 - Type: ls:animation
 - Description: Reveal-compatible slide up animation utility.
+- Agent level: starter
 - Agent recommended: yes
 - Safe anywhere: yes
 - Class groups:
@@ -416,6 +446,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Editorial Serif
 - Type: ls:preset
 - Description: Serif heading and display font role remap for editorial slide decks.
+- Agent level: advanced
 - Agent recommended: no
 - Safe anywhere: yes
 - Attributes: `data-ls-font="editorial-serif"`
@@ -430,6 +461,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: System Humanist
 - Type: ls:preset
 - Description: Humanist system sans font role remap for professional slide decks.
+- Agent level: advanced
 - Agent recommended: no
 - Safe anywhere: yes
 - Attributes: `data-ls-font="system-humanist"`
@@ -444,6 +476,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Technical Mono
 - Type: ls:preset
 - Description: Monospace label font role remap for technical slide decks.
+- Agent level: advanced
 - Agent recommended: no
 - Safe anywhere: yes
 - Attributes: `data-ls-font="technical-mono"`
@@ -458,6 +491,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Executive Blue
 - Type: ls:preset
 - Description: Clean professional blue theme for product and business decks.
+- Agent level: starter
 - Agent recommended: yes
 - Theme attribute: executive-blue
 - Style tone: professional dark blue
@@ -475,6 +509,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Clean Light
 - Type: ls:preset
 - Description: Clean light theme for product, teaching, and print-friendly decks.
+- Agent level: starter
 - Agent recommended: yes
 - Theme attribute: clean-light
 - Style tone: clean professional light
@@ -492,6 +527,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Boardroom Navy
 - Type: ls:preset
 - Description: Formal restrained navy theme for executive, strategy, and board decks.
+- Agent level: recommended
 - Agent recommended: yes
 - Theme attribute: boardroom-navy
 - Style tone: formal dark navy
@@ -509,6 +545,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Technical Deep
 - Type: ls:preset
 - Description: Precise high-contrast dark theme for engineering talks and code-heavy decks.
+- Agent level: starter
 - Agent recommended: yes
 - Theme attribute: technical-deep
 - Style tone: technical deep dark
@@ -526,6 +563,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Playful Ink
 - Type: ls:preset
 - Description: Friendly dark ink theme for workshops, education, and playful product demos.
+- Agent level: starter
 - Agent recommended: yes
 - Theme attribute: playful-ink
 - Style tone: friendly dark ink
@@ -545,6 +583,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Api Flow
 - Type: ls:template
 - Description: API flow slide combining HTTP exchange and focused code diff primitives.
+- Agent level: advanced
 - Agent recommended: no
 - Safe anywhere: no
 - Classes: `ls-slide`, `ls-slide__inner`, `ls-stack`, `ls-stack--sm`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--2`, `ls-http-exchange`, `ls-http-exchange__block`, `ls-http-exchange__header`, `ls-http-exchange__method`, `ls-http-exchange__status`, `ls-http-exchange__url`, `ls-code-diff`, `ls-code-diff__header`, `ls-code-diff__body`, `ls-code-diff__line`, `ls-code-diff__number`, `ls-code-diff__code`, `ls-code-diff__marker`
@@ -559,6 +598,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Code Plus Notes
 - Type: ls:template
 - Description: Code-focused slide template with explanatory notes.
+- Agent level: recommended
 - Agent recommended: yes
 - Safe anywhere: no
 - Classes: `ls-slide`, `ls-slide__inner`, `ls-stack`, `ls-stack--sm`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--wide-left`, `ls-code-block`, `ls-card`, `ls-card__title`, `ls-card__text`, `ls-card__body`
@@ -573,6 +613,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Metric Dashboard
 - Type: ls:template
 - Description: Dashboard template for metrics and progress indicators.
+- Agent level: recommended
 - Agent recommended: yes
 - Safe anywhere: no
 - Classes: `ls-slide`, `ls-slide__inner`, `ls-stack`, `ls-stack--sm`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--3`, `ls-panel`, `ls-metric`, `ls-metric__value`, `ls-metric__label`, `ls-progress`, `ls-progress__label`, `ls-progress__value`, `ls-progress__track`, `ls-progress__bar`
@@ -587,6 +628,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Section Divider
 - Type: ls:template
 - Description: Section break template for transitions between topics.
+- Agent level: starter
 - Agent recommended: yes
 - Safe anywhere: no
 - Classes: `ls-slide`, `ls-slide__inner`, `ls-center`, `ls-stack`, `ls-badge`, `ls-title`, `ls-subtitle`, `ls-slide-fill`
@@ -601,6 +643,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Split
 - Type: ls:template
 - Description: Two-column slide template for a visual plus supporting points.
+- Agent level: starter
 - Agent recommended: yes
 - Safe anywhere: no
 - Classes: `ls-slide`, `ls-slide__inner`, `ls-stack`, `ls-stack--sm`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--wide-left`, `ls-panel`, `ls-panel--accent`, `ls-panel__text`, `ls-card`, `ls-card__title`, `ls-card__text`, `ls-panel--center`, `ls-card__body`
@@ -615,6 +658,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Split Diagram
 - Type: ls:template
 - Description: Asymmetric slide template for an explanatory diagram and notes.
+- Agent level: recommended
 - Agent recommended: yes
 - Safe anywhere: no
 - Classes: `ls-slide`, `ls-slide__inner`, `ls-stack`, `ls-stack--sm`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--wide-left`, `ls-panel`, `ls-callout`, `ls-callout__title`, `ls-callout__text`, `ls-panel--frame`, `ls-panel--center`, `ls-callout__body`
@@ -629,6 +673,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Three Cards
 - Type: ls:template
 - Description: Three-card slide template for comparing related points.
+- Agent level: starter
 - Agent recommended: yes
 - Safe anywhere: no
 - Classes: `ls-slide`, `ls-slide__inner`, `ls-stack`, `ls-stack--sm`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--3`, `ls-card`, `ls-card__title`, `ls-card__text`, `ls-card__body`
@@ -643,6 +688,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Title Hero
 - Type: ls:template
 - Description: Opening slide template with a clear title, subtitle, and badges.
+- Agent level: starter
 - Agent recommended: yes
 - Safe anywhere: no
 - Classes: `ls-slide`, `ls-slide__inner`, `ls-grid`, `ls-grid--wide-left`, `ls-stack`, `ls-cluster`, `ls-badge`, `ls-title`, `ls-subtitle`, `ls-panel`, `ls-panel--accent`, `ls-eyebrow`, `ls-panel__text`, `ls-slide-fill`, `ls-center-start`, `ls-text-start`, `ls-panel--center`, `ls-panel--fit`
@@ -657,6 +703,7 @@ Generated from `registry.json` and per-item metadata. Do not edit manually; run 
 - Label: Technical Walkthrough
 - Type: ls:template
 - Description: Technical walkthrough slide combining a file tree with terminal output.
+- Agent level: advanced
 - Agent recommended: no
 - Safe anywhere: no
 - Classes: `ls-slide`, `ls-slide__inner`, `ls-stack`, `ls-stack--sm`, `ls-eyebrow`, `ls-title`, `ls-grid`, `ls-grid--wide-left`, `ls-file-tree`, `ls-file-tree__item`, `ls-file-tree__name`, `ls-file-tree__meta`, `ls-terminal`, `ls-terminal__header`, `ls-terminal__title`, `ls-terminal__body`, `ls-terminal__line`, `ls-terminal__prompt`, `ls-terminal__output`

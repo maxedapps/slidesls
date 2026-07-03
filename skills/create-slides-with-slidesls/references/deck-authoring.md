@@ -35,9 +35,9 @@ slidesls init ./slides/my-deck --template minimal --theme executive-blue --title
   </head>
   <body class="ls-page">
     <main class="ls-deck" data-ls-deck aria-label="Slide deck">
-      <section class="ls-slide" aria-label="Opening slide">
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Opening slide">
         <div class="ls-slide__inner">
-          <header class="ls-stack">
+          <header class="ls-slide__header">
             <p class="ls-eyebrow">Topic</p>
             <h1 class="ls-title">A clear opening statement</h1>
             <p class="ls-subtitle ls-reveal" data-step="1">Supporting point.</p>
@@ -76,20 +76,20 @@ Use:
 - utilities for layout, e.g. `utilities/layout` with `.ls-stack` and `.ls-grid`;
 - standalone components for content, e.g. `components/card` and `components/panel`.
 
-Do not use `ls-layout-*` classes or hidden ancestor-dependent layout contracts. Centering utilities such as `.ls-center` and `.ls-center-start` center the content cluster; they should not strand headings, subtitles, and badges at opposite ends of a full-height column. Use `.ls-panel--fit` for short text-only callouts and `.ls-panel--frame` for screenshots, diagrams, code, or media frames that intentionally need visual mass.
+Do not use `ls-layout-*` classes or hidden ancestor-dependent layout contracts. Content slides use `data-ls-slide-kind="content"`, a top `.ls-slide__header`, and body layout below it. Hero and section slides must be marked with `data-ls-slide-kind="hero"` or `"section"` and may intentionally use `.ls-slide-fill` with centering utilities. Do not use `.ls-slide-fill` on ordinary content slides. Centering utilities such as `.ls-center` and `.ls-center-start` center the content cluster; they should not strand headings, subtitles, and badges at opposite ends of a full-height column. Use `.ls-panel--fit` for short text-only callouts and `.ls-panel--frame` for screenshots, diagrams, code, or media frames that intentionally need visual mass.
 
 ## Adding registry items
 
-Use recommended catalog and snippets:
+Use brief catalog and snippet inspect first:
 
 ```sh
-slidesls skill show --reference catalog
-slidesls catalog --recommended --json
-slidesls inspect templates/split --readme --json
+slidesls catalog --starter --json
+slidesls catalog --type template --json
+slidesls inspect templates/split --json
 slidesls inspect components/card --json
 ```
 
-Treat `catalog --json` `authoring` metadata as the quick source of truth for public classes, modifiers, data attributes, and CSS variables. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and strict validation errors.
+Use `slidesls catalog --api --json` or `slidesls inspect <item> --api --json` only for low-level public classes, modifiers, data attributes, and CSS variables. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and strict validation errors.
 
 Use `add --dry-run --json` before copying. After copying, add any returned `<link>` or `<script>` tags to the entry HTML. `add` does not mutate HTML for you.
 
@@ -135,4 +135,4 @@ For offline/dependency-free decks, prefer inline SVG or text markers.
 - Code explainer: `templates/code-plus-notes`, `components/code-block`, `components/callout`.
 - Visual explanation: `templates/split-diagram`, `components/image-card`, `components/panel`.
 
-Use `slidesls inspect <item> --readme --json` and snippet metadata as the source of truth.
+Use `slidesls inspect <item> --json` and snippet metadata as the source of truth.

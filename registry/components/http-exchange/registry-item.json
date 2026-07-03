@@ -15,7 +15,6 @@
   "docs": "registry/components/http-exchange/README.md",
   "rootClass": "ls-http-exchange",
   "safeAnywhere": true,
-  "agentRecommended": false,
   "snippets": [
     {
       "label": "Basic HTTP exchange",
@@ -36,7 +35,10 @@
       }
     ],
     "dataAttributes": [
-      { "name": "data-ls-density", "values": ["compact"] },
+      {
+        "name": "data-ls-density",
+        "values": ["compact"]
+      },
       {
         "name": "data-ls-tone",
         "values": ["success", "warning", "danger"],
@@ -45,5 +47,6 @@
     ],
     "cssVariables": ["--ls-http-font-size", "--ls-http-padding", "--ls-http-max-block-size"],
     "usage": ["Use for compact static API request/response examples."]
-  }
+  },
+  "agentLevel": "advanced"
 }

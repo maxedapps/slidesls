@@ -13,7 +13,6 @@
   "devDependencies": [],
   "docs": "registry/animations/fade/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Fade reveal sequence",
@@ -30,5 +29,6 @@
       "Combine with reveal sequencing classes/attributes for fade transitions.",
       "Combine with .ls-reveal and do not stack with another reveal transform variant."
     ]
-  }
+  },
+  "agentLevel": "starter"
 }

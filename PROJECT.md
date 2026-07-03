@@ -6,7 +6,7 @@ The CLI is **not** a runtime dependency for generated decks. It initializes deck
 
 ## Core goals
 
-- Make slide authoring work through `slidesls init`, `slidesls catalog --recommended`, `slidesls inspect`, `slidesls add`, `slidesls validate`, and `slidesls preview`.
+- Make slide authoring work through `slidesls init`, brief `slidesls catalog`, snippet-focused `slidesls inspect`, `slidesls add`, `slidesls validate`, and `slidesls preview`.
 - Keep every generated deck vanilla HTML/CSS/JS: no mandatory framework, bundler, Tailwind, or runtime package.
 - Preserve a shadcn-style copyable registry: assets are copied into downstream projects and can be modified.
 - Optimize for AI agents with deterministic JSON output, snippets, manifests, validation, and clear docs.
@@ -50,7 +50,7 @@ Templates are HTML snippets, not CSS layout contracts. Avoid hidden ancestor-dep
 - `src/` — CLI, registry, deck, validation, server, skill, and shared modules.
 - `slidesls init` — creates a plain deck project with `slidesls.json`, copied assets, starter HTML, manifest, and optional `--theme` support.
 - `slidesls add` — copies registry items and prints load tags without mutating HTML by default.
-- `slidesls catalog --recommended` / `slidesls inspect` — registry discovery for humans and agents.
+- `slidesls catalog` / `slidesls inspect` — brief registry discovery and snippet/load-tag inspection for humans and agents; `--api` exposes rich authoring metadata.
 - `slidesls skill info/show/install/link` — agent skill distribution for local and future package usage.
 - `slidesls validate` — static deck validation for config, manifest, copied files, local assets, shell markup, and common missing registry item usage.
 - `slidesls preview` — dependency-free local preview server.

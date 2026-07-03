@@ -9,7 +9,7 @@ const EXAMPLE_TARGETS = [
 const POST_INSTALL_INSTRUCTIONS = [
   "Fully read the installed SKILL.md before authoring slides.",
   "Read relevant bundled references, especially deck-authoring.md and preview-validation.md.",
-  "If your runtime does not auto-load this skill, run slidesls skill show --all and read the full output.",
+  "If your runtime does not auto-load this skill, run slidesls skill show and read SKILL.md; use slidesls skill show --all only as a full export fallback.",
 ];
 
 export { SKILL_NAME };
@@ -62,7 +62,7 @@ export async function skillInfo() {
     files: files.map(({ path, sha256 }) => ({ path, sha256 })),
     exampleTargets: EXAMPLE_TARGETS,
     runtimeNeutralInstruction:
-      "Use slidesls skill show --all to read the complete bundled skill without installing it.",
+      "Use slidesls skill show to read SKILL.md without installing; use slidesls skill show --all only as a full export fallback.",
   };
 }
 
@@ -241,7 +241,7 @@ function assertExplicitSkillTarget(targetDir) {
     "Example for Claude Code project-local skills:",
     "  slidesls skill install ./.claude/skills/create-slides-with-slidesls",
     "Runtime-neutral no-install option:",
-    "  slidesls skill show --all",
+    "  slidesls skill show",
   ].join("\n");
   throw error;
 }

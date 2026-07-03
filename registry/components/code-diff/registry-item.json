@@ -15,7 +15,6 @@
   "docs": "registry/components/code-diff/README.md",
   "rootClass": "ls-code-diff",
   "safeAnywhere": true,
-  "agentRecommended": false,
   "snippets": [
     {
       "label": "Basic code diff",
@@ -53,5 +52,6 @@
       "--ls-code-diff-max-block-size"
     ],
     "usage": ["Use for short static diffs; avoid dense, full-file excerpts on a slide."]
-  }
+  },
+  "agentLevel": "advanced"
 }

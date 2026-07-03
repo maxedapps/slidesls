@@ -42,7 +42,8 @@ test("skill info and show expose bundled skill metadata", async () => {
       path: ".claude/skills/create-slides-with-slidesls",
     },
   ]);
-  assert.match(info.data.runtimeNeutralInstruction, /slidesls skill show --all/);
+  assert.match(info.data.runtimeNeutralInstruction, /slidesls skill show/);
+  assert.match(info.data.runtimeNeutralInstruction, /full export fallback/);
 
   const { stdout: showStdout } = await run(["skill", "show"]);
   assert.match(showStdout, /name: create-slides-with-slidesls/);
@@ -74,7 +75,7 @@ test("skill install and link require an explicit runtime target", async () => {
       assert.equal(error.code, 2);
       assert.match(error.stderr, /Missing skill target directory/);
       assert.match(error.stderr, /Choose the skill directory required by your agent runtime/);
-      assert.match(error.stderr, /slidesls skill show --all/);
+      assert.match(error.stderr, /slidesls skill show/);
       return true;
     });
   }

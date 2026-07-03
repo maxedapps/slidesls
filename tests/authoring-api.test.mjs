@@ -33,6 +33,7 @@ async function minimalRegistry() {
         dependencies: [],
         devDependencies: [],
         docs: "registry/components/demo/README.md",
+        agentLevel: "recommended",
         authoring: { classGroups: [{ base: "ls-demo" }] },
         snippets: [{ label: "Basic", path: "registry/components/demo/snippets/basic.html" }],
       },
@@ -43,6 +44,52 @@ async function minimalRegistry() {
   await writeFile(path.join(root, "registry", "components", "demo", "README.md"), "# demo\n");
   return root;
 }
+
+test("registry validation catches agent metadata errors", async () => {
+  for (const [mutate, code] of [
+    [(item) => delete item.agentLevel, "invalid_agent_level"],
+    [(item) => (item.agentLevel = "basic"), "invalid_agent_level"],
+    [(item) => (item.agentRecommended = true), "stored_agent_recommended"],
+    [
+      (item) => {
+        item.authoring.classMetadata = {
+          "ls-missing": { scopeType: "anywhere", safeAnywhere: true },
+        };
+      },
+      "unknown_class_metadata_key",
+    ],
+    [
+      (item) => {
+        item.authoring.classMetadata = {
+          "ls-demo": { scopeType: "inside-magic", safeAnywhere: true },
+        };
+      },
+      "invalid_class_scope_type",
+    ],
+    [
+      (item) => {
+        item.safeAnywhere = true;
+        item.authoring.classMetadata = {
+          "ls-demo": { scopeType: "within-slide", safeAnywhere: false },
+        };
+      },
+      "safe_anywhere_class_metadata_conflict",
+    ],
+  ]) {
+    const root = await minimalRegistry();
+    const itemPath = path.join(root, "registry", "components", "demo", "registry-item.json");
+    const metadata = JSON.parse(await readFile(itemPath, "utf8"));
+    mutate(metadata);
+    await writeFile(itemPath, JSON.stringify(metadata, null, 2));
+
+    const result = await validateRegistry({ registryRoot: root });
+    assert.equal(result.valid, false, code);
+    assert.ok(
+      result.errors.some((error) => error.code === code),
+      code,
+    );
+  }
+});
 
 test("registry validation catches authoring classes missing from CSS", async () => {
   const root = await minimalRegistry();
@@ -101,6 +148,7 @@ test("registry validation catches undeclared snippet dependencies", async () => 
         dependencies: [],
         devDependencies: [],
         docs: "registry/components/other/README.md",
+        agentLevel: "advanced",
         authoring: { classGroups: [{ base: "ls-other" }] },
       },
       null,

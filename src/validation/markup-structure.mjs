@@ -1,6 +1,7 @@
-import { startTagRecords, stripNonRenderedCode } from "../shared/html.mjs";
+import { slideSegments, startTagRecords, stripNonRenderedCode } from "../shared/html.mjs";
 
 const revealTransformVariants = ["ls-reveal-fade", "ls-reveal-slide-up", "ls-reveal-scale-in"];
+const slideKinds = new Set(["content", "hero", "section"]);
 
 function classList(attributes) {
   return String(attributes.get("class") || "")
@@ -18,6 +19,46 @@ function push(list, code, message, details = {}) {
 
 function isCustomProgress(tag) {
   return tag.name !== "progress" && hasClass(tag.attributes, "ls-progress");
+}
+
+function segmentHasClass(html, className) {
+  return new RegExp(`\\bclass=["'][^"']*\\b${className}\\b`, "i").test(html);
+}
+
+function validateSlideKinds({ html, strict, errors, warnings }) {
+  for (const segment of slideSegments(html)) {
+    const kind = segment.attributes.get("data-ls-slide-kind");
+    const hasSlideFill = segmentHasClass(segment.html, "ls-slide-fill");
+    const hasCenter = segmentHasClass(segment.html, "ls-center");
+    const hasCenterStart = segmentHasClass(segment.html, "ls-center-start");
+    if (kind && !slideKinds.has(kind))
+      deckIssue({
+        strict,
+        errors,
+        warnings,
+        code: "invalid_slide_kind",
+        message: `data-ls-slide-kind must be content, hero, or section (received ${kind}).`,
+        hint: 'Use data-ls-slide-kind="content", "hero", or "section" on .ls-slide.',
+      });
+    if (kind === "content" && hasSlideFill)
+      deckIssue({
+        strict,
+        errors,
+        warnings,
+        code: "content_slide_full_height_layout",
+        message: "Content slides should not use full-slide ls-slide-fill layouts.",
+        hint: 'Use .ls-slide__header plus body layout, or mark the slide data-ls-slide-kind="hero"/"section" if it is intentionally centered.',
+      });
+    if (!kind && hasSlideFill && (hasCenter || hasCenterStart))
+      deckIssue({
+        strict,
+        errors,
+        warnings,
+        code: "missing_slide_kind",
+        message: "Full-slide centered layouts should declare data-ls-slide-kind.",
+        hint: 'Add data-ls-slide-kind="hero" or "section" for intentional centered slides, or "content" for ordinary content slides.',
+      });
+  }
 }
 
 export function validateSnippetStructure({ html, sourcePath, errors }) {
@@ -59,6 +100,7 @@ function deckIssue({ strict, errors, warnings, code, message, hint }) {
 export function validateDeckStructure({ html, strict = false, errors, warnings }) {
   const renderedHtml = stripNonRenderedCode(html);
   const tags = startTagRecords(renderedHtml);
+  validateSlideKinds({ html: renderedHtml, strict, errors, warnings });
   if (tags.some(isCustomProgress)) {
     const progressCount = tags.filter(isCustomProgress).length;
     const trackCount = tags.filter((tag) => hasClass(tag.attributes, "ls-progress__track")).length;

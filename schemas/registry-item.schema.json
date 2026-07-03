@@ -2,6 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://slidesls.dev/schemas/registry-item.schema.json",
   "title": "slidesls registry item",
+  "description": "Documentation schema only. Runtime enforcement lives in src/validation/registry.mjs.",
   "type": "object",
   "required": [
     "name",
@@ -10,7 +11,8 @@
     "files",
     "registryDependencies",
     "dependencies",
-    "devDependencies"
+    "devDependencies",
+    "agentLevel"
   ],
   "additionalProperties": true,
   "properties": {
@@ -80,8 +82,9 @@
     "safeAnywhere": {
       "type": "boolean"
     },
-    "agentRecommended": {
-      "type": "boolean"
+    "agentLevel": {
+      "type": "string",
+      "enum": ["starter", "recommended", "advanced", "experimental"]
     },
     "styleTone": {
       "type": "string"
@@ -157,6 +160,34 @@
           "items": {
             "type": "string",
             "minLength": 1
+          }
+        },
+        "classMetadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "required": ["scopeType", "safeAnywhere"],
+            "additionalProperties": false,
+            "properties": {
+              "scopeType": {
+                "type": "string",
+                "enum": [
+                  "anywhere",
+                  "within-slide",
+                  "within-slide-inner",
+                  "direct-child-of-slide-inner",
+                  "within-constrained-area",
+                  "centers-content-cluster"
+                ]
+              },
+              "safeAnywhere": {
+                "type": "boolean"
+              },
+              "description": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
           }
         },
         "dataAttributes": {

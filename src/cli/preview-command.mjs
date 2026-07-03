@@ -6,7 +6,7 @@ import { ok } from "../shared/result.mjs";
 import { assertInside } from "../shared/fs.mjs";
 import { DEFAULT_CONFIG, readConfig } from "../deck/config.mjs";
 export async function previewCommand(argv) {
-  const args = parseArgs(argv, { boolean: ["json", "help"] });
+  const args = parseArgs(argv, { boolean: ["json", "help"], value: ["dir", "host", "port"] });
   if (args.help)
     return ok({
       help: `Usage: slidesls preview [dir] [--host <host>] [--port <port>] [--json]

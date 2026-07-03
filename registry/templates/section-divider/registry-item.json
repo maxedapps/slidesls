@@ -9,7 +9,6 @@
   "docs": "registry/templates/section-divider/README.md",
   "rootClass": null,
   "safeAnywhere": false,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Section divider slide",
@@ -31,5 +30,7 @@
       "ls-subtitle",
       "ls-slide-fill"
     ]
-  }
+  },
+  "agentLevel": "starter",
+  "useCases": ["Separate deck sections with a concise centered transition slide."]
 }

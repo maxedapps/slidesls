@@ -24,9 +24,10 @@ export function textFor(command, result) {
         .map((item) => `${item.name.padEnd(36)} ${item.type.padEnd(13)} ${item.description || ""}`)
         .join("\n") +
       agentTextBlock([
-        `Use \`${agentCommandRecipes.catalogRecommendedJson}\` or \`${agentCommandRecipes.catalogJson}\` to read item.authoring metadata.`,
-        `Use \`${agentCommandRecipes.inspectReadmeJson}\` for snippets, load tags, and docs.`,
-        "Do not invent ls-* classes; use listed authoring classes/modifiers.",
+        `Use \`${agentCommandRecipes.catalogStarterJson}\` or \`${agentCommandRecipes.catalogJson}\` for brief discovery.`,
+        `Use \`${agentCommandRecipes.catalogApiJson}\` only when low-level authoring metadata is needed.`,
+        `Use \`${agentCommandRecipes.inspectJson}\` for snippets and load tags.`,
+        "Do not invent ls-* classes; use snippets or --api authoring classes/modifiers.",
       ])
     );
   if (command === "inspect")
@@ -39,12 +40,17 @@ export function textFor(command, result) {
           const theme = item.themeAttribute
             ? `\n  Theme: set data-ls-theme="${item.themeAttribute}" on <html>`
             : "";
-          const authoring = item.authoring ? "\n  Authoring: available in --json output" : "";
-          return `${item.name}\n  ${item.description || ""}${theme}${authoring}\n  Files: ${(item.files || []).map((file) => file.path).join(", ") || "none"}\n  Snippets:\n    ${snippets || "none"}\n  Links:\n    ${(item.load.links || []).join("\n    ")}\n  Scripts:\n    ${(item.load.scripts || []).join("\n    ")}`;
+          const authoring = item.authoring
+            ? "\n  Authoring: included"
+            : "\n  Authoring: add --api for details";
+          const dependencyOrder = item.dependencyOrder?.length
+            ? `\n  Dependency order: ${item.dependencyOrder.join(", ")}`
+            : "";
+          return `${item.name}\n  ${item.description || ""}${theme}${authoring}${dependencyOrder}\n  Snippets:\n    ${snippets || "none"}\n  Links:\n    ${(item.load.links || []).join("\n    ")}\n  Scripts:\n    ${(item.load.scripts || []).join("\n    ")}`;
         })
         .join("\n\n") +
       agentTextBlock([
-        "Use --json for full authoring metadata, snippets, and load tags.",
+        "Default inspect output is snippet-focused; add --api for full authoring metadata.",
         "Copy assets with `slidesls add <items...> --dir <deck-or-project> --dry-run --json`.",
         "Add returned load tags to the entry HTML, then run `slidesls validate <deck> --json`.",
       ])
@@ -61,7 +67,7 @@ export function textFor(command, result) {
       ? `\nWarnings:\n${result.data.warnings.map((warning) => `- ${warning}`).join("\n")}\n`
       : "";
     const next = result.data.postInstallInstructions?.length
-      ? `\nNext for agents:\n- Fully read: ${result.data.skillPath}\n- Then read relevant references in ${result.data.referencesPath}/\n- If your agent runtime did not auto-load it, run: slidesls skill show --all\n`
+      ? `\nNext for agents:\n- Fully read: ${result.data.skillPath}\n- Then read relevant references in ${result.data.referencesPath}/\n- If your agent runtime did not auto-load it, run: slidesls skill show (full export fallback: slidesls skill show --all)\n`
       : "";
     return `slidesls skill ${result.data.action}: ${result.data.target}\n${result.data.status ? `status: ${result.data.status}\n` : ""}${formatCounts(result.data.counts)}${warnings}${next}`;
   }
@@ -79,9 +85,9 @@ export function textFor(command, result) {
       : `slidesls validate: failed (${errors.length} error(s), ${warnings.length} warning(s))`;
     const guidance = findings
       ? agentTextBlock([
-          `Unknown ls-* class? Run \`${agentCommandRecipes.catalogJson}\`.`,
+          `Unknown ls-* class? Run \`${agentCommandRecipes.catalogApiJson}\`.`,
           "Missing registry item? Run `slidesls add <item> --dir <deck> --dry-run --json`.",
-          "Use `slidesls inspect <item> --readme --json` for exact snippets.",
+          "Use `slidesls inspect <item> --json` for exact snippets.",
         ])
       : agentTextBlock([
           "No static issues found. Static validation does not replace preview.",
@@ -105,7 +111,7 @@ export function textFor(command, result) {
       [
         "`add` copied/planned files only; it does not edit HTML.",
         "Add returned load tags to the deck entry HTML if missing.",
-        `For exact markup, run \`${agentCommandRecipes.inspectReadmeJson}\`.`,
+        `For exact markup, run \`${agentCommandRecipes.inspectJson}\`.`,
         "Then run `slidesls validate <dir> --json`.",
       ],
     )}`;
@@ -113,8 +119,8 @@ export function textFor(command, result) {
   if (command === "init")
     return `Initialized ${result.data.root}${result.data.theme ? ` with theme ${result.data.theme}` : ""}\nNext steps:\n${result.data.nextSteps.map((s) => `  ${s}`).join("\n")}\n${agentTextBlock(
       [
-        `Use \`${agentCommandRecipes.catalogRecommendedJson}\` before adding classes or presets.`,
-        "Use `slidesls inspect templates/split --readme --json` for exact markup.",
+        `Use \`${agentCommandRecipes.catalogStarterJson}\` before adding classes or presets.`,
+        "Use `slidesls inspect templates/split --json` for exact markup.",
         `Run \`slidesls validate ${result.data.root} --json\` after editing.`,
       ],
     )}`;

@@ -14,7 +14,6 @@
   "docs": "registry/components/badge/README.md",
   "rootClass": "ls-badge",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Basic badge",
@@ -29,5 +28,6 @@
       }
     ],
     "usage": ["Use for compact labels, statuses, or category markers."]
-  }
+  },
+  "agentLevel": "recommended"
 }

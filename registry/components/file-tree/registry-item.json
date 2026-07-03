@@ -15,7 +15,6 @@
   "docs": "registry/components/file-tree/README.md",
   "rootClass": "ls-file-tree",
   "safeAnywhere": true,
-  "agentRecommended": false,
   "snippets": [
     {
       "label": "Basic file tree",
@@ -30,11 +29,23 @@
       }
     ],
     "dataAttributes": [
-      { "name": "data-ls-density", "values": ["compact"] },
-      { "name": "data-ls-kind", "values": ["folder", "file"], "scope": ".ls-file-tree__item" },
-      { "name": "data-ls-state", "values": ["active"], "scope": ".ls-file-tree__item" }
+      {
+        "name": "data-ls-density",
+        "values": ["compact"]
+      },
+      {
+        "name": "data-ls-kind",
+        "values": ["folder", "file"],
+        "scope": ".ls-file-tree__item"
+      },
+      {
+        "name": "data-ls-state",
+        "values": ["active"],
+        "scope": ".ls-file-tree__item"
+      }
     ],
     "cssVariables": ["--ls-file-tree-font-size", "--ls-file-tree-padding"],
     "usage": ["Use for short static project structures; keep nesting shallow for slide fit."]
-  }
+  },
+  "agentLevel": "advanced"
 }

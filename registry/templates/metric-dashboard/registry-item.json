@@ -15,7 +15,6 @@
   "docs": "registry/templates/metric-dashboard/README.md",
   "rootClass": null,
   "safeAnywhere": false,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Metric dashboard slide",
@@ -46,5 +45,7 @@
       "ls-progress__track",
       "ls-progress__bar"
     ]
-  }
+  },
+  "agentLevel": "recommended",
+  "useCases": ["Show KPIs, progress, or measurable status."]
 }

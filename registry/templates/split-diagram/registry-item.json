@@ -14,7 +14,6 @@
   "docs": "registry/templates/split-diagram/README.md",
   "rootClass": null,
   "safeAnywhere": false,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Split diagram slide",
@@ -40,5 +39,9 @@
       "ls-panel--center",
       "ls-callout__body"
     ]
-  }
+  },
+  "agentLevel": "recommended",
+  "useCases": [
+    "Explain a process, architecture, or relationship with a diagram and supporting notes."
+  ]
 }

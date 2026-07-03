@@ -14,7 +14,6 @@
   "docs": "registry/components/progress/README.md",
   "rootClass": "ls-progress",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Basic progress",
@@ -49,5 +48,6 @@
     ],
     "cssVariables": ["--ls-progress-value", "--ls-progress-thickness", "--ls-progress-label-size"],
     "usage": ["Set --ls-progress-value to the fill percentage, e.g. 72%."]
-  }
+  },
+  "agentLevel": "recommended"
 }

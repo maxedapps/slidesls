@@ -39,7 +39,7 @@ ${body}
 }
 
 function blankSlides(title) {
-  return `      <section class="ls-slide" aria-label="Opening">
+  return `      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Opening">
         <div class="ls-slide__inner">
           <header class="ls-slide__header">
             <h1 class="ls-title">${title}</h1>
@@ -50,7 +50,7 @@ function blankSlides(title) {
 }
 
 function minimalSlides(title) {
-  return `      <section class="ls-slide" aria-label="Opening">
+  return `      <section class="ls-slide" data-ls-slide-kind="hero" aria-label="Opening">
         <div class="ls-slide__inner">
           <div class="ls-grid ls-grid--wide-left ls-slide-fill">
             <header class="ls-stack ls-center-start ls-text-start">
@@ -68,16 +68,16 @@ function minimalSlides(title) {
           </div>
         </div>
       </section>
-      <section class="ls-slide" aria-label="Next steps">
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Next steps">
         <div class="ls-slide__inner">
-          <header class="ls-stack ls-stack--sm">
+          <header class="ls-slide__header">
             <p class="ls-eyebrow">Next</p>
             <h2 class="ls-title">Start from recommended templates</h2>
           </header>
           <div class="ls-grid ls-grid--2">
             <div class="ls-panel">
               <h3 class="ls-panel__title">Discover</h3>
-              <p class="ls-panel__text">Run <code>slidesls catalog --recommended</code> and inspect templates for snippet HTML.</p>
+              <p class="ls-panel__text">Run <code>slidesls catalog --starter</code> and inspect templates for snippet HTML.</p>
             </div>
             <div class="ls-panel ls-panel--muted">
               <h3 class="ls-panel__title">Validate</h3>

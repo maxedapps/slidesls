@@ -6,7 +6,7 @@ Generated decks are plain HTML/CSS/JS. The stable deck API is the shell, copied 
 
 - `<body class="ls-page">`
 - `.ls-deck[data-ls-deck]`
-- one or more `.ls-slide` elements
+- one or more `.ls-slide` elements, preferably with `data-ls-slide-kind="content" | "hero" | "section"`
 - `slide-runtime.js` loaded as a module script
 
 ## Composition model
@@ -17,7 +17,7 @@ Use:
 - standalone components for content (`.ls-card`, `.ls-panel`, `.ls-metric`, etc.);
 - template snippets for complete slide skeletons.
 
-Avoid hidden ancestor-dependent layout classes. Templates should be pasted as HTML and then edited directly.
+Avoid hidden ancestor-dependent layout classes. Content slides use a top `.ls-slide__header` and body layout; do not use `.ls-slide-fill` on ordinary content slides. Hero/section slides should be explicitly marked and may intentionally use centered full-slide layouts. Templates should be pasted as HTML and then edited directly.
 
 ## Asset model
 

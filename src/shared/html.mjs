@@ -92,7 +92,12 @@ export function startTagRecords(html, tagName = "[a-z][a-z0-9:-]*") {
   const pattern = new RegExp(`<(${tagName})\\b([^>]*)>`, "gi");
   let match;
   while ((match = pattern.exec(html)))
-    tags.push({ name: match[1].toLowerCase(), attributes: parseAttributes(match[2] || "") });
+    tags.push({
+      name: match[1].toLowerCase(),
+      attributes: parseAttributes(match[2] || ""),
+      index: match.index,
+      raw: match[0],
+    });
   return tags;
 }
 
@@ -134,6 +139,16 @@ export function hasDeckElement(html) {
   return startTags(html, "[a-z][a-z0-9:-]*").some(
     (attributes) => hasClass(attributes, "ls-deck") && attributes.has("data-ls-deck"),
   );
+}
+
+export function slideSegments(html) {
+  const slideStarts = startTagRecords(html, "[a-z][a-z0-9:-]*").filter((tag) =>
+    hasClass(tag.attributes, "ls-slide"),
+  );
+  return slideStarts.map((tag, index) => ({
+    attributes: tag.attributes,
+    html: html.slice(tag.index, slideStarts[index + 1]?.index ?? html.length),
+  }));
 }
 
 export function hasModuleRuntimeScript(html) {

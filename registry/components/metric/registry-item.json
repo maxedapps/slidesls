@@ -14,7 +14,6 @@
   "docs": "registry/components/metric/README.md",
   "rootClass": "ls-metric",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Basic metric",
@@ -35,5 +34,6 @@
       }
     ],
     "usage": ["Use for one prominent KPI or numeric proof point."]
-  }
+  },
+  "agentLevel": "recommended"
 }

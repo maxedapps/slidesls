@@ -1,6 +1,6 @@
 import path from "node:path";
 import { access, readFile } from "node:fs/promises";
-import { parseArgs } from "../shared/args.mjs";
+import { parseArgs, REGISTRY_VALUE_OPTIONS } from "../shared/args.mjs";
 import { ok } from "../shared/result.mjs";
 import { exists, sha256File } from "../shared/fs.mjs";
 import {
@@ -32,6 +32,7 @@ import { registryData, registrySource, rejectRemovedRegistryOption } from "./reg
 export async function validateCommand(argv) {
   const args = parseArgs(argv, {
     boolean: ["strict", "json", "help", "use-manifest-registry"],
+    value: ["dir", ...REGISTRY_VALUE_OPTIONS],
   });
   if (args.help)
     return ok({
@@ -41,7 +42,7 @@ For AI agents:
   Run after every edit: slidesls validate <deck> --json
   Unknown ls-* classes warn by default and error with --strict.
   Default validation is offline/deterministic and uses the bundled registry unless an explicit registry source is provided.
-  Use slidesls catalog --json for valid classes and slidesls inspect <item> --readme --json for snippets.`,
+  Use slidesls catalog --api --json for valid classes and slidesls inspect <item> --json for snippets.`,
     });
   rejectRemovedRegistryOption(args);
   const start = path.resolve(args._[0] || args.dir || ".");
@@ -217,7 +218,10 @@ function registrySourceForValidation({ args, manifest }) {
 }
 
 export async function doctorCommand(argv) {
-  const args = parseArgs(argv, { boolean: ["json", "help"] });
+  const args = parseArgs(argv, {
+    boolean: ["json", "help"],
+    value: ["dir", ...REGISTRY_VALUE_OPTIONS],
+  });
   if (args.help)
     return ok({
       help: `Usage: slidesls doctor [--dir <project>] [--registry-root <path>] [--registry-url <url>] [--json]`,
@@ -314,7 +318,7 @@ function validateKnownClasses({ html, strict, knownClasses, errors, warnings }) 
       code: "removed_layout_class",
       message:
         "ls-layout-* classes are not part of the current registry; use templates and utilities instead.",
-      hint: "Run slidesls catalog --json to see valid public layout utilities.",
+      hint: "Run slidesls catalog --api --json to see valid public layout utilities.",
     });
 
   for (const className of unknownLsClasses(renderedHtml, knownClasses)) {
@@ -322,7 +326,7 @@ function validateKnownClasses({ html, strict, knownClasses, errors, warnings }) 
       code: "unknown_ls_class",
       message: `${className} is not listed in the slidesls authoring API catalog`,
       className,
-      hint: "Run slidesls catalog --json to see valid public ls-* classes.",
+      hint: "Run slidesls catalog --api --json to see valid public ls-* classes.",
     };
     if (strict) errors.push(entry);
     else warnings.push(entry);
@@ -336,7 +340,7 @@ function validateClassDependencies({ html, manifest, ownerByClass, warnings }) {
     warnings.push({
       code: "missing_registry_item_for_class",
       message: `${item} should be added when using its classes in HTML`,
-      hint: `Run slidesls add ${item} --dir <deck> --dry-run --json.`,
+      hint: `Inspect with slidesls inspect ${item} --api --json, then run slidesls add ${item} --dir <deck> --dry-run --json.`,
       command: `slidesls add ${item} --dir <deck> --dry-run --json`,
     });
   }
@@ -353,7 +357,7 @@ function compareVersions(actual, required) {
 }
 
 export async function validateRegistryCommand(argv) {
-  const args = parseArgs(argv, { boolean: ["json", "help"] });
+  const args = parseArgs(argv, { boolean: ["json", "help"], value: REGISTRY_VALUE_OPTIONS });
   if (args.help)
     return ok({
       help: `Usage: slidesls validate-registry [--registry-root <path>] [--registry-url <url>] [--json]`,
@@ -367,13 +371,16 @@ export async function validateRegistryCommand(argv) {
 }
 
 export async function validateExamplesCommand(argv) {
-  const args = parseArgs(argv, { boolean: ["json", "help"] });
+  const args = parseArgs(argv, { boolean: ["json", "help"], value: ["dir"] });
   if (args.help) return ok({ help: `Usage: slidesls validate-examples [--dir <repo>] [--json]` });
   return ok(await validateExamples({ root: args.dir || args._[0] || process.cwd() }));
 }
 
 export async function generateCatalogCommand(argv) {
-  const args = parseArgs(argv, { boolean: ["json", "help", "check"] });
+  const args = parseArgs(argv, {
+    boolean: ["json", "help", "check"],
+    value: ["output", ...REGISTRY_VALUE_OPTIONS],
+  });
   if (args.help)
     return ok({
       help: `Usage: slidesls generate-catalog [--registry-root <path>] [--registry-url <url>] [--output <path>] [--check] [--json]`,

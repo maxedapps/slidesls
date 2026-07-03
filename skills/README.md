@@ -5,6 +5,12 @@ Bundled skill name: `create-slides-with-slidesls`.
 Runtime-neutral no-install path:
 
 ```sh
+slidesls skill show
+```
+
+Full export fallback only:
+
+```sh
 slidesls skill show --all
 ```
 

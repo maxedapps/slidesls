@@ -9,7 +9,6 @@
   "docs": "registry/templates/title-hero/README.md",
   "rootClass": null,
   "safeAnywhere": false,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Title hero slide",
@@ -42,5 +41,7 @@
       "ls-panel--center",
       "ls-panel--fit"
     ]
-  }
+  },
+  "agentLevel": "starter",
+  "useCases": ["Open a deck or major section with a centered title statement."]
 }

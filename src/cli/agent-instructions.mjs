@@ -1,11 +1,13 @@
 export const agentCommandRecipes = {
-  skillShowAll: "slidesls skill show --all",
+  skillShowAll: "slidesls skill show --all", // full export fallback only
   skillInstall: "slidesls skill install <your-agent-skill-dir>/create-slides-with-slidesls",
   skillLink: "slidesls skill link <your-agent-skill-dir>/create-slides-with-slidesls",
-  catalogRecommendedJson: "slidesls catalog --recommended --json",
+  catalogStarterJson: "slidesls catalog --starter --json",
   catalogJson: "slidesls catalog --json",
+  catalogApiJson: "slidesls catalog --api --json",
   themeCatalogJson: "slidesls catalog --type preset --tag theme --json",
-  inspectReadmeJson: "slidesls inspect <item> --readme --json",
+  inspectJson: "slidesls inspect <item> --json",
+  inspectApiJson: "slidesls inspect <item> --api --json",
   addDryRunJson: "slidesls add <items...> --dir <deck-or-project> --dry-run --json",
   addAnimationsJson:
     "slidesls add animations/reveal animations/slide-up --dir <deck> --dry-run --json",
@@ -17,17 +19,19 @@ export const agentCommandRecipes = {
 
 export function agentHelpBlock() {
   return `For AI agents:
-  1. Read the bundled skill before authoring (runtime-neutral):
-     ${agentCommandRecipes.skillShowAll}
-     Or install to your runtime-specific skill directory:
+  1. Skill first: install/link the bundled skill, then fully read SKILL.md.
      ${agentCommandRecipes.skillInstall}
+     Runtime-neutral fallback: ${agentCommandRecipes.skillShow}
+     Full export fallback only: ${agentCommandRecipes.skillShowAll}
      Example for Claude Code project-local skills:
      slidesls skill install ./.claude/skills/create-slides-with-slidesls
-  2. Discover valid public classes, modifiers, themes, fonts, data attributes, and CSS variables:
-     ${agentCommandRecipes.catalogRecommendedJson}
+  2. Incremental discovery:
+     ${agentCommandRecipes.catalogStarterJson}
      ${agentCommandRecipes.catalogJson}
-  3. Inspect exact snippets, load tags, and docs:
-     ${agentCommandRecipes.inspectReadmeJson}
+     ${agentCommandRecipes.themeCatalogJson}
+  3. Inspect exact snippets and load tags:
+     ${agentCommandRecipes.inspectJson}
+     Advanced API detail: ${agentCommandRecipes.inspectApiJson}
   4. Copy safely:
      ${agentCommandRecipes.addDryRunJson}
   5. Prefer subtle reveal animations unless the user asks for static slides:
@@ -43,31 +47,41 @@ export function agentHelpBlock() {
      agent-browser screenshot ./slides-visual-check.png`;
 }
 
-export function catalogAgentInstructions() {
+export function catalogAgentInstructions({ api = false } = {}) {
   return {
-    purpose: "Discover registry items and public slidesls authoring APIs before writing markup.",
+    purpose: "Discover registry items before choosing exact snippets or authoring APIs.",
+    notes: [
+      api
+        ? "Full authoring metadata is included."
+        : "This is the brief catalog. Full authoring metadata: add --api.",
+    ],
     rules: [
-      "Use item.authoring for valid public classes, modifiers, data attributes, attributes, CSS variables, and usage rules.",
-      "Do not invent ls-* classes.",
-      "Inspect items for exact snippets, load tags, and README docs before copying markup.",
+      "Use useCases, agentLevel, type, and tags to choose candidate items.",
+      "Do not invent ls-* classes; inspect snippets first and use --api only for low-level class details.",
+      "Inspect items for exact snippets and load tags before copying markup.",
     ],
     nextCommands: [
-      agentCommandRecipes.inspectReadmeJson,
+      agentCommandRecipes.inspectJson,
       agentCommandRecipes.addDryRunJson,
       agentCommandRecipes.validateJson,
     ],
   };
 }
 
-export function inspectAgentInstructions(requestedItems = ["<item>"]) {
+export function inspectAgentInstructions(requestedItems = ["<item>"], { api = false } = {}) {
   const items = requestedItems.length ? requestedItems.join(" ") : "<item>";
   return {
-    purpose:
-      "Use selected registry items as source-of-truth for snippets, load tags, docs, and authoring APIs.",
+    purpose: "Use selected registry items as source-of-truth for snippets and load tags.",
+    notes: [
+      "Dependency details: add --with-dependencies; full authoring: add --api.",
+      api
+        ? "Authoring metadata is included for requested items."
+        : "Default inspect output is snippet-focused.",
+    ],
     rules: [
       "Use snippets[].html as source-of-truth markup for requested items.",
       "After copying assets, add returned load.links and load.scripts to the deck entry HTML when needed.",
-      "Use authoring metadata instead of guessing classes or attributes.",
+      "Use --api authoring metadata instead of guessing classes or attributes.",
     ],
     nextCommands: [
       `slidesls add ${items} --dir <deck-or-project> --dry-run --json`,
@@ -90,7 +104,7 @@ export function addAgentInstructions({ dryRun = false, root = "<deck-or-project>
       dryRun
         ? "Repeat the add command without --dry-run when the plan is correct."
         : `slidesls validate ${root} --json`,
-      agentCommandRecipes.inspectReadmeJson,
+      agentCommandRecipes.inspectJson,
     ],
     longRunningCommands: [`slidesls preview ${root}`],
   };
@@ -106,9 +120,9 @@ export function initAgentInstructions(root = "<deck>") {
       "Validate after edits; preview is a long-running server command and should be checked visually with agent-browser unless the user opts out.",
     ],
     nextCommands: [
-      agentCommandRecipes.catalogRecommendedJson,
+      agentCommandRecipes.catalogStarterJson,
       agentCommandRecipes.addAnimationsJson,
-      "slidesls inspect templates/split --readme --json",
+      "slidesls inspect templates/split --json",
       `slidesls validate ${root} --json`,
     ],
     longRunningCommands: [`slidesls preview ${root}`],
@@ -125,8 +139,8 @@ export function validateAgentInstructions(root = "<deck>") {
       "Static validation does not replace preview; use agent-browser to inspect title/section, densest content, and table/timeline/progress/code slides.",
     ],
     nextCommands: [
-      agentCommandRecipes.catalogJson,
-      agentCommandRecipes.inspectReadmeJson,
+      agentCommandRecipes.catalogApiJson,
+      agentCommandRecipes.inspectJson,
       `slidesls add <item> --dir ${root} --dry-run --json`,
     ],
     longRunningCommands: [`slidesls preview ${root}`],

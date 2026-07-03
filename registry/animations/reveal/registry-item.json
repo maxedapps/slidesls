@@ -19,7 +19,6 @@
     }
   ],
   "safeAnywhere": true,
-  "agentRecommended": true,
   "authoring": {
     "classGroups": [
       {
@@ -41,5 +40,6 @@
     "usage": [
       "Use .ls-reveal with data-step or data-ls-reveal-sequence for progressive disclosure."
     ]
-  }
+  },
+  "agentLevel": "starter"
 }

@@ -9,7 +9,6 @@
   "docs": "registry/templates/three-cards/README.md",
   "rootClass": null,
   "safeAnywhere": false,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Three cards slide",
@@ -35,5 +34,7 @@
       "ls-card__text",
       "ls-card__body"
     ]
-  }
+  },
+  "agentLevel": "starter",
+  "useCases": ["Compare or group three related ideas."]
 }

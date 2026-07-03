@@ -13,7 +13,7 @@ After publishing/installing from npm:
 ```sh
 npx -y @maxedapps/slidesls@latest init ./my-deck --template minimal --theme executive-blue --title "My Deck"
 cd my-deck
-npx -y @maxedapps/slidesls@latest catalog --recommended
+npx -y @maxedapps/slidesls@latest catalog --starter
 npx -y @maxedapps/slidesls@latest validate
 npx -y @maxedapps/slidesls@latest preview
 ```
@@ -24,7 +24,7 @@ Local repo checkout, from a dedicated deck folder:
 mkdir my-deck
 cd my-deck
 node /absolute/path/to/ls_slides/bin/slidesls.mjs init --template minimal --title "My Deck"
-node /absolute/path/to/ls_slides/bin/slidesls.mjs catalog --recommended
+node /absolute/path/to/ls_slides/bin/slidesls.mjs catalog --starter
 node /absolute/path/to/ls_slides/bin/slidesls.mjs inspect templates/split --json
 node /absolute/path/to/ls_slides/bin/slidesls.mjs add utilities/layout components/panel components/card
 node /absolute/path/to/ls_slides/bin/slidesls.mjs validate
@@ -53,7 +53,7 @@ Direct local checkout usage:
 
 ```sh
 node /absolute/path/to/ls_slides/bin/slidesls.mjs --help
-node /absolute/path/to/ls_slides/bin/slidesls.mjs skill show --all
+node /absolute/path/to/ls_slides/bin/slidesls.mjs skill show
 node /absolute/path/to/ls_slides/bin/slidesls.mjs skill link <your-agent-skill-dir>/create-slides-with-slidesls
 node /absolute/path/to/ls_slides/bin/slidesls.mjs skill info --json
 ```
@@ -83,8 +83,8 @@ Use the packed tarball for pre-publish smoke tests and release-candidate install
 CLI help and key text outputs include explicit `For AI agents:` blocks. JSON outputs for discovery/editing commands include additive `agentInstructions` with rules and next command recipes.
 
 - `slidesls init [dir]` — initialize a deck in the current directory, or in `[dir]` if supplied.
-- `slidesls catalog --recommended` — list agent-safe recommended items; JSON output includes each item’s public `authoring` API.
-- `slidesls inspect <items...>` — show metadata, public `authoring` API, dependencies, load guidance, READMEs, and snippet HTML.
+- `slidesls catalog --starter` / `slidesls catalog --json` — list brief item summaries for incremental discovery; add `--api` for public `authoring` metadata.
+- `slidesls inspect <items...>` — show snippet HTML and aggregate load tags; add `--api` for public `authoring` metadata and `--with-dependencies` for dependency details.
 - `slidesls add <items...>` — copy registry items into an initialized deck or any existing project in copy mode, and print load tags.
 - `slidesls skill info|show|install|link` — inspect, copy, or symlink the bundled agent skill. Use `slidesls skill show --reference catalog` for the generated public class/style/API catalog.
 - `slidesls validate [dir]` — static deck validation.

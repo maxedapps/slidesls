@@ -1,18 +1,25 @@
 #!/usr/bin/env node
 
-import { stdout } from "node:process";
+import { stdin, stdout } from "node:process";
+import { analyzeVisualRhythm } from "../src/validation/visual-rhythm.mjs";
 
 const help = `Usage:
   node scripts/visual-qa-report.mjs --eval
+  node scripts/visual-qa-report.mjs --analyze < collected.json
 
-Prints a dependency-free browser evaluation payload for agent-browser:
-  node scripts/visual-qa-report.mjs --eval | agent-browser eval --stdin
-
-The payload returns JSON with deck dimensions, active slide state, and overflow/fit candidates.
+Prints a dependency-free browser evaluation payload for agent-browser, or analyzes
+collected JSON for advisory visual rhythm warnings.
 `;
 
 if (process.argv.includes("--help") || process.argv.includes("-h")) {
   stdout.write(help);
+  process.exit(0);
+}
+
+if (process.argv.includes("--analyze")) {
+  const input = await readStdin();
+  const payload = JSON.parse(input || "{}");
+  stdout.write(`${JSON.stringify(analyzeVisualRhythm(payload), null, 2)}\n`);
   process.exit(0);
 }
 
@@ -32,6 +39,20 @@ stdout.write(String.raw`(() => {
     if (element.id) return "#" + element.id;
     const classes = [...element.classList].slice(0, 4).map((name) => "." + name).join("");
     return element.localName + classes;
+  }
+
+  function rectFor(element, slideRect) {
+    if (!element) return null;
+    const rect = element.getBoundingClientRect();
+    return {
+      ...rect.toJSON(),
+      offsetTop: rect.top - slideRect.top,
+    };
+  }
+
+  function hasInFill(slide, selector) {
+    const fill = slide.querySelector(".ls-slide-fill");
+    return Boolean(fill && (fill.matches(selector) || fill.querySelector(selector)));
   }
 
   function overflowFor(element) {
@@ -56,6 +77,14 @@ stdout.write(String.raw`(() => {
     };
   }
 
+  function slideKind(slide) {
+    const explicit = slide.dataset.lsSlideKind || null;
+    if (explicit) return { kind: explicit, kindSource: "explicit" };
+    if (hasInFill(slide, ".ls-center")) return { kind: "section", kindSource: "inferred" };
+    if (hasInFill(slide, ".ls-center-start")) return { kind: "hero", kindSource: "inferred" };
+    return { kind: "content", kindSource: "inferred" };
+  }
+
   const overflowCandidates = [...document.querySelectorAll("body, [data-ls-deck], .ls-slide, .ls-slide *")]
     .map(overflowFor)
     .filter(Boolean);
@@ -77,19 +106,58 @@ stdout.write(String.raw`(() => {
       height: rootStyles.getPropertyValue("--ls-slide-height").trim(),
       scale: rootStyles.getPropertyValue("--ls-scale").trim(),
     },
-    slides: slides.map((slide, index) => ({
-      index: index + 1,
-      id: slide.id || null,
-      active: slide.dataset.active || null,
-      step: slide.dataset.lsStep || null,
-      density: slide.dataset.lsDensity || null,
-      rect: slide.getBoundingClientRect().toJSON(),
-      scrollWidth: slide.scrollWidth,
-      scrollHeight: slide.scrollHeight,
-      clientWidth: slide.clientWidth,
-      clientHeight: slide.clientHeight,
-    })),
+    slides: slides.map((slide, index) => {
+      const slideRect = slide.getBoundingClientRect();
+      const inner = slide.querySelector(".ls-slide__inner");
+      const header = slide.querySelector("header");
+      const title = slide.querySelector(".ls-title");
+      const body = slide.querySelector(".ls-slide__body");
+      const kind = slideKind(slide);
+      const innerRect = rectFor(inner, slideRect);
+      const headerRect = rectFor(header, slideRect);
+      const titleRect = rectFor(title, slideRect);
+      const bodyRect = rectFor(body, slideRect);
+      return {
+        index: index + 1,
+        id: slide.id || null,
+        active: slide.dataset.active || null,
+        step: slide.dataset.lsStep || null,
+        density: slide.dataset.lsDensity || null,
+        slideKind: slide.dataset.lsSlideKind || null,
+        ...kind,
+        hasSlideFill: Boolean(slide.querySelector(".ls-slide-fill")),
+        hasCenter: Boolean(slide.querySelector(".ls-center")),
+        hasCenterStart: Boolean(slide.querySelector(".ls-center-start")),
+        centerInFill: hasInFill(slide, ".ls-center"),
+        centerStartInFill: hasInFill(slide, ".ls-center-start"),
+        rect: slideRect.toJSON(),
+        innerRect,
+        headerRect,
+        titleRect,
+        bodyRect,
+        innerOffsetTop: innerRect?.offsetTop ?? null,
+        headerOffsetTop: headerRect?.offsetTop ?? null,
+        titleOffsetTop: titleRect?.offsetTop ?? null,
+        bodyOffsetTop: bodyRect?.offsetTop ?? null,
+        scrollWidth: slide.scrollWidth,
+        scrollHeight: slide.scrollHeight,
+        clientWidth: slide.clientWidth,
+        clientHeight: slide.clientHeight,
+      };
+    }),
     overflowCandidates,
   }, null, 2);
 })()
 `);
+
+function readStdin() {
+  return new Promise((resolve, reject) => {
+    let data = "";
+    stdin.setEncoding("utf8");
+    stdin.on("data", (chunk) => {
+      data += chunk;
+    });
+    stdin.on("end", () => resolve(data));
+    stdin.on("error", reject);
+  });
+}

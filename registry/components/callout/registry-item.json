@@ -14,7 +14,6 @@
   "docs": "registry/components/callout/README.md",
   "rootClass": "ls-callout",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Basic callout",
@@ -50,5 +49,6 @@
       "Use data-ls-tone for semantic status callouts.",
       "Add .ls-callout--with-icon only when an .ls-callout__icon is present."
     ]
-  }
+  },
+  "agentLevel": "recommended"
 }

@@ -13,7 +13,6 @@
   "devDependencies": [],
   "docs": "registry/animations/slide-up/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Slide-up reveal sequence",
@@ -28,5 +27,6 @@
     ],
     "cssVariables": ["--ls-slide-up-distance", "--ls-slide-up-duration", "--ls-slide-up-ease"],
     "usage": ["Combine with .ls-reveal and do not stack with another reveal transform variant."]
-  }
+  },
+  "agentLevel": "starter"
 }

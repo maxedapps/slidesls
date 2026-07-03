@@ -13,8 +13,7 @@
   "devDependencies": [],
   "docs": "registry/utilities/layout/README.md",
   "rootClass": "ls-stack",
-  "safeAnywhere": true,
-  "agentRecommended": true,
+  "safeAnywhere": false,
   "snippets": [
     {
       "label": "Basic utility layouts",
@@ -60,6 +59,29 @@
       "Use .ls-grid--4 only for short, compact cards or metrics.",
       "Use .ls-slide-fill as a direct child of .ls-slide__inner for full-slide centered layouts.",
       "Use .ls-fill only when content should intentionally fill the available slide/body area."
-    ]
-  }
+    ],
+    "classMetadata": {
+      "ls-slide-fill": {
+        "scopeType": "direct-child-of-slide-inner",
+        "safeAnywhere": false,
+        "description": "Full-slide layouts that intentionally span the slide header/body rows. Not for ordinary content slides."
+      },
+      "ls-center": {
+        "scopeType": "centers-content-cluster",
+        "safeAnywhere": false,
+        "description": "Intentional centering only (hero/section)."
+      },
+      "ls-center-start": {
+        "scopeType": "centers-content-cluster",
+        "safeAnywhere": false,
+        "description": "Intentional start-aligned centering (hero)."
+      },
+      "ls-fill": {
+        "scopeType": "within-constrained-area",
+        "safeAnywhere": false,
+        "description": "Fills a height-constrained parent area."
+      }
+    }
+  },
+  "agentLevel": "recommended"
 }

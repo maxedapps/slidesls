@@ -12,6 +12,12 @@ node /absolute/path/to/ls_slides/bin/slidesls.mjs --help
 Runtime-neutral no-install path for the bundled skill:
 
 ```sh
+slidesls skill show
+```
+
+Full export fallback only:
+
+```sh
 slidesls skill show --all
 ```
 
@@ -34,8 +40,8 @@ After installing or linking, fully read the installed `SKILL.md` and relevant `r
 1. Clarify deck purpose, audience, tone, slide count, visual constraints, target folder, and whether the user wants static or animated slides.
 2. Use a dedicated deck folder. From inside that folder run `slidesls init --template minimal`, or initialize an explicit path such as `slidesls init ./slides/my-deck --template minimal`.
 3. Inspect `slidesls.json` and the configured entry file for existing decks.
-4. Use `slidesls catalog --recommended --json` to choose from the agent-safe set.
-5. Use `slidesls inspect templates/<name> --json` for full slide skeletons and `slidesls inspect components/<name> --json` for component snippets.
+4. Use `slidesls catalog --starter --json`, `slidesls catalog --json`, and filtered catalog commands to choose candidates.
+5. Use `slidesls inspect templates/<name> --json` for full slide skeleton snippets and `slidesls inspect components/<name> --json` for component snippets; add `--api` only for low-level authoring metadata.
 6. Unless the user asks for static slides, copy/load `animations/reveal` plus one subtle variant such as `animations/slide-up` or `animations/fade`, then use `.ls-reveal` with `data-step` or `data-ls-reveal-sequence`.
 7. Run `slidesls add ... --dry-run --json`, review planned files and load tags, then run without `--dry-run`.
 8. Paste/edit snippet HTML directly; add returned `<link>` and `<script>` tags to the entry HTML when needed.

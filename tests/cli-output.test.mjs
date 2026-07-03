@@ -16,8 +16,9 @@ test("root and key command help include AI-agent guidance", async () => {
   assert.match(root, /slidesls skill show --all/);
   assert.match(root, /slidesls skill install <your-agent-skill-dir>\/create-slides-with-slidesls/);
   assert.match(root, /Example for Claude Code project-local skills:/);
+  assert.match(root, /slidesls catalog --starter --json/);
   assert.match(root, /slidesls catalog --json/);
-  assert.match(root, /slidesls inspect <item> --readme --json/);
+  assert.match(root, /slidesls inspect <item> --json/);
   assert.match(root, /agent-browser open http:\/\/127\.0\.0\.1:4321\/\?export=1/);
   assert.match(root, /agent-browser set viewport 1600 900/);
   assert.match(root, /agent-browser wait --load networkidle/);
@@ -45,6 +46,10 @@ test("add --dry-run text output reports planned copies", async () => {
 
 test("catalog --json returns an agent-friendly result envelope", async () => {
   const { stdout } = await run([bin, "catalog", "--json"]);
+  assert.ok(
+    Buffer.byteLength(stdout) < 12_000,
+    `brief catalog is ${Buffer.byteLength(stdout)} bytes`,
+  );
   const result = JSON.parse(stdout);
   assert.equal(result.ok, true);
   assert.equal(typeof result.data.count, "number");
@@ -52,7 +57,15 @@ test("catalog --json returns an agent-friendly result envelope", async () => {
   assert.ok(result.data.items.some((item) => item.name === "core/base"));
   const layout = result.data.items.find((item) => item.name === "utilities/layout");
   assert.ok(layout);
-  assert.ok(layout.authoring.classGroups.some((group) => group.modifiers?.includes("ls-grid--4")));
+  assert.equal(layout.authoring, undefined);
+  assert.ok(result.data.groups.some((group) => group.type === "ls:utility"));
+
+  const rich = JSON.parse((await run([bin, "catalog", "--api", "--json"])).stdout);
+  const richLayout = rich.data.items.find((item) => item.name === "utilities/layout");
+  assert.ok(
+    richLayout.authoring.classGroups.some((group) => group.modifiers?.includes("ls-grid--4")),
+  );
+  assert.equal(richLayout.agentLevel, "recommended");
   assert.equal(
     result.data.items.some((item) => item.name.startsWith("layouts/")),
     false,
@@ -65,7 +78,7 @@ test("catalog --recommended returns only recommended items", async () => {
   assert.equal(result.ok, true);
   assert.ok(result.data.items.length > 0);
   assert.equal(
-    result.data.items.every((item) => item.agentRecommended === true),
+    result.data.items.every((item) => ["starter", "recommended"].includes(item.agentLevel)),
     true,
   );
   assert.ok(result.data.items.some((item) => item.name === "utilities/layout"));
@@ -77,12 +90,45 @@ test("inspect returns snippet HTML for requested templates and components", asyn
   const template = JSON.parse((await run([bin, "inspect", "templates/split", "--json"])).stdout);
   const requested = template.data.items.find((item) => item.name === "templates/split");
   assert.match(requested.snippets[0].html, /<section class="ls-slide"/);
+  assert.ok(requested.dependencyOrder.includes("core/base"));
+  assert.ok(requested.load.links.some((link) => /core\/base\/slide\.css/.test(link)));
+  assert.equal(requested.dependencies, undefined);
+
+  const withDependencies = JSON.parse(
+    (await run([bin, "inspect", "templates/split", "--with-dependencies", "--json"])).stdout,
+  );
+  assert.ok(withDependencies.data.items[0].dependencies.some((item) => item.name === "core/base"));
+  assert.equal(withDependencies.data.items[0].dependencies[0].authoring, undefined);
+
+  const withDependencyApi = JSON.parse(
+    (await run([bin, "inspect", "templates/split", "--with-dependencies", "--api", "--json"]))
+      .stdout,
+  );
+  assert.ok(withDependencyApi.data.items[0].dependencies[0].authoring);
+
+  const readme = JSON.parse(
+    (await run([bin, "inspect", "templates/split", "--readme", "--json"])).stdout,
+  );
+  assert.match(readme.data.items[0].readme, /split/i);
+
+  const multi = JSON.parse(
+    (await run([bin, "inspect", "templates/split", "components/card", "--json"])).stdout,
+  );
+  assert.equal(multi.data.items.length, 2);
+  assert.notDeepEqual(multi.data.items[0].dependencyOrder, multi.data.items[1].dependencyOrder);
 
   const component = JSON.parse((await run([bin, "inspect", "components/card", "--json"])).stdout);
   assert.ok(Array.isArray(template.data.agentInstructions.nextCommands));
   assert.match(component.data.items.at(-1).snippets[0].html, /class="ls-card"/);
+  assert.equal(
+    component.data.items.find((item) => item.name === "components/card").authoring,
+    undefined,
+  );
+  const componentApi = JSON.parse(
+    (await run([bin, "inspect", "components/card", "--api", "--json"])).stdout,
+  );
   assert.ok(
-    component.data.items
+    componentApi.data.items
       .find((item) => item.name === "components/card")
       .authoring.classGroups.some((group) => group.base === "ls-card"),
   );
@@ -231,7 +277,7 @@ test("catalog and inspect text include AI-agent guidance", async () => {
   assert.match(catalog, /Do not invent ls-\*/);
 
   const inspect = (await run([bin, "inspect", "utilities/layout"])).stdout;
-  assert.match(inspect, /Authoring: available in --json output/);
+  assert.match(inspect, /Authoring: add --api for details/);
   assert.match(inspect, /For AI agents:/);
 });
 
@@ -297,3 +343,28 @@ function substitute(recipe, substitutions) {
 async function run(args) {
   return execFileAsync(process.execPath, args, { cwd: path.resolve("."), maxBuffer: 1024 * 1024 });
 }
+
+test("agent guidance avoids stale primary commands", async () => {
+  const { stdout } = await execFileAsync(
+    "git",
+    ["ls-files", "src/**/*.mjs", "docs/**/*.md", "skills/**/*.md", "README.md"],
+    {
+      cwd: path.resolve("."),
+    },
+  );
+  for (const file of stdout.trim().split(/\n/).filter(Boolean)) {
+    const text = await readFile(path.resolve(file), "utf8");
+    assert.doesNotMatch(text, /inspect <item> --readme --json/);
+    assert.doesNotMatch(text, /catalog --recommended --json/);
+    for (const match of text.matchAll(/skill show --all/g)) {
+      const start = Math.max(0, match.index - 120);
+      const end = Math.min(text.length, match.index + 120);
+      const nearby = text.slice(start, end).toLowerCase();
+      assert.match(
+        nearby,
+        /fallback|export/,
+        `${file} uses skill show --all without fallback/export wording`,
+      );
+    }
+  }
+});

@@ -14,9 +14,8 @@
   "devDependencies": [],
   "docs": "registry/presets/themes/playful-ink/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "styleTone": "friendly dark ink",
-  "useCases": ["workshops", "educational decks", "community talks", "friendly product demos"],
+  "useCases": ["Use for creative, friendly, high-contrast presentations."],
   "pairsWith": ["presets/fonts/system-humanist", "presets/fonts/editorial-serif"],
   "themeAttribute": "playful-ink",
   "authoring": {
@@ -28,5 +27,6 @@
       }
     ],
     "usage": ["Apply exactly one theme per deck on the html element."]
-  }
+  },
+  "agentLevel": "starter"
 }

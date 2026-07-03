@@ -1,20 +1,7 @@
 #!/usr/bin/env node
-import { parseArgs } from "../src/shared/args.mjs";
+import { usageError } from "../src/shared/args.mjs";
 import { fail, printJson } from "../src/shared/result.mjs";
 import { help, runCommand, textFor } from "../src/cli/commands.mjs";
-
-const globalBooleanOptions = [
-  "json",
-  "help",
-  "force",
-  "dry-run",
-  "strict",
-  "include-docs",
-  "readme",
-  "recommended",
-  "check",
-  "all",
-];
 
 process.stdout.on("error", (error) => {
   if (error.code === "EPIPE") process.exit(0);
@@ -26,10 +13,20 @@ const command = argv[0] && !argv[0].startsWith("--") ? argv[0] : "help";
 const commandArgs = command === argv[0] ? argv.slice(1) : argv;
 
 function parseGlobalFlags() {
-  return parseArgs(commandArgs, { boolean: globalBooleanOptions });
+  return { json: commandArgs.some((arg) => arg === "--json" || arg.startsWith("--json=")) };
+}
+
+function validateRootOptions() {
+  if (command !== "help") return;
+  for (const arg of commandArgs) {
+    if (arg === "--" || arg === "--help" || arg === "--json") continue;
+    if (arg.startsWith("--help=") || arg.startsWith("--json=")) continue;
+    if (arg.startsWith("--")) throw usageError(`Unknown option ${arg.split("=", 1)[0]}`);
+  }
 }
 
 try {
+  validateRootOptions();
   if (command === "help" && (commandArgs.length === 0 || commandArgs.includes("--help"))) {
     process.stdout.write(help);
     process.exit(0);

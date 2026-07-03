@@ -14,7 +14,6 @@
   "docs": "registry/components/quote/README.md",
   "rootClass": "ls-quote",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Basic quote",
@@ -28,5 +27,6 @@
         "elements": ["ls-quote__text", "ls-quote__source"]
       }
     ]
-  }
+  },
+  "agentLevel": "recommended"
 }

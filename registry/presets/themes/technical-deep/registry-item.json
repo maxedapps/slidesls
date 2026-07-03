@@ -14,9 +14,8 @@
   "devDependencies": [],
   "docs": "registry/presets/themes/technical-deep/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "styleTone": "technical deep dark",
-  "useCases": ["technical talks", "architecture walkthroughs", "CLI and tooling demos"],
+  "useCases": ["Use for dark technical, engineering, or product architecture decks."],
   "pairsWith": ["presets/fonts/technical-mono", "presets/fonts/system-humanist"],
   "themeAttribute": "technical-deep",
   "authoring": {
@@ -28,5 +27,6 @@
       }
     ],
     "usage": ["Apply exactly one theme per deck on the html element."]
-  }
+  },
+  "agentLevel": "starter"
 }

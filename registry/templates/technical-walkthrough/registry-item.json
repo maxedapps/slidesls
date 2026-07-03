@@ -14,7 +14,6 @@
   "docs": "registry/templates/technical-walkthrough/README.md",
   "rootClass": null,
   "safeAnywhere": false,
-  "agentRecommended": false,
   "snippets": [
     {
       "label": "Technical walkthrough slide",
@@ -44,5 +43,7 @@
       "ls-terminal__prompt",
       "ls-terminal__output"
     ]
-  }
+  },
+  "agentLevel": "advanced",
+  "useCases": ["Walk through a technical workflow with multiple artifacts and notes."]
 }

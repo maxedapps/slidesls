@@ -84,8 +84,8 @@
 
   .ls-slide__header {
     display: grid;
-    gap: var(--ls-space-3);
-    max-inline-size: 1080px;
+    gap: var(--ls-slide-header-gap, var(--ls-space-2));
+    max-inline-size: var(--ls-slide-header-max-inline-size, 1080px);
   }
 
   .ls-slide__body {

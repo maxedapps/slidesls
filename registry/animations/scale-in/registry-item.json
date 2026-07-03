@@ -13,7 +13,6 @@
   "devDependencies": [],
   "docs": "registry/animations/scale-in/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Scale-in reveal sequence",
@@ -28,5 +27,6 @@
     ],
     "cssVariables": ["--ls-scale-in-duration", "--ls-scale-in-ease", "--ls-scale-in-start"],
     "usage": ["Combine with .ls-reveal and do not stack with another reveal transform variant."]
-  }
+  },
+  "agentLevel": "recommended"
 }

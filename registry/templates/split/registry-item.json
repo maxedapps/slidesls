@@ -9,7 +9,6 @@
   "docs": "registry/templates/split/README.md",
   "rootClass": null,
   "safeAnywhere": false,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Split slide",
@@ -36,5 +35,7 @@
       "ls-panel--center",
       "ls-card__body"
     ]
-  }
+  },
+  "agentLevel": "starter",
+  "useCases": ["Explain one concept with a visual plus supporting points."]
 }

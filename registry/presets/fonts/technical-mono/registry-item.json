@@ -13,7 +13,6 @@
   "devDependencies": [],
   "docs": "registry/presets/fonts/technical-mono/README.md",
   "safeAnywhere": true,
-  "agentRecommended": false,
   "authoring": {
     "attributes": [
       {
@@ -23,5 +22,6 @@
       }
     ],
     "usage": ["Apply deck-wide on body or scope to individual sections when mixing type systems."]
-  }
+  },
+  "agentLevel": "advanced"
 }

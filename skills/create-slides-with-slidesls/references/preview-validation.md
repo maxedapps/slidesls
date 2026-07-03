@@ -64,9 +64,10 @@ Inspect screenshots and iterate until visually acceptable; do not merely capture
 This catches some fit issues but cannot judge aesthetic balance; screenshots remain authoritative.
 
 ```sh
-node scripts/visual-qa-report.mjs --eval | agent-browser --session slidesls-review eval --stdin
+node scripts/visual-qa-report.mjs --eval | agent-browser --session slidesls-review eval --stdin > collected.json
+node scripts/visual-qa-report.mjs --analyze < collected.json
 ```
 
-Review the JSON for native deck dimensions, current slide state, and overflow candidates. Intentional scroll surfaces such as table frames, code blocks, and terminal bodies are flagged separately.
+Review the collected JSON for native deck dimensions, current slide state, kind/offset facts, and overflow candidates. Review the analysis JSON for advisory rhythm warnings. Intentional scroll surfaces such as table frames, code blocks, and terminal bodies are flagged separately.
 
 Navigate through the deck or open representative slide URLs as needed, and capture screenshots for any slide you changed materially. If the browser session already exists or multiple agents may be running, use a named `agent-browser --session <name>`.

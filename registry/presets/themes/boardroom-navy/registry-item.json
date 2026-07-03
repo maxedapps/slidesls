@@ -14,9 +14,8 @@
   "devDependencies": [],
   "docs": "registry/presets/themes/boardroom-navy/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "styleTone": "formal dark navy",
-  "useCases": ["board updates", "strategy reviews", "financial reporting"],
+  "useCases": ["Use for formal executive or strategy presentations."],
   "pairsWith": ["presets/fonts/system-humanist", "presets/fonts/editorial-serif"],
   "themeAttribute": "boardroom-navy",
   "authoring": {
@@ -28,5 +27,6 @@
       }
     ],
     "usage": ["Apply exactly one theme per deck on the html element."]
-  }
+  },
+  "agentLevel": "recommended"
 }

@@ -15,7 +15,6 @@
   "docs": "registry/components/terminal/README.md",
   "rootClass": "ls-terminal",
   "safeAnywhere": true,
-  "agentRecommended": false,
   "snippets": [
     {
       "label": "Basic terminal",
@@ -55,5 +54,6 @@
       "--ls-terminal-max-block-size"
     ],
     "usage": ["Use for static CLI excerpts; do not imply interactive terminal behavior."]
-  }
+  },
+  "agentLevel": "advanced"
 }

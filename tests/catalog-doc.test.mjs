@@ -35,8 +35,11 @@ test("renderCatalog emits typed sections for current item types", () => {
   for (const heading of ["Core", "Utilities", "Components", "Animations", "Presets", "Templates"]) {
     assert.match(markdown, new RegExp(`^## ${heading}$`, "m"));
   }
+  assert.match(markdown, /Deep reference/);
+  assert.match(markdown, /- Agent level: recommended/);
   assert.match(markdown, /- Class groups:/);
   assert.match(markdown, /`ls-grid--4`/);
+  assert.match(markdown, /`ls-slide-fill`: scope `direct-child-of-slide-inner`, safe anywhere no/);
   assert.match(markdown, /- Data attributes: `data-ls-tone=success\|warning`/);
   assert.doesNotMatch(markdown, /^## Layouts$/m);
   assert.doesNotMatch(markdown, /^## Other$/m);
@@ -55,11 +58,20 @@ function item(name, type) {
       name === "utilities/layout"
         ? {
             classGroups: [{ base: "ls-grid", modifiers: ["ls-grid--4"] }],
+            classes: ["ls-slide-fill"],
+            classMetadata: {
+              "ls-slide-fill": {
+                scopeType: "direct-child-of-slide-inner",
+                safeAnywhere: false,
+                description: "Full-slide layout.",
+              },
+            },
             usage: ["Use one grid modifier."],
           }
         : name === "components/card"
           ? { dataAttributes: [{ name: "data-ls-tone", values: ["success", "warning"] }] }
           : null,
+    agentLevel: "recommended",
     agentRecommended: true,
     safeAnywhere: true,
     snippets: [],

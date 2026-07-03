@@ -14,9 +14,8 @@
   "devDependencies": [],
   "docs": "registry/presets/themes/executive-blue/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "styleTone": "professional dark blue",
-  "useCases": ["product decks", "business updates", "general professional slides"],
+  "useCases": ["Use for polished business decks with a blue corporate tone."],
   "pairsWith": ["presets/fonts/system-humanist"],
   "themeAttribute": "executive-blue",
   "authoring": {
@@ -28,5 +27,6 @@
       }
     ],
     "usage": ["Apply exactly one theme per deck on the html element."]
-  }
+  },
+  "agentLevel": "starter"
 }

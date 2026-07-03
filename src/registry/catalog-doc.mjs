@@ -39,6 +39,8 @@ export function renderCatalog(registryData) {
     "",
     "Generated from `registry.json` and per-item metadata. Do not edit manually; run `slidesls generate-catalog`.",
     "",
+    "Deep reference. For normal authoring use `slidesls catalog --json` (brief) and `slidesls inspect <item> --json` (snippet) first.",
+    "",
   ];
 
   for (const group of groupOrder) {
@@ -51,6 +53,7 @@ export function renderCatalog(registryData) {
       lines.push(`- Label: ${item.label}`);
       lines.push(`- Type: ${item.type}`);
       lines.push(`- Description: ${item.description || ""}`);
+      lines.push(`- Agent level: ${item.agentLevel}`);
       lines.push(`- Agent recommended: ${item.agentRecommended ? "yes" : "no"}`);
       if (item.rootClass) lines.push(`- Root class: ${item.rootClass}`);
       if (item.themeAttribute) lines.push(`- Theme attribute: ${item.themeAttribute}`);
@@ -97,6 +100,13 @@ function authoringLines(authoring) {
     }
   }
   if (authoring.classes?.length) lines.push(`- Classes: ${codeList(authoring.classes)}`);
+  if (authoring.classMetadata && Object.keys(authoring.classMetadata).length) {
+    lines.push("- Class metadata:");
+    for (const [className, metadata] of Object.entries(authoring.classMetadata))
+      lines.push(
+        `  - ${code(className)}: scope ${code(metadata.scopeType)}, safe anywhere ${metadata.safeAnywhere ? "yes" : "no"}${metadata.description ? ` — ${markdownText(metadata.description)}` : ""}`,
+      );
+  }
   if (authoring.dataAttributes?.length)
     lines.push(
       `- Data attributes: ${authoring.dataAttributes

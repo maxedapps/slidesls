@@ -21,6 +21,49 @@ test("fresh minimal init validates without missing reveal animation warning", as
   );
 });
 
+test("validate warns for slide-kind layout misuse", async () => {
+  const root = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<div class="ls-slide__inner"><div class="ls-slide-fill"><p>Centered content</p></div></div>`,
+    `data-ls-slide-kind="content"`,
+  );
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.ok(
+    result.data.warnings.some((warning) => warning.code === "content_slide_full_height_layout"),
+  );
+});
+
+test("validate warns for unmarked full-slide centered layouts", async () => {
+  const root = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<div class="ls-slide__inner"><div class="ls-center ls-slide-fill"><p>Section</p></div></div>`,
+  );
+  const result = await validateCommand([root]);
+  assert.equal(result.data.valid, true);
+  assert.ok(result.data.warnings.some((warning) => warning.code === "missing_slide_kind"));
+});
+
+test("validate warns for invalid slide kind and ignores plain unmarked slides", async () => {
+  const invalid = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<div class="ls-slide__inner"><header class="ls-slide__header"><h1 class="ls-title">Title</h1></header></div>`,
+    `data-ls-slide-kind="intro"`,
+  );
+  const invalidResult = await validateCommand([invalid]);
+  assert.ok(invalidResult.data.warnings.some((warning) => warning.code === "invalid_slide_kind"));
+
+  const plain = await deckWithHtml(
+    `<script type="module" src="./${runtimePath}"></script>`,
+    `<div class="ls-slide__inner"><header class="ls-slide__header"><h1 class="ls-title">Title</h1></header></div>`,
+  );
+  const plainResult = await validateCommand([plain]);
+  assert.equal(
+    plainResult.data.warnings.some((warning) => warning.code === "missing_slide_kind"),
+    false,
+  );
+});
+
 test("validate accepts module runtime script with type before src", async () => {
   const root = await deckWithHtml(`<script type="module" src="./${runtimePath}"></script>`);
   const result = await validateCommand([root]);
@@ -152,7 +195,7 @@ test("validate warns for unknown slidesls classes and strict mode errors", async
     (warning) => warning.code === "unknown_ls_class",
   );
   assert.ok(unknownWarning);
-  assert.match(unknownWarning.hint, /slidesls catalog --json/);
+  assert.match(unknownWarning.hint, /slidesls catalog --api --json/);
   assert.ok(result.data.warnings.some((warning) => warning.className === "ls-grdi"));
   assert.ok(!result.data.warnings.some((warning) => warning.className === "ls-not-a-class"));
   assert.ok(!result.data.warnings.some((warning) => warning.className === "ls-also-not-real"));
@@ -335,7 +378,7 @@ test("validate warns for very large code blocks", async () => {
   assert.ok(result.data.warnings.some((warning) => warning.code === "large_code_block"));
 });
 
-async function deckWithHtml(runtimeScript, slideContent = "") {
+async function deckWithHtml(runtimeScript, slideContent = "", slideAttributes = "") {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-validate-"));
   await writeFile(
     path.join(root, "slidesls.json"),
@@ -349,7 +392,7 @@ async function deckWithHtml(runtimeScript, slideContent = "") {
 <html>
 <body class="ls-page">
   <main data-ls-deck class="ls-deck">
-    <section class="ls-slide">${slideContent}</section>
+    <section class="ls-slide"${slideAttributes ? ` ${slideAttributes}` : ""}>${slideContent}</section>
   </main>
   ${runtimeScript}
 </body>

@@ -35,6 +35,12 @@ node /path/to/ls_slides/bin/slidesls.mjs <command>
 Runtime-neutral no-install path:
 
 ```sh
+slidesls skill show
+```
+
+Full export fallback only:
+
+```sh
 slidesls skill show --all
 ```
 
@@ -69,8 +75,8 @@ After installing or linking, fully read `SKILL.md` and the relevant files in `re
    ```
 
 5. If editing an existing deck, inspect `slidesls.json` and the configured entry file. If adding a theme manually, copy it with `slidesls add presets/themes/<theme> --dir <deck>` and set `data-ls-theme="<theme>"` on the existing `<html>` element. Do not add a second theme attribute and do not stack multiple themes.
-6. Discover agent-safe primitives with `slidesls catalog --recommended --json`.
-7. Inspect templates/components with `slidesls inspect <item> --readme --json`; use returned snippet HTML as source-of-truth markup.
+6. Discover candidates incrementally with `slidesls catalog --starter --json`, `slidesls catalog --json`, or filtered catalog commands such as `slidesls catalog --type template --json`.
+7. Inspect templates/components with `slidesls inspect <item> --json`; use returned snippet HTML and load tags as source-of-truth markup. Use `--api` only when low-level authoring metadata is needed.
 8. Unless the user asks for a static deck, use progressive disclosure: copy/load `animations/reveal` and one subtle variant (`animations/slide-up` or `animations/fade`), then add `.ls-reveal` plus `data-step` or `data-ls-reveal-sequence`.
 9. Add assets with `slidesls add <items...> --dir <deck> --dry-run --json`, review planned files and load tags, then run without `--dry-run`.
 10. Paste/edit snippets and plain HTML, CSS, and JS directly.
@@ -124,10 +130,10 @@ If the binary is unavailable, try `npx -y agent-browser ...`. Inspect the screen
 
 - Need the workflow? `slidesls skill show`
 - Need the full class/style/data-attribute catalog? `slidesls skill show --reference catalog`
-- Need machine-readable public APIs? `slidesls catalog --json`
-- Need recommended building blocks? `slidesls catalog --recommended --json`
+- Need candidate items? `slidesls catalog --json` (brief) or `slidesls catalog --starter --json`
 - Need themes? `slidesls catalog --type preset --tag theme --json`
-- Need exact markup and docs? `slidesls inspect <item> --readme --json`
+- Need exact markup and load tags? `slidesls inspect <item> --json`
+- Need low-level public APIs? `slidesls inspect <item> --api --json` or `slidesls catalog --api --json`
 - Need copied files/load tags? `slidesls add <items> --dry-run --json`
 - Need validation/fix feedback? `slidesls validate <deck> --json`
 
@@ -139,17 +145,25 @@ If the binary is unavailable, try `npx -y agent-browser ...`. Inspect the screen
 - `references/registry-contract.md` — registry metadata and file contract.
 - `references/catalog.md` — generated registry catalog. Also available via `slidesls skill show --reference catalog`.
 
-For current item-specific details, start with `slidesls catalog --recommended --json`; its `authoring` metadata is the quick source of truth for public classes, modifiers, data attributes, theme/font attributes, CSS variables, and usage rules. Use item READMEs and snippets through:
+For current item-specific details, start with `slidesls catalog --json` or `slidesls catalog --starter --json`; these are brief selection payloads. Use item snippets through:
 
 ```sh
-slidesls inspect <item> --readme --json
+slidesls inspect <item> --json
+```
+
+Use full authoring APIs only when needed:
+
+```sh
+slidesls inspect <item> --api --json
+slidesls catalog --api --json
 ```
 
 ## Do not
 
 - Do not install to `.claude/skills/...` unless the active runtime is Claude Code and that is the desired project-local skill path.
 - Do not use old `ls-layout-*` or `layouts/*` patterns; use templates, utilities, and standalone components.
-- Do not invent `ls-*` classes or nested structural contracts; use `catalog --json` authoring metadata and snippets returned by `inspect --json`.
+- Do not invent `ls-*` classes or nested structural contracts; use snippets returned by `inspect --json` and `--api` authoring metadata when needed.
+- Do not use `ls-slide-fill` on ordinary content slides. Content slides use `data-ls-slide-kind="content"` and `.ls-slide__header`; hero/section slides must be marked and may intentionally center full-slide layouts.
 - Do not add React, Vite, Tailwind, or another framework unless explicitly requested.
 - Do not make generated decks depend on `slidesls` at runtime.
 - Do not skip `slidesls validate` before finalizing.

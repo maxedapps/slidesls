@@ -14,7 +14,6 @@
   "docs": "registry/components/panel/README.md",
   "rootClass": "ls-panel",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Basic panel",
@@ -48,5 +47,6 @@
       "Use .ls-panel--fit for short text-only callouts that should not stretch to full column height.",
       "Use .ls-panel--frame for screenshots, diagrams, code, or media frames that should have visual mass."
     ]
-  }
+  },
+  "agentLevel": "recommended"
 }

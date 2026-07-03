@@ -14,7 +14,6 @@
   "docs": "registry/components/card/README.md",
   "rootClass": "ls-card",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Basic card",
@@ -31,5 +30,6 @@
     ],
     "cssVariables": ["--ls-card-padding", "--ls-card-title-size", "--ls-card-text-size"],
     "usage": ["Use for compact content blocks inside grids or stacks."]
-  }
+  },
+  "agentLevel": "recommended"
 }

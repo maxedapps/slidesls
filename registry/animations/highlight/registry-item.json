@@ -13,7 +13,6 @@
   "devDependencies": [],
   "docs": "registry/animations/highlight/README.md",
   "safeAnywhere": true,
-  "agentRecommended": false,
   "authoring": {
     "classGroups": [
       {
@@ -33,5 +32,6 @@
       "Use .ls-highlight for static emphasis.",
       "Use .ls-reveal.ls-reveal-highlight with data-step for timed reveal highlights."
     ]
-  }
+  },
+  "agentLevel": "advanced"
 }

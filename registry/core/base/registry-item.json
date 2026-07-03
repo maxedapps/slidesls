@@ -29,7 +29,6 @@
   "devDependencies": [],
   "docs": "registry/core/base/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "authoring": {
     "classGroups": [
       {
@@ -73,6 +72,11 @@
       },
       {
         "name": "data-ls-sequence-skip"
+      },
+      {
+        "name": "data-ls-slide-kind",
+        "scope": "section.ls-slide",
+        "values": ["content", "hero", "section"]
       }
     ],
     "cssVariables": [
@@ -97,11 +101,15 @@
       "--ls-callout-title-size",
       "--ls-callout-text-size",
       "--ls-font-heading",
-      "--ls-font-body"
+      "--ls-font-body",
+      "--ls-slide-header-gap",
+      "--ls-slide-header-max-inline-size"
     ],
     "usage": [
       "Use body.ls-page, a .ls-deck[data-ls-deck] wrapper, and one or more .ls-slide sections.",
-      "Runtime state attributes such as data-ls-ready and data-active are managed by slide-runtime.js."
+      "Runtime state attributes such as data-ls-ready and data-active are managed by slide-runtime.js.",
+      "Set data-ls-slide-kind on slides: content slides use .ls-slide__header; hero/section slides may intentionally use centered full-slide layouts."
     ]
-  }
+  },
+  "agentLevel": "starter"
 }

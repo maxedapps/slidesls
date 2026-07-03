@@ -14,7 +14,6 @@
   "docs": "registry/templates/api-flow/README.md",
   "rootClass": null,
   "safeAnywhere": false,
-  "agentRecommended": false,
   "snippets": [
     {
       "label": "API flow slide",
@@ -46,5 +45,7 @@
       "ls-code-diff__code",
       "ls-code-diff__marker"
     ]
-  }
+  },
+  "agentLevel": "advanced",
+  "useCases": ["Show request/response steps, integrations, or service flows."]
 }

@@ -8,7 +8,7 @@
 - Item CSS/JS files are copied implementation.
 - Item snippets are paste-ready HTML returned by `slidesls inspect --json`.
 
-The CLI is the authoritative discovery surface for agents: use `slidesls catalog --recommended --json` and `slidesls inspect <item> --readme --json` instead of guessing from file names. In JSON output, each item’s `authoring` field lists the public classes, class groups/modifiers, data attributes, CSS variables, theme/font attributes, and short usage rules. Use those values or snippet markup; do not invent `ls-*` classes.
+The CLI is the authoritative discovery surface for agents: use `slidesls catalog --starter --json`, `slidesls catalog --json`, and `slidesls inspect <item> --json` instead of guessing from file names. Add `--api` when you need public classes, class groups/modifiers, data attributes, CSS variables, theme/font attributes, and short usage rules. Use those values or snippet markup; do not invent `ls-*` classes.
 
 ## Item types
 

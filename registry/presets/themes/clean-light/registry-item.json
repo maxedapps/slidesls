@@ -14,9 +14,8 @@
   "devDependencies": [],
   "docs": "registry/presets/themes/clean-light/README.md",
   "safeAnywhere": true,
-  "agentRecommended": true,
   "styleTone": "clean professional light",
-  "useCases": ["product walkthroughs", "teaching decks", "print-friendly reports"],
+  "useCases": ["Use for neutral, bright, content-heavy decks."],
   "pairsWith": ["presets/fonts/system-humanist"],
   "themeAttribute": "clean-light",
   "authoring": {
@@ -28,5 +27,6 @@
       }
     ],
     "usage": ["Apply exactly one theme per deck on the html element."]
-  }
+  },
+  "agentLevel": "starter"
 }

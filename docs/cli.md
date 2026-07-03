@@ -17,8 +17,8 @@ If the package is already installed in the target project, use `npx slidesls ...
 
 - `slidesls init [dir] --template blank|minimal --theme <theme> --title <text> [--registry-root <path> | --registry-url <url>]` — initialize a deck in the current directory, or in `[dir]` if supplied. `--theme` accepts names such as `executive-blue` or `presets/themes/executive-blue`.
 - `slidesls add <items...> --dir <project> [--base-dir <relative>] [--registry-root <path> | --registry-url <url>]` — copy registry items into a deck project or any existing project. If no `slidesls.json` exists in `--dir`, `add` uses copy mode and writes assets under `--base-dir` or `slidesls`.
-- `slidesls catalog [--recommended] [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path> | --registry-url <url>]` — list items and their public `authoring` API in JSON; use `--recommended` for the agent-safe set.
-- `slidesls inspect <items...> [--readme] [--registry-root <path> | --registry-url <url>]` — show metadata, public `authoring` API, load guidance, and snippet HTML for requested items.
+- `slidesls catalog [--starter] [--level <level>] [--recommended] [--api] [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path> | --registry-url <url>]` — list brief item summaries by default; add `--api` for public `authoring` metadata.
+- `slidesls inspect <items...> [--api] [--with-dependencies] [--readme] [--registry-root <path> | --registry-url <url>]` — show snippet HTML and aggregate load tags by default; add `--api` for public `authoring` metadata.
 - `slidesls skill info [--json]` — show bundled agent skill metadata.
 - `slidesls skill show [--reference <name>] [--all]` — print the bundled agent `SKILL.md`, a named reference such as `catalog`, or all bundled docs.
 - `slidesls skill install <dir> [--dry-run] [--force]` — copy the bundled skill to the explicit skill directory required by your agent runtime.
@@ -92,6 +92,12 @@ Font presets remain separate; use `data-ls-font` only when you want a font role 
 Runtime-neutral no-install path:
 
 ```sh
+slidesls skill show
+```
+
+Full export fallback only:
+
+```sh
 slidesls skill show --all
 ```
 
@@ -113,21 +119,20 @@ Example for Claude Code project-local skills:
 slidesls skill install ./.claude/skills/create-slides-with-slidesls
 ```
 
-After installing or linking, agents should fully read the installed `SKILL.md`, relevant files in `references/`, or `slidesls skill show --all` before authoring.
+After installing or linking, agents should fully read the installed `SKILL.md` and relevant files in `references/`; use `slidesls skill show` if the runtime did not auto-load it, and `slidesls skill show --all` only as a full export fallback.
 
-Then use machine-readable discovery before editing decks or copy-mode projects:
+Then use incremental machine-readable discovery before editing decks or copy-mode projects:
 
 ```sh
-slidesls skill show --reference catalog
-slidesls catalog --recommended --json
+slidesls catalog --starter --json
 slidesls catalog --json
 slidesls catalog --type preset --tag theme --json
-slidesls inspect templates/split --readme --json
-slidesls inspect components/card --readme --json
+slidesls inspect templates/split --json
+slidesls inspect components/card --json
 slidesls add utilities/layout components/panel components/card --dry-run --json
 ```
 
-Treat each item’s `authoring` metadata as the quick source of truth for public classes, modifiers, data attributes, theme/font attributes, and CSS variables. Unless the user asks for static slides, copy/load `animations/reveal` plus one subtle variant such as `animations/slide-up` or `animations/fade` and use `.ls-reveal` with `data-step` or `data-ls-reveal-sequence`. Use `inspect --json` when you need exact snippet markup or README details. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and `--strict` errors. Static validation does not replace preview; after material slide edits, run `slidesls preview <deck>` and visually inspect representative slides unless intentionally skipped. Preview URLs can deep-link to normal-mode state with `#slide=2&step=1` (`slide` is 1-based; `step` is 0-based). Export mode still renders all slides/reveals and ignores the hash.
+Use `catalog --api --json` or `inspect <item> --api --json` for low-level public classes, modifiers, data attributes, theme/font attributes, and CSS variables. Unless the user asks for static slides, copy/load `animations/reveal` plus one subtle variant such as `animations/slide-up` or `animations/fade` and use `.ls-reveal` with `data-step` or `data-ls-reveal-sequence`. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and `--strict` errors. Static validation does not replace preview; after material slide edits, run `slidesls preview <deck>` and visually inspect representative slides unless intentionally skipped. Preview URLs can deep-link to normal-mode state with `#slide=2&step=1` (`slide` is 1-based; `step` is 0-based). Export mode still renders all slides/reveals and ignores the hash.
 
 ## Naming
 

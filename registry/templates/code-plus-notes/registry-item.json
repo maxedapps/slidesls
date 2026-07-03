@@ -14,7 +14,6 @@
   "docs": "registry/templates/code-plus-notes/README.md",
   "rootClass": null,
   "safeAnywhere": false,
-  "agentRecommended": true,
   "snippets": [
     {
       "label": "Code plus notes slide",
@@ -41,5 +40,7 @@
       "ls-card__text",
       "ls-card__body"
     ]
-  }
+  },
+  "agentLevel": "recommended",
+  "useCases": ["Teach or review code with adjacent explanatory notes."]
 }

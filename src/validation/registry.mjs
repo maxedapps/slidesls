@@ -40,6 +40,16 @@ const knownFileTypes = new Set([
   "webp",
   "gif",
 ]);
+const agentLevels = new Set(["starter", "recommended", "advanced", "experimental"]);
+const snippetRequiredLevels = new Set(["starter", "recommended"]);
+const classScopeTypes = new Set([
+  "anywhere",
+  "within-slide",
+  "within-slide-inner",
+  "direct-child-of-slide-inner",
+  "within-constrained-area",
+  "centers-content-cluster",
+]);
 
 async function canRead(source, relativePath) {
   if (source.mode === "local") {
@@ -250,6 +260,61 @@ function validateAuthoringMetadataShape({ item, itemPath, errors }) {
         `${itemPath} CSS variable must start with --: ${variable}`,
       );
   }
+  if (authoring.classMetadata !== undefined) {
+    if (
+      !authoring.classMetadata ||
+      typeof authoring.classMetadata !== "object" ||
+      Array.isArray(authoring.classMetadata)
+    ) {
+      add(
+        "error",
+        errors,
+        "invalid_class_metadata",
+        `${itemPath} authoring.classMetadata must be an object`,
+      );
+    } else {
+      const classes = new Set(authoringClasses(item));
+      for (const [className, metadata] of Object.entries(authoring.classMetadata)) {
+        if (!className.startsWith("ls-"))
+          add(
+            "error",
+            errors,
+            "invalid_class_metadata_key",
+            `${itemPath} classMetadata key must start with ls-: ${className}`,
+          );
+        if (!classes.has(className))
+          add(
+            "error",
+            errors,
+            "unknown_class_metadata_key",
+            `${itemPath} classMetadata key is not declared in authoring classes: ${className}`,
+          );
+        if (!metadata || typeof metadata !== "object" || Array.isArray(metadata)) {
+          add(
+            "error",
+            errors,
+            "invalid_class_metadata",
+            `${itemPath} classMetadata.${className} must be an object`,
+          );
+          continue;
+        }
+        if (!classScopeTypes.has(metadata.scopeType))
+          add(
+            "error",
+            errors,
+            "invalid_class_scope_type",
+            `${itemPath} classMetadata.${className}.scopeType is invalid`,
+          );
+        if (typeof metadata.safeAnywhere !== "boolean")
+          add(
+            "error",
+            errors,
+            "invalid_class_safe_anywhere",
+            `${itemPath} classMetadata.${className}.safeAnywhere must be boolean`,
+          );
+      }
+    }
+  }
   return true;
 }
 
@@ -389,12 +454,20 @@ async function validateThemePreset({ item, itemPath, source, errors }) {
 }
 
 async function validateItemMetadata({ item, itemPath, source, errors, warnings }) {
-  if (item.agentRecommended !== undefined && typeof item.agentRecommended !== "boolean")
+  if (item.agentRecommended !== undefined)
     add(
       "error",
       errors,
-      "invalid_agent_recommended",
-      `${itemPath} agentRecommended must be boolean`,
+      "stored_agent_recommended",
+      `${itemPath} must not store agentRecommended; use agentLevel instead`,
+    );
+
+  if (!agentLevels.has(item.agentLevel))
+    add(
+      "error",
+      errors,
+      "invalid_agent_level",
+      `${itemPath} agentLevel must be one of ${[...agentLevels].join(", ")}`,
     );
 
   if (item.safeAnywhere !== undefined && typeof item.safeAnywhere !== "boolean")
@@ -421,7 +494,7 @@ async function validateItemMetadata({ item, itemPath, source, errors, warnings }
   }
 
   if (
-    item.agentRecommended === true &&
+    snippetRequiredLevels.has(item.agentLevel) &&
     ["ls:component", "ls:utility", "ls:animation", "ls:template"].includes(item.type) &&
     (!Array.isArray(item.snippets) || item.snippets.length === 0)
   )
@@ -429,7 +502,20 @@ async function validateItemMetadata({ item, itemPath, source, errors, warnings }
       "error",
       errors,
       "recommended_item_missing_snippet",
-      `${itemPath} agentRecommended ${item.type} items must provide a snippet or be explicitly demoted`,
+      `${itemPath} ${item.agentLevel} ${item.type} items must provide a snippet or be advanced/experimental`,
+    );
+
+  if (
+    item.safeAnywhere === true &&
+    Object.values(item.authoring?.classMetadata || {}).some(
+      (metadata) => metadata?.safeAnywhere === false,
+    )
+  )
+    add(
+      "error",
+      errors,
+      "safe_anywhere_class_metadata_conflict",
+      `${itemPath} safeAnywhere cannot be true when classMetadata marks a class as not safe anywhere`,
     );
 
   if (item.name?.startsWith("presets/themes/"))

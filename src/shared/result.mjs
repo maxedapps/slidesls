@@ -19,5 +19,5 @@ export function fail(error) {
 }
 
 export function printJson(value) {
-  process.stdout.write(`${JSON.stringify(value, null, 2)}\n`);
+  process.stdout.write(`${JSON.stringify(value)}\n`);
 }

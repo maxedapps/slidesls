@@ -100,6 +100,28 @@ export function resolveItems(registryData, names) {
   return resolved;
 }
 
+export function isAgentRecommended(item) {
+  return ["starter", "recommended"].includes(item.agentLevel);
+}
+
+export function summarizeItemBrief(item) {
+  return omitUndefined({
+    name: item.name,
+    type: item.type,
+    description: item.description,
+    tags: item.tags?.length ? item.tags : undefined,
+    useCases: item.useCases?.length ? item.useCases : undefined,
+    agentLevel: item.agentLevel,
+    snippetCount: item.snippets?.length ? item.snippets.length : undefined,
+    dependencyCount: item.registryDependencies?.length
+      ? item.registryDependencies.length
+      : undefined,
+    themeAttribute: item.themeAttribute,
+    styleTone: item.styleTone,
+    pairsWith: item.pairsWith?.length ? item.pairsWith : undefined,
+  });
+}
+
 export function summarizeItem(item) {
   return {
     name: item.name,
@@ -109,6 +131,7 @@ export function summarizeItem(item) {
     description: item.description,
     tags: item.tags || [],
     useCases: item.useCases || [],
+    agentLevel: item.agentLevel,
     registryDependencies: item.registryDependencies || [],
     dependencies: item.dependencies || [],
     devDependencies: item.devDependencies || [],
@@ -116,7 +139,7 @@ export function summarizeItem(item) {
     docs: item.docs,
     rootClass: item.rootClass ?? null,
     safeAnywhere: item.safeAnywhere ?? false,
-    agentRecommended: item.agentRecommended === true,
+    agentRecommended: isAgentRecommended(item),
     styleTone: item.styleTone,
     pairsWith: item.pairsWith || [],
     themeAttribute: item.themeAttribute,
@@ -124,4 +147,20 @@ export function summarizeItem(item) {
     snippets: item.snippets || [],
     registryItemPath: item.registryItemPath,
   };
+}
+
+export function catalogGroups(items) {
+  const counts = new Map();
+  for (const item of items) counts.set(item.type, (counts.get(item.type) || 0) + 1);
+  return [...counts.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([type, count]) => ({ type, count }));
+}
+
+export function mergeBriefAndRich(item) {
+  return { ...summarizeItemBrief(item), ...summarizeItem(item) };
+}
+
+function omitUndefined(object) {
+  return Object.fromEntries(Object.entries(object).filter(([, value]) => value !== undefined));
 }
