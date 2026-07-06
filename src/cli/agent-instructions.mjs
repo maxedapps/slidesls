@@ -5,9 +5,13 @@ export const agentCommandRecipes = {
   catalogStarterJson: "slidesls catalog --starter --json",
   catalogJson: "slidesls catalog --json",
   catalogApiJson: "slidesls catalog --api --json",
+  catalogComponentsJson: "slidesls catalog --type component --json",
+  catalogTemplatesJson: "slidesls catalog --type template --json",
   themeCatalogJson: "slidesls catalog --type preset --tag theme --json",
   inspectJson: "slidesls inspect <item> --json",
   inspectApiJson: "slidesls inspect <item> --api --json",
+  inspectLayoutApiJson: "slidesls inspect utilities/layout --api --json",
+  inspectPrimitiveJson: "slidesls inspect utilities/layout components/card components/panel --json",
   addDryRunJson: "slidesls add <items...> --dir <deck-or-project> --dry-run --json",
   addAnimationsJson:
     "slidesls add animations/reveal animations/slide-up --dir <deck> --dry-run --json",
@@ -28,11 +32,14 @@ export function agentHelpBlock() {
      Example for Claude Code project-local skills:
      slidesls skill install ./.claude/skills/create-slides-with-slidesls
   2. Incremental discovery:
-     ${agentCommandRecipes.catalogStarterJson}
-     ${agentCommandRecipes.catalogJson}
-     ${agentCommandRecipes.themeCatalogJson}
+     Complete lightweight inventory: ${agentCommandRecipes.catalogJson}
+     Smallest fast-start set: ${agentCommandRecipes.catalogStarterJson}
+     Primitive components: ${agentCommandRecipes.catalogComponentsJson}
+     Templates: ${agentCommandRecipes.catalogTemplatesJson}
+     Themes: ${agentCommandRecipes.themeCatalogJson}
   3. Inspect exact snippets and load tags:
      ${agentCommandRecipes.inspectJson}
+     Primitive layout API: ${agentCommandRecipes.inspectLayoutApiJson}
      Advanced API detail: ${agentCommandRecipes.inspectApiJson}
   4. Copy safely:
      ${agentCommandRecipes.addDryRunJson}
@@ -55,7 +62,8 @@ export function catalogAgentInstructions({ api = false } = {}) {
     notes: [
       api
         ? "Full authoring metadata is included."
-        : "This is the brief catalog. Full authoring metadata: add --api.",
+        : "This is the complete lightweight inventory. Full authoring metadata: add --api.",
+      "Use --starter only for the smallest fast-start set; use --type filters for focused component/template/theme discovery.",
     ],
     rules: [
       "Use useCases, agentLevel, type, and tags to choose candidate items.",
@@ -64,7 +72,10 @@ export function catalogAgentInstructions({ api = false } = {}) {
       "Inspect items for exact snippets and load tags before copying markup.",
     ],
     nextCommands: [
+      agentCommandRecipes.catalogComponentsJson,
+      agentCommandRecipes.catalogTemplatesJson,
       agentCommandRecipes.inspectJson,
+      agentCommandRecipes.inspectLayoutApiJson,
       agentCommandRecipes.addDryRunJson,
       agentCommandRecipes.validateJson,
     ],
@@ -114,21 +125,31 @@ export function addAgentInstructions({ dryRun = false, root = "<deck-or-project>
   };
 }
 
-export function initAgentInstructions(root = "<deck>") {
+export function initAgentInstructions(root = "<deck>", { template = "minimal" } = {}) {
+  const primitiveNextCommands = [
+    agentCommandRecipes.catalogJson,
+    agentCommandRecipes.catalogComponentsJson,
+    agentCommandRecipes.inspectPrimitiveJson,
+    `slidesls validate ${root} --json`,
+  ];
+  const templateNextCommands = [
+    agentCommandRecipes.catalogStarterJson,
+    agentCommandRecipes.catalogTemplatesJson,
+    agentCommandRecipes.addAnimationsJson,
+    "slidesls inspect templates/split --json",
+    agentCommandRecipes.inspectPrimitiveJson,
+    `slidesls validate ${root} --json`,
+  ];
   return {
     purpose: "Continue from a newly initialized slidesls deck.",
     rules: [
-      "Use the catalog before adding classes or visual presets.",
-      "Inspect templates/components for exact markup before editing slides.",
+      "Use catalog --json as the complete lightweight inventory before adding classes or visual presets.",
+      "Inspect templates/components for exact markup before editing slides; inspect utilities/layout --api for primitive layout classes.",
+      "For blank decks, compose from utilities/layout plus standalone components unless a template fits the content.",
       "Unless the user asks for static slides, use progressive disclosure via animations/reveal plus one subtle variant such as animations/slide-up or animations/fade.",
       "Validate after edits; preview is a long-running server command and should be checked visually with agent-browser unless the user opts out.",
     ],
-    nextCommands: [
-      agentCommandRecipes.catalogStarterJson,
-      agentCommandRecipes.addAnimationsJson,
-      "slidesls inspect templates/split --json",
-      `slidesls validate ${root} --json`,
-    ],
+    nextCommands: template === "blank" ? primitiveNextCommands : templateNextCommands,
     longRunningCommands: [`slidesls preview ${root}`],
   };
 }

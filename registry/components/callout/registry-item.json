@@ -1,7 +1,7 @@
 {
   "name": "components/callout",
   "type": "ls:component",
-  "description": "Callout slide component.",
+  "description": "Emphasized takeaway/status block with optional semantic tone.",
   "files": [
     {
       "path": "registry/components/callout/callout.css",
@@ -50,5 +50,9 @@
       "Add .ls-callout--with-icon only when an .ls-callout__icon is present."
     ]
   },
-  "agentLevel": "recommended"
+  "agentLevel": "recommended",
+  "tags": ["callout", "takeaway", "status"],
+  "useCases": [
+    "Highlight a key takeaway, warning, success note, status note, or important constraint."
+  ]
 }

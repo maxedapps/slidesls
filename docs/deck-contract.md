@@ -15,11 +15,15 @@ Use:
 
 - utilities for layout (`.ls-stack`, `.ls-grid`, `.ls-center`, `.ls-fill`);
 - standalone components for content (`.ls-card`, `.ls-panel`, `.ls-metric`, etc.);
-- template snippets for complete slide skeletons.
+- optional template snippets for complete slide skeletons.
 
-Avoid hidden ancestor-dependent layout classes. Content slides use a top `.ls-slide__header` and body layout; do not use `.ls-slide-fill` on ordinary content slides. Hero/section slides should be explicitly marked and may intentionally use centered full-slide layouts. Templates should be pasted as HTML and then edited directly.
+Avoid hidden ancestor-dependent layout classes. Content slides use a top `.ls-slide__header` and body layout; do not use `.ls-slide-fill` on ordinary content slides. Hero/section slides should be explicitly marked and may intentionally use centered full-slide layouts. Templates are optional convenience snippets, not required layout contracts; utilities and components are first-class building blocks for primitive-first composition. Templates should be pasted as HTML and then edited directly.
 
 `.ls-grid` rows size to content and center vertically by default; `.ls-grid--fill` opts a grid back into stretch-to-fill for frames, diagrams, and dashboards. Slide density is set per slide with `data-ls-density="compact"` (scale down for dense content) or `"spacious"` (scale up for sparse content). `data-ls-lint="off"` on a slide suppresses advisory design-lint warnings for that slide only.
+
+## Themes and presets
+
+Themes and font presets are optional token remaps. A deck without `data-ls-theme` still uses the default base tokens from `core/base/tokens.css`; applying a theme means copying one `presets/themes/<name>` item and setting exactly one `data-ls-theme` value on `<html>`.
 
 ## Asset model
 

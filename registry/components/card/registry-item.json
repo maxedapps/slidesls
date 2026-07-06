@@ -29,9 +29,21 @@
       }
     ],
     "cssVariables": [
-      { "name": "--ls-card-padding", "default": "24px", "overrideSafe": true },
-      { "name": "--ls-card-title-size", "default": "28px", "overrideSafe": true },
-      { "name": "--ls-card-text-size", "default": "21px", "overrideSafe": true }
+      {
+        "name": "--ls-card-padding",
+        "default": "24px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-card-title-size",
+        "default": "28px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-card-text-size",
+        "default": "21px",
+        "overrideSafe": true
+      }
     ],
     "usage": [
       "Use for content blocks inside grids or stacks; give each card 2-4 sentences or a visual.",
@@ -47,9 +59,20 @@
       "more than 4 cards in one grid"
     ],
     "alternatives": [
-      { "when": "one-liner points", "use": "components/icon-item" },
-      { "when": "4-6 short items in a grid", "use": "templates/icon-grid" }
+      {
+        "when": "one-liner points",
+        "use": "components/icon-item"
+      },
+      {
+        "when": "4-6 short items in a grid",
+        "use": "templates/icon-grid"
+      }
     ]
   },
-  "agentLevel": "recommended"
+  "agentLevel": "recommended",
+  "tags": ["card", "feature", "explanation"],
+  "useCases": [
+    "Present a feature or explanation card with 2-4 sentences or a visual.",
+    "Build a balanced comparison block from a small number of cards."
+  ]
 }

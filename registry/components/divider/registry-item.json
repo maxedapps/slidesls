@@ -43,5 +43,9 @@
     ],
     "cssVariables": ["--ls-divider-color", "--ls-divider-thickness", "--ls-divider-gap"]
   },
-  "agentLevel": "recommended"
+  "agentLevel": "recommended",
+  "tags": ["divider", "section", "separator"],
+  "useCases": [
+    "Separate content groups, label a section break, or create a lightweight visual divider."
+  ]
 }

@@ -88,7 +88,7 @@ Deep reference for per-item lookup only; it is large, so do not read it end-to-e
 
 - Label: Callout
 - Type: ls:component
-- Description: Callout slide component.
+- Description: Emphasized takeaway/status block with optional semantic tone.
 - Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-callout
@@ -135,7 +135,7 @@ Deep reference for per-item lookup only; it is large, so do not read it end-to-e
 
 - Label: Code Block
 - Type: ls:component
-- Description: Code Block slide component.
+- Description: Static code excerpt component for short implementation examples.
 - Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-code-block
@@ -274,7 +274,7 @@ Deep reference for per-item lookup only; it is large, so do not read it end-to-e
 
 - Label: Metric
 - Type: ls:component
-- Description: Metric slide component.
+- Description: KPI/stat primitive for one prominent number plus label.
 - Agent level: recommended
 - Agent recommended: yes
 - Root class: ls-metric

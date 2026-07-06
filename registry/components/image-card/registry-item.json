@@ -52,5 +52,7 @@
     ],
     "cssVariables": ["--ls-image-card-aspect", "--ls-image-card-gap", "--ls-image-card-media-block"]
   },
-  "agentLevel": "recommended"
+  "agentLevel": "recommended",
+  "tags": ["image", "screenshot", "case-study"],
+  "useCases": ["Present a screenshot, case study, visual example, or image-led proof point."]
 }

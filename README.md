@@ -37,6 +37,17 @@ Inside a larger project, prefer an explicit deck path:
 slidesls init ./slides/my-deck --template minimal --title "My Deck"
 ```
 
+### Primitive composition without templates
+
+Templates are optional. For custom slide structures, start from a blank deck, inspect layout/components, then copy only the primitives you need:
+
+```sh
+slidesls init ./slides/custom-deck --template blank --title "Custom Deck"
+slidesls catalog --type component --json
+slidesls inspect utilities/layout components/card components/panel --json
+slidesls add utilities/layout components/card components/panel --dir ./slides/custom-deck --dry-run --json
+```
+
 ## Use as a copyable component registry
 
 `init` is optional. To copy primitives into an existing project without scaffolding a full deck, run:
@@ -64,7 +75,7 @@ After installing, agents should fully read the installed `SKILL.md` and relevant
 CLI help and key text outputs include explicit `For AI agents:` blocks. JSON outputs for discovery/editing commands include additive `agentInstructions` with rules and next command recipes.
 
 - `slidesls init [dir]` — initialize a deck in the current directory, or in `[dir]` if supplied.
-- `slidesls catalog --starter` / `slidesls catalog --json` — list brief item summaries for incremental discovery; add `--api` for public `authoring` metadata.
+- `slidesls catalog --starter` / `slidesls catalog --json` — list brief item summaries for incremental discovery (`--json` is the complete lightweight inventory; `--starter` is the smallest fast-start set); add `--api` for public `authoring` metadata.
 - `slidesls inspect <items...>` — show snippet HTML and aggregate load tags; add `--api` for public `authoring` metadata and `--with-dependencies` for dependency details.
 - `slidesls add <items...>` — copy registry items into an initialized deck or any existing project in copy mode, and print load tags.
 - `slidesls skill info|show|install` — inspect or copy the bundled agent skill. Use `slidesls skill show --reference catalog` for the generated public class/style/API catalog.
@@ -89,7 +100,7 @@ Generated projects use `slidesls/` as the default copied asset directory and may
 
 ## Theming
 
-Themes are visual presets under `presets/themes/*`. They are not templates: templates define slide structure, while themes remap canonical tokens for colors, surfaces, borders, radii, shadows, code blocks, status colors, and progress bars.
+Themes are optional visual presets under `presets/themes/*`. They are not templates: templates define slide structure, while themes remap canonical tokens for colors, surfaces, borders, radii, shadows, code blocks, status colors, and progress bars. A deck without `data-ls-theme` still uses the default dark blue-accent base tokens from `core/base/tokens.css`; it is not unstyled.
 
 Use a theme during initialization:
 

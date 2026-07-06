@@ -49,5 +49,7 @@
     "cssVariables": ["--ls-progress-value", "--ls-progress-thickness", "--ls-progress-label-size"],
     "usage": ["Set --ls-progress-value to the fill percentage, e.g. 72%."]
   },
-  "agentLevel": "recommended"
+  "agentLevel": "recommended",
+  "tags": ["progress", "status", "completion"],
+  "useCases": ["Show progress, completion, migration status, or phase status."]
 }

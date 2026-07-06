@@ -50,5 +50,7 @@
       "--ls-table-stripe-bg"
     ]
   },
-  "agentLevel": "recommended"
+  "agentLevel": "recommended",
+  "tags": ["table", "comparison", "data"],
+  "useCases": ["Show a compact comparison, small data table, or feature matrix."]
 }

@@ -53,7 +53,16 @@
     "layoutBehavior": "content-sized",
     "copyGuidance": "Use one panel as a visual anchor or grouped block; ls-panel--frame keeps visual mass for media.",
     "avoidWhen": ["a grid of small text panels where each holds one short sentence"],
-    "alternatives": [{ "when": "several one-liner points", "use": "components/icon-item" }]
+    "alternatives": [
+      {
+        "when": "several one-liner points",
+        "use": "components/icon-item"
+      }
+    ]
   },
-  "agentLevel": "recommended"
+  "agentLevel": "recommended",
+  "tags": ["panel", "visual", "frame"],
+  "useCases": [
+    "Create a visual anchor, grouped explanation, diagram frame, screenshot frame, or code frame."
+  ]
 }

@@ -62,33 +62,41 @@ After installing or linking, fully read `SKILL.md` and the relevant files in `re
 ## Workflow
 
 1. Clarify the deck goal, audience, dimensions, style, whether the deck should be static or animated, and whether an existing deck folder should be reused.
-2. Choose exactly one theme early (discover all with `slidesls catalog --type preset --tag theme --json`):
+2. Choose composition and visual direction:
+   - Template-first: fastest for polished complete slides.
+   - Primitive-first: use `utilities/layout` plus standalone components when custom structure is desired.
+   - Default tokens: no theme required; the base tokens provide a dark blue-accent visual baseline.
+   - Theme preset: choose exactly one theme when a prebuilt style is desired; do not stack themes.
+   - Custom tokens: override safe variables in a deck-level `@layer tokens` block.
+3. Available themes (discover all with `slidesls catalog --type preset --tag theme --json`):
    - `executive-blue` for product/professional decks.
    - `clean-light` for bright product, teaching, and print-friendly decks.
    - `boardroom-navy` for formal strategy, board, and reporting decks.
    - `technical-deep` for engineering/code-heavy decks.
    - `playful-ink` for workshops, education, and friendly product demos.
-3. Run `slidesls --help` and, if behavior is unclear, `slidesls doctor --json`.
-4. For a new deck, use a dedicated deck folder:
+4. Run `slidesls --help` and, if behavior is unclear, `slidesls doctor --json`.
+5. For a new fast-path deck, use a dedicated deck folder:
 
    ```sh
    slidesls init ./slides/my-deck --template minimal --theme executive-blue --title "My Deck"
    ```
 
-5. If editing an existing deck, inspect `slidesls.json` and the configured entry file. If adding a theme manually, copy it with `slidesls add presets/themes/<theme> --dir <deck>` and set `data-ls-theme="<theme>"` on the existing `<html>` element. Do not add a second theme attribute and do not stack multiple themes.
-6. Discover candidates incrementally with `slidesls catalog --starter --json`, `slidesls catalog --json`, or filtered catalog commands such as `slidesls catalog --type template --json`. Pick layouts with the density decision table below; check each item's `avoidWhen` before using it.
-7. Inspect templates/components with `slidesls inspect <item> --json`; use returned snippet HTML and load tags as source-of-truth markup, and respect the returned `composition` guidance (`avoidWhen`, `alternatives`). Use `--api` only when low-level authoring metadata is needed.
-8. Unless the user asks for a static deck, use progressive disclosure: copy/load `animations/reveal` and one subtle variant (`animations/slide-up` or `animations/fade`), then add `.ls-reveal` plus `data-step` or `data-ls-reveal-sequence`.
-9. Add assets with `slidesls add <items...> --dir <deck> --dry-run --json`, review planned files and load tags, then run without `--dry-run`.
-10. Paste/edit snippets and plain HTML, CSS, and JS directly.
-11. Validate with `slidesls validate <deck> --json` and fix all errors; review warnings. Design-lint warnings (`many_cards_in_grid`, `stretched_grid_with_cards`, `card_grid_check_density`) are advisory composition pointers — fix or explicitly justify them.
-12. Run the per-slide visual QA loop unless the user explicitly opts out (full recipe: `references/preview-validation.md`):
+   For a custom primitive/no-theme deck, start blank and add only the needed utilities/components.
+
+6. If editing an existing deck, inspect `slidesls.json` and the configured entry file. If adding a theme manually, copy it with `slidesls add presets/themes/<theme> --dir <deck>` and set `data-ls-theme="<theme>"` on the existing `<html>` element. Do not add a second theme attribute and do not stack multiple themes.
+7. Discover candidates incrementally with `slidesls catalog --json`, `slidesls catalog --starter --json`, or filtered catalog commands such as `slidesls catalog --type component --json` and `slidesls catalog --type template --json`. Pick layouts with the density decision table below; check each item's `avoidWhen` before using it.
+8. Inspect templates/components with `slidesls inspect <item> --json`; use returned snippet HTML and load tags as source-of-truth markup, and respect the returned `composition` guidance (`avoidWhen`, `alternatives`). Use `slidesls inspect utilities/layout --api --json` for primitive layout classes and `--api` only when low-level authoring metadata is needed.
+9. Unless the user asks for a static deck, use progressive disclosure: copy/load `animations/reveal` and one subtle variant (`animations/slide-up` or `animations/fade`), then add `.ls-reveal` plus `data-step` or `data-ls-reveal-sequence`.
+10. Add assets with `slidesls add <items...> --dir <deck> --dry-run --json`, review planned files and load tags, then run without `--dry-run`.
+11. Paste/edit snippets and plain HTML, CSS, and JS directly.
+12. Validate with `slidesls validate <deck> --json` and fix all errors; review warnings. Design-lint warnings (`many_cards_in_grid`, `stretched_grid_with_cards`, `card_grid_check_density`) are advisory composition pointers — fix or explicitly justify them.
+13. Run the per-slide visual QA loop unless the user explicitly opts out (full recipe: `references/preview-validation.md`):
     - keep `slidesls preview <deck> --json` running; its `slideLinks` are per-slide deep links;
     - collect rendered facts with `slidesls visual-qa --eval` via agent-browser on the export URL, then `slidesls visual-qa --analyze --input <collected.json> --json`;
     - screenshot every content slide via its deep link (all slides for decks up to ~15; flagged plus representative beyond) and inspect at full size;
     - fix or explicitly justify every advisory finding, then re-run until clean;
     - do not judge composition from the full-export overview screenshot.
-13. Run `slidesls doctor --dir <deck> --json` if config, registry, or environment behavior looks wrong.
+14. Run `slidesls doctor --dir <deck> --json` if config, registry, or environment behavior looks wrong.
 
 ## Density decision table
 
@@ -114,7 +122,9 @@ The complete agent-browser recipe (screenshots, deep links, `slidesls visual-qa`
 
 - Need the workflow? `slidesls skill show`
 - Need the full class/style/data-attribute catalog? `slidesls skill show --reference catalog` — per-item lookup only; do not read it end-to-end, use `catalog --json` / `inspect <item> --json` first
-- Need candidate items? `slidesls catalog --json` (brief) or `slidesls catalog --starter --json`
+- Need candidate items? `slidesls catalog --json` (complete brief inventory) or `slidesls catalog --starter --json` (smallest fast-start set)
+- Need primitive components? `slidesls catalog --type component --json` and `slidesls inspect utilities/layout --api --json`
+- Need templates? `slidesls catalog --type template --json`
 - Need themes? `slidesls catalog --type preset --tag theme --json`
 - Need exact markup and load tags? `slidesls inspect <item> --json`
 - Need low-level public APIs? `slidesls inspect <item> --api --json` or `slidesls catalog --api --json`

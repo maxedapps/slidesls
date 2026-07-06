@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.5.1
+
+### Added
+
+- `catalog --json` groups now include human-readable labels/purposes and render in task-logical order in text output, making registry building blocks easier to scan.
+- Component registry metadata now includes more structured `tags`/`useCases`, and `catalog --query` searches those intent fields without matching freeform composition warnings.
+- Bundled skill and docs now document template-first vs primitive-first composition and default-token/theme/custom-token visual choices.
+- Init agent instructions are template-aware, with blank decks pointing to primitive composition commands and minimal decks keeping the template path plus a primitive alternative.
+- Tests now cover primitive-only composition from a blank deck.
+
 ## 0.5.0
 
 ### Breaking

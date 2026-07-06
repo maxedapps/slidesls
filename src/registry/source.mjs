@@ -151,16 +151,64 @@ export function summarizeItem(item) {
   };
 }
 
+const groupMetadata = {
+  "ls:animation": {
+    label: "Animations",
+    purpose: "Optional reveal and emphasis recipes for progressive disclosure.",
+  },
+  "ls:component": {
+    label: "Components",
+    purpose: "Standalone content, data, media, technical, and visual primitives.",
+  },
+  "ls:core": {
+    label: "Core",
+    purpose: "Required shell, tokens, runtime, and icon helpers.",
+  },
+  "ls:preset": {
+    label: "Presets",
+    purpose: "Optional theme and font token remaps.",
+  },
+  "ls:template": {
+    label: "Templates",
+    purpose: "Paste-ready full-slide skeleton snippets.",
+  },
+  "ls:utility": {
+    label: "Utilities",
+    purpose: "Layout and helper classes that compose anywhere.",
+  },
+};
+
+const groupOrder = [
+  "ls:core",
+  "ls:utility",
+  "ls:component",
+  "ls:template",
+  "ls:animation",
+  "ls:preset",
+];
+
 export function catalogGroups(items) {
   const counts = new Map();
   for (const item of items) counts.set(item.type, (counts.get(item.type) || 0) + 1);
   return [...counts.entries()]
-    .sort(([left], [right]) => left.localeCompare(right))
-    .map(([type, count]) => ({ type, count }));
+    .sort(
+      ([left], [right]) =>
+        groupSortIndex(left) - groupSortIndex(right) || left.localeCompare(right),
+    )
+    .map(([type, count]) => ({
+      type,
+      count,
+      ...(groupMetadata[type] || { label: labelFromName(type), purpose: "Registry items." }),
+    }));
 }
 
 export function mergeBriefAndRich(item) {
   return { ...summarizeItemBrief(item), ...summarizeItem(item) };
+}
+
+function groupSortIndex(type) {
+  const index = groupOrder.indexOf(type);
+  return index === -1 ? Number.MAX_SAFE_INTEGER : index;
 }
 
 function omitUndefined(object) {

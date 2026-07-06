@@ -16,6 +16,47 @@ slidesls init ./slides/my-deck --template minimal --theme executive-blue --title
 
 `slidesls init` writes `slidesls.json`, `index.html`, and `slidesls/` into the target directory, so only run it at a project root if the root itself is meant to be the deck.
 
+## Composition and visual choices
+
+Choose two independent axes before authoring:
+
+- Composition: use templates for complete paste-ready slide skeletons, or compose primitives from `utilities/layout` plus standalone components.
+- Visual styling: use default base tokens, choose exactly one theme preset, or override safe token variables in a deck-level `@layer tokens` block.
+
+Primitive-first workflow:
+
+```sh
+slidesls init ./deck --template blank --title "Deck"
+slidesls catalog --type component --json
+slidesls inspect utilities/layout components/card components/panel --json
+slidesls add utilities/layout components/card components/panel --dir ./deck --dry-run --json
+slidesls add utilities/layout components/card components/panel --dir ./deck
+```
+
+Minimal primitive-authored content slide:
+
+```html
+<section class="ls-slide" data-ls-slide-kind="content" aria-label="Custom primitive slide">
+  <div class="ls-slide__inner">
+    <header class="ls-slide__header">
+      <p class="ls-eyebrow">Primitive composition</p>
+      <h2 class="ls-title">Compose from layout utilities and components.</h2>
+    </header>
+    <div class="ls-grid ls-grid--2">
+      <article class="ls-card">
+        <div class="ls-card__body">
+          <h3 class="ls-card__title">Layout stays explicit</h3>
+          <p class="ls-card__text">Use utilities for structure and components for content.</p>
+        </div>
+      </article>
+      <div class="ls-panel ls-panel--frame ls-panel--center">
+        <p class="ls-panel__text">Diagram or visual anchor</p>
+      </div>
+    </div>
+  </div>
+</section>
+```
+
 ## Minimal shell
 
 ```html
@@ -57,9 +98,9 @@ slidesls init ./slides/my-deck --template minimal --theme executive-blue --title
 - `.ls-slide__inner` for base padding/grid/safe area.
 - `slide-runtime.js` as a module script.
 
-## Themes
+## Themes and default tokens
 
-Choose exactly one theme per deck and set it on `<html>` with `data-ls-theme`. Do not stack multiple theme attributes.
+Themes are optional token presets. If you omit `data-ls-theme`, the deck still uses the default dark blue-accent base tokens from `core/base/tokens.css`; it is not unstyled. Choose exactly one theme per deck when a prebuilt visual direction is desired and set it on `<html>` with `data-ls-theme`. Do not stack multiple theme attributes.
 
 - Product/professional: `executive-blue` + `templates/title-hero` + `templates/split` + `templates/metric-dashboard`.
 - Board/business: `boardroom-navy` + `templates/section-divider` + `templates/metric-dashboard` + `components/table`/`components/quote`.
@@ -123,10 +164,13 @@ Customize by overriding token variables, switching presets, or both. Never redef
 Use brief catalog and snippet inspect first:
 
 ```sh
+slidesls catalog --json
 slidesls catalog --starter --json
+slidesls catalog --type component --json
 slidesls catalog --type template --json
 slidesls inspect templates/split --json
 slidesls inspect components/card --json
+slidesls inspect utilities/layout --api --json
 ```
 
 Use `slidesls catalog --api --json` or `slidesls inspect <item> --api --json` only for low-level public classes, modifiers, data attributes, and CSS variables. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and strict validation errors.

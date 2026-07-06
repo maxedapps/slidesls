@@ -28,5 +28,7 @@
       }
     ]
   },
-  "agentLevel": "recommended"
+  "agentLevel": "recommended",
+  "tags": ["quote", "testimonial", "citation"],
+  "useCases": ["Present a quote, testimonial, cited principle, or short attributed idea."]
 }

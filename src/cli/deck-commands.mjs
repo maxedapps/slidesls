@@ -70,7 +70,8 @@ Use --theme executive-blue to copy a theme preset and set data-ls-theme on the g
 
 For AI agents:
   Start with JSON output: slidesls init <dir> --template minimal --json
-  Then run slidesls catalog --starter --json and slidesls validate <dir> --json.`,
+  For custom primitive decks: slidesls init <dir> --template blank --json
+  Then run slidesls catalog --json and slidesls validate <dir> --json.`,
     });
   rejectRemovedRegistryOption(args);
   const projectRoot = path.resolve(args._[0] || ".");
@@ -146,13 +147,24 @@ For AI agents:
     template,
     items: items.map((i) => i.name),
     theme: themeItem ? themeItem.themeAttribute : null,
-    nextSteps: [
-      "slidesls catalog --starter --json",
-      "slidesls inspect templates/split --json",
-      `slidesls validate ${projectRoot} --json`,
-      `slidesls preview ${projectRoot}`,
-    ],
-    agentInstructions: initAgentInstructions(projectRoot),
+    nextSteps:
+      template === "blank"
+        ? [
+            "slidesls catalog --json",
+            "slidesls catalog --type component --json",
+            "slidesls inspect utilities/layout components/card components/panel --json",
+            `slidesls validate ${projectRoot} --json`,
+            `slidesls preview ${projectRoot}`,
+          ]
+        : [
+            "slidesls catalog --starter --json",
+            "slidesls catalog --type template --json",
+            "slidesls inspect templates/split --json",
+            "slidesls inspect utilities/layout components/card components/panel --json",
+            `slidesls validate ${projectRoot} --json`,
+            `slidesls preview ${projectRoot}`,
+          ],
+    agentInstructions: initAgentInstructions(projectRoot, { template }),
   });
 }
 
@@ -249,9 +261,11 @@ export async function catalogCommand(argv) {
 JSON output is brief by default. Add --api for public authoring metadata.
 
 For AI agents:
-  Use slidesls catalog --starter --json for the smallest starting set.
-  Use slidesls catalog --json before choosing registry items.
-  Use slidesls catalog --type preset --tag theme --json to discover themes.
+  Use slidesls catalog --json for the complete lightweight inventory.
+  Use slidesls catalog --starter --json only for the smallest fast-start set.
+  Use slidesls catalog --type component --json for primitive composition.
+  Use slidesls catalog --type template --json for slide skeletons.
+  Use slidesls catalog --type preset --tag theme --json to discover optional themes.
   Use slidesls inspect <item> --json for snippets and load tags.`,
     });
   rejectRemovedRegistryOption(args);
@@ -266,11 +280,7 @@ For AI agents:
   if (args.tag) rawItems = rawItems.filter((item) => item.tags?.includes(args.tag));
   if (args.query) {
     const q = String(args.query).toLowerCase();
-    rawItems = rawItems.filter((item) =>
-      `${item.name} ${item.title || item.label} ${item.description} ${(item.tags || []).join(" ")}`
-        .toLowerCase()
-        .includes(q),
-    );
+    rawItems = rawItems.filter((item) => catalogSearchText(item).includes(q));
   }
   if (args.limit) rawItems = rawItems.slice(0, Number(args.limit));
   const items = rawItems.map((item) =>
@@ -345,6 +355,19 @@ For AI agents:
     commandTemplates: inspectCommandTemplates(),
     agentInstructions: inspectAgentInstructions(args._, { api: args.api }),
   });
+}
+
+function catalogSearchText(item) {
+  return [
+    item.name,
+    item.title || item.label,
+    item.description,
+    ...(item.tags || []),
+    ...(item.useCases || []),
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
 }
 
 function catalogCommandTemplates() {

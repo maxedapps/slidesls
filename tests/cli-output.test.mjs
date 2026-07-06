@@ -47,10 +47,10 @@ test("add --dry-run text output reports planned copies", async () => {
 
 test("catalog --json returns an agent-friendly result envelope", async () => {
   const { stdout } = await run([bin, "catalog", "--json"]);
-  // Budget: ~43 items with brief fields plus decision-critical avoidWhen.
-  // Keep the brief catalog comfortably under one agent context "page".
+  // Budget: ~43 items with brief fields, decision-critical avoidWhen, group labels,
+  // and structured useCases. Keep the brief catalog under a small agent context page.
   assert.ok(
-    Buffer.byteLength(stdout) < 14_000,
+    Buffer.byteLength(stdout) < 16_000,
     `brief catalog is ${Buffer.byteLength(stdout)} bytes`,
   );
   const result = JSON.parse(stdout);
@@ -61,7 +61,14 @@ test("catalog --json returns an agent-friendly result envelope", async () => {
   const layout = result.data.items.find((item) => item.name === "utilities/layout");
   assert.ok(layout);
   assert.equal(layout.authoring, undefined);
-  assert.ok(result.data.groups.some((group) => group.type === "ls:utility"));
+  const utilityGroup = result.data.groups.find((group) => group.type === "ls:utility");
+  assert.ok(utilityGroup);
+  assert.equal(utilityGroup.label, "Utilities");
+  assert.match(utilityGroup.purpose, /compose anywhere/);
+  assert.equal(
+    result.data.groups.reduce((sum, group) => sum + group.count, 0),
+    result.data.count,
+  );
 
   const rich = JSON.parse((await run([bin, "catalog", "--api", "--json"])).stdout);
   const richLayout = rich.data.items.find((item) => item.name === "utilities/layout");
@@ -72,6 +79,31 @@ test("catalog --json returns an agent-friendly result envelope", async () => {
   assert.equal(
     result.data.items.some((item) => item.name.startsWith("layouts/")),
     false,
+  );
+});
+
+test("catalog --query searches structured intent fields without prose noise", async () => {
+  const kpi = JSON.parse((await run([bin, "catalog", "--query", "kpi", "--json"])).stdout);
+  assert.ok(kpi.data.items.some((item) => item.name === "components/metric"));
+  assert.ok(kpi.data.items.some((item) => item.name === "templates/metric-dashboard"));
+
+  const oneLiner = JSON.parse(
+    (await run([bin, "catalog", "--query", "one-liner", "--json"])).stdout,
+  );
+  assert.ok(oneLiner.data.items.some((item) => item.name === "components/icon-item"));
+  assert.ok(oneLiner.data.items.some((item) => item.name === "templates/feature-rows"));
+
+  const api = JSON.parse((await run([bin, "catalog", "--query", "api", "--json"])).stdout);
+  assert.ok(api.data.items.some((item) => item.name === "components/http-exchange"));
+  assert.ok(api.data.items.some((item) => item.name === "templates/api-flow"));
+
+  const narrative = JSON.parse(
+    (await run([bin, "catalog", "--query", "narrative", "--json"])).stdout,
+  );
+  assert.equal(
+    narrative.data.items.some((item) => item.name === "components/metric"),
+    false,
+    "query should not search composition.avoidWhen prose",
   );
 });
 
@@ -247,14 +279,32 @@ test("template add plans dependencies but not snippet files", async () => {
   );
 });
 
-test("init and validate JSON include agentInstructions without removing existing fields", async () => {
+test("init and validate JSON include context-aware agentInstructions without removing existing fields", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-agent-json-"));
   const init = JSON.parse((await run([bin, "init", root, "--template", "blank", "--json"])).stdout);
   assert.equal(init.ok, true);
   assert.equal(init.data.entry, "index.html");
   assert.ok(Array.isArray(init.data.nextSteps));
-  assert.ok(Array.isArray(init.data.agentInstructions.nextCommands));
+  assert.ok(
+    init.data.agentInstructions.nextCommands.includes("slidesls catalog --type component --json"),
+  );
+  assert.ok(
+    init.data.agentInstructions.nextCommands.includes(
+      "slidesls inspect utilities/layout components/card components/panel --json",
+    ),
+  );
   assert.ok(Array.isArray(init.data.agentInstructions.longRunningCommands));
+
+  const minimalRoot = await mkdtemp(path.join(os.tmpdir(), "slidesls-agent-minimal-json-"));
+  const minimal = JSON.parse(
+    (await run([bin, "init", minimalRoot, "--template", "minimal", "--json"])).stdout,
+  );
+  assert.ok(
+    minimal.data.agentInstructions.nextCommands.includes("slidesls catalog --type template --json"),
+  );
+  assert.ok(
+    minimal.data.agentInstructions.nextCommands.includes("slidesls inspect templates/split --json"),
+  );
 
   const validation = JSON.parse((await run([bin, "validate", root, "--json"])).stdout);
   assert.equal(validation.ok, true);
@@ -263,6 +313,65 @@ test("init and validate JSON include agentInstructions without removing existing
   assert.ok(Array.isArray(validation.data.warnings));
   assert.ok(Array.isArray(validation.data.agentInstructions.nextCommands));
   assert.ok(Array.isArray(validation.data.agentInstructions.longRunningCommands));
+});
+
+test("blank deck can be composed from primitive utilities and components", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-primitive-workflow-"));
+  await run([bin, "init", root, "--template", "blank", "--title", "Primitive Test", "--json"]);
+  const add = JSON.parse(
+    (
+      await run([
+        bin,
+        "add",
+        "utilities/layout",
+        "components/card",
+        "components/panel",
+        "--dir",
+        root,
+        "--json",
+      ])
+    ).stdout,
+  );
+  assert.equal(add.ok, true);
+
+  const entryPath = path.join(root, "index.html");
+  let html = await readFile(entryPath, "utf8");
+  for (const tag of [...add.data.links, ...add.data.scripts]) {
+    if (html.includes(tag)) continue;
+    html = tag.startsWith("<link")
+      ? html.replace('    <script type="module"', `    ${tag}\n    <script type="module"`)
+      : html.replace("  </head>", `    ${tag}\n  </head>`);
+  }
+  const primitiveSlide = `      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Custom primitive slide">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Primitive composition</p>
+            <h2 class="ls-title">Compose from layout utilities and components.</h2>
+          </header>
+          <div class="ls-grid ls-grid--2">
+            <article class="ls-card">
+              <div class="ls-card__body">
+                <h3 class="ls-card__title">Layout stays explicit</h3>
+                <p class="ls-card__text">Use utilities for structure and components for content.</p>
+              </div>
+            </article>
+            <div class="ls-panel ls-panel--frame ls-panel--center">
+              <p class="ls-panel__text">Diagram or visual anchor</p>
+            </div>
+          </div>
+        </div>
+      </section>`;
+  html = html.replace(/      <section class="ls-slide"[\s\S]*?<\/section>/, primitiveSlide);
+  await writeFile(entryPath, html);
+
+  const validation = JSON.parse((await run([bin, "validate", root, "--json"])).stdout);
+  assert.equal(validation.ok, true);
+  assert.equal(validation.data.valid, true);
+  assert.deepEqual(validation.data.errors, []);
+  assert.deepEqual(validation.data.warnings, []);
+  assert.match(html, /registry\/utilities\/layout\/layout\.css/);
+  assert.match(html, /registry\/components\/card\/card\.css/);
+  assert.match(html, /registry\/components\/panel\/panel\.css/);
 });
 
 test("validate text shows no-warning guidance on a valid minimal deck", async () => {
@@ -274,8 +383,10 @@ test("validate text shows no-warning guidance on a valid minimal deck", async ()
   assert.match(stdout, /For AI agents:/);
 });
 
-test("catalog and inspect text include AI-agent guidance", async () => {
+test("catalog and inspect text include grouped AI-agent guidance", async () => {
   const catalog = (await run([bin, "catalog", "--recommended"])).stdout;
+  assert.match(catalog, /Components \(\d+\) — Standalone/);
+  assert.match(catalog, /Utilities \(\d+\) — Layout/);
   assert.match(catalog, /For AI agents:/);
   assert.match(catalog, /Do not invent ls-\*/);
 

@@ -50,5 +50,7 @@
     ],
     "cssVariables": ["--ls-timeline-gap", "--ls-timeline-marker-size", "--ls-timeline-accent"]
   },
-  "agentLevel": "recommended"
+  "agentLevel": "recommended",
+  "tags": ["timeline", "roadmap", "process"],
+  "useCases": ["Show a roadmap, process, sequence, milestones, or chronological progression."]
 }

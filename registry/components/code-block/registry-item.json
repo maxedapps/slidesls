@@ -1,7 +1,7 @@
 {
   "name": "components/code-block",
   "type": "ls:component",
-  "description": "Code Block slide component.",
+  "description": "Static code excerpt component for short implementation examples.",
   "files": [
     {
       "path": "registry/components/code-block/code-block.css",
@@ -36,5 +36,7 @@
     "cssVariables": ["--ls-code-max-block-size", "--ls-code-font-size", "--ls-code-padding"],
     "usage": ["Use for short code excerpts that fit a slide without scrolling during presentation."]
   },
-  "agentLevel": "recommended"
+  "agentLevel": "recommended",
+  "tags": ["code", "implementation", "example"],
+  "useCases": ["Show a short code excerpt, implementation example, or technical snippet."]
 }

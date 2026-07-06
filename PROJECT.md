@@ -42,7 +42,7 @@ A class should be one of:
 - **Component** — owns its own internals, e.g. `.ls-card`, `.ls-panel`.
 - **Runtime/deck shell class** — part of the required deck shell, e.g. `.ls-slide`, `.ls-deck`.
 
-Templates are HTML snippets, not CSS layout contracts. Avoid hidden ancestor-dependent APIs.
+Templates are HTML snippets, not CSS layout contracts. Agent-primary authoring supports both template-first and primitive-first composition: themes are optional token presets, while utilities/components are first-class building blocks for custom slides. Avoid hidden ancestor-dependent APIs.
 
 ## Implemented tooling
 

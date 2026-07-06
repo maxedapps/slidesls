@@ -1,7 +1,7 @@
 {
   "name": "components/metric",
   "type": "ls:component",
-  "description": "Metric slide component.",
+  "description": "KPI/stat primitive for one prominent number plus label.",
   "files": [
     {
       "path": "registry/components/metric/metric.css",
@@ -40,7 +40,14 @@
     "layoutBehavior": "content-sized",
     "copyGuidance": "One number plus a short label; the value carries the slide.",
     "avoidWhen": ["narrative or multi-sentence content"],
-    "alternatives": [{ "when": "points need explanation", "use": "components/card" }]
+    "alternatives": [
+      {
+        "when": "points need explanation",
+        "use": "components/card"
+      }
+    ]
   },
-  "agentLevel": "recommended"
+  "agentLevel": "recommended",
+  "tags": ["metric", "kpi", "stat"],
+  "useCases": ["Show a KPI, stat, numeric proof point, or one prominent measurable outcome."]
 }

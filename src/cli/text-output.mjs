@@ -18,18 +18,31 @@ function agentTextBlock(lines) {
 
 export function textFor(command, result) {
   if (command === "help" || result.data?.help) return `${result.data.help}\n`;
-  if (command === "catalog")
+  if (command === "catalog") {
+    const grouped = (result.data.groups || [])
+      .map((group) => {
+        const items = result.data.items
+          .filter((item) => item.type === group.type)
+          .map((item) => `  ${item.name.padEnd(34)} ${item.description || ""}`)
+          .join("\n");
+        const heading = group.label
+          ? `${group.label} (${group.count}) — ${group.purpose || group.type}`
+          : `${group.type} (${group.count})`;
+        return `${heading}\n${items}`;
+      })
+      .join("\n\n");
     return (
-      result.data.items
-        .map((item) => `${item.name.padEnd(36)} ${item.type.padEnd(13)} ${item.description || ""}`)
-        .join("\n") +
+      grouped +
       agentTextBlock([
-        `Use \`${agentCommandRecipes.catalogStarterJson}\` or \`${agentCommandRecipes.catalogJson}\` for brief discovery.`,
+        `Use \`${agentCommandRecipes.catalogJson}\` for the complete lightweight inventory.`,
+        `Use \`${agentCommandRecipes.catalogStarterJson}\` only for the smallest fast-start set.`,
+        `Use \`${agentCommandRecipes.catalogComponentsJson}\` and \`${agentCommandRecipes.inspectLayoutApiJson}\` for primitive composition.`,
         `Use \`${agentCommandRecipes.catalogApiJson}\` only when low-level authoring metadata is needed.`,
         `Use \`${agentCommandRecipes.inspectJson}\` for snippets and load tags.`,
         "Do not invent ls-* classes; use snippets or --api authoring classes/modifiers.",
       ])
     );
+  }
   if (command === "inspect")
     return (
       result.data.items
@@ -117,14 +130,23 @@ export function textFor(command, result) {
       ],
     )}`;
   }
-  if (command === "init")
+  if (command === "init") {
+    const initGuidance =
+      result.data.template === "blank"
+        ? [
+            `Use \`${agentCommandRecipes.catalogJson}\` for the complete inventory.`,
+            `Use \`${agentCommandRecipes.catalogComponentsJson}\` plus \`${agentCommandRecipes.inspectLayoutApiJson}\` for primitive composition.`,
+            `Run \`slidesls validate ${result.data.root} --json\` after editing.`,
+          ]
+        : [
+            `Use \`${agentCommandRecipes.catalogStarterJson}\` for the fast-start set or \`${agentCommandRecipes.catalogJson}\` for all blocks.`,
+            "Use `slidesls inspect templates/split --json` for exact markup; use components/utilities for custom slides.",
+            `Run \`slidesls validate ${result.data.root} --json\` after editing.`,
+          ];
     return `Initialized ${result.data.root}${result.data.theme ? ` with theme ${result.data.theme}` : ""}\nNext steps:\n${result.data.nextSteps.map((s) => `  ${s}`).join("\n")}\n${agentTextBlock(
-      [
-        `Use \`${agentCommandRecipes.catalogStarterJson}\` before adding classes or presets.`,
-        "Use `slidesls inspect templates/split --json` for exact markup.",
-        `Run \`slidesls validate ${result.data.root} --json\` after editing.`,
-      ],
+      initGuidance,
     )}`;
+  }
   if (command === "preview") {
     const slideLinks = (result.data.slideLinks || [])
       .map((slide) => `  ${slide.url}${slide.label ? `  (${slide.label})` : ""}`)
