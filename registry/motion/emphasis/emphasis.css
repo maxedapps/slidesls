@@ -1,0 +1,43 @@
+/* emphasis — scale-and-settle for the element a step just revealed. Pair with
+ * data-step: the runtime flips data-ls-reveal-state to "current", and the
+ * emphasized element lands with a small pop before settling.
+ */
+@layer motion {
+  .ls-emphasize[data-ls-reveal-state="current"] {
+    animation: ls-emphasize var(--ls-emphasize-duration, 480ms) var(--ls-transition-ease);
+  }
+
+  @keyframes ls-emphasize {
+    0% {
+      scale: var(--ls-emphasize-from, 0.92);
+      opacity: 0;
+    }
+
+    60% {
+      scale: var(--ls-emphasize-peak, 1.03);
+      opacity: 1;
+    }
+
+    100% {
+      scale: 1;
+    }
+  }
+
+  .ls-deck[data-ls-export="true"] .ls-emphasize,
+  .ls-deck[data-ls-motion="none"] .ls-emphasize,
+  .ls-slide[data-ls-motion="none"] .ls-emphasize {
+    animation: none;
+  }
+
+  @media print {
+    .ls-emphasize {
+      animation: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ls-emphasize[data-ls-reveal-state="current"] {
+      animation: none;
+    }
+  }
+}

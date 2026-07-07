@@ -1,0 +1,87 @@
+{
+  "name": "components/figure",
+  "type": "ls:component",
+  "description": "The image and diagram frame, with a caption slot and the sanctioned abstract-art fallback for figure slots without a real asset.",
+  "files": [
+    {
+      "path": "registry/components/figure/figure.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/figure/README.md",
+  "rootClass": "ls-figure",
+  "safeAnywhere": true,
+  "snippets": [
+    {
+      "label": "Abstract figure with caption",
+      "path": "registry/components/figure/snippets/basic.html"
+    }
+  ],
+  "intent": ["teach", "prove", "emphasize"],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-figure",
+        "elements": ["ls-figure__media", "ls-figure__caption"],
+        "modifiers": [
+          "ls-figure--frame",
+          "ls-figure--edge",
+          "ls-figure--fill",
+          "ls-figure--abstract"
+        ]
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--ls-abstract-art",
+        "overrideSafe": true
+      }
+    ],
+    "usage": [
+      "Follow the image-sourcing ladder: real asset, then an authored diagram (components/flow, components/chart, or hand-written SVG), then ls-figure--abstract, then the archetype's no-figure variant. Text in a panel pretending to be a visual is never sanctioned.",
+      "Author as a <figure> element with the caption in a <figcaption class=\"ls-figure__caption\">.",
+      "For ls-figure--abstract leave the media element empty and mark it aria-hidden=\"true\"; the art is CSS and styles override --ls-abstract-art with their own compositions.",
+      "SVG figures need role=\"img\" and an aria-label describing the diagram."
+    ]
+  },
+  "composition": {
+    "contentDensity": ["sparse", "balanced"],
+    "layoutBehavior": "fills-area",
+    "itemCountGuidance": "1-2 figures per slide; a figure earns space by being the point, not decoration.",
+    "copyGuidance": "Caption of one short sentence; the media carries the content.",
+    "useWhen": [
+      "a screenshot, photo, or authored SVG diagram is the slide's evidence",
+      "a split layout needs a visual half (ls-figure--fill)",
+      "no real asset exists and the slot still deserves intentional art (ls-figure--abstract)"
+    ],
+    "avoidWhen": [
+      "the visual would be text restating the title in a colored panel",
+      "the content has inherent structure better authored as steps or bars",
+      "the asset is an app screenshot that deserves product chrome"
+    ],
+    "alternatives": [
+      {
+        "when": "step sequences with connectors",
+        "use": "components/flow"
+      },
+      {
+        "when": "proportional values",
+        "use": "components/chart"
+      },
+      {
+        "when": "screenshots that should read as product UI",
+        "use": "components/media"
+      }
+    ]
+  },
+  "agentLevel": "recommended",
+  "tags": ["figure", "image", "diagram", "caption", "abstract"],
+  "useCases": [
+    "Frame a screenshot or photo with a caption.",
+    "Host an authored SVG diagram in a split layout.",
+    "Fill a figure slot with sanctioned abstract art when no asset exists."
+  ]
+}

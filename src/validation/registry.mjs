@@ -10,6 +10,7 @@ import {
   unknownLsClasses,
 } from "./authoring-api.mjs";
 import { validateSnippetStructure } from "./markup-structure.mjs";
+import { ARCHETYPE_SLOTS } from "./contract-lint.mjs";
 
 const knownTypes = new Set([
   "core",
@@ -25,6 +26,32 @@ const knownTypes = new Set([
   "ls:animation",
   "ls:preset",
   "ls:template",
+  "ls:style",
+  "ls:layout",
+  "ls:archetype",
+  "ls:motion",
+  "ls:font",
+  "ls:icons",
+]);
+const itemStatuses = new Set(["stable", "preview", "deprecated"]);
+const itemIntents = new Set([
+  "open",
+  "close",
+  "prove",
+  "compare",
+  "explain-process",
+  "teach",
+  "show-data",
+  "show-code",
+  "emphasize",
+]);
+const contractConstraintKeys = new Set([
+  "min",
+  "max",
+  "minWords",
+  "maxWords",
+  "maxChars",
+  "description",
 ]);
 const knownFileTypes = new Set([
   "css",
@@ -39,6 +66,8 @@ const knownFileTypes = new Set([
   "jpeg",
   "webp",
   "gif",
+  "woff2",
+  "txt",
 ]);
 const agentLevels = new Set(["starter", "recommended", "advanced", "experimental"]);
 const snippetRequiredLevels = new Set(["starter", "recommended"]);
@@ -450,28 +479,31 @@ function publicCssClasses(css) {
   ];
 }
 
-async function validateThemePreset({ item, itemPath, source, errors }) {
+// Styles activate through a single data-ls-style attribute; "linked but
+// inactive" was the failure mode of the removed data-ls-font model, so the
+// attribute contract is validated structurally.
+async function validateStyleItem({ item, itemPath, source, errors }) {
   const expectedAttribute = item.name.split("/").at(-1);
-  if (item.type !== "ls:preset")
-    add("error", errors, "theme_type", `${itemPath} theme presets must use type ls:preset`);
-  if (item.themeAttribute !== expectedAttribute)
+  if (item.type !== "ls:style")
+    add("error", errors, "style_type", `${itemPath} style items must use type ls:style`);
+  if (item.styleAttribute !== expectedAttribute)
     add(
       "error",
       errors,
-      "theme_attribute",
-      `${itemPath} must set themeAttribute to ${expectedAttribute}`,
+      "style_attribute",
+      `${itemPath} must set styleAttribute to ${expectedAttribute}`,
     );
-  const themeFiles = (item.files || []).filter((file) => file?.path?.endsWith("/theme.css"));
-  if (themeFiles.length !== 1)
-    add("error", errors, "theme_file", `${itemPath} must list exactly one theme.css file`);
-  if (source.mode !== "local" || themeFiles.length !== 1) return;
-  const css = await readFile(path.join(source.registryRoot, themeFiles[0].path), "utf8");
-  if (!css.includes(`:root[data-ls-theme="${expectedAttribute}"]`))
+  const styleFiles = (item.files || []).filter((file) => file?.path?.endsWith("/style.css"));
+  if (styleFiles.length !== 1)
+    add("error", errors, "style_file", `${itemPath} must list exactly one style.css file`);
+  if (source.mode !== "local" || styleFiles.length !== 1) return;
+  const css = await readFile(path.join(source.registryRoot, styleFiles[0].path), "utf8");
+  if (!css.includes(`:root[data-ls-style="${expectedAttribute}"]`))
     add(
       "error",
       errors,
-      "theme_css_attribute",
-      `${themeFiles[0].path} must scope tokens to :root[data-ls-theme="${expectedAttribute}"]`,
+      "style_css_attribute",
+      `${styleFiles[0].path} must scope tokens to :root[data-ls-style="${expectedAttribute}"]`,
     );
 }
 
@@ -480,6 +512,7 @@ const compositionKeys = new Set([
   "layoutBehavior",
   "itemCountGuidance",
   "copyGuidance",
+  "useWhen",
   "avoidWhen",
   "alternatives",
 ]);
@@ -530,17 +563,19 @@ function validateCompositionShape({ item, itemPath, errors }) {
         `${itemPath} composition.${key} must be a string`,
       );
   }
-  if (composition.avoidWhen !== undefined) {
-    if (
-      !Array.isArray(composition.avoidWhen) ||
-      composition.avoidWhen.some((entry) => typeof entry !== "string" || !entry.trim())
-    )
-      add(
-        "error",
-        errors,
-        "invalid_composition",
-        `${itemPath} composition.avoidWhen must be an array of non-empty strings`,
-      );
+  for (const key of ["useWhen", "avoidWhen"]) {
+    if (composition[key] !== undefined) {
+      if (
+        !Array.isArray(composition[key]) ||
+        composition[key].some((entry) => typeof entry !== "string" || !entry.trim())
+      )
+        add(
+          "error",
+          errors,
+          "invalid_composition",
+          `${itemPath} composition.${key} must be an array of non-empty strings`,
+        );
+    }
   }
   if (composition.alternatives !== undefined) {
     if (!Array.isArray(composition.alternatives)) {
@@ -573,13 +608,14 @@ function validateCompositionShape({ item, itemPath, errors }) {
 // authoring.usage). Matched tokens must name an existing item or an item-name
 // prefix such as "presets/themes" so renames cannot silently rot guidance.
 const guidanceItemTokenPattern =
-  /(?<![\w/])(core|utilities|components|templates|animations|presets)\/[a-z0-9-]+(?:\/[a-z0-9-]+)*/g;
+  /(?<![\w/])(core|utilities|components|templates|animations|presets|styles|layouts|archetypes|motion|icons|fonts)\/[a-z0-9-]+(?:\/[a-z0-9-]+)*/g;
 
 function compositionGuidanceStrings(item) {
   const composition = item.composition || {};
   return [
     composition.itemCountGuidance,
     composition.copyGuidance,
+    ...(Array.isArray(composition.useWhen) ? composition.useWhen : []),
     ...(Array.isArray(composition.avoidWhen) ? composition.avoidWhen : []),
     ...(Array.isArray(composition.alternatives)
       ? composition.alternatives.flatMap((alternative) => [alternative?.when])
@@ -595,6 +631,24 @@ async function validateCompositionIntegrity({ data, source, errors }) {
 
   for (const item of data.items) {
     const itemPath = item.registryItemPath;
+    for (const pairedName of item.pairsWith || []) {
+      if (!data.byName.has(pairedName))
+        add(
+          "error",
+          errors,
+          "unknown_pairing",
+          `${itemPath} pairsWith references unknown registry item: ${pairedName}`,
+        );
+    }
+    for (const styleName of Object.keys(item.styles || {})) {
+      if (!data.byName.has(styleName))
+        add(
+          "error",
+          errors,
+          "unknown_style_note",
+          `${itemPath} styles references unknown registry item: ${styleName}`,
+        );
+    }
     for (const alternative of item.composition?.alternatives || []) {
       if (alternative?.use && !data.byName.has(alternative.use))
         add(
@@ -626,6 +680,139 @@ async function validateCompositionIntegrity({ data, source, errors }) {
           "avoid_when_missing_readme_section",
           `${itemPath} declares composition.avoidWhen but ${item.docs} has no "## When not to use" section`,
         );
+    }
+  }
+}
+
+function validateV2Metadata({ item, itemPath, errors }) {
+  if (item.styleAttribute !== undefined && typeof item.styleAttribute !== "string")
+    add("error", errors, "invalid_style_attribute", `${itemPath} styleAttribute must be a string`);
+
+  if (item.status !== undefined && !itemStatuses.has(item.status))
+    add(
+      "error",
+      errors,
+      "invalid_status",
+      `${itemPath} status must be one of ${[...itemStatuses].join(", ")}`,
+    );
+
+  if (item.intent !== undefined) {
+    if (!Array.isArray(item.intent) || item.intent.some((entry) => !itemIntents.has(entry)))
+      add(
+        "error",
+        errors,
+        "invalid_intent",
+        `${itemPath} intent must be an array of ${[...itemIntents].join(", ")}`,
+      );
+  }
+
+  if (item.styles !== undefined) {
+    if (!item.styles || typeof item.styles !== "object" || Array.isArray(item.styles)) {
+      add("error", errors, "invalid_styles", `${itemPath} styles must be an object`);
+    } else {
+      for (const [styleName, note] of Object.entries(item.styles)) {
+        if (typeof note !== "string" || !note.trim())
+          add(
+            "error",
+            errors,
+            "invalid_styles",
+            `${itemPath} styles.${styleName} must be a non-empty string`,
+          );
+      }
+    }
+  }
+
+  if (item.contract !== undefined) {
+    if (!item.contract || typeof item.contract !== "object" || Array.isArray(item.contract)) {
+      add("error", errors, "invalid_contract", `${itemPath} contract must be an object`);
+    } else {
+      for (const [slot, constraints] of Object.entries(item.contract)) {
+        if (!constraints || typeof constraints !== "object" || Array.isArray(constraints)) {
+          add(
+            "error",
+            errors,
+            "invalid_contract",
+            `${itemPath} contract.${slot} must be an object`,
+          );
+          continue;
+        }
+        for (const [key, value] of Object.entries(constraints)) {
+          if (!contractConstraintKeys.has(key))
+            add(
+              "error",
+              errors,
+              "invalid_contract",
+              `${itemPath} contract.${slot} has unknown key: ${key}`,
+            );
+          else if (key === "description" && typeof value !== "string")
+            add(
+              "error",
+              errors,
+              "invalid_contract",
+              `${itemPath} contract.${slot}.description must be a string`,
+            );
+          else if (key !== "description" && (!Number.isInteger(value) || value < 0))
+            add(
+              "error",
+              errors,
+              "invalid_contract",
+              `${itemPath} contract.${slot}.${key} must be a non-negative integer`,
+            );
+        }
+        for (const [low, high] of [
+          ["min", "max"],
+          ["minWords", "maxWords"],
+        ]) {
+          if (
+            Number.isInteger(constraints[low]) &&
+            Number.isInteger(constraints[high]) &&
+            constraints[low] > constraints[high]
+          )
+            add(
+              "error",
+              errors,
+              "invalid_contract",
+              `${itemPath} contract.${slot}.${low} exceeds ${high}`,
+            );
+        }
+      }
+    }
+  }
+
+  if (item.motion !== undefined) {
+    if (!item.motion || typeof item.motion !== "object" || Array.isArray(item.motion)) {
+      add("error", errors, "invalid_motion", `${itemPath} motion must be an object`);
+    } else {
+      for (const key of Object.keys(item.motion)) {
+        if (!["default", "notes"].includes(key))
+          add("error", errors, "invalid_motion", `${itemPath} motion has unknown key: ${key}`);
+        else if (typeof item.motion[key] !== "string")
+          add("error", errors, "invalid_motion", `${itemPath} motion.${key} must be a string`);
+      }
+    }
+  }
+
+  if (item.icons !== undefined) {
+    if (!item.icons || typeof item.icons !== "object" || Array.isArray(item.icons)) {
+      add("error", errors, "invalid_icons", `${itemPath} icons must be an object`);
+    } else {
+      if (item.icons.guidance !== undefined && typeof item.icons.guidance !== "string")
+        add("error", errors, "invalid_icons", `${itemPath} icons.guidance must be a string`);
+      if (
+        item.icons.suggested !== undefined &&
+        (!Array.isArray(item.icons.suggested) ||
+          item.icons.suggested.some((name) => typeof name !== "string"))
+      )
+        add(
+          "error",
+          errors,
+          "invalid_icons",
+          `${itemPath} icons.suggested must be an array of strings`,
+        );
+      for (const key of Object.keys(item.icons)) {
+        if (!["guidance", "suggested"].includes(key))
+          add("error", errors, "invalid_icons", `${itemPath} icons has unknown key: ${key}`);
+      }
     }
   }
 }
@@ -695,10 +882,25 @@ async function validateItemMetadata({ item, itemPath, source, errors, warnings }
       `${itemPath} safeAnywhere cannot be true when classMetadata marks a class as not safe anywhere`,
     );
 
-  if (item.name?.startsWith("presets/themes/"))
-    await validateThemePreset({ item, itemPath, source, errors });
+  if (item.name?.startsWith("styles/")) await validateStyleItem({ item, itemPath, source, errors });
+
+  // A contract slot without a lint mapping would silently never validate —
+  // the contract must stay machine-checkable end to end.
+  if (item.name?.startsWith("archetypes/") && item.contract) {
+    const slots = ARCHETYPE_SLOTS[item.name.split("/").at(-1)] || {};
+    for (const slot of Object.keys(item.contract)) {
+      if (!slots[slot])
+        add(
+          "error",
+          errors,
+          "contract_slot_unmapped",
+          `${itemPath} contract slot "${slot}" has no selector mapping in contract-lint.mjs; it would never be checked`,
+        );
+    }
+  }
 
   validateCompositionShape({ item, itemPath, errors });
+  validateV2Metadata({ item, itemPath, errors });
   await validateAuthoringMetadata({ item, itemPath, source, errors });
 
   if (item.snippets === undefined) return;

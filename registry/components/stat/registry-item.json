@@ -1,0 +1,90 @@
+{
+  "name": "components/stat",
+  "type": "ls:component",
+  "description": "An unboxed number: display-size value, quiet label, optional delta. Scale contrast does the work a border used to fake.",
+  "files": [
+    {
+      "path": "registry/components/stat/stat.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/stat/README.md",
+  "rootClass": "ls-stat",
+  "safeAnywhere": true,
+  "snippets": [
+    {
+      "label": "Basic stat",
+      "path": "registry/components/stat/snippets/basic.html"
+    }
+  ],
+  "intent": ["show-data", "prove", "emphasize"],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-stat",
+        "elements": ["ls-stat__value", "ls-stat__label", "ls-stat__delta"],
+        "modifiers": ["ls-stat--xl", "ls-stat--sm", "ls-stat--center"]
+      }
+    ],
+    "dataAttributes": [
+      {
+        "name": "data-ls-tone",
+        "scope": ".ls-stat__delta",
+        "values": ["down", "neutral"],
+        "description": "Delta tone. Without the attribute the delta reads as an improvement (success color); \"down\" colors it as a regression, \"neutral\" mutes it."
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--ls-stat-value-size",
+        "default": "96px",
+        "overrideSafe": true
+      }
+    ],
+    "usage": [
+      "Keep the stat unboxed; place it inside a components/surface only when the composition really needs a frame.",
+      "Deltas default to the success color; set data-ls-tone=\"down\" when the movement is bad and \"neutral\" when it carries no judgment.",
+      "Emphasize part of the value with <em> or ls-accent-text when the unit should stay quiet."
+    ]
+  },
+  "composition": {
+    "contentDensity": ["sparse"],
+    "layoutBehavior": "content-sized",
+    "itemCountGuidance": "1 hero stat, or 2-4 in a row; beyond that the numbers stop reading as headlines.",
+    "copyGuidance": "Value of at most 6 characters plus unit; label of 2-6 words; delta of 1-3 words.",
+    "useWhen": [
+      "one number is the evidence",
+      "a small row of KPIs summarizes an outcome",
+      "a metric needs a delta with an honest up/down tone"
+    ],
+    "avoidWhen": [
+      "the number needs comparison context across categories",
+      "more than 4 metrics compete on one slide",
+      "the value requires a paragraph of explanation to land"
+    ],
+    "alternatives": [
+      {
+        "when": "comparing values across categories",
+        "use": "components/chart"
+      },
+      {
+        "when": "many metrics with structure",
+        "use": "components/table"
+      },
+      {
+        "when": "the point is a worded claim, not a number",
+        "use": "components/statement"
+      }
+    ]
+  },
+  "agentLevel": "recommended",
+  "tags": ["stat", "metric", "kpi", "number", "delta"],
+  "useCases": [
+    "Lead a slide with one headline metric.",
+    "Show a small row of KPIs with labels and deltas.",
+    "Prove an outcome with a before/after delta."
+  ]
+}

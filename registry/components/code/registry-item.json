@@ -1,0 +1,95 @@
+{
+  "name": "components/code",
+  "type": "ls:component",
+  "description": "One component for code blocks, diffs, and terminal transcripts, switched by data-ls-variant, with line-level hooks for highlight, add/del, and prompt/output emphasis.",
+  "files": [
+    {
+      "path": "registry/components/code/code.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/code/README.md",
+  "rootClass": "ls-code",
+  "safeAnywhere": true,
+  "snippets": [
+    {
+      "label": "Code block with highlighted line",
+      "path": "registry/components/code/snippets/basic.html"
+    }
+  ],
+  "intent": ["show-code", "teach"],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-code",
+        "elements": ["ls-code__header", "ls-code__body", "ls-code__line"]
+      }
+    ],
+    "dataAttributes": [
+      {
+        "name": "data-ls-variant",
+        "scope": ".ls-code",
+        "values": ["block", "diff", "terminal"],
+        "description": "Selects the code presentation: plain block, diff (add/del lines), or terminal transcript (prompt/output lines)."
+      },
+      {
+        "name": "data-ls-line",
+        "scope": ".ls-code__line",
+        "values": ["highlight", "add", "del", "prompt", "output"],
+        "description": "Line-level emphasis: highlight draws an accent bar, add/del render diff lines with drawn +/- markers, prompt/output style terminal transcripts."
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--ls-code-font-size",
+        "default": "21px",
+        "overrideSafe": true
+      }
+    ],
+    "usage": [
+      "Author as a <figure class=\"ls-code\"> with a <figcaption class=\"ls-code__header\"> (filename or command context) and the code inside .ls-code__body > pre.",
+      "Wrap each line in a .ls-code__line span; +/- diff markers and $ prompts are drawn by CSS, so do not type them into the source.",
+      "Keep excerpts short: highlight the 1-3 lines the narration is about instead of pasting whole files."
+    ]
+  },
+  "composition": {
+    "contentDensity": ["balanced", "dense"],
+    "layoutBehavior": "content-sized",
+    "itemCountGuidance": "One code block per slide; pair it with notes rather than a second block.",
+    "copyGuidance": "Up to about 12 lines of at most 60 characters; trim with ellipsis comments instead of shrinking the font.",
+    "useWhen": [
+      "an API or config excerpt is the teaching content",
+      "a before/after change reads best as a diff",
+      "a command sequence and its output tell the story"
+    ],
+    "avoidWhen": [
+      "the excerpt would exceed roughly 15 lines",
+      "the audience needs the concept, not the syntax",
+      "the content is data, not code"
+    ],
+    "alternatives": [
+      {
+        "when": "the concept matters more than the syntax",
+        "use": "components/flow"
+      },
+      {
+        "when": "structured values rather than code",
+        "use": "components/table"
+      },
+      {
+        "when": "a product screenshot of the tool",
+        "use": "components/media"
+      }
+    ]
+  },
+  "agentLevel": "recommended",
+  "tags": ["code", "diff", "terminal", "syntax", "walkthrough"],
+  "useCases": [
+    "Walk through an API call with the key line highlighted.",
+    "Show a before/after change as a diff.",
+    "Present a terminal session with prompts and dimmed output."
+  ]
+}

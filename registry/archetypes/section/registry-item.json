@@ -1,0 +1,68 @@
+{
+  "name": "archetypes/section",
+  "type": "ls:archetype",
+  "title": "Section",
+  "description": "A chapter divider: an oversized chapter number, a short title, and an optional progress hint. Deliberately sparse — the breath between chapters.",
+  "intent": ["open"],
+  "tags": ["archetype", "divider", "chapter"],
+  "useCases": [
+    "chapter breaks in decks longer than eight slides",
+    "signalling a change of subject before the next argument starts"
+  ],
+  "files": [],
+  "registryDependencies": ["core/base", "layouts/core", "components/stat", "components/statement"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/archetypes/section/README.md",
+  "agentLevel": "starter",
+  "contract": {
+    "number": {
+      "min": 1,
+      "max": 1,
+      "description": "The chapter number as digits (\"02\") — the deck's structure, made visible."
+    },
+    "title": { "min": 1, "max": 1, "maxWords": 6 },
+    "progressHint": {
+      "min": 0,
+      "max": 1,
+      "maxWords": 6,
+      "description": "Optional orientation line (\"Part two of four\")."
+    }
+  },
+  "motion": {
+    "default": "transition",
+    "notes": "The slide transition is the moment; keep the divider free of data-step reveals and stagger-heavy content."
+  },
+  "icons": { "guidance": "None. A divider is a number and a title." },
+  "composition": {
+    "layoutBehavior": "fills-area",
+    "useWhen": [
+      "a long deck changes subject and the audience should feel it",
+      "numbering the argument so people know where they are"
+    ],
+    "avoidWhen": [
+      "the deck has fewer than eight slides — dividers outnumber the content",
+      "the divider carries a claim worth reading on its own — use archetypes/statement"
+    ],
+    "alternatives": [
+      { "when": "the break should land a claim, not a number", "use": "archetypes/statement" },
+      { "when": "opening the whole deck", "use": "archetypes/title-hero" }
+    ]
+  },
+  "authoring": {
+    "attributes": [
+      {
+        "name": "data-ls-archetype",
+        "scope": "section.ls-slide",
+        "value": "section",
+        "description": "Marks the slide for contract linting and deck scorecards."
+      }
+    ],
+    "usage": [
+      "Titles are topic labels here (\"The rebuild\") — the one archetype where a label beats a claim.",
+      "Keep the numbering honest: if slides move, renumber; a wrong \"03\" is worse than none.",
+      "Resist filling the space; the emptiness is what makes the chapter break register."
+    ]
+  },
+  "snippets": [{ "label": "Basic", "path": "registry/archetypes/section/snippets/basic.html" }]
+}

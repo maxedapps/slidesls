@@ -1,65 +1,154 @@
 #!/usr/bin/env node
 
-// Release-path acceptance gate for rendered composition quality.
+// Release-path acceptance gate for rendered composition AND motion quality.
 //
-// When a browser driver (agent-browser) is available, this script serves the
-// repo, renders two pages — examples/composition and a generated gallery
-// containing every bundled template snippet — collects real geometry with the
-// visual-qa eval payload, and fails loudly if any measured composition
-// warning fires (card_low_fill, equal_cards_sparse, body_text_small,
-// collection_incomplete) or collection looks broken. A future layout.css
-// edit that reintroduces stretched sparse cards fails the release check
-// instead of relying on manual review.
+// With a browser driver available, this script:
+//   1. serves the repo and renders examples/composition plus every generated
+//      gallery page (all snippets × styles × densities via `slidesls gallery`),
+//      collecting real geometry with the visual-qa eval payload;
+//   2. captures a still of each gallery combo into .gallery-review/<combo>.png
+//      for the human rubric review;
+//   3. runs the motion check (timed entrance burst, stagger paint-in
+//      distinctness, key-spam interrupt run) on generated motion pages —
+//      single frames cannot see motion, so this is scripted in-page sampling.
 //
-// Without a browser driver it skips with a visible notice: the base tool
-// stays dependency-free (PROJECT.md), so this runs in `pnpm pack:check` and
-// standalone, not in default `pnpm check`.
+// Measured defect codes fail the gate on default-density pages; density
+// variants are reported but advisory until the v2 threshold recalibration
+// (plan task 1.7). Motion failures always fail the gate.
 //
-// Override the driver binary with SLIDESLS_VISUAL_GATE_BROWSER
-// (e.g. "npx -y agent-browser").
+// Drivers: agent-browser (default) or playwright-core when resolvable
+// (SLIDESLS_VISUAL_GATE_BROWSER overrides the agent-browser binary).
+// Without any driver: skips with a notice — except in the release flow
+// (SLIDESLS_RELEASE=1, set by pack:check), where missing browser = failure,
+// so the taste/motion gate can never silently no-op on a release.
 
 import { spawn, spawnSync } from "node:child_process";
-import { rm, writeFile } from "node:fs/promises";
+import { mkdir, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
-import { RegistrySource, loadRegistry } from "../src/registry/source.mjs";
 import { visualQaEvalScript } from "../src/validation/visual-qa-eval.mjs";
 import { analyzeVisualQa } from "../src/validation/visual-rhythm.mjs";
+import { analyzeMotion, motionCheckScript } from "../src/validation/motion-check.mjs";
+import { galleryCommand } from "../src/cli/gallery-command.mjs";
 
 const MEASURED_CODES = new Set([
   "card_low_fill",
   "equal_cards_sparse",
   "body_text_small",
+  "low_contrast",
   "collection_incomplete",
 ]);
-const EXPECTED_MIN_COMPOSITION_CONTAINERS = 15; // composition deck has 18+ measured boxes
+const EXPECTED_MIN_COMPOSITION_CONTAINERS = 3; // v2 composition deck is mostly unboxed; 3 dashboard surfaces are always measured
 const root = path.resolve(import.meta.dirname, "..");
 const bin = path.join(root, "bin", "slidesls.mjs");
-const galleryFile = ".visual-gate-gallery.html";
-const session = `slidesls-visual-gate-${process.pid}`;
+const releaseMode = process.env.SLIDESLS_RELEASE === "1";
+const motionFileFor = (name) => `.visual-gate-motion-${name}.html`;
 
-function browserCommand() {
+// --- drivers ---------------------------------------------------------------
+
+function agentBrowserDriver() {
   const override = process.env.SLIDESLS_VISUAL_GATE_BROWSER;
-  if (override) return override.split(" ");
-  const probe = spawnSync("agent-browser", ["--version"], { encoding: "utf8" });
-  if (probe.error || probe.status !== 0) return null;
-  return ["agent-browser"];
+  const base = override ? override.split(" ") : ["agent-browser"];
+  if (!override) {
+    const probe = spawnSync("agent-browser", ["--version"], { encoding: "utf8" });
+    if (probe.error || probe.status !== 0) return null;
+  }
+  const session = `slidesls-visual-gate-${process.pid}`;
+  const run = (args, input) => {
+    const [command, ...prefix] = base;
+    const result = spawnSync(command, [...prefix, "--session", session, ...args], {
+      encoding: "utf8",
+      input,
+      timeout: 120000,
+    });
+    if (result.error) throw result.error;
+    if (result.status !== 0)
+      throw new Error(
+        `agent-browser ${args.join(" ")} failed (${result.status}): ${result.stderr || result.stdout}`,
+      );
+    return result.stdout;
+  };
+  return {
+    name: "agent-browser",
+    async open(url) {
+      run(["open", url]);
+      run(["set", "viewport", "1600", "900"]);
+      run(["wait", "--load", "networkidle"]);
+    },
+    async eval(script) {
+      return run(["eval", "--stdin"], script);
+    },
+    async screenshot(file) {
+      try {
+        run(["screenshot", file]);
+        return true;
+      } catch {
+        return false;
+      }
+    },
+    async close() {
+      try {
+        run(["close"]);
+      } catch {
+        // Session cleanup is best-effort.
+      }
+    },
+  };
 }
 
-function runBrowser(baseCommand, args, input) {
-  const [command, ...prefix] = baseCommand;
-  const result = spawnSync(command, [...prefix, "--session", session, ...args], {
-    encoding: "utf8",
-    input,
-    timeout: 120000,
-  });
-  if (result.error) throw result.error;
-  if (result.status !== 0)
-    throw new Error(
-      `agent-browser ${args.join(" ")} failed (${result.status}): ${result.stderr || result.stdout}`,
-    );
-  return result.stdout;
+async function playwrightDriver() {
+  let chromium;
+  try {
+    ({ chromium } = await import("playwright-core"));
+  } catch {
+    return null;
+  }
+  let browser;
+  try {
+    browser = await chromium.launch({ headless: true });
+  } catch {
+    // Fall back to a headless shell from the shared playwright cache.
+    const { readdirSync } = await import("node:fs");
+    const os = await import("node:os");
+    const cache = path.join(os.homedir(), "Library", "Caches", "ms-playwright");
+    try {
+      const shell = readdirSync(cache)
+        .filter((dir) => dir.startsWith("chromium_headless_shell-"))
+        .sort()
+        .at(-1);
+      const executablePath = path.join(
+        cache,
+        shell,
+        "chrome-headless-shell-mac-arm64",
+        "chrome-headless-shell",
+      );
+      browser = await chromium.launch({ executablePath, headless: true });
+    } catch {
+      return null;
+    }
+  }
+  const page = await browser.newPage({ viewport: { width: 1600, height: 900 } });
+  return {
+    name: "playwright-core",
+    async open(url) {
+      await page.goto(url, { waitUntil: "networkidle" });
+    },
+    async eval(script) {
+      return page.evaluate(script);
+    },
+    async screenshot(file) {
+      // Gallery pages render in export mode (all slides stacked), so review
+      // stills must capture the full page, not the first viewport.
+      await page.screenshot({ path: file, fullPage: true });
+      return true;
+    },
+    async close() {
+      await browser.close();
+    },
+  };
 }
+
+// --- helpers ----------------------------------------------------------------
 
 function startPreview() {
   return new Promise((resolve, reject) => {
@@ -69,8 +158,6 @@ function startPreview() {
     });
     let stdout = "";
     let stderr = "";
-    // The child never escapes a failed startup: kill it before rejecting so
-    // the caller's cleanup does not need a handle it never received.
     function fail(error) {
       clearTimeout(timeout);
       child.kill("SIGTERM");
@@ -95,133 +182,184 @@ function startPreview() {
 }
 
 function parseCollected(stdout) {
-  let payload = JSON.parse(stdout.trim());
+  let payload = typeof stdout === "string" ? JSON.parse(stdout.trim()) : stdout;
   if (typeof payload === "string") payload = JSON.parse(payload);
   return payload;
 }
 
-// One deck containing every bundled template snippet, linking live registry
-// assets, so any template whose composition regresses is measured directly.
-async function buildTemplateGallery() {
-  const source = new RegistrySource({ registryRoot: root });
-  const data = await loadRegistry(source);
-  const links = [];
-  const scripts = [];
-  for (const item of data.items) {
-    if (item.name.startsWith("presets/")) continue;
-    for (const file of item.files || []) {
-      if (file.path.endsWith(".css")) links.push(`<link rel="stylesheet" href="${file.path}" />`);
-      if (file.path.endsWith(".js"))
-        scripts.push(`<script type="module" src="${file.path}"></script>`);
-    }
-  }
-  const sections = [];
-  for (const item of data.items) {
-    if (item.type !== "ls:template") continue;
-    for (const snippet of item.snippets || []) {
-      sections.push(await source.readText(snippet.path));
-    }
-  }
-  const html = `<!doctype html>
-<html lang="en">
+// A small known deck exercising transitions, stagger, and steps — the motion
+// check needs predictable structure, not real content.
+function motionDeckHtml({ styleAttribute = null, styleLinks = [] } = {}) {
+  const slides = [1, 2, 3]
+    .map(
+      (
+        index,
+      ) => `      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Motion ${index}">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Motion</p>
+            <h2 class="ls-title">Slide ${index}</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-grid ls-grid--3">
+              <div class="ls-surface"><p class="ls-surface__text">Unit one</p></div>
+              <div class="ls-surface"><p class="ls-surface__text">Unit two</p></div>
+              <div class="ls-surface"><p class="ls-surface__text">Unit three</p></div>
+            </div>
+          </div>
+        </div>
+      </section>`,
+    )
+    .join("\n");
+  return `<!doctype html>
+<html lang="en"${styleAttribute ? ` data-ls-style="${styleAttribute}"` : ""}>
   <head>
     <meta charset="utf-8" />
-    <title>slidesls visual gate template gallery</title>
-    ${[...new Set(links)].join("\n    ")}
-    ${[...new Set(scripts)].join("\n    ")}
+    <title>slidesls visual gate motion page</title>
+    <link rel="stylesheet" href="registry/core/base/reset.css" />
+    <link rel="stylesheet" href="registry/core/base/tokens.css" />
+    <link rel="stylesheet" href="registry/core/base/slide.css" />
+    <link rel="stylesheet" href="registry/core/base/icons.css" />
+    <link rel="stylesheet" href="registry/core/base/motion.css" />
+    <link rel="stylesheet" href="registry/layouts/core/layout.css" />
+    <link rel="stylesheet" href="registry/layouts/core/utilities.css" />
+    <link rel="stylesheet" href="registry/components/surface/surface.css" />
+    ${styleLinks.map((href) => `<link rel="stylesheet" href="${href}" />`).join("\n    ")}
+    <script defer src="registry/core/base/slide-runtime.js"></script>
   </head>
   <body class="ls-page">
-    <main class="ls-deck" data-ls-deck aria-label="Visual gate template gallery">
-      ${sections.join("\n")}
+    <main class="ls-deck" data-ls-deck aria-label="Motion check">
+${slides}
     </main>
   </body>
 </html>
 `;
-  await writeFile(path.join(root, galleryFile), html);
-  return sections.length;
 }
 
-function checkPage({ name, analysis, expectedSlides, expectedMinContainers }) {
+function checkPage({ name, analysis, expectedMinContainers, enforceMeasured }) {
   const failures = [];
+  const notices = [];
   const containerCount = analysis.slides.reduce(
     (sum, slide) => sum + (slide.containers?.length || 0),
     0,
   );
-  if (expectedSlides !== undefined && analysis.summary.slideCount !== expectedSlides)
-    failures.push(
-      `${name}: expected ${expectedSlides} slides, collected ${analysis.summary.slideCount}.`,
-    );
   if (analysis.summary.collectedSlideCount !== analysis.summary.slideCount)
     failures.push(
       `${name}: only ${analysis.summary.collectedSlideCount}/${analysis.summary.slideCount} slides rendered during collection.`,
     );
   if (expectedMinContainers !== undefined && containerCount < expectedMinContainers)
     failures.push(`${name}: collection looks broken — only ${containerCount} containers measured.`);
-  for (const warning of analysis.warnings.filter((entry) => MEASURED_CODES.has(entry.code)))
-    failures.push(`${name}: ${warning.code}: ${warning.message}`);
+  const measured = analysis.warnings.filter((entry) => MEASURED_CODES.has(entry.code));
+  for (const warning of measured) {
+    const line = `${name}: ${warning.code}: ${warning.message}`;
+    if (enforceMeasured) failures.push(line);
+    else notices.push(line);
+  }
   if (!failures.length)
     console.log(
-      `visual-gate: ${name} ok — ${analysis.summary.slideCount} slides, ${containerCount} containers measured.`,
+      `visual-gate: ${name} ok — ${analysis.summary.slideCount} slides, ${containerCount} containers${notices.length ? `, ${notices.length} advisory finding(s)` : ""}.`,
     );
+  for (const notice of notices) console.log(`visual-gate: advisory — ${notice}`);
   return failures;
 }
 
-const browser = browserCommand();
-if (!browser) {
+// --- main -------------------------------------------------------------------
+
+const driver = agentBrowserDriver() || (await playwrightDriver());
+if (!driver) {
+  if (releaseMode) {
+    console.error(
+      "visual-gate: FAILED — no browser driver available in the release flow. " +
+        "Install agent-browser (or playwright-core) so composition and motion are gated before release.",
+    );
+    process.exit(1);
+  }
   console.log(
-    "visual-gate: SKIPPED — agent-browser not found. Install it (or set " +
-      "SLIDESLS_VISUAL_GATE_BROWSER) to gate rendered composition before release.",
+    "visual-gate: SKIPPED — no browser driver found. Install agent-browser (or set " +
+      "SLIDESLS_VISUAL_GATE_BROWSER) to gate rendered composition and motion.",
   );
   process.exit(0);
 }
 
 let child = null;
 const failures = [];
+const generatedFiles = [];
 try {
-  // The gallery file is written before the preview starts, so cleanup must
-  // cover preview-startup failures too — everything lives in one try/finally.
-  const templateSlideCount = await buildTemplateGallery();
+  // Gallery pages (registry × style × density).
+  const gallery = await galleryCommand(["--out", path.join(root, ".gallery"), "--json"]);
+  const galleryPages = (await readdir(path.join(root, ".gallery")))
+    .filter((file) => file.endsWith(".html") && file !== "index.html")
+    .sort();
+
+  // Motion pages: default tokens + every style in the gallery lineup.
+  const motionPages = [{ name: "default", file: motionFileFor("default") }];
+  await writeFile(path.join(root, motionFileFor("default")), motionDeckHtml());
+  generatedFiles.push(motionFileFor("default"));
+  for (const styleName of gallery.data.styles.filter((name) => name !== "default")) {
+    const attribute = styleName.split("/").at(-1);
+    const file = motionFileFor(attribute);
+    // Style CSS is enough for motion (fonts affect paint, not the checks).
+    await writeFile(
+      path.join(root, file),
+      motionDeckHtml({
+        styleAttribute: attribute,
+        styleLinks: [`registry/styles/${attribute}/style.css`],
+      }),
+    );
+    generatedFiles.push(file);
+    motionPages.push({ name: attribute, file });
+  }
+
   const preview = await startPreview();
   child = preview.child;
   const url = preview.url;
-  const pages = [
-    {
+
+  await mkdir(path.join(root, ".gallery-review"), { recursive: true });
+
+  // 1. Composition example (long-standing calibrated deck).
+  await driver.open(`${url}examples/composition/index.html?export=1`);
+  failures.push(
+    ...checkPage({
       name: "examples/composition",
-      path: "examples/composition/index.html",
+      analysis: analyzeVisualQa(parseCollected(await driver.eval(visualQaEvalScript()))),
       expectedMinContainers: EXPECTED_MIN_COMPOSITION_CONTAINERS,
-    },
-    {
-      name: "template gallery",
-      path: galleryFile,
-      expectedSlides: templateSlideCount,
-    },
-  ];
-  for (const page of pages) {
-    runBrowser(browser, ["open", `${url}${page.path}?export=1`]);
-    runBrowser(browser, ["set", "viewport", "1600", "900"]);
-    runBrowser(browser, ["wait", "--load", "networkidle"]);
-    const collected = parseCollected(
-      runBrowser(browser, ["eval", "--stdin"], visualQaEvalScript()),
-    );
+      enforceMeasured: true,
+    }),
+  );
+
+  // 2. Gallery matrix: geometry + stills for the human review.
+  for (const page of galleryPages) {
+    const combo = page.replace(/\.html$/, "");
+    await driver.open(`${url}.gallery/${page}?export=1`);
     failures.push(
       ...checkPage({
-        name: page.name,
-        analysis: analyzeVisualQa(collected),
-        expectedSlides: page.expectedSlides,
-        expectedMinContainers: page.expectedMinContainers,
+        name: `gallery/${combo}`,
+        analysis: analyzeVisualQa(parseCollected(await driver.eval(visualQaEvalScript()))),
+        enforceMeasured: combo.endsWith("--default"),
       }),
     );
+    const shot = await driver.screenshot(path.join(root, ".gallery-review", `${combo}.png`));
+    if (!shot) console.log(`visual-gate: screenshot unavailable for ${combo} (driver limitation).`);
+  }
+
+  // 3. Motion checks (never advisory: motion is the headline feature).
+  for (const page of motionPages) {
+    await driver.open(`${url}${page.file}`);
+    const collected = parseCollected(await driver.eval(motionCheckScript()));
+    const verdict = analyzeMotion(collected, { name: `motion/${page.name}` });
+    if (verdict.skipped) failures.push(`motion/${page.name}: check skipped: ${verdict.skipped}`);
+    failures.push(...verdict.failures);
+    if (!verdict.failures.length && !verdict.skipped)
+      console.log(
+        `visual-gate: motion/${page.name} ok — entrance, stagger, and key-spam checks passed.`,
+      );
   }
 } finally {
-  try {
-    runBrowser(browser, ["close"]);
-  } catch {
-    // Session cleanup is best-effort.
-  }
+  await driver.close();
   if (child) child.kill("SIGTERM");
-  await rm(path.join(root, galleryFile), { force: true });
+  for (const file of generatedFiles) await rm(path.join(root, file), { force: true });
 }
 
 for (const failure of failures) console.error(`visual-gate: FAILED — ${failure}`);
-if (!failures.length) console.log("visual-gate: ok — no composition regressions.");
+if (!failures.length) console.log("visual-gate: ok — no composition or motion regressions.");
 process.exit(failures.length ? 1 : 0);

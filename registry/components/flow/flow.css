@@ -1,0 +1,90 @@
+/* flow — linear/banded step sequences with CSS connectors between ADJACENT
+ * siblings only. Deliberately not a node-graph engine: arbitrary diagrams
+ * are authored SVG inside a figure.
+ */
+@layer components {
+  .ls-flow {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    gap: var(--ls-flow-gap, 56px);
+    align-items: start;
+  }
+
+  .ls-flow__step {
+    position: relative;
+    display: grid;
+    gap: var(--ls-space-2);
+    align-content: start;
+  }
+
+  /* Connector: drawn between adjacent steps, aligned to the marker row. */
+  .ls-flow__step:not(:first-child)::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: calc(-1 * var(--ls-flow-gap, 56px) + 8px);
+    inset-block-start: 22px;
+    inline-size: calc(var(--ls-flow-gap, 56px) - 16px);
+    block-size: 2px;
+    background: var(--ls-border-strong);
+  }
+
+  .ls-flow__marker {
+    display: inline-grid;
+    place-items: center;
+    inline-size: 46px;
+    block-size: 46px;
+    border: var(--ls-border-width) solid var(--ls-accent-border);
+    border-radius: var(--ls-radius-sm);
+    background: var(--ls-accent-bg);
+    color: var(--ls-accent-text);
+    font-family: var(--ls-font-label);
+    font-size: 21px;
+    font-weight: 700;
+  }
+
+  .ls-flow__title {
+    color: var(--ls-text);
+    font-family: var(--ls-font-heading);
+    font-size: var(--ls-flow-title-size, 27px);
+    font-weight: 720;
+    line-height: 1.12;
+  }
+
+  .ls-flow__text {
+    color: var(--ls-muted);
+    font-family: var(--ls-font-body);
+    font-size: var(--ls-flow-text-size, 21px);
+    line-height: 1.4;
+  }
+
+  /* Vertical rail. */
+  .ls-flow--vertical {
+    grid-auto-flow: row;
+    grid-auto-columns: unset;
+    grid-auto-rows: max-content;
+    gap: var(--ls-flow-gap, 44px);
+  }
+
+  .ls-flow--vertical .ls-flow__step {
+    grid-template-columns: max-content 1fr;
+    column-gap: var(--ls-space-4);
+  }
+
+  .ls-flow--vertical .ls-flow__marker {
+    grid-row: 1 / span 2;
+  }
+
+  .ls-flow--vertical .ls-flow__step:not(:first-child)::before {
+    inset-inline-start: 22px;
+    inset-block-start: calc(-1 * var(--ls-flow-gap, 44px) + 6px);
+    inline-size: 2px;
+    block-size: calc(var(--ls-flow-gap, 44px) - 12px);
+  }
+
+  .ls-slide[data-ls-density="compact"] .ls-flow {
+    --ls-flow-gap: 40px;
+    --ls-flow-title-size: 24px;
+    --ls-flow-text-size: 19px;
+  }
+}

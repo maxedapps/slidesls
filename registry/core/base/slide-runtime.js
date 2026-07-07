@@ -1,10 +1,19 @@
 const deck = document.querySelector("[data-ls-deck]");
 
 const interactiveSelector = "input, textarea, select, button, a, [contenteditable='true']";
+const transitionKinds = new Set(["fade", "rise", "slide", "none"]);
+const staggerContainerSelector = ".ls-grid, .ls-stack, .ls-cluster, .ls-layout, [data-ls-stagger]";
+const maxStaggerUnits = 12;
 
 function isExportMode() {
   const parameters = new URLSearchParams(window.location.search);
   return parameters.get("export") === "1" || parameters.get("export") === "pdf";
+}
+
+function prefersReducedMotion() {
+  return typeof window.matchMedia === "function"
+    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    : false;
 }
 
 function getSlides() {
@@ -32,6 +41,33 @@ function assignRevealSequences(root = document) {
         child.dataset.step = String(index + 1);
       }
     }
+  }
+}
+
+// Normative stagger traversal: direct children of the slide body (falling back
+// to the inner wrapper for hero/section slides without a body) in DOM order;
+// a layout/utility container or [data-ls-stagger] contributes its children as
+// units instead of itself (one level, no deeper recursion). Stepped elements
+// are excluded — steps own their reveal. Units past the cap share the last
+// index so long lists do not crawl in forever.
+function assignStaggerUnits(slide) {
+  if (slide.dataset.lsMotion === "none") return;
+  const root = slide.querySelector(".ls-slide__body") || slide.querySelector(".ls-slide__inner");
+  if (!root) return;
+  const units = [];
+  for (const child of root.children) {
+    if (child.matches(staggerContainerSelector)) {
+      units.push(...child.children);
+    } else {
+      units.push(child);
+    }
+  }
+  let index = 0;
+  for (const unit of units) {
+    if (unit.hasAttribute("data-step")) continue;
+    unit.dataset.lsEnter = "";
+    unit.style.setProperty("--ls-enter-index", String(Math.min(index, maxStaggerUnits - 1)));
+    index += 1;
   }
 }
 
@@ -122,8 +158,13 @@ function setSlideState(slides, activeIndex, step) {
       updateRevealState(slide, step);
     } else {
       slide.setAttribute("inert", "");
-      slide.dataset.lsStep = "0";
-      updateRevealState(slide, 0);
+      // A leaving slide keeps its step and reveal states while its exit
+      // animation plays (future content must stay hidden mid-flight); the
+      // transition settle handler resets it once it is display:none again.
+      if (slide.dataset.lsTransit !== "out") {
+        slide.dataset.lsStep = "0";
+        updateRevealState(slide, 0);
+      }
     }
   }
 
@@ -143,10 +184,58 @@ function shouldIgnoreKey(event) {
   return event.target instanceof Element && Boolean(event.target.closest(interactiveSelector));
 }
 
-function initializeLucide() {
-  if (window.lucide?.createIcons) {
-    window.lucide.createIcons();
+// The author attribute wins over the style's token default; motion-off and
+// reduced-motion collapse every kind to none.
+function currentTransitionKind() {
+  if (deck.dataset.lsMotion === "none" || prefersReducedMotion()) return "none";
+  return declaredTransitionKind();
+}
+
+function declaredTransitionKind() {
+  if (transitionKinds.has(deck.dataset.lsTransition)) return deck.dataset.lsTransition;
+  const token = getComputedStyle(deck).getPropertyValue("--ls-transition-kind").trim();
+  return transitionKinds.has(token) ? token : "fade";
+}
+
+function motionValue(name, fallback) {
+  const raw = getComputedStyle(deck).getPropertyValue(name).trim();
+  if (!raw) return fallback;
+  const value = Number.parseFloat(raw);
+  if (!Number.isFinite(value)) return fallback;
+  return raw.endsWith("ms") || !raw.endsWith("s") ? value : value * 1000;
+}
+
+function transitionFrames(kind, forward, distance) {
+  if (kind === "rise") {
+    return {
+      out: [
+        { opacity: 1, translate: "0 0" },
+        { opacity: 0, translate: `0 ${-Math.round(distance / 2)}px` },
+      ],
+      in: [
+        { opacity: 0, translate: `0 ${distance}px` },
+        { opacity: 1, translate: "0 0" },
+      ],
+    };
   }
+  if (kind === "slide") {
+    const exit = forward ? -distance : distance;
+    const enter = forward ? distance : -distance;
+    return {
+      out: [
+        { opacity: 1, translate: "0 0" },
+        { opacity: 0, translate: `${exit}px 0` },
+      ],
+      in: [
+        { opacity: 0, translate: `${enter}px 0` },
+        { opacity: 1, translate: "0 0" },
+      ],
+    };
+  }
+  return {
+    out: [{ opacity: 1 }, { opacity: 0 }],
+    in: [{ opacity: 0 }, { opacity: 1 }],
+  };
 }
 
 function initializeDeck() {
@@ -154,7 +243,6 @@ function initializeDeck() {
     return;
   }
 
-  initializeLucide();
   assignRevealSequences(deck);
 
   const slides = getSlides();
@@ -163,14 +251,99 @@ function initializeDeck() {
   }
 
   const exportMode = isExportMode();
+  const motionEnabled = deck.dataset.lsMotion !== "none" && !exportMode;
   let activeIndex = 0;
   let currentStep = exportMode ? getMaxStep(slides[0]) : 0;
+  // Exactly one WAAPI pair runs at a time: a new navigation mid-flight
+  // finishes the running pair (both animations jump to their end state, the
+  // leaving slide returns to display:none) before the next pair starts, so
+  // arbitrary key-spam can never strand a slide mid-transition.
+  let activeTransition = null;
+
+  deck.dataset.lsSlideCount = String(slides.length);
+  for (const [index, slide] of slides.entries()) {
+    slide.dataset.lsSlideIndex = String(index + 1);
+    for (const element of slide.querySelectorAll("[data-ls-page-number]")) {
+      element.textContent = String(index + 1);
+    }
+    if (motionEnabled) assignStaggerUnits(slide);
+  }
+
+  // Choreography rule: a translating slide transition (rise/slide) degrades
+  // the child stagger to opacity-only so motion never doubles up.
+  if (motionEnabled && ["rise", "slide"].includes(declaredTransitionKind())) {
+    deck.dataset.lsStaggerMode = "fade";
+  }
+
+  function finishActiveTransition() {
+    if (!activeTransition) return;
+    const transition = activeTransition;
+    activeTransition = null;
+    transition.finish();
+  }
+
+  function startSlideTransition(fromSlide, toSlide, forward) {
+    const slideOptsOut =
+      fromSlide.dataset.lsMotion === "none" || toSlide.dataset.lsMotion === "none";
+    const kind = slideOptsOut ? "none" : currentTransitionKind();
+    if (kind === "none" || typeof fromSlide.animate !== "function") {
+      delete fromSlide.dataset.lsTransit;
+      fromSlide.dataset.lsStep = "0";
+      updateRevealState(fromSlide, 0);
+      return;
+    }
+    const options = {
+      duration: motionValue("--ls-transition-duration", 460),
+      easing: getComputedStyle(deck).getPropertyValue("--ls-transition-ease").trim() || "ease",
+      fill: "both",
+    };
+    const frames = transitionFrames(kind, forward, motionValue("--ls-transition-distance", 96));
+    const animations = [
+      fromSlide.animate(frames.out, options),
+      toSlide.animate(frames.in, options),
+    ];
+    let settled = false;
+    const transition = {};
+    // The settle handler owns the display bookkeeping (removing
+    // data-ls-transit re-hides the leaving slide), so CSS never races JS.
+    const settle = () => {
+      if (settled) return;
+      settled = true;
+      if (activeTransition === transition) activeTransition = null;
+      delete fromSlide.dataset.lsTransit;
+      fromSlide.dataset.lsStep = "0";
+      updateRevealState(fromSlide, 0);
+      for (const animation of animations) animation.cancel();
+    };
+    transition.finish = () => {
+      if (settled) return;
+      for (const animation of animations) {
+        try {
+          animation.finish();
+        } catch {
+          // finish() only throws for infinite animations; ours are finite.
+        }
+      }
+      settle();
+    };
+    animations[1].onfinish = settle;
+    activeTransition = transition;
+  }
 
   function applyState(nextState, options = {}) {
     const state = clampState(nextState, slides);
+    const previousIndex = activeIndex;
     activeIndex = state.index;
     currentStep = state.step;
+
+    finishActiveTransition();
+    const animate = Boolean(options.animate) && motionEnabled && previousIndex !== activeIndex;
+    if (options.animate && motionEnabled) deck.dataset.lsNavigated = "true";
+    if (animate) slides[previousIndex].dataset.lsTransit = "out";
     setSlideState(slides, activeIndex, currentStep);
+    if (animate) {
+      startSlideTransition(slides[previousIndex], slides[activeIndex], activeIndex > previousIndex);
+    }
 
     if (options.updateHash) {
       updateHash(activeIndex, currentStep);
@@ -193,7 +366,7 @@ function initializeDeck() {
     updateScale();
     applyState(parseHashState(window.location.hash), { updateHash: window.location.hash !== "" });
     window.addEventListener("hashchange", () =>
-      applyState(parseHashState(window.location.hash), { updateHash: true }),
+      applyState(parseHashState(window.location.hash), { updateHash: true, animate: true }),
     );
   }
 
@@ -210,28 +383,34 @@ function initializeDeck() {
     if (event.key === "ArrowRight" || event.key === " ") {
       event.preventDefault();
       if (currentStep < maxStep) {
-        applyState({ slide: activeIndex + 1, step: currentStep + 1 }, { updateHash: true });
+        applyState(
+          { slide: activeIndex + 1, step: currentStep + 1 },
+          { updateHash: true, animate: true },
+        );
       } else if (activeIndex < slides.length - 1) {
-        applyState({ slide: activeIndex + 2, step: 0 }, { updateHash: true });
+        applyState({ slide: activeIndex + 2, step: 0 }, { updateHash: true, animate: true });
       }
     }
 
     if (event.key === "ArrowLeft") {
       event.preventDefault();
       if (currentStep > 0) {
-        applyState({ slide: activeIndex + 1, step: currentStep - 1 }, { updateHash: true });
+        applyState(
+          { slide: activeIndex + 1, step: currentStep - 1 },
+          { updateHash: true, animate: true },
+        );
       } else if (activeIndex > 0) {
         const previousIndex = activeIndex - 1;
         applyState(
           { slide: previousIndex + 1, step: getMaxStep(slides[previousIndex]) },
-          { updateHash: true },
+          { updateHash: true, animate: true },
         );
       }
     }
 
     if (event.key === "Home") {
       event.preventDefault();
-      applyState({ slide: 1, step: 0 }, { updateHash: true });
+      applyState({ slide: 1, step: 0 }, { updateHash: true, animate: true });
     }
 
     if (event.key === "End") {
@@ -239,7 +418,7 @@ function initializeDeck() {
       const lastIndex = slides.length - 1;
       applyState(
         { slide: lastIndex + 1, step: getMaxStep(slides[lastIndex]) },
-        { updateHash: true },
+        { updateHash: true, animate: true },
       );
     }
   });

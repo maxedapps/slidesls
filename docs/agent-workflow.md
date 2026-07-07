@@ -1,54 +1,79 @@
 # Agent workflow
 
-## Prepare the active CLI and skill
+The canonical authoring workflow lives in the bundled skill: [`skills/create-slides-with-slidesls/SKILL.md`](../skills/create-slides-with-slidesls/SKILL.md) and its `references/`. This page is the map; the skill is the territory — when they differ, the skill wins.
 
-Use the installed package or local checkout:
+## 0. Get the skill
 
-```sh
-npx -y @maxedapps/slidesls@latest --help
-node /absolute/path/to/ls_slides/bin/slidesls.mjs --help
-```
-
-Runtime-neutral no-install path for the bundled skill:
+Confirm the active CLI first (`slidesls --help`), then install or link the skill into the directory the agent runtime requires:
 
 ```sh
-slidesls skill show
+slidesls skill install <your-agent-skill-dir>/create-slides-with-slidesls
+slidesls skill link <your-agent-skill-dir>/create-slides-with-slidesls
 ```
 
-Full export fallback only:
-
-```sh
-slidesls skill show --all
-```
-
-For local-only work, link the bundled skill into the skill directory required by the active agent runtime so it stays current with this checkout:
-
-```sh
-node /absolute/path/to/ls_slides/bin/slidesls.mjs skill link <your-agent-skill-dir>/create-slides-with-slidesls
-```
-
-Use `skill install` instead if a copied skill is preferred. Claude Code project-local example only:
+Runtime-neutral no-install path: `slidesls skill show` (per-reference: `--reference style-directions|archetypes|motion|customization|qa|catalog`). Full export fallback only: `slidesls skill show --all`. Claude Code project-local example:
 
 ```sh
 slidesls skill install ./.claude/skills/create-slides-with-slidesls
 ```
 
-After installing or linking, fully read the installed `SKILL.md` and relevant `references/` before authoring.
+Fully read `SKILL.md` and the relevant references before authoring.
 
-## Deck workflow
+## 1. Style brief
 
-1. Clarify deck purpose, audience, tone, slide count, visual constraints, target folder, whether the user wants static or animated slides, and whether composition should be template-first or primitive-first.
-2. Choose visual direction independently: default base tokens/no theme, exactly one theme preset, or custom token overrides in `@layer tokens`.
-3. Use a dedicated deck folder. Fast/template path: `slidesls init --template minimal`. Primitive/custom path: `slidesls init --template blank` and add only the needed utilities/components.
-4. Inspect `slidesls.json` and the configured entry file for existing decks.
-5. Use `slidesls catalog --json` for the complete lightweight inventory; use `slidesls catalog --starter --json` only for the smallest fast-start set. Use filtered catalog commands for focused selection, for example `slidesls catalog --type component --json`, `slidesls catalog --type template --json`, and `slidesls catalog --type preset --tag theme --json`.
-6. Use `slidesls inspect templates/<name> --json` for full slide skeleton snippets, `slidesls inspect components/<name> --json` for component snippets, and `slidesls inspect utilities/layout --api --json` for primitive layout classes; add `--api` only for low-level authoring metadata.
-7. Match layouts to content density (the skill's decision table) and check each item's `avoidWhen` guidance before committing to it.
-8. Unless the user asks for static slides, copy/load `animations/reveal` plus one subtle variant such as `animations/slide-up` or `animations/fade`, then use `.ls-reveal` with `data-step` or `data-ls-reveal-sequence`.
-9. Run `slidesls add ... --dry-run --json`, review planned files and load tags, then run without `--dry-run`.
-10. Paste/edit snippet HTML directly; add returned `<link>` and `<script>` tags to the entry HTML when needed.
-11. Run `slidesls validate <dir> --json` and fix errors; design-lint warnings are advisory composition pointers to resolve or justify.
-12. Run the per-slide visual QA loop with `slidesls preview <dir>` (long-running) plus `slidesls visual-qa`, screenshotting flagged slides via their deep links. The full agent-browser recipe and checklist live in the bundled skill: `references/preview-validation.md` (also via `slidesls skill show --reference preview-validation`).
-13. Run `slidesls doctor --dir <dir> --json` for environment/config issues.
+Before any HTML, settle five things: audience & mood; exactly one style (`editorial`, `terminal`, `gallery`, `boardroom`, `pop` — `slidesls catalog --type style --json`); icon stance (sprite icons, sparse, or none); motion level (the style default plus steps only where sequence carries meaning); and what real image assets the user can provide. The user's stated direction always wins.
 
-Prefer templates, utilities, and standalone components. Templates are optional convenience snippets; utilities/components are first-class building blocks. Do not introduce structural layout macros, a framework, bundler, Tailwind, or runtime package dependency unless the user explicitly asks for one. Generated decks should remain standalone plain HTML/CSS/JS.
+## 2. Deck rhythm plan
+
+List every slide as `archetype — one-line intent` before writing HTML (`slidesls catalog --type archetype --json`). Self-check: no archetype exceeds half the content slides, no shape repeats three times in a row (`archetype_monotony` enforces exactly these thresholds), open with `title-hero`, close with `statement`, and change register every 3–4 content slides.
+
+## 3. Build loop
+
+```sh
+slidesls init ./slides/my-deck --template minimal --style editorial --title "My Deck"
+```
+
+Per slide: `slidesls inspect archetypes/<name> --json`, paste the snippet, then write the copy to the contract — slot counts and word limits are in the catalog entry and checked by `contract_slot_count` / `contract_copy_length`. Cut copy to fit; never shrink type.
+
+Discovery commands, incremental and JSON-first:
+
+```sh
+slidesls catalog --json                    # complete lightweight inventory
+slidesls catalog --type component --json   # content vocabulary
+slidesls catalog --intent prove --json     # find items by what a slide must DO
+slidesls inspect layouts/core --api --json # layout system API
+slidesls add <items...> --dir <deck> --dry-run --json
+```
+
+Icons come only from the inline sprite (`slidesls icons list --json`); after changing icon references run `slidesls icons sync --dir <deck> --json`. Customize only through token overrides in a deck-level `@layer tokens` block and documented variants; do not invent `ls-*` classes.
+
+## 4. Motion pass
+
+Transitions and staggered entrances are automatic and free. Add `data-step` reveals only where the reveal order carries meaning (a flow's steps, an evidence slide's proof, a walkthrough's annotations). Verify motion by stepping the live preview with ArrowRight — never from export screenshots (export mode deliberately renders everything static).
+
+## 5. QA loop
+
+```sh
+slidesls validate <deck> --report --json
+```
+
+Fix all errors first; then work the warnings' hints or suppress deliberately with `data-ls-lint="off"` on one intentionally unusual slide. Then the rendered pass:
+
+```sh
+slidesls preview <deck> --host 127.0.0.1 --port 4321   # long-running
+slidesls visual-qa --eval                              # collector; run on the ?export=1 URL
+slidesls visual-qa --analyze --input collected.json --json
+```
+
+Screenshot every content slide via the preview's `slideLinks` deep links and judge each against the positive checklist: one focal point; unambiguous hierarchy at thumbnail size; intentional whitespace; consecutive slides differ in shape; would you present it?
+
+## 6. Done criteria
+
+A deck is done when the scorecard is clean — or every remaining finding is deliberately suppressed and explained — **and** the rendered review happened. A clean scorecard alone is not done: it gates structure and honesty; the screenshots gate taste.
+
+## Hard boundaries
+
+- One style per deck; never mix a style with another style's fonts.
+- Sprite icons or nothing; no emoji in icon slots, no icon CDNs.
+- No fake visuals: text-in-a-panel pretending to be an image is never sanctioned; follow the image ladder.
+- Generated decks stay plain HTML/CSS/JS — no framework, bundler, or runtime package dependency unless the user explicitly asks.

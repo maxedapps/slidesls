@@ -1,0 +1,100 @@
+{
+  "name": "components/surface",
+  "type": "ls:component",
+  "description": "The one bordered container of the v2 vocabulary: cards, panels, callouts, and boxed metrics collapse into this single noun with status and layout variants.",
+  "files": [
+    {
+      "path": "registry/components/surface/surface.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/surface/README.md",
+  "rootClass": "ls-surface",
+  "safeAnywhere": true,
+  "snippets": [
+    {
+      "label": "Basic surface",
+      "path": "registry/components/surface/snippets/basic.html"
+    }
+  ],
+  "intent": ["teach", "compare", "emphasize"],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-surface",
+        "elements": ["ls-surface__kicker", "ls-surface__title", "ls-surface__text"],
+        "modifiers": [
+          "ls-surface--muted",
+          "ls-surface--accent",
+          "ls-surface--success",
+          "ls-surface--warning",
+          "ls-surface--danger",
+          "ls-surface--row",
+          "ls-surface--center"
+        ]
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--ls-surface-padding",
+        "default": "26px 28px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-surface-title-size",
+        "default": "29px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-surface-text-size",
+        "default": "22px",
+        "overrideSafe": true
+      }
+    ],
+    "usage": [
+      "Reach for a surface only when the composition needs a frame; everything else in the v2 vocabulary is deliberately unboxed.",
+      "Use exactly one status modifier (--accent, --success, --warning, --danger) per surface; the default border carries neutral content.",
+      "Add ls-surface--row for compact horizontal bands and ls-surface--center only when the surface sits in a stretched grid area."
+    ]
+  },
+  "composition": {
+    "contentDensity": ["balanced"],
+    "layoutBehavior": "content-sized",
+    "itemCountGuidance": "2-4 surfaces per slide; a lone surface should earn its border with status meaning or grouping.",
+    "copyGuidance": "Kicker up to 3 words, title up to 6 words, 1-3 sentences of text.",
+    "useWhen": [
+      "content needs a visible frame to read as one unit inside a busier composition",
+      "a status tone (success, warning, danger, accent) should color a block of copy",
+      "a compact labelled band of information should sit in a row"
+    ],
+    "avoidWhen": [
+      "the slide holds a single idea that display type carries better",
+      "a grid of surfaces would each hold only one short line",
+      "a number is the content; unboxed scale contrast does the work"
+    ],
+    "alternatives": [
+      {
+        "when": "a single full-width claim",
+        "use": "components/statement"
+      },
+      {
+        "when": "a headline number with a label",
+        "use": "components/stat"
+      },
+      {
+        "when": "3-6 short items",
+        "use": "components/list"
+      }
+    ]
+  },
+  "agentLevel": "recommended",
+  "tags": ["surface", "container", "card", "panel", "callout"],
+  "useCases": [
+    "Frame a feature or explanation block inside a grid.",
+    "Call out a warning, success, or key idea with a status tone.",
+    "Group a kicker, title, and short copy into one bordered unit."
+  ]
+}

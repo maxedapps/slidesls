@@ -1,0 +1,96 @@
+/* surface — THE bordered container of slidesls v2. Cards, panels, callouts,
+ * and boxed metrics collapse into this one noun; everything else in the
+ * vocabulary is deliberately unboxed. Content-sized by default.
+ */
+@layer components {
+  .ls-surface {
+    display: grid;
+    gap: var(--ls-space-2);
+    align-content: start;
+    padding: var(--ls-surface-padding, 26px 28px);
+    border: var(--ls-border-width) solid var(--ls-border);
+    border-radius: var(--ls-radius-md);
+    background: var(--ls-surface);
+    box-shadow: var(--ls-surface-highlight);
+  }
+
+  .ls-surface__kicker {
+    color: var(--ls-accent-text);
+    font-family: var(--ls-font-label);
+    font-size: var(--ls-text-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .ls-surface__title {
+    color: var(--ls-text);
+    font-family: var(--ls-font-heading);
+    font-size: var(--ls-surface-title-size, 29px);
+    font-weight: 720;
+    line-height: 1.12;
+  }
+
+  .ls-surface__text {
+    color: var(--ls-muted);
+    font-family: var(--ls-font-body);
+    font-size: var(--ls-surface-text-size, 22px);
+    line-height: 1.4;
+  }
+
+  .ls-surface--muted {
+    border-color: var(--ls-border);
+    background: var(--ls-surface-muted);
+  }
+
+  .ls-surface--accent {
+    border-color: var(--ls-accent-border);
+    background: var(--ls-accent-bg);
+  }
+
+  .ls-surface--accent .ls-surface__title {
+    color: var(--ls-accent-text);
+  }
+
+  .ls-surface--success {
+    border-color: color-mix(in srgb, var(--ls-status-success) 45%, transparent);
+    background: color-mix(in srgb, var(--ls-status-success) 9%, transparent);
+  }
+
+  .ls-surface--warning {
+    border-color: color-mix(in srgb, var(--ls-status-warning) 45%, transparent);
+    background: color-mix(in srgb, var(--ls-status-warning) 9%, transparent);
+  }
+
+  .ls-surface--danger {
+    border-color: color-mix(in srgb, var(--ls-status-danger) 45%, transparent);
+    background: color-mix(in srgb, var(--ls-status-danger) 9%, transparent);
+  }
+
+  /* Horizontal band: kicker/title/text flow inline — for compact rows. */
+  .ls-surface--row {
+    grid-auto-flow: column;
+    grid-auto-columns: max-content 1fr;
+    align-items: center;
+    gap: var(--ls-space-4);
+  }
+
+  .ls-surface--center {
+    justify-items: center;
+    align-content: center;
+    text-align: center;
+  }
+
+  .ls-slide[data-ls-density="compact"] .ls-surface {
+    --ls-surface-padding: 20px 22px;
+    --ls-surface-title-size: 25px;
+    --ls-surface-text-size: 19px;
+  }
+
+  .ls-slide[data-ls-density="spacious"] .ls-surface {
+    --ls-surface-padding: 32px 34px;
+    --ls-surface-title-size: 33px;
+    --ls-surface-text-size: 25px;
+  }
+}

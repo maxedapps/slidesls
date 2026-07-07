@@ -97,9 +97,11 @@ try {
   run(["doctor", "--dir", tmp, "--json"]);
   run(["catalog", "--json"]);
   run(["catalog", "--recommended", "--json"]);
-  run(["inspect", "templates/split", "--json"]);
-  run(["add", "components/card", "--dir", tmp, "--dry-run", "--json"]);
-  run(["add", "components/card", "--dir", tmp, "--json"]);
+  run(["inspect", "layouts/core", "--json"]);
+  run(["add", "components/surface", "--dir", tmp, "--dry-run", "--json"]);
+  run(["add", "components/surface", "--dir", tmp, "--json"]);
+  run(["icons", "list", "--json"]);
+  run(["icons", "sync", "--dir", tmp, "--json"]);
   run(["validate", tmp, "--json"]);
   run(["visual-qa", "--eval"]);
   run([

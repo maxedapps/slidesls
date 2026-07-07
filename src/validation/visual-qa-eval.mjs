@@ -13,10 +13,16 @@ export function visualQaEvalScript() {
   const slides = [...document.querySelectorAll(".ls-slide")];
   const nativeWidth = parseFloat(rootStyles.getPropertyValue("--ls-slide-width")) || 1600;
   const intentionalScrollSelector =
-    ".ls-table-frame, pre, .ls-code-block pre, .ls-terminal__body, .ls-code-diff__body";
-  const containerSelector = ".ls-card, .ls-panel, .ls-metric, .ls-callout, .ls-icon-item";
+    ".ls-table-frame, pre, .ls-code__body, .ls-code-block pre, .ls-terminal__body, .ls-code-diff__body";
+  // v2 vocabulary first; v1 class names remain measurable for copied decks.
+  const containerSelector =
+    ".ls-surface, .ls-media, .ls-card, .ls-panel, .ls-metric, .ls-callout, .ls-icon-item";
   const bodyTextSelector =
-    ".ls-card__text, .ls-panel__text, .ls-callout__text, .ls-icon-item__text, .ls-subtitle, .ls-slide__body p, .ls-slide__body li";
+    ".ls-surface__text, .ls-layout__text, .ls-list__text, .ls-flow__text, .ls-statement__support, .ls-card__text, .ls-panel__text, .ls-callout__text, .ls-icon-item__text, .ls-subtitle, .ls-slide__body p, .ls-slide__body li";
+  // Code-face content has its own sizing conventions; the prose legibility
+  // floor must not measure it.
+  const codeTextSelector =
+    ".ls-code, .ls-terminal, .ls-file-tree, .ls-code-block, .ls-code-diff, pre";
 
   function selectorFor(element) {
     if (element.id) return "#" + element.id;
@@ -138,11 +144,70 @@ export function visualQaEvalScript() {
   function minBodyFontSize(slide) {
     let min = null;
     for (const element of slide.querySelectorAll(bodyTextSelector)) {
-      if (!textLengthOf(element)) continue;
+      if (!textLengthOf(element) || element.closest(codeTextSelector)) continue;
       const size = parseFloat(getComputedStyle(element).fontSize);
       if (Number.isFinite(size) && (min === null || size < min)) min = size;
     }
     return min === null ? null : round(min);
+  }
+
+  // Computed foreground/background pairs for contrast analysis. Backgrounds
+  // are alpha-composited bottom-up from the slide background so tinted
+  // surfaces report their effective color.
+  function parseColor(value) {
+    const rgb = /rgba?\(([^)]+)\)/.exec(value || "");
+    if (rgb) {
+      const parts = rgb[1].split(",").map((part) => parseFloat(part));
+      return { r: parts[0], g: parts[1], b: parts[2], a: parts.length > 3 ? parts[3] : 1 };
+    }
+    // color-mix() backgrounds can serialize as color(srgb r g b / a).
+    const srgb = /color\(srgb\s+([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.%]+))?\)/.exec(value || "");
+    if (srgb) {
+      const alpha = srgb[4] === undefined ? 1 : parseFloat(srgb[4]) / (srgb[4].endsWith("%") ? 100 : 1);
+      return { r: parseFloat(srgb[1]) * 255, g: parseFloat(srgb[2]) * 255, b: parseFloat(srgb[3]) * 255, a: alpha };
+    }
+    return null;
+  }
+
+  function compositeChain(element, slide) {
+    let color = parseColor(getComputedStyle(slide).backgroundColor) || { r: 17, g: 19, b: 24, a: 1 };
+    const chain = [];
+    for (let node = element; node && node !== slide; node = node.parentElement) chain.push(node);
+    for (const node of chain.reverse()) {
+      const layer = parseColor(getComputedStyle(node).backgroundColor);
+      if (!layer || layer.a === 0) continue;
+      color = {
+        r: layer.r * layer.a + color.r * (1 - layer.a),
+        g: layer.g * layer.a + color.g * (1 - layer.a),
+        b: layer.b * layer.a + color.b * (1 - layer.a),
+        a: 1,
+      };
+    }
+    return color;
+  }
+
+  function colorPairs(slide) {
+    const sampleSelector = ".ls-title, .ls-eyebrow, .ls-subtitle, .ls-slide__footer, .ls-stat__value, .ls-stat__label, .ls-surface__kicker, .ls-chart__label, .ls-chart__value, .ls-layout__heading, .ls-layout__note, .ls-badge, " + bodyTextSelector;
+    const pairs = [];
+    const seen = new Set();
+    for (const element of slide.querySelectorAll(sampleSelector)) {
+      if (!textLengthOf(element)) continue;
+      const style = getComputedStyle(element);
+      const fg = parseColor(style.color);
+      if (!fg) continue;
+      const bg = compositeChain(element, slide);
+      const key = [selectorFor(element), Math.round(fg.r), Math.round(bg.r)].join("|");
+      if (seen.has(key)) continue;
+      seen.add(key);
+      pairs.push({
+        selector: selectorFor(element),
+        fontSize: round(parseFloat(style.fontSize)),
+        fontWeight: style.fontWeight,
+        color: [fg.r, fg.g, fg.b],
+        background: [bg.r, bg.g, bg.b],
+      });
+    }
+    return pairs.slice(0, 24);
   }
 
   const overflowCandidates = [...document.querySelectorAll("body, [data-ls-deck], .ls-slide, .ls-slide *")]
@@ -156,6 +221,8 @@ export function visualQaEvalScript() {
       ? {
           ready: deck.dataset.lsReady || null,
           export: deck.dataset.lsExport || null,
+          transition: deck.dataset.lsTransition || null,
+          motion: deck.dataset.lsMotion || null,
           currentSlide: deck.dataset.lsCurrentSlide || null,
           currentStep: deck.dataset.lsCurrentStep || null,
           rect: deck.getBoundingClientRect().toJSON(),
@@ -214,7 +281,14 @@ export function visualQaEvalScript() {
         clientWidth: slide.clientWidth,
         clientHeight: slide.clientHeight,
         textLength: textLengthOf(slide),
+        archetype: slide.dataset.lsArchetype || null,
+        motion: slide.dataset.lsMotion || null,
+        stepCount: slide.querySelectorAll("[data-step]").length,
+        iconCount: slide.querySelectorAll('use[href^="#ls-i-"]').length,
+        titleFontSize:
+          collected && title ? round(parseFloat(getComputedStyle(title).fontSize)) : null,
         minBodyFontSize: collected ? minBodyFontSize(slide) : null,
+        colorPairs: collected ? colorPairs(slide) : [],
         containers: collected ? containerMetrics(slide, slideRect, scale) : [],
         grids: collected ? gridMetrics(slide, scale) : [],
       };

@@ -49,6 +49,28 @@ export class RegistrySource {
     return response.text();
   }
 
+  // Byte-exact reads for copyable assets: fonts and other binaries would be
+  // corrupted by utf8 round-tripping.
+  async readBytes(relativePath) {
+    const safePath = assertSafeRelativePath(relativePath);
+    if (this.mode === "local") {
+      const filePath = path.join(this.registryRoot, safePath);
+      assertInside(this.registryRoot, filePath);
+      return readFile(filePath);
+    }
+    const url = `${String(this.registryUrl || DEFAULT_REGISTRY_URL).replace(/\/+$/, "")}/${safePath}`;
+    let response;
+    try {
+      response = await fetch(url, { signal: AbortSignal.timeout(this.fetchTimeoutMs) });
+    } catch (error) {
+      if (error.name === "TimeoutError" || error.name === "AbortError")
+        throw new Error(`Timed out fetching ${url} after ${this.fetchTimeoutMs}ms`);
+      throw error;
+    }
+    if (!response.ok) throw new Error(`Could not fetch ${url}: HTTP ${response.status}`);
+    return Buffer.from(await response.arrayBuffer());
+  }
+
   async readJson(relativePath) {
     const text = await this.readText(relativePath);
     try {
@@ -104,11 +126,17 @@ export function isAgentRecommended(item) {
   return ["starter", "recommended"].includes(item.agentLevel);
 }
 
+export function isPreviewItem(item) {
+  return item.status === "preview";
+}
+
 export function summarizeItemBrief(item) {
   return omitUndefined({
     name: item.name,
     type: item.type,
     description: item.description,
+    status: item.status,
+    intent: item.intent?.length ? item.intent : undefined,
     tags: item.tags?.length ? item.tags : undefined,
     useCases: item.useCases?.length ? item.useCases : undefined,
     agentLevel: item.agentLevel,
@@ -117,8 +145,12 @@ export function summarizeItemBrief(item) {
       ? item.registryDependencies.length
       : undefined,
     themeAttribute: item.themeAttribute,
+    styleAttribute: item.styleAttribute,
     styleTone: item.styleTone,
     pairsWith: item.pairsWith?.length ? item.pairsWith : undefined,
+    contract: item.contract,
+    motion: item.motion,
+    useWhen: item.composition?.useWhen?.length ? item.composition.useWhen : undefined,
     avoidWhen: item.composition?.avoidWhen?.length ? item.composition.avoidWhen : undefined,
   });
 }
@@ -141,9 +173,16 @@ export function summarizeItem(item) {
     rootClass: item.rootClass ?? null,
     safeAnywhere: item.safeAnywhere ?? false,
     agentRecommended: isAgentRecommended(item),
+    status: item.status || "stable",
+    intent: item.intent || [],
+    styles: item.styles || null,
+    contract: item.contract || null,
+    motion: item.motion || null,
+    icons: item.icons || null,
     styleTone: item.styleTone,
     pairsWith: item.pairsWith || [],
     themeAttribute: item.themeAttribute,
+    styleAttribute: item.styleAttribute,
     composition: item.composition || null,
     authoring: item.authoring || null,
     snippets: item.snippets || [],
@@ -152,6 +191,30 @@ export function summarizeItem(item) {
 }
 
 const groupMetadata = {
+  "ls:archetype": {
+    label: "Archetypes",
+    purpose: "Complete slide patterns with content contracts and motion wired in.",
+  },
+  "ls:style": {
+    label: "Styles",
+    purpose: "Art directions: tokens, fonts, texture, furniture, and motion signature.",
+  },
+  "ls:layout": {
+    label: "Layouts",
+    purpose: "Slide-body compositions with alignment guarantees and furniture.",
+  },
+  "ls:motion": {
+    label: "Motion",
+    purpose: "Optional motion recipes beyond the core transition and stagger defaults.",
+  },
+  "ls:icons": {
+    label: "Icons",
+    purpose: "Curated inline SVG icon sprite and sizing classes.",
+  },
+  "ls:font": {
+    label: "Fonts",
+    purpose: "Vendored variable webfont families copied into decks.",
+  },
   "ls:animation": {
     label: "Animations",
     purpose: "Optional reveal and emphasis recipes for progressive disclosure.",
@@ -178,10 +241,18 @@ const groupMetadata = {
   },
 };
 
+// v2 discovery groups (archetypes, styles) surface first; v1 groups keep their
+// relative order until they are deleted at 0.7.0.
 const groupOrder = [
+  "ls:archetype",
+  "ls:style",
   "ls:core",
-  "ls:utility",
+  "ls:layout",
   "ls:component",
+  "ls:motion",
+  "ls:icons",
+  "ls:font",
+  "ls:utility",
   "ls:template",
   "ls:animation",
   "ls:preset",

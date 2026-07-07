@@ -1,0 +1,7 @@
+@font-face {
+  font-family: "Space Grotesk Variable";
+  font-style: normal;
+  font-display: block;
+  font-weight: 300 700;
+  src: url("./space-grotesk-latin-wght-normal.woff2") format("woff2-variations");
+}

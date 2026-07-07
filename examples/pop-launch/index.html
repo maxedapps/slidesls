@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en" data-ls-style="pop">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loop — Launch all-hands (Pop)</title>
+    <link rel="stylesheet" href="../../registry/core/base/reset.css" />
+    <link rel="stylesheet" href="../../registry/core/base/tokens.css" />
+    <link rel="stylesheet" href="../../registry/core/base/slide.css" />
+    <link rel="stylesheet" href="../../registry/core/base/icons.css" />
+    <link rel="stylesheet" href="../../registry/core/base/motion.css" />
+    <link rel="stylesheet" href="../../registry/fonts/bricolage-grotesque/font.css" />
+    <link rel="stylesheet" href="../../registry/fonts/inter/font.css" />
+    <link rel="stylesheet" href="../../registry/fonts/jetbrains-mono/font.css" />
+    <link rel="stylesheet" href="../../registry/styles/pop/style.css" />
+    <link rel="stylesheet" href="../../registry/layouts/core/layout.css" />
+    <link rel="stylesheet" href="../../registry/layouts/core/utilities.css" />
+    <link rel="stylesheet" href="../../registry/components/badge/badge.css" />
+    <link rel="stylesheet" href="../../registry/components/statement/statement.css" />
+    <link rel="stylesheet" href="../../registry/components/stat/stat.css" />
+    <link rel="stylesheet" href="../../registry/components/flow/flow.css" />
+    <link rel="stylesheet" href="../../registry/components/list/list.css" />
+    <link rel="stylesheet" href="../../registry/components/quote/quote.css" />
+    <link rel="stylesheet" href="../../registry/components/surface/surface.css" />
+    <script defer src="../../registry/core/base/slide-runtime.js"></script>
+  </head>
+  <body class="ls-page">
+    <svg class="ls-sprite" aria-hidden="true"></svg>
+    <main class="ls-deck" data-ls-deck aria-label="Loop launch all-hands">
+      <!-- 1. Opener: the launch claim (coral) -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="hero"
+        data-ls-archetype="title-hero"
+        aria-label="Title"
+      >
+        <div class="ls-slide__inner">
+          <div class="ls-stack ls-center-start ls-text-start ls-slide-fill">
+            <div class="ls-cluster">
+              <span class="ls-badge ls-badge--accent">Loop 1.0</span>
+              <span class="ls-badge">All-hands · July</span>
+            </div>
+            <h1 class="ls-title">Loop ships Thursday. Send the meeting, don't schedule it.</h1>
+            <p class="ls-subtitle">
+              Collaborative screen recording for remote teams: record, trim, share, and discuss on
+              your own time.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. The problem in one breath (blue) -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="statement"
+        aria-label="The problem"
+        style="
+          --ls-accent: #3a86ff;
+          --ls-accent-text: #1d4ed8;
+          --ls-accent-bg: rgb(58 134 255 / 10%);
+          --ls-accent-border: rgb(58 134 255 / 55%);
+        "
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">The problem</p>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--statement">
+              <div class="ls-statement ls-statement--hero">
+                <p class="ls-statement__text">
+                  We ran 6,000 meetings last year that <em>should have been a video</em>.
+                </p>
+                <p class="ls-statement__support">
+                  Status updates, demos, design reviews: attendance was optional, the information
+                  wasn't.
+                </p>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Loop launch</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 3. Beta numbers (coral) -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="big-stat"
+        aria-label="Beta numbers"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Beta numbers</p>
+            <h2 class="ls-title">The beta already changed how we talk.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--statement">
+              <div class="ls-grid ls-grid--3">
+                <div class="ls-stat ls-stat--xl">
+                  <span class="ls-stat__value">4,200</span>
+                  <span class="ls-stat__label">recordings shared during the six-week beta</span>
+                </div>
+                <div class="ls-stat ls-stat--xl">
+                  <span class="ls-stat__value">31<em>%</em></span>
+                  <span class="ls-stat__label">fewer standing meetings on beta teams</span>
+                  <span class="ls-stat__delta">↓ from 11 recurring meetings per team</span>
+                </div>
+                <div class="ls-stat ls-stat--xl">
+                  <span class="ls-stat__value">92<em>%</em></span>
+                  <span class="ls-stat__label">of viewers watch at 2× speed</span>
+                </div>
+              </div>
+              <p class="ls-layout__text">
+                Product analytics across 14 beta teams, March to June — measured, not surveyed.
+              </p>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Loop launch</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 4. How Loop works (blue) -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="process-flow"
+        aria-label="How Loop works"
+        style="
+          --ls-accent: #3a86ff;
+          --ls-accent-text: #1d4ed8;
+          --ls-accent-bg: rgb(58 134 255 / 10%);
+          --ls-accent-border: rgb(58 134 255 / 55%);
+        "
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">How it works</p>
+            <h2 class="ls-title">From record to resolved, in four steps.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--band">
+              <div
+                class="ls-flow"
+                role="img"
+                aria-label="Four step Loop workflow: record, trim, share, discuss."
+              >
+                <div class="ls-flow__step ls-reveal" data-step="1">
+                  <span class="ls-flow__marker">1</span>
+                  <h3 class="ls-flow__title">Record</h3>
+                  <p class="ls-flow__text">
+                    One click captures screen, camera, and mic; no calendar, no green room.
+                  </p>
+                </div>
+                <div class="ls-flow__step ls-reveal" data-step="2">
+                  <span class="ls-flow__marker">2</span>
+                  <h3 class="ls-flow__title">Trim</h3>
+                  <p class="ls-flow__text">
+                    Cut the false starts and dead air; most Loops land under five minutes.
+                  </p>
+                </div>
+                <div class="ls-flow__step ls-reveal" data-step="3">
+                  <span class="ls-flow__marker">3</span>
+                  <h3 class="ls-flow__title">Share</h3>
+                  <p class="ls-flow__text">
+                    Drop one link in the channel; viewers watch at 2× on their own clock.
+                  </p>
+                </div>
+                <div class="ls-flow__step ls-reveal" data-step="4">
+                  <span class="ls-flow__marker">4</span>
+                  <h3 class="ls-flow__title">Discuss</h3>
+                  <p class="ls-flow__text">
+                    Comments pin to the exact second, so decisions happen in the thread.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Loop launch</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 5. A meeting vs a Loop (coral) -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="comparison"
+        aria-label="A meeting versus a Loop"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">The trade</p>
+            <h2 class="ls-title">Same update, wildly different price tags.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--split">
+              <div class="ls-layout__region">
+                <h3 class="ls-layout__heading">A meeting</h3>
+                <ul class="ls-list ls-list--arrow">
+                  <li>Forty minutes, times nine calendars, every single week.</li>
+                  <li>Needs one slot that exists in Berlin, Austin, and Singapore.</li>
+                  <li>Decisions evaporate into somebody's private notes doc.</li>
+                </ul>
+                <p class="ls-layout__note">Everyone pays in real time</p>
+              </div>
+              <div class="ls-layout__region">
+                <h3 class="ls-layout__heading">A Loop</h3>
+                <ul class="ls-list ls-list--arrow">
+                  <li>Four minutes, watched at 2×, whenever it suits.</li>
+                  <li>Recorded in Berlin at 4pm, played in Austin at 9am.</li>
+                  <li>Transcribed, searchable, and linkable to the exact second.</li>
+                </ul>
+                <p class="ls-layout__note">Watch once · search forever</p>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Loop launch</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 6. Beta customer evidence (blue) -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="evidence"
+        aria-label="What beta teams say"
+        style="
+          --ls-accent: #3a86ff;
+          --ls-accent-text: #1d4ed8;
+          --ls-accent-bg: rgb(58 134 255 / 10%);
+          --ls-accent-border: rgb(58 134 255 / 55%);
+        "
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">From the beta</p>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--statement">
+              <blockquote class="ls-quote ls-quote--lg">
+                <p class="ls-quote__text">
+                  We swapped our Monday standup for Loops and nobody asked for it back. I catch up
+                  at 2× while the coffee brews.
+                </p>
+                <footer class="ls-quote__source">
+                  <cite>Dana Whitfield</cite> — Engineering manager, Fathom (beta team)
+                </footer>
+                <div class="ls-quote__evidence ls-reveal" data-step="1">
+                  <div class="ls-stat ls-stat--sm">
+                    <span class="ls-stat__value">26</span>
+                    <span class="ls-stat__label">weekly standups replaced across beta teams</span>
+                  </div>
+                </div>
+              </blockquote>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Loop launch</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 7. Launch readiness dashboard (coral) -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="dashboard"
+        aria-label="Launch readiness"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Launch readiness</p>
+            <h2 class="ls-title">Everything is go for Thursday.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--dashboard">
+              <div class="ls-surface ls-surface--accent">
+                <span class="ls-surface__kicker">App review</span>
+                <h3 class="ls-surface__title">Approved on the first pass</h3>
+                <p class="ls-surface__text">
+                  Mac, Windows, and browser builds cleared store review; the release candidate is
+                  frozen.
+                </p>
+              </div>
+              <div class="ls-surface">
+                <span class="ls-surface__kicker">Infrastructure</span>
+                <h3 class="ls-surface__title">Load-tested at 10× day one</h3>
+                <p class="ls-surface__text">
+                  A four-hour soak at ten times projected signup traffic; p99 latency stayed flat.
+                </p>
+              </div>
+              <div class="ls-surface">
+                <span class="ls-surface__kicker">Pricing</span>
+                <h3 class="ls-surface__title">Pricing page is live</h3>
+                <p class="ls-surface__text">
+                  Three plans, monthly and annual billing, and the beta discount wired for launch.
+                </p>
+              </div>
+              <div class="ls-stat ls-stat--sm">
+                <span class="ls-stat__value">38</span>
+                <span class="ls-stat__label">support macros written and rehearsed</span>
+              </div>
+              <div class="ls-stat ls-stat--sm">
+                <span class="ls-stat__value">0</span>
+                <span class="ls-stat__label">open launch blockers as of this morning</span>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Loop launch</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 8. One more thing (blue) -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="statement"
+        aria-label="One more thing"
+        style="
+          --ls-accent: #3a86ff;
+          --ls-accent-text: #1d4ed8;
+          --ls-accent-bg: rgb(58 134 255 / 10%);
+          --ls-accent-border: rgb(58 134 255 / 55%);
+        "
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">One more thing</p>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--statement">
+              <div class="ls-statement ls-statement--hero">
+                <p class="ls-statement__text">
+                  This all-hands? <em>Already a Loop.</em> The link is in #launch.
+                </p>
+                <p class="ls-statement__support">
+                  Skip the replay meeting: watch tomorrow at 2× and comment where we're wrong.
+                </p>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Loop launch</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 9. Close: the ask (coral) -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="statement"
+        aria-label="The ask"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">The ask</p>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--statement">
+              <div class="ls-statement ls-statement--hero">
+                <p class="ls-statement__text">
+                  This week, record one status update as a <em>Loop, not a meeting</em>.
+                </p>
+                <p class="ls-statement__support">
+                  If it hasn't saved you an hour by Friday, tell us in a Loop.
+                </p>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Loop launch</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

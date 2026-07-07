@@ -1,0 +1,10 @@
+<figure class="ls-code" data-ls-variant="block">
+  <figcaption class="ls-code__header"><span>retry.ts</span><span>TypeScript</span></figcaption>
+  <div class="ls-code__body">
+    <pre><span class="ls-code__line">export async function fetchOrders(cursor?: string) {</span>
+<span class="ls-code__line">  const response = await api.get("/orders", { cursor });</span>
+<span class="ls-code__line" data-ls-line="highlight">  if (response.status === 429) return retryAfter(response);</span>
+<span class="ls-code__line">  return response.json();</span>
+<span class="ls-code__line">}</span></pre>
+  </div>
+</figure>

@@ -1,0 +1,63 @@
+<section
+  class="ls-slide"
+  data-ls-slide-kind="content"
+  data-ls-archetype="walkthrough"
+  aria-label="Code walkthrough"
+>
+  <div class="ls-slide__inner">
+    <header class="ls-slide__header">
+      <p class="ls-eyebrow">How it works</p>
+      <h2 class="ls-title">Idempotency in ten lines.</h2>
+    </header>
+    <div class="ls-slide__body">
+      <div class="ls-layout ls-layout--wide-start">
+        <div class="ls-layout__region">
+          <figure class="ls-code" data-ls-variant="block">
+            <figcaption class="ls-code__header">
+              <span>webhook.ts</span><span>TypeScript</span>
+            </figcaption>
+            <div class="ls-code__body">
+              <pre><span class="ls-code__line">export async function handleWebhook(event: WebhookEvent) {</span>
+<span class="ls-code__line" data-ls-line="highlight">  const key = `wh:${event.id}`;</span>
+<span class="ls-code__line">  const prior = await results.get(key);</span>
+<span class="ls-code__line" data-ls-line="highlight">  if (prior) return prior;</span>
+<span class="ls-code__line">  return db.transaction(async (tx) => {</span>
+<span class="ls-code__line">    const result = await applyEvent(tx, event);</span>
+<span class="ls-code__line" data-ls-line="highlight">    await results.put(tx, key, result);</span>
+<span class="ls-code__line">    return result;</span>
+<span class="ls-code__line">  });</span>
+<span class="ls-code__line">}</span></pre>
+            </div>
+          </figure>
+        </div>
+        <div class="ls-layout__region">
+          <h3 class="ls-layout__heading">Three lines carry it</h3>
+          <ol class="ls-list ls-list--numbered">
+            <li class="ls-reveal" data-step="1">
+              <span class="ls-list__title">Derive the key</span>
+              <span class="ls-list__text"
+                >The idempotency key comes from the event, not the request.</span
+              >
+            </li>
+            <li class="ls-reveal" data-step="2">
+              <span class="ls-list__title">Short-circuit repeats</span>
+              <span class="ls-list__text"
+                >A stored result returns before any side effects run.</span
+              >
+            </li>
+            <li class="ls-reveal" data-step="3">
+              <span class="ls-list__title">Store atomically</span>
+              <span class="ls-list__text"
+                >The result commits in the same transaction as the work.</span
+              >
+            </li>
+          </ol>
+        </div>
+      </div>
+    </div>
+    <footer class="ls-slide__footer">
+      <span>Webhook platform</span>
+      <span data-ls-page-number></span>
+    </footer>
+  </div>
+</section>

@@ -1,0 +1,92 @@
+/* editorial — magazine field-guide: warm paper, ink text, one oxblood accent,
+ * serif display and body, hairline rules, unhurried motion.
+ *
+ * A style is tokens + fonts + texture + shape + furniture + motion signature,
+ * activated by data-ls-style="editorial" on <html>. Fonts load through the
+ * font.css of each family this style depends on (fonts/fraunces,
+ * fonts/newsreader, fonts/jetbrains-mono).
+ */
+@layer tokens {
+  :root[data-ls-style="editorial"] {
+    color-scheme: light;
+
+    /* type */
+    --ls-font-display: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
+    --ls-font-heading: var(--ls-font-display);
+    --ls-font-body: "Newsreader Variable", Georgia, serif;
+    --ls-font-label: "JetBrains Mono Variable", ui-monospace, monospace;
+    --ls-font-code: "JetBrains Mono Variable", ui-monospace, monospace;
+    --ls-title-letter-spacing: -0.02em;
+    --ls-title-line-height: 1.02;
+
+    /* paper & ink */
+    --ls-page-bg: #e9e2d4;
+    --ls-page-grid-color: rgb(26 22 16 / 4%);
+    --ls-slide-bg: #faf7f2;
+    --ls-panel-bg: #f3eee3;
+    --ls-surface: #f3eee3;
+    --ls-surface-strong: #ece5d6;
+    --ls-surface-muted: rgb(26 22 16 / 4%);
+    --ls-surface-highlight: none;
+    --ls-border: rgb(26 22 16 / 16%);
+    --ls-border-strong: rgb(26 22 16 / 30%);
+    --ls-text: #211c14;
+    --ls-muted: #574f42;
+    --ls-subtle: #6b6153;
+
+    /* one deep accent: oxblood */
+    --ls-accent: #7d2a20;
+    --ls-accent-2: #9c5c33;
+    --ls-accent-text: #7d2a20;
+    --ls-accent-bg: rgb(125 42 32 / 8%);
+    --ls-accent-border: rgb(125 42 32 / 30%);
+
+    /* code as an ink block on paper */
+    --ls-code-bg: #241f16;
+    --ls-code-text: #f2e9d8;
+    --ls-code-border: rgb(26 22 16 / 30%);
+    --ls-table-stripe-bg: rgb(26 22 16 / 4%);
+    --ls-progress-accent: var(--ls-accent);
+    --ls-progress-accent-2: var(--ls-accent-2);
+    --ls-status-success: #3f6b21;
+    --ls-status-warning: #a16207;
+    --ls-status-danger: #9f1d1d;
+
+    /* shape: crisp print corners, hairline rules */
+    --ls-radius-sm: 2px;
+    --ls-radius-md: 3px;
+    --ls-radius-lg: 4px;
+    --ls-radius-xl: 6px;
+    --ls-radius-slide: 2px;
+    --ls-shadow-sm: 0 8px 22px rgb(26 22 16 / 10%);
+    --ls-shadow-md: 0 16px 40px rgb(26 22 16 / 14%);
+
+    /* texture: a masthead rule in ink along the top edge, like a folio page */
+    --ls-slide-texture: linear-gradient(180deg, var(--ls-text) 0 3px, transparent 3px 100%);
+
+    /* furniture: ruled footer with small-caps folio */
+    --ls-footer-rule: 1px solid rgb(26 22 16 / 30%);
+    --ls-footer-color: #574f42;
+    --ls-footer-font-size: 16px;
+    --ls-footer-letter-spacing: 0.14em;
+
+    /* abstract figure art: engraving-like ruled field with an oxblood plate */
+    --ls-abstract-art:
+      repeating-linear-gradient(180deg, rgb(26 22 16 / 9%) 0 1px, transparent 1px 9px),
+      radial-gradient(
+          120% 120% at 78% 22%,
+          rgb(125 42 32 / 55%) 0%,
+          rgb(125 42 32 / 18%) 42%,
+          transparent 68%
+        )
+        no-repeat,
+      linear-gradient(0deg, #efe8da, #efe8da);
+
+    /* motion signature: slow fades, small rises, paragraphs settling */
+    --ls-transition-kind: fade;
+    --ls-transition-duration: 560ms;
+    --ls-enter-duration: 760ms;
+    --ls-enter-distance: 14px;
+    --ls-stagger-step: 110ms;
+  }
+}

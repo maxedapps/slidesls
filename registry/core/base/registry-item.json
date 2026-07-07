@@ -20,6 +20,10 @@
       "type": "registry:style"
     },
     {
+      "path": "registry/core/base/motion.css",
+      "type": "registry:style"
+    },
+    {
       "path": "registry/core/base/slide-runtime.js",
       "type": "registry:script"
     }
@@ -39,7 +43,7 @@
       },
       {
         "base": "ls-slide",
-        "elements": ["ls-slide__inner", "ls-slide__header", "ls-slide__body"]
+        "elements": ["ls-slide__inner", "ls-slide__header", "ls-slide__body", "ls-slide__footer"]
       }
     ],
     "classes": [
@@ -52,7 +56,9 @@
       "ls-accent-text",
       "ls-icon",
       "ls-icon-badge",
-      "ls-icon-mark"
+      "ls-icon-mark",
+      "ls-sprite",
+      "ls-reveal"
     ],
     "dataAttributes": [
       {
@@ -83,36 +89,222 @@
         "scope": "section.ls-slide",
         "values": ["off"],
         "description": "Suppress advisory design-lint warnings for one intentionally unusual slide."
+      },
+      {
+        "name": "data-ls-transition",
+        "scope": "main[data-ls-deck]",
+        "values": ["fade", "rise", "slide", "none"],
+        "description": "Slide transition kind. Wins over the active style's --ls-transition-kind token; defaults to fade."
+      },
+      {
+        "name": "data-ls-motion",
+        "scope": "main[data-ls-deck] or section.ls-slide",
+        "values": ["none"],
+        "description": "Disable transitions and auto-stagger entrances for the deck or one slide. Must be deliberate; motion is on by default."
+      },
+      {
+        "name": "data-ls-stagger",
+        "description": "Mark a container so the auto-stagger traversal descends one level and treats its children as entrance units."
+      },
+      {
+        "name": "data-ls-page-number",
+        "description": "Runtime fills this element with the slide's 1-based index at init (works in deck, export, and print modes)."
       }
     ],
     "cssVariables": [
-      { "name": "--ls-slide-width", "default": "1600px", "overrideSafe": false },
-      { "name": "--ls-slide-height", "default": "900px", "overrideSafe": false },
-      { "name": "--ls-slide-bg", "default": "#111318", "overrideSafe": true },
-      { "name": "--ls-page-bg", "default": "#0b0d12", "overrideSafe": true },
-      { "name": "--ls-text", "default": "#f5f7fb", "overrideSafe": true },
-      { "name": "--ls-muted", "default": "#bcc3d0", "overrideSafe": true },
-      { "name": "--ls-accent", "default": "#3b82f6", "overrideSafe": true },
-      { "name": "--ls-accent-2", "default": "#22d3ee", "overrideSafe": true },
-      { "name": "--ls-accent-text", "default": "#bfdbfe", "overrideSafe": true },
-      { "name": "--ls-space-3", "default": "16px", "overrideSafe": true },
-      { "name": "--ls-space-6", "default": "48px", "overrideSafe": true },
-      { "name": "--ls-slide-padding-block", "default": "92px", "overrideSafe": true },
-      { "name": "--ls-slide-padding-inline", "default": "108px", "overrideSafe": true },
-      { "name": "--ls-title-line-height", "default": "0.96", "overrideSafe": true },
-      { "name": "--ls-title-letter-spacing", "default": "-0.045em", "overrideSafe": true },
-      { "name": "--ls-card-padding", "default": "24px", "overrideSafe": true },
-      { "name": "--ls-card-title-size", "default": "28px", "overrideSafe": true },
-      { "name": "--ls-card-text-size", "default": "21px", "overrideSafe": true },
-      { "name": "--ls-callout-padding", "default": "22px 24px", "overrideSafe": true },
-      { "name": "--ls-callout-title-size", "default": "27px", "overrideSafe": true },
-      { "name": "--ls-callout-text-size", "default": "22px", "overrideSafe": true },
-      { "name": "--ls-font-heading", "default": "var(--ls-font-sans)", "overrideSafe": true },
-      { "name": "--ls-font-body", "default": "var(--ls-font-sans)", "overrideSafe": true },
-      { "name": "--ls-slide-header-gap", "default": "var(--ls-space-2)", "overrideSafe": true },
+      {
+        "name": "--ls-slide-width",
+        "default": "1600px",
+        "overrideSafe": false
+      },
+      {
+        "name": "--ls-slide-height",
+        "default": "900px",
+        "overrideSafe": false
+      },
+      {
+        "name": "--ls-slide-bg",
+        "default": "#111318",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-page-bg",
+        "default": "#0b0d12",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-text",
+        "default": "#f5f7fb",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-muted",
+        "default": "#bcc3d0",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-accent",
+        "default": "#3b82f6",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-accent-2",
+        "default": "#22d3ee",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-accent-text",
+        "default": "#bfdbfe",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-space-3",
+        "default": "16px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-space-6",
+        "default": "48px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-slide-padding-block",
+        "default": "92px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-slide-padding-inline",
+        "default": "108px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-title-line-height",
+        "default": "0.96",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-title-letter-spacing",
+        "default": "-0.045em",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-card-padding",
+        "default": "24px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-card-title-size",
+        "default": "28px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-card-text-size",
+        "default": "21px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-callout-padding",
+        "default": "22px 24px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-callout-title-size",
+        "default": "27px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-callout-text-size",
+        "default": "22px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-font-heading",
+        "default": "var(--ls-font-sans)",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-font-body",
+        "default": "var(--ls-font-sans)",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-slide-header-gap",
+        "default": "var(--ls-space-2)",
+        "overrideSafe": true
+      },
       {
         "name": "--ls-slide-header-max-inline-size",
         "default": "1080px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-transition-kind",
+        "default": "fade",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-transition-duration",
+        "default": "460ms",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-transition-ease",
+        "default": "var(--ls-ease)",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-transition-distance",
+        "default": "96px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-enter-duration",
+        "default": "640ms",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-enter-distance",
+        "default": "22px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-stagger-step",
+        "default": "70ms",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-border-width",
+        "default": "1px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-slide-texture",
+        "default": "none",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-footer-block-size",
+        "default": "52px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-footer-font-size",
+        "default": "17px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-footer-color",
+        "default": "var(--ls-subtle)",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-footer-letter-spacing",
+        "default": "0.08em",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-footer-rule",
+        "default": "1px solid var(--ls-border)",
         "overrideSafe": true
       }
     ],

@@ -1,0 +1,64 @@
+{
+  "name": "motion/emphasis",
+  "type": "ls:motion",
+  "title": "Emphasis",
+  "description": "Scale-and-settle entrance for a step-revealed element \u2014 the recipe behind 'the number lands'. Pairs with data-step; respects export, print, reduced-motion, and data-ls-motion kill switches.",
+  "intent": ["emphasize"],
+  "tags": ["motion", "emphasis", "steps"],
+  "useCases": [
+    "landing a headline stat on its reveal step",
+    "punching a verdict or key claim after its evidence"
+  ],
+  "files": [
+    {
+      "path": "registry/motion/emphasis/emphasis.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base", "components/stat"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/motion/emphasis/README.md",
+  "agentLevel": "recommended",
+  "motion": {
+    "default": "step-triggered",
+    "notes": "Only fires on the reveal step; core transitions and stagger stay untouched. Use on at most one element per slide \u2014 emphasis rations itself."
+  },
+  "composition": {
+    "layoutBehavior": "content-sized",
+    "useWhen": ["one number or claim deserves a physical landing on its reveal"],
+    "avoidWhen": [
+      "applied to several elements per slide \u2014 emphasis everywhere is emphasis nowhere"
+    ]
+  },
+  "authoring": {
+    "classes": ["ls-emphasize"],
+    "cssVariables": [
+      {
+        "name": "--ls-emphasize-duration",
+        "default": "480ms",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-emphasize-from",
+        "default": "0.92",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-emphasize-peak",
+        "default": "1.03",
+        "overrideSafe": true
+      }
+    ],
+    "usage": [
+      "Add ls-emphasize plus data-step to the element; the pop plays when the step reveals it.",
+      "Combine with components/stat for Appendix-B style 'stat emphasis (scale/settle)'."
+    ]
+  },
+  "snippets": [
+    {
+      "label": "Emphasized stat",
+      "path": "registry/motion/emphasis/snippets/basic.html"
+    }
+  ]
+}

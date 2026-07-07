@@ -1,10 +1,13 @@
 {
   "name": "@maxedapps/slidesls",
-  "version": "0.5.1",
-  "description": "Agent-primary vanilla HTML/CSS/JS slide deck authoring CLI and registry.",
+  "version": "1.0.0",
+  "description": "Skill-guided slide design system for AI agents: art directions, slide archetypes with content contracts, motion by default, and taste-encoding lints — all as copyable vanilla HTML/CSS/JS.",
   "keywords": [
     "agents",
+    "ai-agents",
+    "claude",
     "css",
+    "design-system",
     "html",
     "presentation",
     "registry",
@@ -54,11 +57,21 @@
     "test": "node --test tests/**/*.test.mjs",
     "cli:smoke": "node scripts/test-cli-smoke.mjs",
     "visual:gate": "node scripts/visual-gate.mjs",
-    "pack:check": "pnpm check && pnpm visual:gate && npm pack --dry-run"
+    "pack:check": "pnpm check && SLIDESLS_RELEASE=1 node scripts/visual-gate.mjs && node scripts/check-pack-size.mjs && npm pack --dry-run"
   },
   "devDependencies": {
+    "@fontsource-variable/bricolage-grotesque": "5.2.10",
+    "@fontsource-variable/fraunces": "5.2.9",
+    "@fontsource-variable/inter": "5.2.8",
+    "@fontsource-variable/jetbrains-mono": "5.2.8",
+    "@fontsource-variable/libre-franklin": "5.2.8",
+    "@fontsource-variable/newsreader": "5.2.10",
+    "@fontsource-variable/source-serif-4": "5.2.9",
+    "@fontsource-variable/space-grotesk": "5.2.10",
+    "lucide-static": "1.23.0",
     "oxfmt": "^0.56.0",
-    "oxlint": "^1.71.0"
+    "oxlint": "^1.71.0",
+    "playwright-core": "1.61.1"
   },
   "engines": {
     "node": ">=22.18.0"

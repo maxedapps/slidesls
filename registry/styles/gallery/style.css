@@ -1,0 +1,84 @@
+/* gallery — Swiss, white, huge type: black on white, ONE vivid accent
+ * (International Orange), square edges, whitespace as the texture,
+ * precise unbouncy motion.
+ */
+@layer tokens {
+  :root[data-ls-style="gallery"] {
+    color-scheme: light;
+
+    /* type: huge grotesk display, quiet body */
+    --ls-font-display: "Space Grotesk Variable", "Helvetica Neue", sans-serif;
+    --ls-font-heading: var(--ls-font-display);
+    --ls-font-body: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+    --ls-font-label: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+    --ls-font-code: "JetBrains Mono Variable", ui-monospace, monospace;
+    --ls-title-letter-spacing: -0.045em;
+    --ls-title-line-height: 0.94;
+    --ls-text-2xl: 96px;
+    --ls-text-hero: 148px;
+
+    /* white, black, one vivid accent; no texture — whitespace is the texture */
+    --ls-page-bg: #e8e8e6;
+    --ls-page-grid-color: rgb(0 0 0 / 3%);
+    --ls-slide-bg: #ffffff;
+    --ls-panel-bg: #f4f4f2;
+    --ls-surface: #f4f4f2;
+    --ls-surface-strong: #ebebe8;
+    --ls-surface-muted: rgb(0 0 0 / 4%);
+    --ls-surface-highlight: none;
+    --ls-border: rgb(0 0 0 / 16%);
+    --ls-border-strong: rgb(0 0 0 / 85%);
+    --ls-text: #0c0c0c;
+    --ls-muted: #4c4c4a;
+    --ls-subtle: #63635f;
+
+    --ls-accent: #ff4f00;
+    --ls-accent-2: #0c0c0c;
+    --ls-accent-text: #bc3a00;
+    --ls-accent-bg: rgb(255 79 0 / 8%);
+    --ls-accent-border: rgb(255 79 0 / 45%);
+
+    --ls-code-bg: #0c0c0c;
+    --ls-code-text: #f4f4f2;
+    --ls-code-border: rgb(0 0 0 / 85%);
+    --ls-table-stripe-bg: rgb(0 0 0 / 3%);
+    --ls-progress-accent: var(--ls-accent);
+    --ls-progress-accent-2: var(--ls-accent-2);
+    --ls-status-success: #0c0c0c;
+    --ls-status-warning: #b45309;
+    --ls-status-danger: #ff4f00;
+
+    /* shape: square edges, thin rules */
+    --ls-radius-sm: 0px;
+    --ls-radius-md: 0px;
+    --ls-radius-lg: 0px;
+    --ls-radius-xl: 0px;
+    --ls-radius-slide: 0px;
+    --ls-border-width: 1px;
+    --ls-shadow-sm: 0 8px 24px rgb(0 0 0 / 8%);
+    --ls-shadow-md: 0 16px 48px rgb(0 0 0 / 10%);
+
+    /* texture: none — whitespace is the texture */
+
+    /* furniture: hairline footer, oversized folio handled by archetypes */
+    --ls-footer-rule: 1px solid rgb(0 0 0 / 85%);
+    --ls-footer-color: #0c0c0c;
+    --ls-footer-font-size: 15px;
+    --ls-footer-letter-spacing: 0.16em;
+
+    /* abstract figure art: hard geometric field, orange plane on black */
+    --ls-abstract-art:
+      linear-gradient(90deg, #0c0c0c 0 38%, transparent 38%) no-repeat,
+      linear-gradient(0deg, #ff4f00 0 26%, transparent 26%) no-repeat,
+      linear-gradient(0deg, #f4f4f2, #f4f4f2);
+
+    /* motion signature: precise slides and rises, zero bounce */
+    --ls-transition-kind: slide;
+    --ls-transition-duration: 420ms;
+    --ls-transition-ease: cubic-bezier(0.3, 0, 0.1, 1);
+    --ls-transition-distance: 120px;
+    --ls-enter-duration: 460ms;
+    --ls-enter-distance: 16px;
+    --ls-stagger-step: 60ms;
+  }
+}

@@ -6,15 +6,15 @@ export const agentCommandRecipes = {
   catalogJson: "slidesls catalog --json",
   catalogApiJson: "slidesls catalog --api --json",
   catalogComponentsJson: "slidesls catalog --type component --json",
-  catalogTemplatesJson: "slidesls catalog --type template --json",
-  themeCatalogJson: "slidesls catalog --type preset --tag theme --json",
+  catalogLayoutsJson: "slidesls catalog --type layout --json",
+  catalogStylesJson: "slidesls catalog --type style --json",
   inspectJson: "slidesls inspect <item> --json",
   inspectApiJson: "slidesls inspect <item> --api --json",
-  inspectLayoutApiJson: "slidesls inspect utilities/layout --api --json",
-  inspectPrimitiveJson: "slidesls inspect utilities/layout components/card components/panel --json",
+  inspectLayoutApiJson: "slidesls inspect layouts/core --api --json",
+  inspectPrimitiveJson: "slidesls inspect layouts/core components/surface components/list --json",
   addDryRunJson: "slidesls add <items...> --dir <deck-or-project> --dry-run --json",
-  addAnimationsJson:
-    "slidesls add animations/reveal animations/slide-up --dir <deck> --dry-run --json",
+  iconsSyncJson: "slidesls icons sync --dir <deck> --json",
+  iconsListJson: "slidesls icons list --json",
   validateJson: "slidesls validate <deck> --json",
   preview: "slidesls preview <deck> --host 127.0.0.1 --port 4321",
   visualQaEval: "slidesls visual-qa --eval",
@@ -31,23 +31,27 @@ export function agentHelpBlock() {
      Full export fallback only: ${agentCommandRecipes.skillShowAll}
      Example for Claude Code project-local skills:
      slidesls skill install ./.claude/skills/create-slides-with-slidesls
-  2. Incremental discovery:
+  2. Pick ONE style per deck (init --style <name> wires fonts + activation):
+     ${agentCommandRecipes.catalogStylesJson}
+  3. Incremental discovery:
      Complete lightweight inventory: ${agentCommandRecipes.catalogJson}
-     Smallest fast-start set: ${agentCommandRecipes.catalogStarterJson}
-     Primitive components: ${agentCommandRecipes.catalogComponentsJson}
-     Templates: ${agentCommandRecipes.catalogTemplatesJson}
-     Themes: ${agentCommandRecipes.themeCatalogJson}
-  3. Inspect exact snippets and load tags:
+     Content components: ${agentCommandRecipes.catalogComponentsJson}
+     Slide-body layouts: ${agentCommandRecipes.catalogLayoutsJson}
+  4. Inspect exact snippets and load tags:
      ${agentCommandRecipes.inspectJson}
-     Primitive layout API: ${agentCommandRecipes.inspectLayoutApiJson}
+     Layout system API: ${agentCommandRecipes.inspectLayoutApiJson}
      Advanced API detail: ${agentCommandRecipes.inspectApiJson}
-  4. Copy safely:
+  5. Copy safely:
      ${agentCommandRecipes.addDryRunJson}
-  5. Prefer subtle reveal animations unless the user asks for static slides:
-     ${agentCommandRecipes.addAnimationsJson}
-  6. Validate after editing:
+  6. Icons come from the inline sprite (never emoji, never CDN):
+     ${agentCommandRecipes.iconsListJson}
+     After adding/removing <use href="#ls-i-*"> references: ${agentCommandRecipes.iconsSyncJson}
+  7. Motion is on by default (slide transitions + staggered entrances).
+     Add data-step reveals only where sequence carries meaning; review motion
+     in the live preview with ArrowRight, never from export screenshots.
+  8. Validate after editing:
      ${agentCommandRecipes.validateJson}
-  7. Preview and visually inspect representative slides unless the user opts out.
+  9. Preview and visually inspect representative slides unless the user opts out.
      Keep preview running while browser commands execute:
      ${agentCommandRecipes.preview}
      agent-browser open http://127.0.0.1:4321/?export=1
@@ -63,17 +67,17 @@ export function catalogAgentInstructions({ api = false } = {}) {
       api
         ? "Full authoring metadata is included."
         : "This is the complete lightweight inventory. Full authoring metadata: add --api.",
-      "Use --starter only for the smallest fast-start set; use --type filters for focused component/template/theme discovery.",
+      "Use --type filters (style, layout, component, font) for focused discovery; --starter is the smallest fast-start set.",
     ],
     rules: [
-      "Use useCases, agentLevel, type, and tags to choose candidate items.",
-      "Check avoidWhen before choosing a template; when it matches your content, use the item its alternatives point to.",
+      "Use useCases, intent, agentLevel, type, and tags to choose candidate items.",
+      "Check useWhen/avoidWhen before choosing an item; when avoidWhen matches your content, use the item its alternatives point to.",
       "Do not invent ls-* classes; inspect snippets first and use --api only for low-level class details.",
       "Inspect items for exact snippets and load tags before copying markup.",
     ],
     nextCommands: [
       agentCommandRecipes.catalogComponentsJson,
-      agentCommandRecipes.catalogTemplatesJson,
+      agentCommandRecipes.catalogLayoutsJson,
       agentCommandRecipes.inspectJson,
       agentCommandRecipes.inspectLayoutApiJson,
       agentCommandRecipes.addDryRunJson,
@@ -94,7 +98,7 @@ export function inspectAgentInstructions(requestedItems = ["<item>"], { api = fa
     ],
     rules: [
       "Use snippets[].html as source-of-truth markup for requested items.",
-      "Check composition.avoidWhen before using a template; composition.alternatives names better-fitting items.",
+      "Check composition.useWhen/avoidWhen before using an item; composition.alternatives names better-fitting items.",
       "After copying assets, add returned load.links and load.scripts to the deck entry HTML when needed.",
       "Use --api authoring metadata instead of guessing classes or attributes.",
     ],
@@ -111,7 +115,7 @@ export function addAgentInstructions({ dryRun = false, root = "<deck-or-project>
     rules: [
       "Run a dry run before copying when possible.",
       "Insert returned links/scripts into the entry HTML manually when needed.",
-      "Inspect templates/components for exact snippet HTML.",
+      "Inspect components/layouts for exact snippet HTML.",
       "Validate after editing markup or copied assets.",
       "Preview and visually inspect representative slides after material slide edits unless the user opts out; agents should use agent-browser screenshots/browser checks.",
     ],
@@ -125,31 +129,24 @@ export function addAgentInstructions({ dryRun = false, root = "<deck-or-project>
   };
 }
 
-export function initAgentInstructions(root = "<deck>", { template = "minimal" } = {}) {
-  const primitiveNextCommands = [
+export function initAgentInstructions(root = "<deck>") {
+  const nextCommands = [
     agentCommandRecipes.catalogJson,
     agentCommandRecipes.catalogComponentsJson,
-    agentCommandRecipes.inspectPrimitiveJson,
-    `slidesls validate ${root} --json`,
-  ];
-  const templateNextCommands = [
-    agentCommandRecipes.catalogStarterJson,
-    agentCommandRecipes.catalogTemplatesJson,
-    agentCommandRecipes.addAnimationsJson,
-    "slidesls inspect templates/split --json",
     agentCommandRecipes.inspectPrimitiveJson,
     `slidesls validate ${root} --json`,
   ];
   return {
     purpose: "Continue from a newly initialized slidesls deck.",
     rules: [
-      "Use catalog --json as the complete lightweight inventory before adding classes or visual presets.",
-      "Inspect templates/components for exact markup before editing slides; inspect utilities/layout --api for primitive layout classes.",
-      "For blank decks, compose from utilities/layout plus standalone components unless a template fits the content.",
-      "Unless the user asks for static slides, use progressive disclosure via animations/reveal plus one subtle variant such as animations/slide-up or animations/fade.",
+      "Pick exactly one style per deck (init --style <name>); styles carry fonts, palette, texture, and the motion signature.",
+      "Use catalog --json as the complete lightweight inventory before adding classes.",
+      "Compose slide bodies with layouts/core (ls-layout--*) and fill regions with components; inspect items for exact markup first.",
+      "Icons come only from the inline sprite (icons sync); never emoji or ad-hoc glyphs in icon slots.",
+      "Motion is on by default; add data-step reveals only where sequence carries meaning.",
       "Validate after edits; preview is a long-running server command and should be checked visually with agent-browser unless the user opts out.",
     ],
-    nextCommands: template === "blank" ? primitiveNextCommands : templateNextCommands,
+    nextCommands,
     longRunningCommands: [`slidesls preview ${root}`],
   };
 }
@@ -159,7 +156,7 @@ export function validateAgentInstructions(root = "<deck>") {
     purpose: "Fix static validation feedback after editing a slidesls deck.",
     rules: [
       "Fix errors first; review warnings even when the deck is otherwise valid.",
-      "Design-lint warnings (many_cards_in_grid, stretched_grid_with_cards, card_grid_check_density) are advisory composition pointers; fix or explicitly justify them.",
+      "Design-lint warnings are advisory composition pointers; fix or explicitly justify them.",
       "Use --strict when you need stricter checks for CI or registry drift.",
       "Use catalog and inspect before changing ls-* classes or snippets.",
       "Static validation does not replace rendered review; run slidesls visual-qa against a live preview for per-slide composition findings.",

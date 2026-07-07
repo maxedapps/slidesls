@@ -72,15 +72,6 @@ export function validateSnippetStructure({ html, sourcePath, errors }) {
       );
   }
 
-  if (html.includes("ls-timeline__item")) {
-    if (!html.includes("ls-timeline__marker") || !html.includes("ls-timeline__body"))
-      push(
-        errors,
-        "invalid_timeline_structure",
-        `${sourcePath} .ls-timeline__item markup must include .ls-timeline__marker and .ls-timeline__body.`,
-      );
-  }
-
   if (html.includes("ls-quote")) {
     if (!html.includes("ls-quote__text") || !html.includes("ls-quote__source"))
       push(
@@ -116,21 +107,6 @@ export function validateDeckStructure({ html, strict = false, errors, warnings }
         hint: 'Use the components/progress snippet or native <progress class="ls-progress">.',
       });
   }
-
-  if (
-    /<li\b[^>]*class=["'][^"']*\bls-timeline__item\b[^"']*["'][^>]*>\s*<strong(?![^>]*\bls-timeline__title\b)[\s\S]*?<span(?![^>]*\bls-timeline__(?:meta|text)\b)/i.test(
-      renderedHtml,
-    )
-  )
-    deckIssue({
-      strict,
-      errors,
-      warnings,
-      code: "timeline_structure",
-      message:
-        "Timeline items should use .ls-timeline__marker and .ls-timeline__body instead of raw strong/span shorthand.",
-      hint: "Use the components/timeline snippet.",
-    });
 
   for (const tag of tags) {
     const classes = classList(tag.attributes);

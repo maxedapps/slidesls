@@ -1,0 +1,119 @@
+{
+  "name": "components/chart",
+  "type": "ls:component",
+  "description": "Dependency-free CSS mini-charts (bar rows, column sets, donut) that are honest by construction: geometry is proportional to a 0-100 value with a fixed zero baseline.",
+  "files": [
+    {
+      "path": "registry/components/chart/chart.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/chart/README.md",
+  "rootClass": "ls-chart",
+  "safeAnywhere": true,
+  "snippets": [
+    {
+      "label": "Bar rows",
+      "path": "registry/components/chart/snippets/basic.html"
+    }
+  ],
+  "intent": ["show-data", "prove", "compare"],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-chart",
+        "elements": [
+          "ls-chart__title",
+          "ls-chart__row",
+          "ls-chart__label",
+          "ls-chart__track",
+          "ls-chart__bar",
+          "ls-chart__value",
+          "ls-chart__columns",
+          "ls-chart__column",
+          "ls-chart__donut"
+        ],
+        "modifiers": ["ls-chart--columns", "ls-chart--donut"]
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--ls-chart-value",
+        "default": "0",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-chart-color",
+        "default": "var(--ls-accent)",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-chart-label-width",
+        "default": "220px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-chart-bar-size",
+        "default": "26px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-chart-column-height",
+        "default": "300px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-chart-donut-size",
+        "default": "260px",
+        "overrideSafe": true
+      }
+    ],
+    "usage": [
+      "--ls-chart-value is percent-of-track on a 0-100 scale with a fixed zero baseline: scale the largest datum to its true share of 100 (or to 100 when showing relative size) and put the real value in ls-chart__value; never offset the baseline.",
+      "role=\"img\" and an aria-label describing the data are REQUIRED on the chart root; the chart is presentational markup and screen readers get the label.",
+      "Values are 0-100 with a fixed zero baseline, set per bar/column/donut via style=\"--ls-chart-value: NN\"; there is no axis-minimum hook, so truncated dishonest bars are inexpressible by construction. Normalize your data to percentages of the axis maximum.",
+      "Show the real number next to each bar in ls-chart__value; geometry shows proportion, the text shows the value.",
+      "Recolor a series with --ls-chart-color; keep one accent color unless a second series genuinely exists."
+    ]
+  },
+  "composition": {
+    "contentDensity": ["balanced"],
+    "layoutBehavior": "content-sized",
+    "itemCountGuidance": "3-6 bars or columns; one donut per proportion. More series belong in a real chart image.",
+    "copyGuidance": "Labels of 1-4 words; always print the actual value alongside the geometry.",
+    "useWhen": [
+      "comparing a handful of values across categories",
+      "showing one proportion of a whole (donut)",
+      "data needs to stay token-colored and dependency-free"
+    ],
+    "avoidWhen": [
+      "the data has more than about 6 categories or needs a time axis",
+      "exact values matter more than proportions",
+      "a single number is the whole story"
+    ],
+    "alternatives": [
+      {
+        "when": "one headline number",
+        "use": "components/stat"
+      },
+      {
+        "when": "exact values across many rows",
+        "use": "components/table"
+      },
+      {
+        "when": "a complex plot exported as an image or SVG",
+        "use": "components/figure"
+      }
+    ]
+  },
+  "agentLevel": "recommended",
+  "tags": ["chart", "bar", "column", "donut", "data"],
+  "useCases": [
+    "Compare 3-6 values with horizontal bar rows.",
+    "Show a vertical column set with a fixed zero baseline.",
+    "Present a single proportion as a donut."
+  ]
+}

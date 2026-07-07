@@ -1,0 +1,93 @@
+/* terminal — dense, engineered, phosphor: near-black, a single phosphor
+ * accent, mono display type, hard 1px borders, steppy instant motion.
+ */
+@layer tokens {
+  :root[data-ls-style="terminal"] {
+    color-scheme: dark;
+
+    /* type: mono carries the identity; Inter keeps body copy readable */
+    --ls-font-display: "JetBrains Mono Variable", ui-monospace, monospace;
+    --ls-font-heading: var(--ls-font-display);
+    --ls-font-body: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+    --ls-font-label: "JetBrains Mono Variable", ui-monospace, monospace;
+    --ls-font-code: "JetBrains Mono Variable", ui-monospace, monospace;
+    --ls-title-letter-spacing: -0.03em;
+    --ls-title-line-height: 1.06;
+    --ls-text-2xl: 68px;
+    --ls-text-hero: 104px;
+
+    /* near-black with one phosphor accent */
+    --ls-page-bg: #05070a;
+    --ls-page-grid-color: rgb(74 222 128 / 4%);
+    --ls-slide-bg: #0a0f0c;
+    --ls-panel-bg: #0e1511;
+    --ls-surface: #0e1511;
+    --ls-surface-strong: #14201a;
+    --ls-surface-muted: rgb(74 222 128 / 5%);
+    --ls-surface-highlight: none;
+    --ls-border: rgb(74 222 128 / 22%);
+    --ls-border-strong: rgb(74 222 128 / 40%);
+    --ls-text: #d9f2e2;
+    --ls-muted: #93b8a1;
+    --ls-subtle: #74957f;
+
+    --ls-accent: #4ade80;
+    --ls-accent-2: #22d3ee;
+    --ls-accent-text: #4ade80;
+    --ls-accent-bg: rgb(74 222 128 / 10%);
+    --ls-accent-border: rgb(74 222 128 / 45%);
+
+    --ls-code-bg: #05080a;
+    --ls-code-text: #d9f2e2;
+    --ls-code-border: rgb(74 222 128 / 30%);
+    --ls-table-stripe-bg: rgb(74 222 128 / 5%);
+    --ls-progress-accent: var(--ls-accent);
+    --ls-progress-accent-2: var(--ls-accent-2);
+    --ls-status-success: #4ade80;
+    --ls-status-warning: #eab308;
+    --ls-status-danger: #f87171;
+
+    /* shape: hard engineered edges */
+    --ls-radius-sm: 3px;
+    --ls-radius-md: 4px;
+    --ls-radius-lg: 6px;
+    --ls-radius-xl: 6px;
+    --ls-radius-slide: 4px;
+    --ls-border-width: 1px;
+    --ls-shadow-sm: 0 0 0 1px rgb(74 222 128 / 10%);
+    --ls-shadow-md: 0 0 44px rgb(74 222 128 / 8%);
+
+    /* texture: faint scanlines over a phosphor grid */
+    --ls-slide-texture:
+      repeating-linear-gradient(180deg, rgb(0 0 0 / 16%) 0 1px, transparent 1px 4px),
+      repeating-linear-gradient(90deg, rgb(74 222 128 / 3%) 0 1px, transparent 1px 72px),
+      repeating-linear-gradient(180deg, rgb(74 222 128 / 3%) 0 1px, transparent 1px 72px);
+
+    /* furniture: status-bar footer */
+    --ls-footer-rule: 1px solid rgb(74 222 128 / 30%);
+    --ls-footer-color: #74957f;
+    --ls-footer-font-size: 15px;
+    --ls-footer-letter-spacing: 0.12em;
+
+    /* abstract figure art: phosphor grid-wave */
+    --ls-abstract-art:
+      repeating-linear-gradient(90deg, rgb(74 222 128 / 14%) 0 1px, transparent 1px 28px),
+      repeating-linear-gradient(180deg, rgb(74 222 128 / 14%) 0 1px, transparent 1px 28px),
+      radial-gradient(
+          140% 90% at 30% 100%,
+          rgb(74 222 128 / 34%) 0%,
+          rgb(74 222 128 / 8%) 45%,
+          transparent 70%
+        )
+        no-repeat,
+      linear-gradient(0deg, #060a07, #060a07);
+
+    /* motion signature: instant, steppy — reveals blink in, no drift */
+    --ls-transition-kind: fade;
+    --ls-transition-duration: 140ms;
+    --ls-transition-ease: steps(3, end);
+    --ls-enter-duration: 120ms;
+    --ls-enter-distance: 0px;
+    --ls-stagger-step: 90ms;
+  }
+}

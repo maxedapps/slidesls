@@ -1,0 +1,46 @@
+{
+  "name": "styles/terminal",
+  "type": "ls:style",
+  "title": "Terminal",
+  "description": "Dense engineered phosphor art direction: near-black, one green phosphor accent, JetBrains Mono display over Inter body, hard 1px borders, and an instant steppy motion signature.",
+  "styleAttribute": "terminal",
+  "styleTone": "technical, dense, engineered; dark phosphor",
+  "tags": ["style", "dark", "mono", "technical"],
+  "useCases": [
+    "engineering deep-dives, code walkthroughs, incident reviews",
+    "infrastructure, tooling, and CLI product decks",
+    "any deck that should feel like it runs in production"
+  ],
+  "files": [
+    {
+      "path": "registry/styles/terminal/style.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base", "fonts/jetbrains-mono", "fonts/inter"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/styles/terminal/README.md",
+  "agentLevel": "recommended",
+  "motion": {
+    "default": "fade",
+    "notes": "Instant steppy reveals (140ms, stepped easing); stagger blinks units in with no vertical drift. Avoid slow fades and any bounce."
+  },
+  "icons": {
+    "guidance": "Hairline sprite icons in phosphor green; prompt prefixes (>) and status glyphs fit the direction better than decorative icons."
+  },
+  "authoring": {
+    "attributes": [
+      {
+        "name": "data-ls-style",
+        "scope": "html",
+        "value": "terminal",
+        "description": "Activates the terminal art direction for the whole deck."
+      }
+    ],
+    "usage": [
+      "Set data-ls-style=\"terminal\" on the <html> element and load style.css plus the font.css of each font family dependency.",
+      "Use exactly one style per deck; styles replace the v1 theme presets."
+    ]
+  }
+}

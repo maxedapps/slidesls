@@ -1,0 +1,65 @@
+{
+  "name": "archetypes/process-flow",
+  "type": "ls:archetype",
+  "title": "Process flow",
+  "description": "A 3–5 step pipeline as a horizontal band: numbered markers, terse step titles, one sentence per step, revealed in order.",
+  "intent": ["explain-process"],
+  "tags": ["archetype", "process", "steps"],
+  "useCases": [
+    "explaining how a release, request, or review moves through stages",
+    "walking an audience through a workflow one advance at a time"
+  ],
+  "files": [],
+  "registryDependencies": ["core/base", "layouts/core", "components/flow"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/archetypes/process-flow/README.md",
+  "agentLevel": "recommended",
+  "contract": {
+    "steps": {
+      "min": 3,
+      "max": 5,
+      "description": "3–5 stages; two is a comparison, six is two slides."
+    },
+    "stepTitle": { "maxWords": 4 },
+    "stepBody": { "minWords": 6, "maxWords": 16 }
+  },
+  "motion": {
+    "default": "steps",
+    "notes": "Each ls-flow__step carries ls-reveal with data-step 1..N so the pipeline builds in order; the sequence is the argument."
+  },
+  "icons": {
+    "guidance": "The numbered markers are the iconography; do not add sprite icons to steps."
+  },
+  "composition": {
+    "layoutBehavior": "fills-area",
+    "useWhen": [
+      "the order of stages carries the meaning",
+      "each stage can be said in one sentence"
+    ],
+    "avoidWhen": [
+      "stages need evidence, code, or sub-bullets — give each stage its own slide",
+      "the steps are dated milestones rather than a pipeline — use components/list with ls-list--timeline"
+    ],
+    "alternatives": [
+      { "when": "only two stages, framed as a contrast", "use": "archetypes/comparison" },
+      { "when": "milestones on a time axis", "use": "components/list" }
+    ]
+  },
+  "authoring": {
+    "attributes": [
+      {
+        "name": "data-ls-archetype",
+        "scope": "section.ls-slide",
+        "value": "process-flow",
+        "description": "Marks the slide for contract linting and deck scorecards."
+      }
+    ],
+    "usage": [
+      "Step titles are verbs (\"Build\", \"Canary\", \"Promote\"), not noun phrases.",
+      "Keep step bodies parallel in length and grammar; one long step makes the band ragged.",
+      "Give the ls-flow a role=\"img\" aria-label summarizing the whole pipeline."
+    ]
+  },
+  "snippets": [{ "label": "Basic", "path": "registry/archetypes/process-flow/snippets/basic.html" }]
+}

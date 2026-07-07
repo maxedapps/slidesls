@@ -1,0 +1,30 @@
+{
+  "name": "fonts/fraunces",
+  "type": "ls:font",
+  "title": "Fraunces",
+  "description": "Fraunces variable webfont (latin, wght axis), vendored from @fontsource-variable/fraunces@5.2.9 under the SIL Open Font License 1.1.",
+  "files": [
+    {
+      "path": "registry/fonts/fraunces/fraunces-latin-wght-normal.woff2",
+      "type": "registry:font"
+    },
+    {
+      "path": "registry/fonts/fraunces/font.css",
+      "type": "registry:style"
+    },
+    {
+      "path": "registry/fonts/fraunces/OFL.txt",
+      "type": "registry:license"
+    }
+  ],
+  "registryDependencies": [],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/fonts/fraunces/README.md",
+  "agentLevel": "advanced",
+  "authoring": {
+    "usage": [
+      "Loaded via the family @font-face in font.css; reference it through style tokens, not directly. The registered font-family name is \"Fraunces Variable\"."
+    ]
+  }
+}

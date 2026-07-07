@@ -6,7 +6,7 @@
     inline-size: fit-content;
     min-block-size: 38px;
     padding: 0 14px;
-    border: 1px solid var(--ls-border);
+    border: var(--ls-border-width) solid var(--ls-border);
     border-radius: 999px;
     background: var(--ls-surface);
     color: var(--ls-muted);

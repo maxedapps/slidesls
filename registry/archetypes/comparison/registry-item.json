@@ -1,0 +1,99 @@
+{
+  "name": "archetypes/comparison",
+  "type": "ls:archetype",
+  "title": "Comparison",
+  "description": "Exactly two columns with aligned rows \u2014 options, before/after, us/them \u2014 and an optional one-line verdict. Alignment by construction keeps the fight fair.",
+  "intent": ["compare"],
+  "tags": ["archetype", "comparison", "before-after"],
+  "useCases": [
+    "presenting a decision between two options with honest trade-offs",
+    "before/after proof that a change worked"
+  ],
+  "files": [],
+  "registryDependencies": [
+    "components/list",
+    "components/stat",
+    "components/surface",
+    "core/base",
+    "layouts/core"
+  ],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/archetypes/comparison/README.md",
+  "agentLevel": "recommended",
+  "contract": {
+    "columns": {
+      "min": 2,
+      "max": 2,
+      "description": "Exactly two ls-layout__region columns; a third option is a table, not a comparison."
+    },
+    "columnHeading": {
+      "min": 2,
+      "max": 2,
+      "maxWords": 4
+    },
+    "verdict": {
+      "min": 0,
+      "max": 1,
+      "description": "Optional one-line verdict after the columns; if the deck makes a call, say it."
+    }
+  },
+  "motion": {
+    "default": "stagger",
+    "notes": "Columns enter with the core stagger. When you add a verdict line, give it ls-reveal with data-step=\"1\" so the call lands after both sides are seen."
+  },
+  "icons": {
+    "guidance": "At most one sprite icon per column heading, and only if both columns get one."
+  },
+  "composition": {
+    "layoutBehavior": "fills-area",
+    "useWhen": [
+      "a decision between exactly two options with real trade-offs",
+      "before/after evidence where the same measure appears on both sides"
+    ],
+    "avoidWhen": [
+      "three or more options \u2014 use components/table so rows stay comparable",
+      "one side is a strawman; an honest comparison gives both columns their best case"
+    ],
+    "alternatives": [
+      {
+        "when": "the contrast is one number moving",
+        "use": "archetypes/big-stat"
+      },
+      {
+        "when": "more than two options or many criteria",
+        "use": "components/table"
+      }
+    ],
+    "copyGuidance": "2-4 rows per column, aligned across both; unequal rows read as a rigged fight. Rows may be list items, stats, or layout text - keep the same construct on both sides."
+  },
+  "authoring": {
+    "attributes": [
+      {
+        "name": "data-ls-archetype",
+        "scope": "section.ls-slide",
+        "value": "comparison",
+        "description": "Marks the slide for contract linting and deck scorecards."
+      }
+    ],
+    "usage": [
+      "Keep rows parallel: row N answers the same question in both columns.",
+      "Use ls-layout__note for a per-column bottom line (\"Lower risk \u00b7 slower\"); the subgrid keeps the notes level.",
+      "For before/after, repeat the same stat label on both sides and let the values differ."
+    ]
+  },
+  "snippets": [
+    {
+      "label": "Two options",
+      "path": "registry/archetypes/comparison/snippets/basic.html"
+    },
+    {
+      "label": "Before / after",
+      "path": "registry/archetypes/comparison/snippets/before-after.html"
+    },
+    {
+      "label": "With verdict band",
+      "path": "registry/archetypes/comparison/snippets/with-verdict.html"
+    }
+  ]
+}

@@ -3,303 +3,413 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>slidesls composition gallery</title>
+    <title>Composition QA — v2 vocabulary</title>
     <link rel="stylesheet" href="../../registry/core/base/reset.css" />
     <link rel="stylesheet" href="../../registry/core/base/tokens.css" />
     <link rel="stylesheet" href="../../registry/core/base/slide.css" />
     <link rel="stylesheet" href="../../registry/core/base/icons.css" />
-    <link rel="stylesheet" href="../../registry/utilities/layout/layout.css" />
+    <link rel="stylesheet" href="../../registry/core/base/motion.css" />
+    <link rel="stylesheet" href="../../registry/layouts/core/layout.css" />
+    <link rel="stylesheet" href="../../registry/layouts/core/utilities.css" />
     <link rel="stylesheet" href="../../registry/components/badge/badge.css" />
-    <link rel="stylesheet" href="../../registry/components/card/card.css" />
-    <link rel="stylesheet" href="../../registry/components/icon-item/icon-item.css" />
-    <link rel="stylesheet" href="../../registry/components/panel/panel.css" />
-    <link rel="stylesheet" href="../../registry/components/callout/callout.css" />
-    <link rel="stylesheet" href="../../registry/components/metric/metric.css" />
-    <link rel="stylesheet" href="../../registry/components/progress/progress.css" />
-    <script type="module" src="../../registry/core/base/slide-runtime.js"></script>
+    <link rel="stylesheet" href="../../registry/components/surface/surface.css" />
+    <link rel="stylesheet" href="../../registry/components/statement/statement.css" />
+    <link rel="stylesheet" href="../../registry/components/stat/stat.css" />
+    <link rel="stylesheet" href="../../registry/components/figure/figure.css" />
+    <link rel="stylesheet" href="../../registry/components/list/list.css" />
+    <link rel="stylesheet" href="../../registry/components/quote/quote.css" />
+    <link rel="stylesheet" href="../../registry/components/code/code.css" />
+    <link rel="stylesheet" href="../../registry/components/chart/chart.css" />
+    <link rel="stylesheet" href="../../registry/components/flow/flow.css" />
+    <link rel="stylesheet" href="../../registry/components/media/media.css" />
+    <link rel="stylesheet" href="../../registry/components/table/table.css" />
+    <script defer src="../../registry/core/base/slide-runtime.js"></script>
   </head>
   <body class="ls-page">
-    <main class="ls-deck" data-ls-deck aria-label="slidesls composition gallery">
-      <section class="ls-slide" data-ls-slide-kind="section" aria-label="Composition gallery intro">
-        <div class="ls-slide__inner">
-          <div class="ls-center ls-slide-fill">
-            <header class="ls-stack">
-              <span class="ls-badge">Composition</span>
-              <h1 class="ls-title">Sparse content, balanced slides.</h1>
-              <p class="ls-subtitle">
-                Content-sized grids, short-copy layouts, and density variants working together.
-              </p>
-            </header>
-          </div>
-        </div>
-      </section>
-
-      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Balanced three cards">
-        <div class="ls-slide__inner">
-          <header class="ls-slide__header">
-            <p class="ls-eyebrow">Three cards</p>
-            <h2 class="ls-title">Cards carry real copy, rows size to content.</h2>
-          </header>
-          <div class="ls-grid ls-grid--3">
-            <article class="ls-card">
-              <div class="ls-card__body">
-                <h3 class="ls-card__title">Discover</h3>
-                <p class="ls-card__text">
-                  Browse the catalog before writing markup. The brief JSON output lists every
-                  template and component with its use cases, so the right building block is one
-                  query away.
-                </p>
-              </div>
-            </article>
-            <article class="ls-card">
-              <div class="ls-card__body">
-                <h3 class="ls-card__title">Compose</h3>
-                <p class="ls-card__text">
-                  Combine utilities and standalone components into slides. Every class works without
-                  hidden parent contracts, so pieces can be rearranged freely.
-                </p>
-              </div>
-            </article>
-            <article class="ls-card">
-              <div class="ls-card__body">
-                <h3 class="ls-card__title">Validate</h3>
-                <p class="ls-card__text">
-                  Run static checks after each edit, then preview the deck. Validation catches
-                  structural problems early; visual review confirms the composition works.
-                </p>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Feature rows">
-        <div class="ls-slide__inner">
-          <header class="ls-slide__header">
-            <p class="ls-eyebrow">Feature rows</p>
-            <h2 class="ls-title">One-liner points become full-width rows.</h2>
-          </header>
-          <div class="ls-grid">
-            <div class="ls-icon-item ls-icon-item--boxed">
-              <span class="ls-icon-badge" aria-hidden="true">◆</span>
-              <div class="ls-icon-item__body">
-                <h3 class="ls-icon-item__title">No hidden contracts</h3>
-                <p class="ls-icon-item__text">Layout behavior lives on explicit utility classes.</p>
-              </div>
-            </div>
-            <div class="ls-icon-item ls-icon-item--boxed">
-              <span class="ls-icon-badge" aria-hidden="true">▣</span>
-              <div class="ls-icon-item__body">
-                <h3 class="ls-icon-item__title">Copy, then own</h3>
-                <p class="ls-icon-item__text">
-                  Copied assets belong to the deck and can be edited.
-                </p>
-              </div>
-            </div>
-            <div class="ls-icon-item ls-icon-item--boxed">
-              <span class="ls-icon-badge" aria-hidden="true">✓</span>
-              <div class="ls-icon-item__body">
-                <h3 class="ls-icon-item__title">Validate early</h3>
-                <p class="ls-icon-item__text">
-                  Static checks run after every edit, before preview.
-                </p>
-              </div>
-            </div>
-            <div class="ls-icon-item ls-icon-item--boxed">
-              <span class="ls-icon-badge" aria-hidden="true">✦</span>
-              <div class="ls-icon-item__body">
-                <h3 class="ls-icon-item__title">Tokens over overrides</h3>
-                <p class="ls-icon-item__text">
-                  Themes remap CSS variables instead of fighting selectors.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Icon grid">
-        <div class="ls-slide__inner">
-          <header class="ls-slide__header">
-            <p class="ls-eyebrow">Icon grid</p>
-            <h2 class="ls-title">Six short items compose as compact tiles.</h2>
-          </header>
-          <div class="ls-grid ls-grid--3">
-            <div class="ls-icon-item ls-icon-item--boxed">
-              <span class="ls-icon-badge" aria-hidden="true">⚡</span>
-              <div class="ls-icon-item__body">
-                <h3 class="ls-icon-item__title">Fast setup</h3>
-                <p class="ls-icon-item__text">One command scaffolds a working deck.</p>
-              </div>
-            </div>
-            <div class="ls-icon-item ls-icon-item--boxed">
-              <span class="ls-icon-badge" aria-hidden="true">◆</span>
-              <div class="ls-icon-item__body">
-                <h3 class="ls-icon-item__title">Plain files</h3>
-                <p class="ls-icon-item__text">Decks stay editable HTML, CSS, and JS.</p>
-              </div>
-            </div>
-            <div class="ls-icon-item ls-icon-item--boxed">
-              <span class="ls-icon-badge" aria-hidden="true">▣</span>
-              <div class="ls-icon-item__body">
-                <h3 class="ls-icon-item__title">Copyable registry</h3>
-                <p class="ls-icon-item__text">Assets are copied in, never locked away.</p>
-              </div>
-            </div>
-            <div class="ls-icon-item ls-icon-item--boxed">
-              <span class="ls-icon-badge" aria-hidden="true">✓</span>
-              <div class="ls-icon-item__body">
-                <h3 class="ls-icon-item__title">Static validation</h3>
-                <p class="ls-icon-item__text">Structural checks run after every edit.</p>
-              </div>
-            </div>
-            <div class="ls-icon-item ls-icon-item--boxed">
-              <span class="ls-icon-badge" aria-hidden="true">▶</span>
-              <div class="ls-icon-item__body">
-                <h3 class="ls-icon-item__title">Local preview</h3>
-                <p class="ls-icon-item__text">A dependency-free server for visual review.</p>
-              </div>
-            </div>
-            <div class="ls-icon-item ls-icon-item--boxed">
-              <span class="ls-icon-badge" aria-hidden="true">✦</span>
-              <div class="ls-icon-item__body">
-                <h3 class="ls-icon-item__title">Themes</h3>
-                <p class="ls-icon-item__text">Token presets restyle a deck in one attribute.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        class="ls-slide"
-        data-ls-slide-kind="content"
-        data-ls-density="spacious"
-        aria-label="Spacious density"
+    <svg class="ls-sprite" aria-hidden="true">
+      <!-- Icons: Lucide (https://lucide.dev), ISC license. The full license text is copied with the deck assets at registry/icons/LICENSE -->
+      <symbol
+        id="ls-i-zap"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
       >
+        <path
+          d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"
+        />
+      </symbol>
+    </svg>
+    <main class="ls-deck" data-ls-deck aria-label="Composition QA deck">
+      <!-- 1. Hero: typographic, staggered -->
+      <section class="ls-slide" data-ls-slide-kind="hero" aria-label="Opening">
         <div class="ls-slide__inner">
-          <header class="ls-slide__header">
-            <p class="ls-eyebrow">Spacious density</p>
-            <h2 class="ls-title">One big idea gets bigger type.</h2>
-          </header>
-          <div class="ls-grid ls-grid--2">
-            <article class="ls-card">
-              <div class="ls-card__body">
-                <h3 class="ls-card__title">Scale up, not out</h3>
-                <p class="ls-card__text">
-                  Spacious density raises card type, padding, and gaps so short copy still carries
-                  visual weight on a mostly empty slide.
-                </p>
-              </div>
-            </article>
-            <article class="ls-card">
-              <div class="ls-card__body">
-                <h3 class="ls-card__title">Same markup</h3>
-                <p class="ls-card__text">
-                  One attribute on the slide shell; no per-element size overrides needed.
-                </p>
-              </div>
-            </article>
+          <div class="ls-stack ls-center-start ls-text-start ls-slide-fill">
+            <div class="ls-cluster">
+              <span class="ls-badge"
+                ><svg class="ls-icon"><use href="#ls-i-zap" /></svg> Ship review</span
+              >
+              <span class="ls-badge">Q3 2026</span>
+            </div>
+            <h1 class="ls-title">The checkout rebuild paid for itself in nine weeks.</h1>
+            <p class="ls-subtitle">
+              What we shipped, what it moved, and what we are doing next quarter.
+            </p>
           </div>
         </div>
       </section>
 
-      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Intentional fill diagram">
+      <!-- 2. Aligned split: layout skeleton + surface/list mix -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Two workstreams">
         <div class="ls-slide__inner">
           <header class="ls-slide__header">
-            <p class="ls-eyebrow">Intentional fill</p>
-            <h2 class="ls-title">Diagrams keep their visual mass.</h2>
+            <p class="ls-eyebrow">Workstreams</p>
+            <h2 class="ls-title">Two tracks, one deadline.</h2>
           </header>
-          <div class="ls-grid ls-grid--wide-left ls-grid--fill">
-            <div class="ls-panel ls-panel--frame ls-panel--center">
-              <svg
-                viewBox="0 0 480 260"
-                role="img"
-                aria-label="Simple architecture diagram"
-                width="480"
-                height="260"
-              >
-                <rect
-                  x="20"
-                  y="40"
-                  width="130"
-                  height="60"
-                  rx="12"
-                  fill="none"
-                  stroke="currentColor"
-                />
-                <rect
-                  x="330"
-                  y="40"
-                  width="130"
-                  height="60"
-                  rx="12"
-                  fill="none"
-                  stroke="currentColor"
-                />
-                <rect
-                  x="175"
-                  y="160"
-                  width="130"
-                  height="60"
-                  rx="12"
-                  fill="none"
-                  stroke="currentColor"
-                />
-                <line x1="150" y1="70" x2="330" y2="70" stroke="currentColor" />
-                <line x1="85" y1="100" x2="220" y2="160" stroke="currentColor" />
-                <line x1="395" y1="100" x2="260" y2="160" stroke="currentColor" />
-              </svg>
-            </div>
-            <div class="ls-grid">
-              <aside class="ls-callout">
-                <div class="ls-callout__body">
-                  <h3 class="ls-callout__title">ls-grid--fill is deliberate</h3>
-                  <p class="ls-callout__text">
-                    Frames, diagrams, and dashboards opt back into stretch-to-fill rows; sparse card
-                    grids never should. The callout column here is a plain ls-grid, so the note
-                    centers beside the diagram instead of stretching.
-                  </p>
-                </div>
-              </aside>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Metric band">
-        <div class="ls-slide__inner">
-          <header class="ls-slide__header">
-            <p class="ls-eyebrow">Metrics</p>
-            <h2 class="ls-title">A metric band centers as one composition.</h2>
-          </header>
-          <div class="ls-grid ls-grid--3">
-            <div class="ls-metric">
-              <strong class="ls-metric__value">3×</strong>
-              <span class="ls-metric__label">Faster deck assembly</span>
-            </div>
-            <div class="ls-metric">
-              <strong class="ls-metric__value">0</strong>
-              <span class="ls-metric__label">Runtime dependencies</span>
-            </div>
-            <div class="ls-panel">
-              <div
-                class="ls-progress"
-                style="--ls-progress-value: 72%"
-                role="progressbar"
-                aria-label="Registry cleanup"
-                aria-valuenow="72"
-                aria-valuemin="0"
-                aria-valuemax="100"
-              >
-                <div class="ls-progress__label">
-                  <span>Registry cleanup</span>
-                  <span class="ls-progress__value">72%</span>
-                </div>
-                <div class="ls-progress__track"><div class="ls-progress__bar"></div></div>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--split">
+              <div class="ls-layout__region">
+                <h3 class="ls-layout__heading">Payment core</h3>
+                <ul class="ls-list ls-list--check">
+                  <li>Tokenized vault migration finished with zero customer re-entry.</li>
+                  <li>Retry budget cut duplicate charges to eleven per week.</li>
+                  <li>Fallback processor certified in four new markets.</li>
+                </ul>
+                <p class="ls-layout__note">Owner: payments guild</p>
+              </div>
+              <div class="ls-layout__region">
+                <h3 class="ls-layout__heading">Checkout surface</h3>
+                <ul class="ls-list ls-list--check">
+                  <li>Single-page flow replaced the four-step wizard.</li>
+                  <li>Address autocomplete now covers 96% of orders.</li>
+                </ul>
+                <p class="ls-layout__note">Owner: storefront team</p>
               </div>
             </div>
           </div>
+          <footer class="ls-slide__footer">
+            <span>Checkout rebuild</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 3. Unboxed stats band -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Results">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Results</p>
+            <h2 class="ls-title">The numbers moved where it matters.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--band">
+              <div class="ls-stat">
+                <span class="ls-stat__value">+12<em>%</em></span>
+                <span class="ls-stat__label">checkout conversion, week over week</span>
+                <span class="ls-stat__delta">↑ four straight weeks</span>
+              </div>
+              <div class="ls-stat">
+                <span class="ls-stat__value">218<em>ms</em></span>
+                <span class="ls-stat__label">p95 time to payment sheet</span>
+                <span class="ls-stat__delta">↓ from 610ms</span>
+              </div>
+              <div class="ls-stat">
+                <span class="ls-stat__value">-41<em>%</em></span>
+                <span class="ls-stat__label">support tickets mentioning checkout</span>
+                <span class="ls-stat__delta" data-ls-tone="neutral">stable since launch</span>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Checkout rebuild</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 4. Chart + supporting copy in an aligned split -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Where orders drop">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Funnel</p>
+            <h2 class="ls-title">Drop-off now concentrates in one step.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--wide-start">
+              <div class="ls-layout__region">
+                <div
+                  class="ls-chart"
+                  role="img"
+                  aria-label="Bar chart: completion rate per checkout step. Cart 94, Address 91, Payment 68, Review 97."
+                >
+                  <p class="ls-chart__title">Completion rate per step</p>
+                  <div class="ls-chart__row">
+                    <span class="ls-chart__label">Cart</span>
+                    <div class="ls-chart__track">
+                      <div class="ls-chart__bar" style="--ls-chart-value: 94"></div>
+                    </div>
+                    <span class="ls-chart__value">94%</span>
+                  </div>
+                  <div class="ls-chart__row">
+                    <span class="ls-chart__label">Address</span>
+                    <div class="ls-chart__track">
+                      <div class="ls-chart__bar" style="--ls-chart-value: 91"></div>
+                    </div>
+                    <span class="ls-chart__value">91%</span>
+                  </div>
+                  <div class="ls-chart__row">
+                    <span class="ls-chart__label">Payment</span>
+                    <div class="ls-chart__track">
+                      <div class="ls-chart__bar" style="--ls-chart-value: 68"></div>
+                    </div>
+                    <span class="ls-chart__value">68%</span>
+                  </div>
+                  <div class="ls-chart__row">
+                    <span class="ls-chart__label">Review</span>
+                    <div class="ls-chart__track">
+                      <div class="ls-chart__bar" style="--ls-chart-value: 97"></div>
+                    </div>
+                    <span class="ls-chart__value">97%</span>
+                  </div>
+                </div>
+              </div>
+              <div class="ls-layout__region">
+                <h3 class="ls-layout__heading">Payment is the wall</h3>
+                <p class="ls-layout__text">
+                  Two thirds of remaining drop-off happens while the payment sheet loads. The wallet
+                  pre-warm experiment targets exactly this gap.
+                </p>
+                <p class="ls-layout__note">Data: order events, last 28 days</p>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Checkout rebuild</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 5. Process flow with steps -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Release process">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Process</p>
+            <h2 class="ls-title">Every change ships the same way.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div
+              class="ls-flow"
+              role="img"
+              aria-label="Four step release process: build, canary, promote, verify."
+            >
+              <div class="ls-flow__step ls-reveal" data-step="1">
+                <span class="ls-flow__marker">1</span>
+                <h3 class="ls-flow__title">Build</h3>
+                <p class="ls-flow__text">CI signs an immutable release image.</p>
+              </div>
+              <div class="ls-flow__step ls-reveal" data-step="2">
+                <span class="ls-flow__marker">2</span>
+                <h3 class="ls-flow__title">Canary</h3>
+                <p class="ls-flow__text">5% of traffic for one hour under budget watch.</p>
+              </div>
+              <div class="ls-flow__step ls-reveal" data-step="3">
+                <span class="ls-flow__marker">3</span>
+                <h3 class="ls-flow__title">Promote</h3>
+                <p class="ls-flow__text">Healthy canaries roll out region by region.</p>
+              </div>
+              <div class="ls-flow__step ls-reveal" data-step="4">
+                <span class="ls-flow__marker">4</span>
+                <h3 class="ls-flow__title">Verify</h3>
+                <p class="ls-flow__text">Conversion and latency checked against the baseline.</p>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Checkout rebuild</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 6. Code walkthrough -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Retry budget">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">How it works</p>
+            <h2 class="ls-title">The retry budget in twelve lines.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--wide-start">
+              <div class="ls-layout__region">
+                <figure class="ls-code" data-ls-variant="block">
+                  <figcaption class="ls-code__header">
+                    <span>charge.ts</span><span>TypeScript</span>
+                  </figcaption>
+                  <div class="ls-code__body">
+                    <pre><span class="ls-code__line">export async function charge(order: Order) {</span>
+<span class="ls-code__line">  const budget = retryBudget.for(order.processor);</span>
+<span class="ls-code__line" data-ls-line="highlight">  if (!budget.available()) return fallback(order);</span>
+<span class="ls-code__line">  try {</span>
+<span class="ls-code__line">    return await processor.charge(order);</span>
+<span class="ls-code__line" data-ls-line="add">  } catch (error) {</span>
+<span class="ls-code__line" data-ls-line="add">    budget.consume();</span>
+<span class="ls-code__line" data-ls-line="add">    throw error;</span>
+<span class="ls-code__line">  }</span>
+<span class="ls-code__line">}</span></pre>
+                  </div>
+                </figure>
+              </div>
+              <div class="ls-layout__region">
+                <h3 class="ls-layout__heading">Budgets, not retries</h3>
+                <p class="ls-layout__text">
+                  Each processor gets a shared failure budget. When it empties, traffic falls back
+                  instead of hammering a degraded provider.
+                </p>
+                <p class="ls-layout__note">Added in release 44</p>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Checkout rebuild</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 7. Dashboard: filling layout with surfaces + table -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Operations dashboard">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Operations</p>
+            <h2 class="ls-title">Steady under twice the load.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--dashboard">
+              <div class="ls-surface">
+                <span class="ls-surface__kicker">Availability</span>
+                <h3 class="ls-surface__title">99.98%</h3>
+                <p class="ls-surface__text">30-day rolling, all regions weighted by traffic.</p>
+              </div>
+              <div class="ls-surface ls-surface--accent">
+                <span class="ls-surface__kicker">Error budget</span>
+                <h3 class="ls-surface__title">61% left</h3>
+                <p class="ls-surface__text">On pace to finish the quarter without a freeze.</p>
+              </div>
+              <div class="ls-surface ls-surface--warning">
+                <span class="ls-surface__kicker">Watch item</span>
+                <h3 class="ls-surface__title">Wallet timeouts</h3>
+                <p class="ls-surface__text">Elevated on one provider; fix is in canary now.</p>
+              </div>
+              <div class="ls-stat ls-stat--sm">
+                <span class="ls-stat__value">2.1×</span>
+                <span class="ls-stat__label">peak traffic vs last quarter</span>
+              </div>
+              <div class="ls-stat ls-stat--sm">
+                <span class="ls-stat__value">44</span>
+                <span class="ls-stat__label">releases shipped, zero rollbacks</span>
+              </div>
+              <div class="ls-stat ls-stat--sm">
+                <span class="ls-stat__value">7<em>min</em></span>
+                <span class="ls-stat__label">median incident time to mitigation</span>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Checkout rebuild</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 8. Evidence: quote + proof -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Customer evidence">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Evidence</p>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--statement">
+              <blockquote class="ls-quote ls-quote--lg">
+                <p class="ls-quote__text">
+                  Checkout used to be where we lost people. Now it is the part nobody mentions —
+                  which is exactly the point.
+                </p>
+                <footer class="ls-quote__source">
+                  <cite>Dana M.</cite> — Head of Digital, retail partner
+                </footer>
+                <div class="ls-quote__evidence">
+                  <div class="ls-stat ls-stat--sm">
+                    <span class="ls-stat__value">4.8/5</span>
+                    <span class="ls-stat__label">post-purchase experience score, up from 3.9</span>
+                  </div>
+                </div>
+              </blockquote>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Checkout rebuild</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 9. Media + abstract figure split -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Next quarter">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Next</p>
+            <h2 class="ls-title">Q4: the wallet pre-warm experiment.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--split">
+              <div class="ls-layout__region">
+                <h3 class="ls-layout__heading">Hypothesis</h3>
+                <p class="ls-layout__text">
+                  Warming the wallet session during cart review removes the payment-sheet wait
+                  entirely for returning customers — the single largest remaining drop-off driver.
+                </p>
+                <p class="ls-layout__note">Experiment brief: EXP-311</p>
+              </div>
+              <div class="ls-layout__region">
+                <figure class="ls-figure ls-figure--abstract ls-figure--fill">
+                  <div class="ls-figure__media" aria-hidden="true"></div>
+                  <figcaption class="ls-figure__caption">
+                    Target: payment sheet ready before the customer reaches it.
+                  </figcaption>
+                </figure>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Checkout rebuild</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 10. Statement close -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Closing">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Takeaway</p>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--statement">
+              <div class="ls-statement ls-statement--hero">
+                <p class="ls-statement__text">Boring checkouts <em>convert</em>.</p>
+                <p class="ls-statement__support">
+                  Next review: January, with the wallet experiment results.
+                </p>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Checkout rebuild</span>
+            <span data-ls-page-number></span>
+          </footer>
         </div>
       </section>
     </main>

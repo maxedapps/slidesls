@@ -15,7 +15,7 @@ function textWithoutTags(html) {
     .trim();
 }
 
-const strictErrorCodes = new Set(["image_missing_alt", "control_accessible_name"]);
+const strictErrorCodes = new Set(["image_missing_alt", "control_accessible_name", "chart_a11y"]);
 
 function add({ strict, errors, warnings, code, message, hint }) {
   const entry = { code, message, ...(hint ? { hint } : {}) };
@@ -26,6 +26,24 @@ function add({ strict, errors, warnings, code, message, hint }) {
 export function validateAccessibility({ html, strict = false, errors, warnings }) {
   const renderedHtml = stripNonRenderedCode(html);
   const tags = startTagRecords(renderedHtml);
+
+  // Charts and flows are visual data: without role="img" + aria-label they
+  // are invisible to assistive tech (and honest-by-construction geometry
+  // cannot be read at all).
+  for (const graphic of tags.filter(
+    (tag) =>
+      classes(tag.attributes).includes("ls-chart") || classes(tag.attributes).includes("ls-flow"),
+  )) {
+    if (graphic.attributes.get("role") !== "img" || !graphic.attributes.get("aria-label"))
+      add({
+        strict,
+        errors,
+        warnings,
+        code: "chart_a11y",
+        message: `A ${classes(graphic.attributes).includes("ls-chart") ? "chart" : "flow"} is missing role="img" and/or aria-label describing its data.`,
+        hint: 'Add role="img" and an aria-label that states what the data shows (values included).',
+      });
+  }
   const deck = tags.find((tag) => hasClass(tag.attributes, "ls-deck"));
   if (deck && !hasAccessibleName(deck.attributes))
     add({

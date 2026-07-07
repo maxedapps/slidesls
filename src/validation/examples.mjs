@@ -77,17 +77,15 @@ export async function validateExamples({ root = process.cwd() } = {}) {
     const candidatePath = path.join(root, relative);
     if (!(await fileExists(candidatePath))) continue;
     const html = await readFile(candidatePath, "utf8");
-    if (/\bls-layout-[\w-]+/.test(html))
-      push(errors, "removed_layout_class", `${relative} uses removed ls-layout-* classes.`);
     for (const className of unknownLsClasses(html, authoringIndex.known))
       push(errors, "unknown_ls_class", `${relative} uses unknown slidesls class ${className}.`, {
         className,
       });
-    if (html.includes("ls-grid") && !html.includes("utilities/layout/layout.css"))
+    if (html.includes("ls-grid") && !html.includes("layouts/core/utilities.css"))
       push(
         errors,
         "missing_layout_utilities",
-        `${relative} uses ls-grid but does not reference utilities/layout/layout.css.`,
+        `${relative} uses ls-grid but does not reference layouts/core/utilities.css.`,
       );
     validateDeckStructure({ html, strict: true, errors, warnings });
   }

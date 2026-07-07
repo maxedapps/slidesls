@@ -6,26 +6,34 @@ import { REGISTRY_VALUE_OPTIONS } from "../shared/args.mjs";
 export const commandOptionSpecs = {
   init: {
     boolean: ["force", "json", "help"],
-    value: ["template", "theme", "title", ...REGISTRY_VALUE_OPTIONS],
+    value: ["template", "theme", "style", "title", ...REGISTRY_VALUE_OPTIONS],
   },
   add: {
     boolean: ["include-docs", "dry-run", "force", "json", "help"],
     value: ["dir", "base-dir", ...REGISTRY_VALUE_OPTIONS],
   },
   catalog: {
-    boolean: ["json", "help", "recommended", "starter", "api"],
-    value: ["type", "tag", "query", "limit", "level", ...REGISTRY_VALUE_OPTIONS],
+    boolean: ["json", "help", "recommended", "starter", "api", "preview"],
+    value: ["type", "tag", "query", "limit", "level", "intent", "style", ...REGISTRY_VALUE_OPTIONS],
   },
   inspect: {
-    boolean: ["json", "help", "readme", "api", "with-dependencies"],
+    boolean: ["json", "help", "readme", "api", "with-dependencies", "brief", "examples"],
     value: [...REGISTRY_VALUE_OPTIONS],
+  },
+  icons: {
+    boolean: ["json", "help"],
+    value: ["dir", "add", ...REGISTRY_VALUE_OPTIONS],
+  },
+  gallery: {
+    boolean: ["json", "help"],
+    value: ["out", ...REGISTRY_VALUE_OPTIONS],
   },
   skill: {
     boolean: ["json", "help", "dry-run", "force", "all"],
     value: ["reference"],
   },
   validate: {
-    boolean: ["strict", "json", "help", "use-manifest-registry"],
+    boolean: ["strict", "json", "help", "use-manifest-registry", "report"],
     value: ["dir", ...REGISTRY_VALUE_OPTIONS],
   },
   preview: {

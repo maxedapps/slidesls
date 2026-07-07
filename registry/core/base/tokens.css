@@ -77,6 +77,19 @@
     --ls-radius-lg: 20px;
     --ls-radius-xl: 28px;
     --ls-radius-slide: 24px;
+    /* Shape: "sharp technical" vs "soft playful" is expressible per style. */
+    --ls-border-width: 1px;
+
+    /* Texture: an extra background layer styles can fill (grain, scanlines,
+       rules, shapes) without touching --ls-slide-bg-image. */
+    --ls-slide-texture: none;
+
+    /* Furniture: slide footer (page number, running kicker, deck title). */
+    --ls-footer-block-size: 52px;
+    --ls-footer-font-size: 17px;
+    --ls-footer-color: var(--ls-subtle);
+    --ls-footer-letter-spacing: 0.08em;
+    --ls-footer-rule: 1px solid var(--ls-border);
 
     --ls-shadow-sm: 0 10px 24px rgb(0 0 0 / 18%);
     --ls-shadow-md: 0 18px 44px rgb(0 0 0 / 24%);
@@ -85,5 +98,15 @@
     --ls-duration: 420ms;
     --ls-duration-slow: 700ms;
     --ls-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+    /* Motion contract consumed by core/base/motion.css and the runtime.
+       Styles override these to express their motion signature. */
+    --ls-transition-kind: fade;
+    --ls-transition-duration: 460ms;
+    --ls-transition-ease: var(--ls-ease);
+    --ls-transition-distance: 96px;
+    --ls-enter-duration: 640ms;
+    --ls-enter-distance: 22px;
+    --ls-stagger-step: 70ms;
   }
 }

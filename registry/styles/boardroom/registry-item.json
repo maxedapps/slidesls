@@ -1,0 +1,51 @@
+{
+  "name": "styles/boardroom",
+  "type": "ls:style",
+  "title": "Boardroom",
+  "description": "Premium calm-authority art direction: deep charcoal-navy, brass accent, Libre Franklin display over Source Serif 4 body, hairline gold rules, and an understated fade-and-slow-stagger motion signature.",
+  "styleAttribute": "boardroom",
+  "styleTone": "premium, composed, executive; dark navy with brass",
+  "tags": ["style", "dark", "executive", "premium"],
+  "useCases": [
+    "board updates, investor decks, executive briefings",
+    "strategy narratives and annual reviews",
+    "any deck where calm authority beats energy"
+  ],
+  "files": [
+    {
+      "path": "registry/styles/boardroom/style.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": [
+    "core/base",
+    "fonts/libre-franklin",
+    "fonts/source-serif-4",
+    "fonts/jetbrains-mono"
+  ],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/styles/boardroom/README.md",
+  "agentLevel": "recommended",
+  "motion": {
+    "default": "fade",
+    "notes": "Understated fades (620ms) and slow staggers (95ms steps); nothing moves fast, nothing bounces."
+  },
+  "icons": {
+    "guidance": "Restrained brass hairline sprite icons; prefer numbers and rules over icon grids."
+  },
+  "authoring": {
+    "attributes": [
+      {
+        "name": "data-ls-style",
+        "scope": "html",
+        "value": "boardroom",
+        "description": "Activates the boardroom art direction for the whole deck."
+      }
+    ],
+    "usage": [
+      "Set data-ls-style=\"boardroom\" on the <html> element and load style.css plus the font.css of each font family dependency.",
+      "Use exactly one style per deck; styles replace the v1 theme presets."
+    ]
+  }
+}

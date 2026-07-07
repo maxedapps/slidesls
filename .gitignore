@@ -6,3 +6,9 @@ dist/
 
 .plans/*.html
 .pi-subagents/
+.gallery/
+.gallery-review/*.png
+.gallery-review/*/
+.playwright-mcp/
+examples-archive/
+*.tgz

@@ -52,19 +52,14 @@ test("skill info and show expose bundled skill metadata", async () => {
   const { stdout: catalogStdout } = await run(["skill", "show", "--reference", "catalog"]);
   assert.match(catalogStdout, /# slidesls Agent Catalog/);
 
-  const { stdout: deckAuthoringStdout } = await run([
-    "skill",
-    "show",
-    "--reference",
-    "deck-authoring",
-  ]);
-  assert.match(deckAuthoringStdout, /# Deck authoring/);
+  const { stdout: archetypesStdout } = await run(["skill", "show", "--reference", "archetypes"]);
+  assert.match(archetypesStdout, /# Archetypes and the rhythm plan/);
 
   await assert.rejects(run(["skill", "show", "--reference", "unknown"]), (error) => {
     assert.equal(error.code, 2);
     assert.match(error.stderr, /Unknown skill reference/);
     assert.match(error.stderr, /catalog/);
-    assert.match(error.stderr, /deck-authoring/);
+    assert.match(error.stderr, /archetypes/);
     return true;
   });
 });

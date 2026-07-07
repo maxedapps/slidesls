@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en" data-ls-style="gallery">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Atlas — Q3 review (Gallery)</title>
+    <link rel="stylesheet" href="../../registry/core/base/reset.css" />
+    <link rel="stylesheet" href="../../registry/core/base/tokens.css" />
+    <link rel="stylesheet" href="../../registry/core/base/slide.css" />
+    <link rel="stylesheet" href="../../registry/core/base/icons.css" />
+    <link rel="stylesheet" href="../../registry/core/base/motion.css" />
+    <link rel="stylesheet" href="../../registry/fonts/space-grotesk/font.css" />
+    <link rel="stylesheet" href="../../registry/fonts/inter/font.css" />
+    <link rel="stylesheet" href="../../registry/fonts/jetbrains-mono/font.css" />
+    <link rel="stylesheet" href="../../registry/styles/gallery/style.css" />
+    <link rel="stylesheet" href="../../registry/layouts/core/layout.css" />
+    <link rel="stylesheet" href="../../registry/layouts/core/utilities.css" />
+    <link rel="stylesheet" href="../../registry/components/badge/badge.css" />
+    <link rel="stylesheet" href="../../registry/components/statement/statement.css" />
+    <link rel="stylesheet" href="../../registry/components/stat/stat.css" />
+    <link rel="stylesheet" href="../../registry/components/flow/flow.css" />
+    <link rel="stylesheet" href="../../registry/components/list/list.css" />
+    <link rel="stylesheet" href="../../registry/components/quote/quote.css" />
+    <link rel="stylesheet" href="../../registry/components/code/code.css" />
+    <link rel="stylesheet" href="../../registry/components/surface/surface.css" />
+    <script defer src="../../registry/core/base/slide-runtime.js"></script>
+  </head>
+  <body class="ls-page">
+    <svg class="ls-sprite" aria-hidden="true"></svg>
+    <main class="ls-deck" data-ls-deck aria-label="Atlas Q3 platform review">
+      <!-- 1. Opener -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="hero"
+        data-ls-archetype="title-hero"
+        aria-label="Title"
+      >
+        <div class="ls-slide__inner">
+          <div class="ls-stack ls-center-start ls-text-start ls-slide-fill">
+            <div class="ls-cluster">
+              <span class="ls-badge">Atlas platform</span>
+              <span class="ls-badge">Q3 review</span>
+            </div>
+            <h1 class="ls-title">Atlas made every team faster except ours — on purpose.</h1>
+            <p class="ls-subtitle">
+              One year of the internal platform: what it moved, what broke, and the one thing we
+              fund next.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. Chapter divider -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="section"
+        data-ls-archetype="section"
+        aria-label="Chapter one: The year in numbers"
+      >
+        <div class="ls-slide__inner">
+          <div class="ls-stack ls-stack--lg ls-center-start ls-text-start ls-slide-fill">
+            <div class="ls-stat ls-stat--xl">
+              <span class="ls-stat__value">01</span>
+              <span class="ls-stat__label">Chapter one</span>
+            </div>
+            <div class="ls-statement">
+              <p class="ls-statement__text">The year in numbers</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. Big stats -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="big-stat"
+        aria-label="Headline numbers"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Results</p>
+            <h2 class="ls-title">The platform's first year, in three numbers.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--statement">
+              <div class="ls-grid ls-grid--3">
+                <div class="ls-stat ls-stat--xl">
+                  <span class="ls-stat__value">214</span>
+                  <span class="ls-stat__label">services migrated to Atlas in year one</span>
+                </div>
+                <div class="ls-stat ls-stat--xl">
+                  <span class="ls-stat__value">6<em>min</em></span>
+                  <span class="ls-stat__label">median deploy lead time</span>
+                  <span class="ls-stat__delta">↓ from 41 minutes pre-Atlas</span>
+                </div>
+                <div class="ls-stat ls-stat--xl">
+                  <span class="ls-stat__value">71</span>
+                  <span class="ls-stat__label">platform NPS, internal survey</span>
+                </div>
+              </div>
+              <p class="ls-layout__text">
+                Production telemetry and the internal all-hands survey — not projections.
+              </p>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Atlas — Q3 review</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 4. Process flow -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="process-flow"
+        aria-label="How migrations ran"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Process</p>
+            <h2 class="ls-title">How 214 migrations actually ran.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--band">
+              <div
+                class="ls-flow"
+                role="img"
+                aria-label="Four step migration process: assess, scaffold, shadow, cut over."
+              >
+                <div class="ls-flow__step ls-reveal" data-step="1">
+                  <span class="ls-flow__marker">1</span>
+                  <h3 class="ls-flow__title">Assess</h3>
+                  <p class="ls-flow__text">
+                    Audit the service's dependencies, traffic, and data stores with the owning team.
+                  </p>
+                </div>
+                <div class="ls-flow__step ls-reveal" data-step="2">
+                  <span class="ls-flow__marker">2</span>
+                  <h3 class="ls-flow__title">Scaffold</h3>
+                  <p class="ls-flow__text">
+                    Atlas generates pipelines, environments, and dashboards from one service
+                    manifest.
+                  </p>
+                </div>
+                <div class="ls-flow__step ls-reveal" data-step="3">
+                  <span class="ls-flow__marker">3</span>
+                  <h3 class="ls-flow__title">Shadow</h3>
+                  <p class="ls-flow__text">
+                    The new stack serves mirrored production traffic until diffs reach zero.
+                  </p>
+                </div>
+                <div class="ls-flow__step ls-reveal" data-step="4">
+                  <span class="ls-flow__marker">4</span>
+                  <h3 class="ls-flow__title">Cut over</h3>
+                  <p class="ls-flow__text">
+                    Traffic shifts in stages, with a rehearsed rollback at every stage.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Atlas — Q3 review</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 5. The failure, honestly -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="statement"
+        aria-label="The failure, honestly"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">The failure</p>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--statement">
+              <div class="ls-statement ls-statement--hero">
+                <p class="ls-statement__text">
+                  In March, shared staging <em>collapsed under load</em> and slowed every team for
+                  two weeks.
+                </p>
+                <p class="ls-statement__support">
+                  Staging is now partitioned per team and load-tested weekly; it has not recurred.
+                </p>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Atlas — Q3 review</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 6. Before / after comparison -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="comparison"
+        aria-label="Pipeline before and after"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Before / after</p>
+            <h2 class="ls-title">The search team's pipeline, one migration later.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--split">
+              <div class="ls-layout__region">
+                <h3 class="ls-layout__heading">Before Atlas</h3>
+                <div class="ls-stat">
+                  <span class="ls-stat__value">41<em>min</em></span>
+                  <span class="ls-stat__label">deploy lead time, commit to production</span>
+                </div>
+                <p class="ls-layout__note">Nine hand-maintained pipeline stages</p>
+              </div>
+              <div class="ls-layout__region">
+                <h3 class="ls-layout__heading">After Atlas</h3>
+                <div class="ls-stat">
+                  <span class="ls-stat__value">6<em>min</em></span>
+                  <span class="ls-stat__label">deploy lead time, commit to production</span>
+                  <span class="ls-stat__delta">↓ 85% in one quarter</span>
+                </div>
+                <p class="ls-layout__note">One generated paved-road pipeline</p>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Atlas — Q3 review</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 7. Evidence: quote + proof -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="evidence"
+        aria-label="What teams say"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">What teams say</p>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--statement">
+              <blockquote class="ls-quote ls-quote--lg">
+                <p class="ls-quote__text">
+                  We deleted 14,000 lines of Terraform and I have not thought about ingress since.
+                </p>
+                <footer class="ls-quote__source">
+                  <cite>Maya Okafor</cite> — Staff engineer, search team
+                </footer>
+                <div class="ls-quote__evidence ls-reveal" data-step="1">
+                  <div class="ls-stat ls-stat--sm">
+                    <span class="ls-stat__value">0</span>
+                    <span class="ls-stat__label">fleet config drift incidents since June</span>
+                  </div>
+                </div>
+              </blockquote>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Atlas — Q3 review</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 8. Operations dashboard -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="dashboard"
+        aria-label="Operations dashboard"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Operations</p>
+            <h2 class="ls-title">Boring in production, with one watch item.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--dashboard">
+              <div class="ls-surface">
+                <span class="ls-surface__kicker">Availability</span>
+                <h3 class="ls-surface__title">99.95%</h3>
+                <p class="ls-surface__text">
+                  30-day rolling, across every Atlas-managed service in the fleet.
+                </p>
+              </div>
+              <div class="ls-surface ls-surface--warning">
+                <span class="ls-surface__kicker">Watch item</span>
+                <h3 class="ls-surface__title">Queue saturation</h3>
+                <p class="ls-surface__text">
+                  Batch nights push the shared queue near its ceiling; capacity fix lands early Q4.
+                </p>
+              </div>
+              <div class="ls-stat ls-stat--sm">
+                <span class="ls-stat__value">61<em>%</em></span>
+                <span class="ls-stat__label">of the error budget still unspent</span>
+              </div>
+              <div class="ls-stat ls-stat--sm">
+                <span class="ls-stat__value">44</span>
+                <span class="ls-stat__label">releases shipped this quarter</span>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Atlas — Q3 review</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 9. Next quarter: walkthrough -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="walkthrough"
+        aria-label="Next quarter: self-serve databases"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Next quarter</p>
+            <h2 class="ls-title">One priority: self-serve production databases.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--wide-start">
+              <div class="ls-layout__region">
+                <figure class="ls-code" data-ls-variant="terminal">
+                  <figcaption class="ls-code__header">
+                    <span>atlas db — planned CLI</span><span>Q4</span>
+                  </figcaption>
+                  <div class="ls-code__body">
+                    <pre><span class="ls-code__line" data-ls-line="prompt">atlas db create orders --engine postgres --tier production</span>
+<span class="ls-code__line" data-ls-line="output">Provisioning postgres 16 across three zones… done (4m 12s)</span>
+<span class="ls-code__line" data-ls-line="highlight">Backups: hourly snapshots, 30-day retention (paved-road default)</span>
+<span class="ls-code__line" data-ls-line="highlight">Credentials issued to service identity "orders" via vault</span>
+<span class="ls-code__line" data-ls-line="output">Connection string ready: vault://orders/db/primary</span></pre>
+                  </div>
+                </figure>
+              </div>
+              <div class="ls-layout__region">
+                <h3 class="ls-layout__heading">Why this is the one bet</h3>
+                <ol class="ls-list ls-list--numbered">
+                  <li class="ls-reveal" data-step="1">
+                    <span class="ls-list__title">One command</span>
+                    <span class="ls-list__text"
+                      >A production database without a ticket, sized by the tier flag.</span
+                    >
+                  </li>
+                  <li class="ls-reveal" data-step="2">
+                    <span class="ls-list__title">Defaults included</span>
+                    <span class="ls-list__text"
+                      >Backups, retention, and failover come from paved-road defaults, not per-team
+                      config.</span
+                    >
+                  </li>
+                  <li class="ls-reveal" data-step="3">
+                    <span class="ls-list__title">No shared secrets</span>
+                    <span class="ls-list__text"
+                      >Credentials go to the service identity, never to a person.</span
+                    >
+                  </li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Atlas — Q3 review</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 10. Close -->
+      <section
+        class="ls-slide"
+        data-ls-slide-kind="content"
+        data-ls-archetype="statement"
+        aria-label="Closing"
+      >
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Close</p>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--statement">
+              <div class="ls-statement ls-statement--hero">
+                <p class="ls-statement__text">
+                  Platforms earn their keep when <em>nobody talks about them</em>.
+                </p>
+                <p class="ls-statement__support">
+                  Fund year two; the next review should be quieter than this one.
+                </p>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Atlas — Q3 review</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

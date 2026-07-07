@@ -1,0 +1,116 @@
+/* list — styled lists: the sanctioned form for short items. Replaces "grid of
+ * one-line boxes" as the default answer to 3–6 bullets. Markers are drawn in
+ * CSS (no glyph soup, no emoji).
+ */
+@layer components {
+  .ls-list {
+    display: grid;
+    gap: var(--ls-list-gap, var(--ls-space-3));
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    counter-reset: ls-list;
+  }
+
+  .ls-list > li {
+    position: relative;
+    display: grid;
+    gap: 2px;
+    padding-inline-start: var(--ls-list-indent, 52px);
+    counter-increment: ls-list;
+  }
+
+  .ls-list__title {
+    color: var(--ls-text);
+    font-family: var(--ls-font-heading);
+    font-size: var(--ls-list-title-size, 27px);
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .ls-list__text {
+    color: var(--ls-muted);
+    font-family: var(--ls-font-body);
+    font-size: var(--ls-list-text-size, 22px);
+    line-height: 1.4;
+  }
+
+  /* Single-line items: put the copy straight in the <li>. */
+  .ls-list > li {
+    color: var(--ls-text);
+    font-family: var(--ls-font-body);
+    font-size: var(--ls-list-text-size, 24px);
+    line-height: 1.35;
+  }
+
+  /* --check: CSS-drawn checkmark in the accent color. */
+  .ls-list--check > li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 6px;
+    inset-block-start: 0.28em;
+    inline-size: 16px;
+    block-size: 9px;
+    border-inline-start: 3px solid var(--ls-accent);
+    border-block-end: 3px solid var(--ls-accent);
+    transform: rotate(-45deg);
+  }
+
+  /* --arrow: CSS-drawn chevron. */
+  .ls-list--arrow > li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 10px;
+    inset-block-start: 0.32em;
+    inline-size: 11px;
+    block-size: 11px;
+    border-block-start: 3px solid var(--ls-accent);
+    border-inline-end: 3px solid var(--ls-accent);
+    transform: rotate(45deg);
+  }
+
+  /* --numbered: label-font counters. */
+  .ls-list--numbered > li::before {
+    content: counter(ls-list, decimal-leading-zero);
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.16em;
+    color: var(--ls-accent-text);
+    font-family: var(--ls-font-label);
+    font-size: 0.8em;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  /* --timeline: dots on a running rail. */
+  .ls-list--timeline {
+    --ls-list-indent: 44px;
+  }
+
+  .ls-list--timeline > li::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 6px;
+    inset-block-start: 0.34em;
+    inline-size: 12px;
+    block-size: 12px;
+    border-radius: 50%;
+    background: var(--ls-accent);
+  }
+
+  .ls-list--timeline > li:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    inset-inline-start: 11px;
+    inset-block-start: calc(0.34em + 16px);
+    inset-block-end: calc(-1 * var(--ls-list-gap, var(--ls-space-3)));
+    inline-size: 2px;
+    background: var(--ls-border);
+  }
+
+  .ls-slide[data-ls-density="compact"] .ls-list {
+    --ls-list-gap: var(--ls-space-2);
+    --ls-list-title-size: 24px;
+    --ls-list-text-size: 20px;
+  }
+}

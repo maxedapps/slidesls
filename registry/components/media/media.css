@@ -1,0 +1,80 @@
+/* media — screenshot and product frames: browser chrome, plain window, or
+ * bare shadowed media. Frames make real assets read as intentional.
+ */
+@layer components {
+  .ls-media {
+    display: grid;
+    overflow: hidden;
+    grid-template-rows: auto 1fr;
+    min-block-size: 0;
+    border: var(--ls-border-width) solid var(--ls-border);
+    border-radius: var(--ls-radius-lg);
+    background: var(--ls-surface);
+    box-shadow: var(--ls-shadow-sm);
+  }
+
+  .ls-media__chrome {
+    display: flex;
+    align-items: center;
+    gap: var(--ls-space-3);
+    padding: 12px 18px;
+    border-block-end: var(--ls-border-width) solid var(--ls-border);
+  }
+
+  .ls-media__dots {
+    display: inline-flex;
+    gap: 7px;
+  }
+
+  .ls-media__dots i {
+    inline-size: 12px;
+    block-size: 12px;
+    border-radius: 50%;
+    background: var(--ls-border-strong);
+  }
+
+  .ls-media__address {
+    overflow: hidden;
+    flex: 1;
+    padding: 5px 14px;
+    border-radius: var(--ls-radius-sm);
+    background: var(--ls-surface-muted);
+    color: var(--ls-subtle);
+    font-family: var(--ls-font-label);
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ls-media__body {
+    display: grid;
+    overflow: hidden;
+    min-block-size: 0;
+    background: var(--ls-slide-bg);
+  }
+
+  .ls-media__body > img,
+  .ls-media__body > video {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: top;
+  }
+
+  .ls-media__body > svg {
+    inline-size: 100%;
+    block-size: auto;
+    color: var(--ls-text);
+  }
+
+  /* Plain window: chrome without the address bar (native app feel). */
+  .ls-media--window .ls-media__address {
+    visibility: hidden;
+  }
+
+  /* Bare: no chrome row at all. */
+  .ls-media--bare {
+    grid-template-rows: 1fr;
+  }
+}

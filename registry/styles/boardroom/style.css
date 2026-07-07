@@ -1,0 +1,87 @@
+/* boardroom — premium, calm authority: deep charcoal-navy, brass accent,
+ * Franklin display over serif body, hairline gold rules, understated motion.
+ */
+@layer tokens {
+  :root[data-ls-style="boardroom"] {
+    color-scheme: dark;
+
+    /* type: confident grotesque display, literate serif body */
+    --ls-font-display: "Libre Franklin Variable", "Helvetica Neue", sans-serif;
+    --ls-font-heading: var(--ls-font-display);
+    --ls-font-body: "Source Serif 4 Variable", Georgia, serif;
+    --ls-font-label: "Libre Franklin Variable", ui-sans-serif, sans-serif;
+    --ls-font-code: "JetBrains Mono Variable", ui-monospace, monospace;
+    --ls-title-letter-spacing: -0.03em;
+    --ls-title-line-height: 1.02;
+
+    /* deep charcoal-navy with brass */
+    --ls-page-bg: #0b0e14;
+    --ls-page-grid-color: rgb(201 168 106 / 3%);
+    --ls-slide-bg: #131824;
+    --ls-panel-bg: #1a2030;
+    --ls-surface: #1a2030;
+    --ls-surface-strong: #222a3d;
+    --ls-surface-muted: rgb(201 168 106 / 5%);
+    --ls-surface-highlight: 0 1px 0 rgb(255 255 255 / 4%) inset;
+    --ls-border: rgb(201 168 106 / 22%);
+    --ls-border-strong: rgb(201 168 106 / 42%);
+    --ls-text: #eef0f4;
+    --ls-muted: #b6bcc9;
+    --ls-subtle: #9aa3b5;
+
+    --ls-accent: #c9a86a;
+    --ls-accent-2: #8f97ab;
+    --ls-accent-text: #d8bc85;
+    --ls-accent-bg: rgb(201 168 106 / 10%);
+    --ls-accent-border: rgb(201 168 106 / 40%);
+
+    --ls-code-bg: #0b0e14;
+    --ls-code-text: #dfe3ea;
+    --ls-code-border: rgb(201 168 106 / 25%);
+    --ls-table-stripe-bg: rgb(201 168 106 / 5%);
+    --ls-progress-accent: var(--ls-accent);
+    --ls-progress-accent-2: var(--ls-accent-2);
+    --ls-status-success: #86b98a;
+    --ls-status-warning: #d9b36a;
+    --ls-status-danger: #d98080;
+
+    /* shape: generous but composed */
+    --ls-radius-sm: 8px;
+    --ls-radius-md: 12px;
+    --ls-radius-lg: 16px;
+    --ls-radius-xl: 20px;
+    --ls-radius-slide: 12px;
+    --ls-border-width: 1px;
+    --ls-shadow-sm: 0 12px 28px rgb(0 0 0 / 30%);
+    --ls-shadow-md: 0 24px 60px rgb(0 0 0 / 38%);
+
+    /* texture: a quiet vignette pulling focus inward */
+    --ls-slide-texture: radial-gradient(
+      120% 120% at 50% 30%,
+      transparent 0%,
+      transparent 62%,
+      rgb(0 0 0 / 28%) 100%
+    );
+
+    /* furniture: centered brass-ruled footer */
+    --ls-footer-rule: 1px solid rgb(201 168 106 / 35%);
+    --ls-footer-color: #9aa2b3;
+    --ls-footer-font-size: 15px;
+    --ls-footer-letter-spacing: 0.18em;
+
+    /* abstract figure art: deep gradient with a brass horizon */
+    --ls-abstract-art:
+      linear-gradient(180deg, transparent 0 62%, rgb(201 168 106 / 55%) 62% 63%, transparent 63%)
+        no-repeat,
+      radial-gradient(130% 100% at 50% 0%, rgb(201 168 106 / 16%) 0%, transparent 55%) no-repeat,
+      linear-gradient(180deg, #1a2030 0%, #0b0e14 100%);
+
+    /* motion signature: understated fades, slow staggers */
+    --ls-transition-kind: fade;
+    --ls-transition-duration: 620ms;
+    --ls-transition-ease: cubic-bezier(0.33, 0, 0.2, 1);
+    --ls-enter-duration: 700ms;
+    --ls-enter-distance: 12px;
+    --ls-stagger-step: 95ms;
+  }
+}

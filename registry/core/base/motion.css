@@ -1,0 +1,140 @@
+/* Core motion for slidesls decks.
+ *
+ * Slide-level transitions are driven by the runtime through the Web Animations
+ * API (interruptible under rapid navigation); this file owns the CSS half of
+ * the motion system: auto-stagger child entrances, step reveals, and the kill
+ * switches (export, print, reduced motion, data-ls-motion="none").
+ *
+ * Choreography rule: the slide transition and the child stagger never both
+ * translate. With the default fade transition, children provide the movement;
+ * when the deck uses a rise/slide transition, the runtime sets
+ * data-ls-stagger-mode="fade" and the stagger degrades to opacity-only.
+ */
+@layer motion {
+  /* --- Auto-stagger entrances ------------------------------------------- */
+
+  /* Entrance styles are keyed to data-ls-navigated, which the runtime sets
+     only after the first user navigation: the initial load renders slide 1
+     static instead of flashing the @starting-style first-render state. */
+  .ls-deck[data-ls-navigated="true"] .ls-slide[data-active="true"] [data-ls-enter] {
+    opacity: 1;
+    translate: 0 0;
+    transition:
+      opacity var(--ls-enter-duration) var(--ls-transition-ease),
+      translate var(--ls-enter-duration) var(--ls-transition-ease);
+    transition-delay: calc(var(--ls-enter-index, 0) * var(--ls-stagger-step));
+  }
+
+  @starting-style {
+    .ls-deck[data-ls-navigated="true"] .ls-slide[data-active="true"] [data-ls-enter] {
+      opacity: 0;
+      translate: 0 var(--ls-enter-distance);
+    }
+  }
+
+  .ls-deck[data-ls-navigated="true"][data-ls-stagger-mode="fade"]
+    .ls-slide[data-active="true"]
+    [data-ls-enter] {
+    translate: none;
+  }
+
+  @starting-style {
+    .ls-deck[data-ls-navigated="true"][data-ls-stagger-mode="fade"]
+      .ls-slide[data-active="true"]
+      [data-ls-enter] {
+      translate: none;
+    }
+  }
+
+  /* --- Step reveals ------------------------------------------------------ */
+
+  /* Stepping is core behavior: pair data-step with .ls-reveal (or use
+     data-ls-reveal-sequence on a container). The runtime manages
+     data-ls-reveal-state. */
+  .ls-reveal {
+    opacity: 1;
+    transform: translateY(0);
+    transition:
+      opacity var(--ls-duration) var(--ls-ease) var(--ls-delay, 0ms),
+      transform var(--ls-duration) var(--ls-ease) var(--ls-delay, 0ms);
+  }
+
+  .ls-deck[data-ls-ready="true"]
+    .ls-slide[data-active="true"]
+    .ls-reveal[data-ls-reveal-state="future"],
+  .ls-deck[data-ls-ready="true"]
+    .ls-slide[data-ls-transit="out"]
+    .ls-reveal[data-ls-reveal-state="future"] {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  .ls-deck[data-ls-ready="true"]
+    .ls-slide[data-active="true"]
+    .ls-reveal[data-ls-reveal-state="current"],
+  .ls-deck[data-ls-ready="true"]
+    .ls-slide[data-active="true"]
+    .ls-reveal[data-ls-reveal-state="past"] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* --- Kill switches ------------------------------------------------------ */
+
+  .ls-deck[data-ls-export="true"] [data-ls-enter],
+  .ls-deck[data-ls-motion="none"] [data-ls-enter],
+  .ls-slide[data-ls-motion="none"] [data-ls-enter] {
+    transition: none;
+  }
+
+  /* Step reveals keep their show/hide states but stop animating: the motion
+     opt-out must cover every kind of motion, not just entrances. */
+  .ls-deck[data-ls-motion="none"] .ls-reveal,
+  .ls-slide[data-ls-motion="none"] .ls-reveal {
+    transition: none;
+  }
+
+  .ls-deck[data-ls-export="true"] .ls-reveal,
+  .ls-deck:not([data-ls-ready]) .ls-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  @media print {
+    [data-ls-enter] {
+      transition: none;
+    }
+
+    .ls-reveal {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ls-deck[data-ls-navigated="true"] .ls-slide[data-active="true"] [data-ls-enter] {
+      translate: none;
+      transition: opacity 1ms linear;
+      transition-delay: 0ms;
+    }
+
+    @starting-style {
+      .ls-deck[data-ls-navigated="true"] .ls-slide[data-active="true"] [data-ls-enter] {
+        translate: none;
+      }
+    }
+
+    .ls-reveal {
+      transform: none;
+      transition: opacity 1ms linear;
+    }
+
+    .ls-deck[data-ls-ready="true"]
+      .ls-slide[data-active="true"]
+      .ls-reveal[data-ls-reveal-state="future"] {
+      transform: none;
+    }
+  }
+}

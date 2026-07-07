@@ -3,7 +3,7 @@
     align-self: start;
     overflow: auto;
     max-inline-size: 100%;
-    border: 1px solid var(--ls-border);
+    border: var(--ls-border-width) solid var(--ls-border);
     border-radius: var(--ls-radius-lg);
     background: var(--ls-surface);
   }
@@ -22,7 +22,7 @@
     min-inline-size: var(--ls-table-min-inline, 0);
     border-collapse: separate;
     border-spacing: 0;
-    border: 1px solid var(--ls-border);
+    border: var(--ls-border-width) solid var(--ls-border);
     border-radius: var(--ls-radius-lg);
     background: var(--ls-surface);
     font-size: var(--ls-text-xs);
@@ -46,7 +46,7 @@
   .ls-table th,
   .ls-table td {
     padding: var(--ls-table-cell-padding, 16px 18px);
-    border-block-start: 1px solid var(--ls-border);
+    border-block-start: var(--ls-border-width) solid var(--ls-border);
     text-align: start;
     vertical-align: top;
   }

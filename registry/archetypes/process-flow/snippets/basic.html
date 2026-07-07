@@ -1,0 +1,49 @@
+<section
+  class="ls-slide"
+  data-ls-slide-kind="content"
+  data-ls-archetype="process-flow"
+  aria-label="Process"
+>
+  <div class="ls-slide__inner">
+    <header class="ls-slide__header">
+      <p class="ls-eyebrow">Process</p>
+      <h2 class="ls-title">Every change ships the same way.</h2>
+    </header>
+    <div class="ls-slide__body">
+      <div class="ls-layout ls-layout--band">
+        <div
+          class="ls-flow"
+          role="img"
+          aria-label="Four step release process: build, canary, promote, verify."
+        >
+          <div class="ls-flow__step ls-reveal" data-step="1">
+            <span class="ls-flow__marker">1</span>
+            <h3 class="ls-flow__title">Build</h3>
+            <p class="ls-flow__text">CI compiles, tests, and signs an immutable release image.</p>
+          </div>
+          <div class="ls-flow__step ls-reveal" data-step="2">
+            <span class="ls-flow__marker">2</span>
+            <h3 class="ls-flow__title">Canary</h3>
+            <p class="ls-flow__text">
+              5% of traffic runs the release for one hour under budget watch.
+            </p>
+          </div>
+          <div class="ls-flow__step ls-reveal" data-step="3">
+            <span class="ls-flow__marker">3</span>
+            <h3 class="ls-flow__title">Promote</h3>
+            <p class="ls-flow__text">Healthy canaries roll out fleet-wide, region by region.</p>
+          </div>
+          <div class="ls-flow__step ls-reveal" data-step="4">
+            <span class="ls-flow__marker">4</span>
+            <h3 class="ls-flow__title">Verify</h3>
+            <p class="ls-flow__text">Conversion and latency are checked against the baseline.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="ls-slide__footer">
+      <span>Release engineering</span>
+      <span data-ls-page-number></span>
+    </footer>
+  </div>
+</section>

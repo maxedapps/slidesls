@@ -1,0 +1,82 @@
+{
+  "name": "components/statement",
+  "type": "ls:component",
+  "description": "A full-width display-type claim with an optional support line. No border, no box: the words are the design \u2014 the strongest single-idea slide body in the vocabulary.",
+  "files": [
+    {
+      "path": "registry/components/statement/statement.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/statement/README.md",
+  "rootClass": "ls-statement",
+  "safeAnywhere": true,
+  "snippets": [
+    {
+      "label": "Basic statement",
+      "path": "registry/components/statement/snippets/basic.html"
+    }
+  ],
+  "intent": ["emphasize", "open", "close"],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-statement",
+        "elements": ["ls-statement__text", "ls-statement__support"],
+        "modifiers": ["ls-statement--hero", "ls-statement--center"]
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--ls-statement-size",
+        "default": "var(--ls-text-xl)",
+        "overrideSafe": true
+      }
+    ],
+    "usage": [
+      "Emphasize at most one span per claim with <em> or ls-accent-text; the accent does the pointing.",
+      "Keep the claim to a single sentence; move any qualification into ls-statement__support.",
+      "Use ls-statement--hero for opening or closing slides where the claim is the whole slide."
+    ]
+  },
+  "composition": {
+    "contentDensity": ["sparse"],
+    "layoutBehavior": "content-sized",
+    "itemCountGuidance": "One statement per slide; two competing claims dilute both.",
+    "copyGuidance": "Claim of 4-12 words with one emphasized span; support line of at most 2 sentences.",
+    "useWhen": [
+      "one idea deserves the whole slide",
+      "opening or closing a section with a thesis",
+      "a transition needs a beat between dense slides"
+    ],
+    "avoidWhen": [
+      "the point needs supporting structure such as steps or evidence",
+      "several claims compete on the same slide",
+      "the claim is really a number"
+    ],
+    "alternatives": [
+      {
+        "when": "the claim is a number",
+        "use": "components/stat"
+      },
+      {
+        "when": "the claim is someone else's words",
+        "use": "components/quote"
+      },
+      {
+        "when": "several short points instead of one claim",
+        "use": "components/list"
+      }
+    ]
+  },
+  "agentLevel": "recommended",
+  "tags": ["statement", "claim", "display-type", "thesis"],
+  "useCases": [
+    "State the deck's thesis in display type.",
+    "Open or close a section with a single memorable claim.",
+    "Give one idea a full slide as a narrative beat."
+  ]
+}

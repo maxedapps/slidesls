@@ -1,0 +1,91 @@
+/* figure — the image/diagram frame, and the sanctioned abstract-art fallback.
+ *
+ * Image-sourcing ladder (see archetype docs): real asset → authored diagram
+ * (flow/chart/svg) → .ls-figure--abstract → the archetype's no-figure
+ * variant. Text-in-a-panel pretending to be a visual is never sanctioned.
+ */
+@layer components {
+  .ls-figure {
+    display: grid;
+    align-content: start;
+    margin: 0;
+    min-block-size: 0;
+  }
+
+  .ls-figure__media {
+    display: grid;
+    overflow: hidden;
+    place-items: center;
+    min-block-size: 0;
+    border-radius: var(--ls-radius-lg);
+  }
+
+  .ls-figure__media > img,
+  .ls-figure__media > video {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  .ls-figure__media > svg {
+    inline-size: 100%;
+    block-size: auto;
+  }
+
+  .ls-figure__caption {
+    margin-block-start: var(--ls-space-2);
+    color: var(--ls-subtle);
+    font-family: var(--ls-font-label);
+    font-size: var(--ls-text-xs);
+    letter-spacing: 0.04em;
+    line-height: 1.35;
+  }
+
+  /* Framed: hairline border for screenshots that would bleed into the bg. */
+  .ls-figure--frame .ls-figure__media {
+    border: var(--ls-border-width) solid var(--ls-border);
+  }
+
+  /* Edge: square, unrounded media (diagrams, technical plots). */
+  .ls-figure--edge .ls-figure__media {
+    border-radius: 0;
+  }
+
+  /* Fill: the figure stretches to its grid area (split layouts); the media
+     row absorbs the height, the caption keeps its natural size. */
+  .ls-figure--fill {
+    grid-template-rows: minmax(0, 1fr) auto;
+    block-size: 100%;
+  }
+
+  .ls-figure--fill .ls-figure__media {
+    block-size: 100%;
+  }
+
+  /* Abstract: an intentional token-colored composition — designed to be
+     shown, not to apologize. Styles override --ls-abstract-art with their
+     own generative layers (rules, grid-waves, fields, gradients, shapes). */
+  .ls-figure--abstract .ls-figure__media {
+    min-block-size: 240px;
+    background: var(
+      --ls-abstract-art,
+      radial-gradient(
+          120% 140% at 85% 10%,
+          color-mix(in srgb, var(--ls-accent-2) 32%, transparent) 0%,
+          transparent 55%
+        )
+        no-repeat,
+      radial-gradient(
+          130% 130% at 10% 90%,
+          color-mix(in srgb, var(--ls-accent) 42%, transparent) 0%,
+          transparent 60%
+        )
+        no-repeat,
+      linear-gradient(
+        160deg,
+        color-mix(in srgb, var(--ls-accent) 14%, var(--ls-surface)) 0%,
+        var(--ls-surface) 70%
+      )
+    );
+  }
+}

@@ -37,10 +37,11 @@ Local checkout/dev example:
 
 References:
   slidesls skill show --reference catalog
-  slidesls skill show --reference deck-authoring
-  slidesls skill show --reference copy-workflow
-  slidesls skill show --reference preview-validation
-  slidesls skill show --reference registry-contract
+  slidesls skill show --reference style-directions
+  slidesls skill show --reference archetypes
+  slidesls skill show --reference motion
+  slidesls skill show --reference customization
+  slidesls skill show --reference qa
 
 For AI agents:
   Install or link the skill before authoring.

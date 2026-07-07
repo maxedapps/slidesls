@@ -1,0 +1,158 @@
+/* layouts — slide-body compositions with alignment guarantees.
+ *
+ * Aligned layouts declare a row skeleton (heading / body / footer) and make
+ * each region a subgrid item spanning it, so headings, bodies, and footers
+ * align across columns BY CONSTRUCTION. The tradeoff is explicit: region
+ * markup must follow the skeleton (≤3 children, in order). Irregular content
+ * opts out with .ls-layout--free, trading alignment away deliberately.
+ *
+ * Every layout states where surplus space goes; nothing here relies on
+ * blanket vertical centering. The base class .ls-layout is load-bearing:
+ * the runtime's stagger traversal descends one level into it.
+ */
+@layer utilities {
+  .ls-layout {
+    display: grid;
+    gap: var(--ls-layout-gap, var(--ls-space-5));
+    min-inline-size: 0;
+    min-block-size: 0;
+    block-size: 100%;
+  }
+
+  /* --- Aligned column layouts ------------------------------------------ */
+  /* Row skeleton: heading (auto) / body (1fr — surplus lands inside the
+     body row) / footer (auto, anchored to the bottom edge). */
+  .ls-layout--split {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .ls-layout--columns-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .ls-layout--columns-4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: auto 1fr auto;
+  }
+
+  /* Asymmetric splits keep the same skeleton. */
+  .ls-layout--wide-start {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 0.7fr);
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .ls-layout--wide-end {
+    grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr);
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .ls-layout__region {
+    display: grid;
+    grid-row: span 3;
+    grid-template-rows: subgrid;
+    row-gap: var(--ls-space-3);
+    align-items: start;
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+
+  /* A region with a single child (a lone code figure, a bleed image) is not
+     skeleton content: it spans all three rows and owns the full height. */
+  .ls-layout__region > :only-child {
+    grid-row: 1 / -1;
+    min-block-size: 0;
+  }
+
+  /* Region typography: heading/note styling for skeleton rows, so aligned
+     layouts read well without pulling in a boxed component. */
+  .ls-layout__heading {
+    color: var(--ls-text);
+    font-family: var(--ls-font-heading);
+    font-size: var(--ls-layout-heading-size, 30px);
+    font-weight: 720;
+    line-height: 1.12;
+  }
+
+  .ls-layout__text {
+    color: var(--ls-muted);
+    font-family: var(--ls-font-body);
+    font-size: var(--ls-layout-text-size, 22px);
+    line-height: 1.42;
+  }
+
+  .ls-layout__note {
+    align-self: end;
+    color: var(--ls-subtle);
+    font-family: var(--ls-font-label);
+    font-size: var(--ls-text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Free variant: regions stack their content top-down with no shared
+     skeleton — for irregular columns where alignment would fight content. */
+  .ls-layout--free > .ls-layout__region {
+    grid-row: auto;
+    grid-template-rows: none;
+    align-content: start;
+    row-gap: var(--ls-space-3);
+  }
+
+  .ls-layout--free {
+    grid-template-rows: none;
+    align-content: start;
+  }
+
+  /* --- Single-focus layouts --------------------------------------------- */
+  /* Statement: one claim at the optical center (slightly above true center;
+     surplus space is the design). */
+  .ls-layout--statement {
+    align-content: center;
+    justify-items: start;
+    padding-block-end: var(--ls-space-7);
+  }
+
+  /* Band: a full-width horizontal sequence crossing the middle of the body;
+     surplus space splits above and below the band. */
+  .ls-layout--band {
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    align-content: center;
+    align-items: start;
+  }
+
+  /* --- Filling layouts --------------------------------------------------- */
+  /* Dashboard: dense data fills the body area; tiles stretch to equal rows. */
+  .ls-layout--dashboard {
+    grid-template-columns: repeat(var(--ls-layout-columns, 3), minmax(0, 1fr));
+    grid-auto-rows: 1fr;
+    align-content: stretch;
+  }
+
+  /* Gallery: media grid, items stretch to fill their cells. */
+  .ls-layout--gallery {
+    grid-template-columns: repeat(var(--ls-layout-columns, 2), minmax(0, 1fr));
+    grid-auto-rows: 1fr;
+    align-content: stretch;
+  }
+
+  /* --- Bleed ------------------------------------------------------------- */
+  /* A region that escapes the slide padding on the inline-end and block-end
+     sides — for media/figures that should run to the slide edge. Use on the
+     LAST region of a split. */
+  .ls-layout__region--bleed {
+    margin-inline-end: calc(-1 * var(--ls-slide-padding-inline));
+    margin-block-end: calc(-1 * var(--ls-slide-padding-block));
+  }
+
+  .ls-layout__region--bleed > * {
+    border-radius: 0;
+  }
+
+  .ls-slide[data-ls-density="compact"] .ls-layout {
+    --ls-layout-gap: var(--ls-space-4);
+  }
+}

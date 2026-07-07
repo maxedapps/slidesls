@@ -1,139 +1,79 @@
 # slidesls
 
-Agent-primary slide authoring CLI and copyable registry for plain HTML/CSS/JS decks.
+A skill-guided slide design system for AI agents. Decks are plain, editable HTML/CSS/JS with no runtime dependency on slidesls or any framework.
 
-`slidesls` helps agents and humans initialize deck folders, inspect recommended templates/snippets, copy registry primitives, validate decks, preview them locally, and install the bundled agent skill. It is an authoring tool only: generated decks remain editable vanilla files with no runtime package dependency.
+The system, not just a snippet library:
 
-NPM package: [`@maxedapps/slidesls`](https://www.npmjs.com/package/@maxedapps/slidesls)  
+- **Five art directions (styles)** — `editorial`, `terminal`, `gallery`, `boardroom`, `pop`. A style is tokens + vendored typefaces + texture + shape + slide furniture + a motion signature, activated by one `data-ls-style` attribute on `<html>`. Exactly one per deck.
+- **Nine archetypes with content contracts** — complete slide patterns (`title-hero`, `statement`, `section`, `big-stat`, `process-flow`, `comparison`, `evidence`, `walkthrough`, `dashboard`) whose slot counts and word limits are machine-checked, so columns align and boxes stay balanced because the content fits, not because type shrank.
+- **A content vocabulary beyond boxes** — 14 components (`surface`, `statement`, `stat`, `figure`, `list`, `code`, `chart`, `flow`, `media`, `quote`, `table`, `badge`, `divider`, `progress`) plus `layouts/core` compositions with alignment guarantees.
+- **Motion by default** — slide transitions and staggered entrances ship with every style's signature; `data-step` reveals are opt-in where sequence carries meaning; export, print, and `prefers-reduced-motion` render static.
+- **Vendored OFL fonts** — eight variable font families copied into the deck, each with its own `OFL.txt`. No font CDNs.
+- **Inline Lucide icon sprite** — a curated icon subset delivered as an inline `<svg>` sprite kept in sync by `slidesls icons sync`. No icon CDNs, no emoji soup.
+- **Taste lints + scorecard** — `slidesls validate` catches provable defects as errors and taste signatures (card-grid monotony, placeholder visuals, contract violations) as precise advisory warnings; `validate --report` adds a deck scorecard.
+- **A visual gate** — `slidesls visual-qa` measures rendered facts (fill ratios, type sizes, WCAG contrast) in a real browser; static validation alone is never "done".
+
+NPM package: [`@maxedapps/slidesls`](https://www.npmjs.com/package/@maxedapps/slidesls)
 Binary: `slidesls`
 
 ## Quickstart
 
-Run directly with `npx`:
-
 ```sh
-npx -y @maxedapps/slidesls@latest init ./my-deck --template minimal --theme executive-blue --title "My Deck"
+npx -y @maxedapps/slidesls@latest init ./my-deck --template minimal --style editorial --title "My Deck"
 cd my-deck
-npx -y @maxedapps/slidesls@latest catalog --starter
-npx -y @maxedapps/slidesls@latest validate
-npx -y @maxedapps/slidesls@latest preview
+npx -y @maxedapps/slidesls@latest validate . --report
+npx -y @maxedapps/slidesls@latest preview .
 ```
 
-Or install it globally:
+`init --style <name>` copies the style, its vendored fonts, and the core assets into the deck, links everything in the entry HTML, and sets `data-ls-style` on `<html>`. Use a dedicated deck folder inside larger projects:
 
 ```sh
-npm install -g @maxedapps/slidesls
-slidesls init ./my-deck --template minimal --theme executive-blue --title "My Deck"
-cd my-deck
-slidesls validate
-slidesls preview
+slidesls init ./slides/my-deck --template minimal --style terminal --title "Architecture Review"
 ```
 
-`slidesls init` writes `slidesls.json`, `index.html`, and `slidesls/` into the target directory, so only run it at a project root when that root is meant to be the deck.
+## The copyable, no-runtime-dependency model
 
-Inside a larger project, prefer an explicit deck path:
+slidesls is an authoring tool, not a framework. `init` and `add` copy registry assets into the deck's `slidesls/` directory; the deck owns those files and may edit them. A deployed deck needs only its own HTML/CSS/JS/assets — the npm package is never a runtime dependency, and there is no build step.
 
-```sh
-slidesls init ./slides/my-deck --template minimal --title "My Deck"
-```
+`add` also works without `init`: pointing `--dir` at a project with no `slidesls.json` uses copy mode and writes assets under `--base-dir` (default `slidesls`).
 
-### Primitive composition without templates
+## For AI agents
 
-Templates are optional. For custom slide structures, start from a blank deck, inspect layout/components, then copy only the primitives you need:
-
-```sh
-slidesls init ./slides/custom-deck --template blank --title "Custom Deck"
-slidesls catalog --type component --json
-slidesls inspect utilities/layout components/card components/panel --json
-slidesls add utilities/layout components/card components/panel --dir ./slides/custom-deck --dry-run --json
-```
-
-## Use as a copyable component registry
-
-`init` is optional. To copy primitives into an existing project without scaffolding a full deck, run:
-
-```sh
-npx -y @maxedapps/slidesls@latest add components/card utilities/layout --dir ./existing-project --base-dir vendor/slidesls
-```
-
-If `--dir` has no `slidesls.json`, `add` uses copy mode and writes assets under the selected base directory.
-
-## Agent skill
-
-The npm package includes a bundled agent skill for authoring slides with `slidesls`.
+The package bundles an agent skill that carries the full authoring workflow (style brief, rhythm plan, contracts, motion pass, QA loop):
 
 ```sh
 npx -y @maxedapps/slidesls@latest skill show
 npx -y @maxedapps/slidesls@latest skill install <your-agent-skill-dir>/create-slides-with-slidesls
-npx -y @maxedapps/slidesls@latest skill info --json
 ```
 
-After installing, agents should fully read the installed `SKILL.md` and relevant `references/` files before authoring.
-
-## Commands
-
-CLI help and key text outputs include explicit `For AI agents:` blocks. JSON outputs for discovery/editing commands include additive `agentInstructions` with rules and next command recipes.
-
-- `slidesls init [dir]` — initialize a deck in the current directory, or in `[dir]` if supplied.
-- `slidesls catalog --starter` / `slidesls catalog --json` — list brief item summaries for incremental discovery (`--json` is the complete lightweight inventory; `--starter` is the smallest fast-start set); add `--api` for public `authoring` metadata.
-- `slidesls inspect <items...>` — show snippet HTML and aggregate load tags; add `--api` for public `authoring` metadata and `--with-dependencies` for dependency details.
-- `slidesls add <items...>` — copy registry items into an initialized deck or any existing project in copy mode, and print load tags.
-- `slidesls skill info|show|install` — inspect or copy the bundled agent skill. Use `slidesls skill show --reference catalog` for the generated public class/style/API catalog.
-- `slidesls validate [dir]` — static deck validation, including advisory design-lint composition warnings.
-- `slidesls preview [dir]` — serve a deck locally; JSON output includes per-slide deep links.
-- `slidesls visual-qa` — browser-fact visual QA: a dependency-free collector script plus per-slide composition findings.
-- `slidesls doctor [--dir <project>]` — check CLI/project health.
-
-Most agent-facing commands support `--json`.
-
-## Registry
-
-Registry items are bundled with the npm package and copied into downstream decks. The registry is organized around:
-
-- `core/` — base shell, tokens, runtime.
-- `utilities/` — layout utilities that work anywhere.
-- `components/` — standalone visual/content primitives.
-- `templates/` — paste-ready slide snippets composed from utilities and components.
-- `animations/` and `presets/` — optional enhancements, including fonts and themes.
-
-Generated projects use `slidesls/` as the default copied asset directory and may freely edit those files. Default validation accepts those edits; `validate --strict` is available when you want copied-file hash drift to fail.
-
-## Theming
-
-Themes are optional visual presets under `presets/themes/*`. They are not templates: templates define slide structure, while themes remap canonical tokens for colors, surfaces, borders, radii, shadows, code blocks, status colors, and progress bars. A deck without `data-ls-theme` still uses the default dark blue-accent base tokens from `core/base/tokens.css`; it is not unstyled.
-
-Use a theme during initialization:
+After installing, agents should fully read `SKILL.md` and the relevant `references/` files before authoring. Discovery is incremental and JSON-first:
 
 ```sh
-slidesls init ./my-deck --template minimal --theme executive-blue --title "My Deck"
+slidesls catalog --type style --json      # pick the deck's art direction
+slidesls catalog --type archetype --json  # slide patterns with contracts
+slidesls catalog --intent prove --json    # find items by what a slide must DO
+slidesls inspect archetypes/big-stat --json
+slidesls validate ./my-deck --report --json
 ```
 
-Or copy a theme into an existing project and apply it manually:
+## Validation and visual QA
 
-```sh
-slidesls add presets/themes/technical-deep --dir ./existing-project
-```
+`slidesls validate` is offline and deterministic: errors are provable defects (missing runtime, broken style activation, icons missing from the sprite, dead asset links); warnings are taste signatures with precise hints, suppressible per slide with `data-ls-lint="off"` when a deviation is deliberate. `--report` adds the deck scorecard — necessary, never sufficient: rendered review still decides.
 
-```html
-<html lang="en" data-ls-theme="technical-deep"></html>
-```
+For the rendered half, keep `slidesls preview` running, collect browser facts with `slidesls visual-qa --eval`, and analyze with `slidesls visual-qa --analyze` — it reports measured findings (low fill, sparse equal boxes, small body type, WCAG `low_contrast`) with a deep link per slide.
 
-Initial themes:
+## Documentation
 
-- `executive-blue` — balanced professional/product decks.
-- `clean-light` — bright product, teaching, and print-friendly decks.
-- `boardroom-navy` — formal strategy, executive, and reporting decks.
-- `technical-deep` — engineering, architecture, and code-heavy decks.
-- `playful-ink` — friendlier workshop/community/product decks.
+- [CLI reference](./docs/cli.md)
+- [Deck contract](./docs/deck-contract.md) — what a generated deck contains and its stable API.
+- [Validation](./docs/validation.md) — every error and warning code.
+- [Agent workflow](./docs/agent-workflow.md) — the end-to-end agent path.
+- [Registry contract](./docs/registry-contract.md) — item metadata for contributors.
+- [Publishing](./docs/publishing.md) — release flow.
+- [PROJECT.md](./PROJECT.md) — repo layout and contributor guide.
 
-Themes intentionally avoid heavy decorative gradients and glow effects. Font presets remain separate and optional.
+## Licenses
 
-## Validation and preview
-
-`slidesls validate` is a lightweight static check, not a full browser render or complete HTML parser. It catches common registry contract issues such as broken custom progress markup, raw timeline shorthand, reveal animation conflicts, and unknown copied classes, plus advisory design-lint warnings for composition anti-patterns (stretched sparse card grids, wrapping card rows), but it does not prove visual fit.
-
-After creating or materially editing slides, use `slidesls preview` for visual review; it serves until the process is stopped. For measured review, `slidesls visual-qa --eval` prints a dependency-free browser collector and `slidesls visual-qa --analyze` turns the collected geometry into per-slide findings (low card fill, sparse equal boxes, small body type) with deep links to the slides that need attention.
-
-Deck URLs support optional deep links in the form `#slide=2&step=1` (`slide` is 1-based, `step` is 0-based). New decks get this behavior through copied `slide-runtime.js`; existing decks must recopy/update that owned asset to opt in.
-
-`snapshot` is intentionally deferred to keep the base package lightweight.
+- The package itself is MIT licensed (see [LICENSE](./LICENSE)).
+- Vendored fonts (`registry/fonts/*`) are licensed under the SIL Open Font License 1.1; each family directory ships its own `OFL.txt`, and both are copied into decks that use the family.
+- Icons are a curated subset of [Lucide](https://lucide.dev) (ISC license); `slidesls icons sync` writes the license text to `slidesls/registry/icons/LICENSE` in decks that use icons.

@@ -6,6 +6,7 @@ import { ok } from "../shared/result.mjs";
 import { assertInside, assertSafeRelativePath, exists, writeText } from "../shared/fs.mjs";
 import {
   catalogGroups,
+  isPreviewItem,
   mergeBriefAndRich,
   resolveItems,
   summarizeItemBrief,
@@ -33,15 +34,21 @@ import {
   inspectAgentInstructions,
 } from "./agent-instructions.mjs";
 import { registryData, registrySource, rejectRemovedRegistryOption } from "./registry-options.mjs";
-import { normalizedType, normalizeThemeName, themeApplication, themePreset } from "./theme.mjs";
+import {
+  normalizedType,
+  normalizeStyleName,
+  rejectRemovedThemeOption,
+  styleApplication,
+  stylePreset,
+} from "./theme.mjs";
 
 const coreItems = ["core/base"];
 const minimalItems = [
   "core/base",
-  "utilities/layout",
+  "layouts/core",
   "components/badge",
-  "components/panel",
-  "animations/reveal",
+  "components/statement",
+  "components/list",
 ];
 
 async function precheckNewFiles(root, filePaths) {
@@ -62,11 +69,11 @@ export async function initCommand(argv) {
   const args = parseArgs(argv, commandOptionSpecs.init);
   if (args.help)
     return ok({
-      help: `Usage: slidesls init [dir] [--template blank|minimal] [--theme <theme>] [--title <text>] [--registry-root <path>] [--registry-url <url>] [--force] [--json]
+      help: `Usage: slidesls init [dir] [--template blank|minimal] [--style <style>] [--title <text>] [--registry-root <path>] [--registry-url <url>] [--force] [--json]
 
 Initializes the current directory by default. If [dir] is supplied, initializes that directory.
 Use a dedicated deck folder inside larger projects to avoid adding deck files to the project root.
-Use --theme executive-blue to copy a theme preset and set data-ls-theme on the generated <html>.
+Use --style editorial to copy an art direction (with its vendored fonts) and set data-ls-style on the generated <html>.
 
 For AI agents:
   Start with JSON output: slidesls init <dir> --template minimal --json
@@ -95,12 +102,12 @@ For AI agents:
       source: path.resolve(import.meta.dirname, "..", "..", "schemas", "manifest.schema.json"),
     },
   ];
+  rejectRemovedThemeOption(args);
   const data = await registryData(args);
-  const themeName = args.theme ? normalizeThemeName(args.theme) : null;
-  const themeItem = themeName ? themePreset(data, themeName) : null;
+  const styleItem = args.style ? stylePreset(data, normalizeStyleName(args.style)) : null;
   const items = resolveItems(data, [
     ...(template === "blank" ? coreItems : minimalItems),
-    ...(themeItem ? [themeItem.name] : []),
+    ...(styleItem ? [styleItem.name] : []),
   ]);
   const writes = await planCopies({ items, targetRoot: projectRoot, baseDir: config.paths.items });
   const preparedCopies = await prepareCopies({
@@ -119,13 +126,25 @@ For AI agents:
   await writeDefaultConfig(projectRoot, config);
   for (const file of schemaFiles) await writeText(file.target, await readFile(file.source, "utf8"));
   const copiedFiles = await commitCopies(preparedCopies);
+  // Style + font stylesheets from the style's dependency closure, in
+  // dependency order (fonts before the style css).
+  const styleLinks = styleItem
+    ? writes
+        .filter(
+          (write) =>
+            write.targetPath.endsWith(".css") &&
+            /registry[/\\](fonts|styles)[/\\]/.test(write.targetPath),
+        )
+        .map((write) => `./${write.targetPath.replaceAll("\\", "/")}`)
+    : [];
   await writeText(
     entryPath,
     deckTemplate({
       title,
       template,
       baseDir: config.paths.items,
-      themeAttribute: themeItem?.themeAttribute,
+      styleAttribute: styleItem?.styleAttribute,
+      styleLinks,
     }),
   );
   const { links, scripts } = tagsForWrites(writes);
@@ -146,25 +165,15 @@ For AI agents:
     entry: config.paths.entry,
     template,
     items: items.map((i) => i.name),
-    theme: themeItem ? themeItem.themeAttribute : null,
-    nextSteps:
-      template === "blank"
-        ? [
-            "slidesls catalog --json",
-            "slidesls catalog --type component --json",
-            "slidesls inspect utilities/layout components/card components/panel --json",
-            `slidesls validate ${projectRoot} --json`,
-            `slidesls preview ${projectRoot}`,
-          ]
-        : [
-            "slidesls catalog --starter --json",
-            "slidesls catalog --type template --json",
-            "slidesls inspect templates/split --json",
-            "slidesls inspect utilities/layout components/card components/panel --json",
-            `slidesls validate ${projectRoot} --json`,
-            `slidesls preview ${projectRoot}`,
-          ],
-    agentInstructions: initAgentInstructions(projectRoot, { template }),
+    style: styleItem ? styleItem.styleAttribute : null,
+    nextSteps: [
+      "slidesls catalog --json",
+      "slidesls catalog --type component --json",
+      "slidesls inspect layouts/core components/surface components/list --json",
+      `slidesls validate ${projectRoot} --json`,
+      `slidesls preview ${projectRoot}`,
+    ],
+    agentInstructions: initAgentInstructions(projectRoot),
   });
 }
 
@@ -203,7 +212,7 @@ For AI agents:
     includeDocs: args["include-docs"],
   });
   const { links, scripts } = tagsForWrites(writes);
-  const applyTheme = themeApplication(items);
+  const applyStyle = styleApplication(items);
   if (args["dry-run"])
     return ok({
       root,
@@ -216,7 +225,7 @@ For AI agents:
       files: writes,
       links,
       scripts,
-      applyTheme,
+      applyStyle,
       agentInstructions: addAgentInstructions({ dryRun: true, root }),
     });
   const copiedFiles = await performCopies({
@@ -246,7 +255,7 @@ For AI agents:
     dependencyOrder: items.map((i) => i.name),
     links,
     scripts,
-    applyTheme,
+    applyStyle,
     snippets: [],
     agentInstructions: addAgentInstructions({ root }),
   });
@@ -256,21 +265,28 @@ export async function catalogCommand(argv) {
   const args = parseArgs(argv, commandOptionSpecs.catalog);
   if (args.help)
     return ok({
-      help: `Usage: slidesls catalog [--recommended] [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path>] [--registry-url <url>] [--json]
+      help: `Usage: slidesls catalog [--recommended] [--type <type>] [--tag <tag>] [--intent <intent>] [--style <name>] [--query <text>] [--limit <n>] [--preview] [--registry-root <path>] [--registry-url <url>] [--json]
 
 JSON output is brief by default. Add --api for public authoring metadata.
+Preview-status items are hidden unless --preview is passed.
+--intent filters by narrative intent (open, close, prove, compare, explain-process, teach, show-data, show-code, emphasize).
+--style keeps items compatible with one art direction (items with no style notes are compatible with all).
 
 For AI agents:
   Use slidesls catalog --json for the complete lightweight inventory.
-  Use slidesls catalog --starter --json only for the smallest fast-start set.
-  Use slidesls catalog --type component --json for primitive composition.
-  Use slidesls catalog --type template --json for slide skeletons.
-  Use slidesls catalog --type preset --tag theme --json to discover optional themes.
+  Use slidesls catalog --type style --json to pick the deck's art direction.
+  Use slidesls catalog --type archetype --json for complete slide patterns with contracts.
+  Use slidesls catalog --intent prove --json when you know what a slide must DO.
+  Use slidesls catalog --type component --json for the content vocabulary.
+  Use slidesls catalog --type layout --json for slide-body compositions.
   Use slidesls inspect <item> --json for snippets and load tags.`,
     });
   rejectRemovedRegistryOption(args);
   const data = await registryData(args);
   let rawItems = data.items;
+  // Preview items stay invisible in default discovery so agents never see two
+  // authoring vocabularies at once during the v1/v2 transition releases.
+  if (!args.preview) rawItems = rawItems.filter((item) => !isPreviewItem(item));
   if (args.starter) rawItems = rawItems.filter((item) => item.agentLevel === "starter");
   if (args.level) rawItems = rawItems.filter((item) => item.agentLevel === args.level);
   if (args.recommended)
@@ -278,6 +294,18 @@ For AI agents:
   if (args.type)
     rawItems = rawItems.filter((item) => normalizedType(item.type) === normalizedType(args.type));
   if (args.tag) rawItems = rawItems.filter((item) => item.tags?.includes(args.tag));
+  if (args.intent) rawItems = rawItems.filter((item) => item.intent?.includes(args.intent));
+  if (args.style) {
+    const styleName = normalizeStyleName(args.style);
+    // Items without per-style notes are compatible with every style; notes
+    // whose text starts with "avoid" mark an incompatibility.
+    rawItems = rawItems.filter((item) => {
+      if (!item.styles) return true;
+      const note = item.styles[styleName];
+      if (note === undefined) return true;
+      return !/^avoid/i.test(note);
+    });
+  }
   if (args.query) {
     const q = String(args.query).toLowerCase();
     rawItems = rawItems.filter((item) => catalogSearchText(item).includes(q));
@@ -299,9 +327,11 @@ export async function inspectCommand(argv) {
   const args = parseArgs(argv, commandOptionSpecs.inspect);
   if (args.help)
     return ok({
-      help: `Usage: slidesls inspect <items...> [--api] [--with-dependencies] [--readme] [--registry-root <path>] [--registry-url <url>] [--json]
+      help: `Usage: slidesls inspect <items...> [--brief] [--examples] [--api] [--with-dependencies] [--readme] [--registry-root <path>] [--registry-url <url>] [--json]
 
 JSON output is snippet-focused by default. Add --api for authoring metadata and --with-dependencies for dependency details.
+--brief returns the decision payload only (purpose, use/avoid, contract, motion, load tags — no snippet HTML).
+--examples returns snippets only (label + html per variant).
 
 For AI agents:
   Use after catalog to get exact markup and aggregate load tags.
@@ -335,6 +365,10 @@ For AI agents:
             args.api ? mergeBriefAndRich(dependency) : summarizeItemBrief(dependency),
           )
       : undefined;
+    if (args.examples) {
+      items.push({ name: item.name, snippets });
+      continue;
+    }
     items.push(
       omitUndefined({
         ...(args.api ? mergeBriefAndRich(item) : summarizeItemBrief(item)),
@@ -342,7 +376,8 @@ For AI agents:
         // exactly the guidance an agent needs when grabbing a snippet.
         composition: item.composition ?? (args.api ? null : undefined),
         docs: item.docs,
-        snippets,
+        // --brief is the decision payload: everything except the markup.
+        snippets: args.brief ? undefined : snippets,
         dependencyOrder: closure.map((resolved) => resolved.name),
         load: tagsForWrites(writes),
         readme,

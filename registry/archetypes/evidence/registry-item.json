@@ -1,0 +1,67 @@
+{
+  "name": "archetypes/evidence",
+  "type": "ls:archetype",
+  "title": "Evidence",
+  "description": "A pull-quote with a named source, corroborated by exactly one piece of proof — a stat, chart, or figure that lands on the first advance.",
+  "intent": ["prove"],
+  "tags": ["archetype", "quote", "proof"],
+  "useCases": [
+    "backing a results slide with a customer's own words",
+    "pairing a testimonial with the number that makes it credible"
+  ],
+  "files": [],
+  "registryDependencies": ["core/base", "layouts/core", "components/quote", "components/stat"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/archetypes/evidence/README.md",
+  "agentLevel": "recommended",
+  "contract": {
+    "quote": { "min": 1, "max": 1, "maxWords": 30 },
+    "attribution": {
+      "min": 1,
+      "max": 1,
+      "description": "A real name and role; anonymous praise proves nothing."
+    },
+    "proof": {
+      "min": 1,
+      "max": 1,
+      "description": "Exactly one stat, chart, or figure inside ls-quote__evidence that corroborates the words."
+    }
+  },
+  "motion": {
+    "default": "steps",
+    "notes": "The quote enters with the slide; the proof (ls-quote__evidence) carries ls-reveal with data-step=\"1\" so the number lands after the words."
+  },
+  "icons": { "guidance": "No icons; the attribution and the proof carry the credibility." },
+  "composition": {
+    "layoutBehavior": "fills-area",
+    "useWhen": [
+      "a claim needs a human voice and a number together",
+      "closing an argument with corroborated testimony"
+    ],
+    "avoidWhen": [
+      "no proof exists for the quote — use components/quote alone rather than inventing a stat",
+      "the numbers are the story and the voice is decoration — use archetypes/big-stat"
+    ],
+    "alternatives": [
+      { "when": "the quote stands alone without proof", "use": "components/quote" },
+      { "when": "numbers only, no voice", "use": "archetypes/big-stat" }
+    ]
+  },
+  "authoring": {
+    "attributes": [
+      {
+        "name": "data-ls-archetype",
+        "scope": "section.ls-slide",
+        "value": "evidence",
+        "description": "Marks the slide for contract linting and deck scorecards."
+      }
+    ],
+    "usage": [
+      "Trim the quote to the sentence with the verdict in it; 30 words is a ceiling, not a target.",
+      "The proof must measure what the quote claims — a mismatched stat reads as spin.",
+      "Attribute to a person with a role, not a logo."
+    ]
+  },
+  "snippets": [{ "label": "Basic", "path": "registry/archetypes/evidence/snippets/basic.html" }]
+}

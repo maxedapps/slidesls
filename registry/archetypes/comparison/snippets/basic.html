@@ -1,0 +1,39 @@
+<section
+  class="ls-slide"
+  data-ls-slide-kind="content"
+  data-ls-archetype="comparison"
+  aria-label="Comparison"
+>
+  <div class="ls-slide__inner">
+    <header class="ls-slide__header">
+      <p class="ls-eyebrow">Decision</p>
+      <h2 class="ls-title">Migrate in place, or rebuild beside?</h2>
+    </header>
+    <div class="ls-slide__body">
+      <div class="ls-layout ls-layout--split">
+        <div class="ls-layout__region">
+          <h3 class="ls-layout__heading">Migrate in place</h3>
+          <ul class="ls-list ls-list--check">
+            <li>Every step reversible; traffic never moves.</li>
+            <li>No parallel infrastructure cost.</li>
+            <li>Six weeks of staged node-pool upgrades.</li>
+          </ul>
+          <p class="ls-layout__note">Lower risk · slower</p>
+        </div>
+        <div class="ls-layout__region">
+          <h3 class="ls-layout__heading">Blue-green rebuild</h3>
+          <ul class="ls-list ls-list--check">
+            <li>Clean cluster, no legacy configuration debt.</li>
+            <li>One rehearsed cutover instead of many small ones.</li>
+            <li>Three weeks, but the cutover needs a dry run.</li>
+          </ul>
+          <p class="ls-layout__note">Faster · needs rehearsal</p>
+        </div>
+      </div>
+    </div>
+    <footer class="ls-slide__footer">
+      <span>Infrastructure review</span>
+      <span data-ls-page-number></span>
+    </footer>
+  </div>
+</section>

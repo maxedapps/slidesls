@@ -1,0 +1,101 @@
+{
+  "name": "components/list",
+  "type": "ls:component",
+  "description": "Styled lists with CSS-drawn markers (check, arrow, numbered, timeline): the sanctioned form for short items, replacing grids of one-line boxes.",
+  "files": [
+    {
+      "path": "registry/components/list/list.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/list/README.md",
+  "rootClass": "ls-list",
+  "safeAnywhere": true,
+  "snippets": [
+    {
+      "label": "Check list",
+      "path": "registry/components/list/snippets/basic.html"
+    },
+    {
+      "label": "Timeline",
+      "path": "registry/components/list/snippets/timeline.html"
+    }
+  ],
+  "intent": ["teach", "compare", "explain-process"],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-list",
+        "elements": ["ls-list__title", "ls-list__text"],
+        "modifiers": ["ls-list--check", "ls-list--arrow", "ls-list--numbered", "ls-list--timeline"]
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--ls-list-gap",
+        "default": "var(--ls-space-3)",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-list-indent",
+        "default": "52px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-list-title-size",
+        "default": "27px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-list-text-size",
+        "default": "22px",
+        "overrideSafe": true
+      }
+    ],
+    "usage": [
+      "Use a <ul> or <ol> with the class on the list element; markers are drawn in CSS, so pick exactly one marker modifier and never add emoji or glyph bullets.",
+      "Single-line items go straight in the <li>; two-line items use ls-list__title plus ls-list__text.",
+      "Prefer a list over a grid of one-line boxes: short items do not earn borders."
+    ]
+  },
+  "composition": {
+    "contentDensity": ["balanced"],
+    "layoutBehavior": "content-sized",
+    "itemCountGuidance": "3-6 items; split longer lists across slides or columns.",
+    "copyGuidance": "Single-line items up to 10 words; titled items pair a title of up to 5 words with one sentence of text.",
+    "useWhen": [
+      "3-6 short parallel points need a marker and rhythm",
+      "an ordered sequence of takeaways suits numbered markers",
+      "a compact chronology suits the timeline rail"
+    ],
+    "avoidWhen": [
+      "each item needs multiple sentences of explanation",
+      "the sequence describes a process whose steps deserve markers and connectors",
+      "there are more than 6 items"
+    ],
+    "alternatives": [
+      {
+        "when": "items need multi-sentence explanations",
+        "use": "components/surface"
+      },
+      {
+        "when": "a process with distinct steps",
+        "use": "components/flow"
+      },
+      {
+        "when": "items are values to compare",
+        "use": "components/chart"
+      }
+    ]
+  },
+  "agentLevel": "recommended",
+  "tags": ["list", "bullets", "checklist", "numbered", "timeline"],
+  "useCases": [
+    "Present 3-6 short takeaways with CSS-drawn markers.",
+    "Show a numbered sequence of decisions or milestones.",
+    "Render a compact chronology on a timeline rail."
+  ]
+}

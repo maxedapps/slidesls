@@ -1,0 +1,63 @@
+{
+  "name": "archetypes/statement",
+  "type": "ls:archetype",
+  "title": "Statement",
+  "description": "One claim at display size with an optional support line. The pause button of a deck: no figure, no list, just the sentence that matters.",
+  "intent": ["emphasize"],
+  "tags": ["archetype", "claim", "emphasis"],
+  "useCases": [
+    "landing the one sentence the audience must remember",
+    "a beat of emphasis between dense evidence slides"
+  ],
+  "files": [],
+  "registryDependencies": ["core/base", "layouts/core", "components/statement"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/archetypes/statement/README.md",
+  "agentLevel": "starter",
+  "contract": {
+    "claim": {
+      "min": 1,
+      "max": 1,
+      "maxWords": 14,
+      "description": "One sentence that could carry the slide alone; cut until it does."
+    },
+    "support": { "min": 0, "max": 1, "maxWords": 16 }
+  },
+  "motion": {
+    "default": "stagger",
+    "notes": "Claim and support enter with the core stagger; a statement never needs data-step."
+  },
+  "icons": { "guidance": "No icons — the sentence is the visual." },
+  "composition": {
+    "layoutBehavior": "fills-area",
+    "useWhen": [
+      "one sentence deserves the whole slide",
+      "resetting attention between dense data slides"
+    ],
+    "avoidWhen": [
+      "the claim needs badges or a figure — that is an opener, use archetypes/title-hero",
+      "the sentence is really a number — use archetypes/big-stat and let the value speak"
+    ],
+    "alternatives": [
+      { "when": "the claim opens the deck", "use": "archetypes/title-hero" },
+      { "when": "the claim is a metric", "use": "archetypes/big-stat" }
+    ]
+  },
+  "authoring": {
+    "attributes": [
+      {
+        "name": "data-ls-archetype",
+        "scope": "section.ls-slide",
+        "value": "statement",
+        "description": "Marks the slide for contract linting and deck scorecards."
+      }
+    ],
+    "usage": [
+      "Write the claim as a verdict (\"Ship the smallest change that proves the idea\"), never a heading.",
+      "Use <em> for the two or three words doing the work; italicizing everything emphasizes nothing.",
+      "If you are tempted to add a third line, the content wants a different archetype."
+    ]
+  },
+  "snippets": [{ "label": "Basic", "path": "registry/archetypes/statement/snippets/basic.html" }]
+}

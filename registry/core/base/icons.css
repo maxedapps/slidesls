@@ -1,4 +1,9 @@
 @layer base {
+  /* The inline icon sprite (managed by `slidesls icons sync`) is defs-only. */
+  .ls-sprite {
+    display: none;
+  }
+
   .ls-icon,
   .ls-icon-mark,
   .ls-icon-badge {

@@ -1,0 +1,45 @@
+<section
+  class="ls-slide"
+  data-ls-slide-kind="content"
+  data-ls-archetype="comparison"
+  aria-label="Comparison with verdict"
+>
+  <div class="ls-slide__inner">
+    <header class="ls-slide__header">
+      <p class="ls-eyebrow">Decision</p>
+      <h2 class="ls-title">Migrate in place, or rebuild beside?</h2>
+    </header>
+    <div class="ls-slide__body">
+      <div class="ls-stack">
+        <div class="ls-layout ls-layout--split">
+          <div class="ls-layout__region">
+            <h3 class="ls-layout__heading">Migrate in place</h3>
+            <ul class="ls-list ls-list--check">
+              <li>Every step reversible; traffic never moves.</li>
+              <li>No parallel infrastructure cost.</li>
+            </ul>
+            <p class="ls-layout__note">Lower risk · slower</p>
+          </div>
+          <div class="ls-layout__region">
+            <h3 class="ls-layout__heading">Blue-green rebuild</h3>
+            <ul class="ls-list ls-list--check">
+              <li>Clean cluster, no legacy configuration debt.</li>
+              <li>One rehearsed cutover instead of many small ones.</li>
+            </ul>
+            <p class="ls-layout__note">Faster · needs rehearsal</p>
+          </div>
+        </div>
+        <div class="ls-surface ls-surface--accent ls-surface--row ls-reveal" data-step="1">
+          <span class="ls-surface__kicker">Verdict</span>
+          <p class="ls-surface__text">
+            Blue-green — the three-week saving funds the cutover rehearsal twice over.
+          </p>
+        </div>
+      </div>
+    </div>
+    <footer class="ls-slide__footer">
+      <span>Infrastructure review</span>
+      <span data-ls-page-number></span>
+    </footer>
+  </div>
+</section>

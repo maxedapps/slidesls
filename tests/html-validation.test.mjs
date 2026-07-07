@@ -114,7 +114,7 @@ test("validate warns when utility classes are used without their registry item",
     (entry) => entry.code === "missing_registry_item_for_class",
   );
   assert.ok(warning);
-  assert.match(warning.hint, /slidesls add utilities\/layout/);
+  assert.match(warning.hint, /slidesls add layouts\/core/);
   assert.match(warning.command, /--dry-run --json/);
 });
 
@@ -205,14 +205,24 @@ test("validate warns for unknown slidesls classes and strict mode errors", async
   assert.ok(strict.data.errors.some((error) => error.code === "unknown_ls_class"));
 });
 
-test("validate rejects removed layout classes", async () => {
+test("validate flags removed v1 layout classes as unknown", async () => {
+  // The dedicated removed_layout_class error left with the v1 registry; legacy
+  // classes must still surface as unknown_ls_class and fail strict validation.
   const root = await deckWithHtml(
     `<script type="module" src="./${runtimePath}"></script>`,
     `<div class="ls-layout-detail-split"></div>`,
   );
   const result = await validateCommand([root]);
-  assert.equal(result.data.valid, false);
-  assert.ok(result.data.errors.some((error) => error.code === "removed_layout_class"));
+  assert.ok(
+    result.data.warnings.some(
+      (warning) =>
+        warning.code === "unknown_ls_class" && warning.className === "ls-layout-detail-split",
+    ),
+  );
+
+  const strict = await validateCommand([root, "--strict"]);
+  assert.equal(strict.data.valid, false);
+  assert.ok(strict.data.errors.some((error) => error.code === "unknown_ls_class"));
 });
 
 test("validate warns for broken progress structure and strict mode errors", async () => {
@@ -237,16 +247,6 @@ test("validate still checks broken custom progress when native progress also exi
   const result = await validateCommand([root]);
   assert.equal(result.data.valid, true);
   assert.ok(result.data.warnings.some((warning) => warning.code === "progress_structure"));
-});
-
-test("validate warns for raw timeline shorthand", async () => {
-  const root = await deckWithHtml(
-    `<script type="module" src="./${runtimePath}"></script>`,
-    `<ol class="ls-timeline"><li class="ls-timeline__item"><strong>Plan</strong><span>Choose.</span></li></ol>`,
-  );
-  const result = await validateCommand([root]);
-  assert.equal(result.data.valid, true);
-  assert.ok(result.data.warnings.some((warning) => warning.code === "timeline_structure"));
 });
 
 test("validate warns for invalid reveal animation combinations", async () => {
@@ -378,18 +378,26 @@ test("validate warns for very large code blocks", async () => {
   assert.ok(result.data.warnings.some((warning) => warning.code === "large_code_block"));
 });
 
-test("freshly generated decks validate with zero errors and zero warnings", async () => {
+test("freshly generated decks validate with zero errors; no-style decks get only the style nudge", async () => {
   for (const template of ["minimal", "blank"]) {
     const root = await mkdtemp(path.join(os.tmpdir(), `slidesls-fresh-${template}-`));
     await initCommand([root, "--template", template]);
     const result = await validateCommand([root]);
     assert.equal(result.data.valid, true, `${template} deck should be valid`);
+    // Style-less decks are nudged toward an art direction — exactly once,
+    // and nothing else.
     assert.deepEqual(
-      result.data.warnings,
-      [],
-      `${template} deck should have zero warnings, got: ${JSON.stringify(result.data.warnings)}`,
+      result.data.warnings.map((warning) => warning.code),
+      ["style_missing"],
+      `${template} deck warnings: ${JSON.stringify(result.data.warnings)}`,
     );
   }
+  // With a style chosen, generated decks are fully clean.
+  const styled = await mkdtemp(path.join(os.tmpdir(), "slidesls-fresh-styled-"));
+  await initCommand([styled, "--template", "minimal", "--style", "editorial"]);
+  const result = await validateCommand([styled]);
+  assert.equal(result.data.valid, true);
+  assert.deepEqual(result.data.warnings, []);
 });
 
 test("validate still warns when a copied runtime script is not loaded", async () => {

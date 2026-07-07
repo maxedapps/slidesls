@@ -1,0 +1,128 @@
+/* chart — dependency-free CSS minis: bar rows, column sets, donut.
+ *
+ * Honesty by construction: bar and column geometry is proportional to
+ * --ls-chart-value on a 0–100 scale with a fixed zero baseline. There is no
+ * axis-minimum hook, so dishonest truncated bars are inexpressible. Every
+ * chart requires role="img" and an aria-label describing the data.
+ */
+@layer components {
+  .ls-chart {
+    display: grid;
+    gap: var(--ls-space-3);
+    align-content: start;
+    min-block-size: 0;
+  }
+
+  .ls-chart__title {
+    color: var(--ls-muted);
+    font-family: var(--ls-font-label);
+    font-size: var(--ls-text-xs);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* --- Bar rows (horizontal) --- */
+  .ls-chart__row {
+    display: grid;
+    grid-template-columns: var(--ls-chart-label-width, 220px) 1fr max-content;
+    align-items: center;
+    gap: var(--ls-space-3);
+  }
+
+  .ls-chart__label {
+    color: var(--ls-text);
+    font-family: var(--ls-font-body);
+    font-size: var(--ls-text-sm);
+    line-height: 1.2;
+  }
+
+  .ls-chart__track {
+    block-size: var(--ls-chart-bar-size, 26px);
+    border-radius: var(--ls-radius-sm);
+    background: var(--ls-surface-muted);
+  }
+
+  .ls-chart__bar {
+    inline-size: calc(min(max(var(--ls-chart-value, 0), 0), 100) * 1%);
+    block-size: 100%;
+    border-radius: inherit;
+    background: var(--ls-chart-color, var(--ls-accent));
+  }
+
+  .ls-chart__value {
+    color: var(--ls-muted);
+    font-family: var(--ls-font-label);
+    font-size: var(--ls-text-xs);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* --- Column set (vertical) --- */
+  .ls-chart--columns .ls-chart__columns {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    align-items: end;
+    gap: var(--ls-space-3);
+    block-size: var(--ls-chart-column-height, 300px);
+    border-block-end: 2px solid var(--ls-border-strong);
+  }
+
+  .ls-chart__column {
+    display: grid;
+    align-content: end;
+    justify-items: center;
+    gap: var(--ls-space-1);
+    block-size: 100%;
+  }
+
+  .ls-chart__column::after {
+    content: "";
+    order: 1;
+    inline-size: 100%;
+    block-size: calc(min(max(var(--ls-chart-value, 0), 0), 100) * 1%);
+    border-radius: var(--ls-radius-sm) var(--ls-radius-sm) 0 0;
+    background: var(--ls-chart-color, var(--ls-accent));
+  }
+
+  .ls-chart__column .ls-chart__value {
+    order: 0;
+  }
+
+  .ls-chart__column .ls-chart__label {
+    order: 2;
+    font-size: var(--ls-text-xs);
+    color: var(--ls-muted);
+  }
+
+  /* --- Donut (single proportion) --- */
+  .ls-chart--donut .ls-chart__donut {
+    position: relative;
+    display: grid;
+    place-items: center;
+    inline-size: var(--ls-chart-donut-size, 260px);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--ls-chart-color, var(--ls-accent)) calc(min(max(var(--ls-chart-value, 0), 0), 100) * 1%),
+      var(--ls-surface-muted) 0
+    );
+  }
+
+  .ls-chart--donut .ls-chart__donut::before {
+    content: "";
+    position: absolute;
+    inset: 18%;
+    border-radius: 50%;
+    background: var(--ls-slide-bg);
+  }
+
+  .ls-chart--donut .ls-chart__value {
+    z-index: 1;
+    color: var(--ls-text);
+    font-family: var(--ls-font-display);
+    font-size: 52px;
+    font-weight: 740;
+  }
+}

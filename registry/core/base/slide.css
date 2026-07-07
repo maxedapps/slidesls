@@ -37,8 +37,13 @@
     block-size: var(--ls-slide-height);
     overflow: hidden;
     background-color: var(--ls-slide-bg);
-    background-image: var(--ls-slide-bg-image);
+    /* Texture layer paints above the base background image. */
+    background-image: var(--ls-slide-texture), var(--ls-slide-bg-image);
     color: var(--ls-text);
+    /* Legibility floor: unclassed text must never render at browser-default
+       16px on a 1600×900 canvas. Components set their own sizes on top. */
+    font-size: var(--ls-text-sm);
+    line-height: 1.4;
   }
 
   .ls-deck[data-ls-ready="true"] .ls-slide {
@@ -53,6 +58,14 @@
 
   .ls-deck[data-ls-ready="true"] .ls-slide[data-active="true"] {
     display: block;
+    z-index: 2;
+  }
+
+  /* A leaving slide stays rendered while its runtime-driven exit animation
+     plays; the runtime removes data-ls-transit when the transition settles. */
+  .ls-deck[data-ls-ready="true"] .ls-slide[data-ls-transit="out"] {
+    display: block;
+    z-index: 1;
   }
 
   .ls-deck[data-ls-export="true"] {
@@ -90,6 +103,32 @@
 
   .ls-slide__body {
     min-block-size: 0;
+  }
+
+  /* Slide furniture: anchored footer with page number, running kicker, or
+     deck title. The runtime fills [data-ls-page-number] at init, so it works
+     in deck, export, and print modes alike. Styles restyle it via the
+     --ls-footer-* tokens. */
+  .ls-slide {
+    position: relative;
+  }
+
+  .ls-slide__footer {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ls-space-4);
+    block-size: var(--ls-footer-block-size);
+    padding-inline: var(--ls-slide-padding-inline);
+    border-block-start: var(--ls-footer-rule);
+    color: var(--ls-footer-color);
+    font-family: var(--ls-font-label);
+    font-size: var(--ls-footer-font-size);
+    letter-spacing: var(--ls-footer-letter-spacing);
+    text-transform: uppercase;
   }
 
   .ls-eyebrow {

@@ -1,0 +1,70 @@
+/* stat — an unboxed number. Display-size value, quiet label, optional delta.
+ * Scale contrast does the work a border used to fake; place inside a
+ * .ls-surface only when the composition really needs a frame.
+ */
+@layer components {
+  .ls-stat {
+    display: grid;
+    gap: var(--ls-space-1);
+    align-content: start;
+    justify-items: start;
+  }
+
+  .ls-stat__value {
+    color: var(--ls-text);
+    font-family: var(--ls-font-display);
+    font-size: var(--ls-stat-value-size, 96px);
+    font-weight: 760;
+    letter-spacing: -0.03em;
+    line-height: 0.95;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ls-stat__value em,
+  .ls-stat__value .ls-accent-text {
+    color: var(--ls-accent-text);
+    font-style: normal;
+  }
+
+  .ls-stat__label {
+    color: var(--ls-muted);
+    font-family: var(--ls-font-label);
+    font-size: var(--ls-text-sm);
+    letter-spacing: 0.02em;
+    line-height: 1.25;
+  }
+
+  .ls-stat__delta {
+    display: inline-block;
+    color: var(--ls-status-success);
+    font-family: var(--ls-font-label);
+    font-size: var(--ls-text-xs);
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+
+  .ls-stat__delta[data-ls-tone="down"] {
+    color: var(--ls-status-danger);
+  }
+
+  .ls-stat__delta[data-ls-tone="neutral"] {
+    color: var(--ls-subtle);
+  }
+
+  .ls-stat--xl .ls-stat__value {
+    font-size: var(--ls-stat-value-size, var(--ls-text-hero));
+  }
+
+  .ls-stat--sm .ls-stat__value {
+    font-size: var(--ls-stat-value-size, 64px);
+  }
+
+  .ls-stat--center {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .ls-slide[data-ls-density="compact"] .ls-stat__value {
+    font-size: var(--ls-stat-value-size, 76px);
+  }
+}

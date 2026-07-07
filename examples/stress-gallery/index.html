@@ -1,269 +1,318 @@
 <!doctype html>
-<html lang="en" data-ls-font="editorial-serif">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>slidesls stress gallery</title>
+    <title>Stress gallery — hard cases</title>
     <link rel="stylesheet" href="../../registry/core/base/reset.css" />
     <link rel="stylesheet" href="../../registry/core/base/tokens.css" />
-    <link rel="stylesheet" href="../../registry/presets/fonts/editorial-serif/font.css" />
     <link rel="stylesheet" href="../../registry/core/base/slide.css" />
-    <link rel="stylesheet" href="../../registry/utilities/layout/layout.css" />
-    <link rel="stylesheet" href="../../registry/components/badge/badge.css" />
-    <link rel="stylesheet" href="../../registry/components/card/card.css" />
-    <link rel="stylesheet" href="../../registry/components/code-diff/code-diff.css" />
-    <link rel="stylesheet" href="../../registry/components/file-tree/file-tree.css" />
-    <link rel="stylesheet" href="../../registry/components/http-exchange/http-exchange.css" />
-    <link rel="stylesheet" href="../../registry/components/panel/panel.css" />
-    <link rel="stylesheet" href="../../registry/components/progress/progress.css" />
-    <link rel="stylesheet" href="../../registry/components/quote/quote.css" />
+    <link rel="stylesheet" href="../../registry/core/base/icons.css" />
+    <link rel="stylesheet" href="../../registry/core/base/motion.css" />
+    <link rel="stylesheet" href="../../registry/layouts/core/layout.css" />
+    <link rel="stylesheet" href="../../registry/layouts/core/utilities.css" />
+    <link rel="stylesheet" href="../../registry/components/surface/surface.css" />
+    <link rel="stylesheet" href="../../registry/components/list/list.css" />
+    <link rel="stylesheet" href="../../registry/components/code/code.css" />
     <link rel="stylesheet" href="../../registry/components/table/table.css" />
-    <link rel="stylesheet" href="../../registry/components/terminal/terminal.css" />
-    <link rel="stylesheet" href="../../registry/components/timeline/timeline.css" />
-    <script type="module" src="../../registry/core/base/slide-runtime.js"></script>
+    <link rel="stylesheet" href="../../registry/components/statement/statement.css" />
+    <script defer src="../../registry/core/base/slide-runtime.js"></script>
   </head>
   <body class="ls-page">
+    <svg class="ls-sprite" aria-hidden="true"></svg>
     <main class="ls-deck" data-ls-deck aria-label="Stress gallery">
-      <section
-        class="ls-slide"
-        data-ls-density="compact"
-        aria-label="Dense content stress slide"
-        data-ls-slide-kind="content"
-      >
+      <!-- 1. Long copy in an aligned split: body row must absorb the imbalance -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Long copy split">
         <div class="ls-slide__inner">
           <header class="ls-slide__header">
-            <p class="ls-eyebrow">Stress test</p>
-            <h1 class="ls-title">
-              A longer editorial serif title that still needs room for real slide content.
-            </h1>
-            <p class="ls-subtitle">Compact density is opt-in and still requires visual review.</p>
+            <p class="ls-eyebrow">Stress: copy length</p>
+            <h2 class="ls-title">One column rambles, the other is terse.</h2>
           </header>
-          <div class="ls-grid ls-grid--4" style="--ls-grid-gap: var(--ls-space-3)">
-            <article class="ls-card">
-              <div class="ls-card__body">
-                <h2 class="ls-card__title">Longer label</h2>
-                <p class="ls-card__text">
-                  A realistic second line of explanatory copy should still fit in a compact
-                  four-card grid.
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--split">
+              <div class="ls-layout__region">
+                <h3 class="ls-layout__heading">The long version</h3>
+                <p class="ls-layout__text">
+                  When the migration started we assumed the hardest part would be the data backfill,
+                  but the backfill finished in a weekend; the real cost was the six weeks of
+                  dual-write verification, where every mismatch had to be triaged as either a
+                  legitimate legacy bug, a race in the comparison harness, or an actual defect in
+                  the new path. Forty-one mismatches later, exactly three were real defects — and
+                  all three were in code that predated the migration.
                 </p>
+                <p class="ls-layout__note">Retro doc, section 4</p>
               </div>
-            </article>
-            <article class="ls-card">
-              <div class="ls-card__body">
-                <h2 class="ls-card__title">Timeline</h2>
-                <p class="ls-card__text">
-                  Canonical marker and body wrappers keep process labels from colliding.
-                </p>
+              <div class="ls-layout__region">
+                <h3 class="ls-layout__heading">The short version</h3>
+                <p class="ls-layout__text">Verification, not migration, is the schedule.</p>
+                <p class="ls-layout__note">Tell your PM</p>
               </div>
-            </article>
-            <article class="ls-card">
-              <div class="ls-card__body">
-                <h2 class="ls-card__title">Progress</h2>
-                <p class="ls-card__text">
-                  Bars need labels, values, tracks, fills, and accessible progress attributes.
-                </p>
-              </div>
-            </article>
-            <article class="ls-card">
-              <div class="ls-card__body">
-                <h2 class="ls-card__title">Citation</h2>
-                <p class="ls-card__text">
-                  Quote source classes make attribution typography deterministic across themes.
-                </p>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
-      <section
-        class="ls-slide"
-        data-ls-density="compact"
-        aria-label="Technical primitive stress slide"
-        data-ls-slide-kind="content"
-      >
-        <div class="ls-slide__inner">
-          <header class="ls-slide__header">
-            <p class="ls-eyebrow">Technical primitives</p>
-            <h2 class="ls-title">Terminal output and focused diffs should fit without JS.</h2>
-          </header>
-          <div class="ls-grid ls-grid--2">
-            <figure class="ls-terminal" data-ls-density="compact">
-              <figcaption class="ls-terminal__header">
-                <span class="ls-terminal__controls" aria-hidden="true">
-                  <span class="ls-terminal__control" data-ls-tone="danger"></span>
-                  <span class="ls-terminal__control" data-ls-tone="warning"></span>
-                  <span class="ls-terminal__control" data-ls-tone="success"></span>
-                </span>
-                <span class="ls-terminal__title">qa-pass.sh</span>
-              </figcaption>
-              <div class="ls-terminal__body">
-                <p class="ls-terminal__line">
-                  <span class="ls-terminal__prompt">$</span> pnpm check
-                </p>
-                <p class="ls-terminal__line ls-terminal__output">
-                  84 tests passed · registry ok · examples ok
-                </p>
-                <p class="ls-terminal__line">
-                  <span class="ls-terminal__prompt">$</span> slidesls preview
-                  examples/stress-gallery
-                </p>
-                <p class="ls-terminal__line ls-terminal__output">
-                  Preview ready for visual review.
-                </p>
-              </div>
-            </figure>
-            <figure class="ls-code-diff" data-ls-density="compact">
-              <figcaption class="ls-code-diff__header">
-                <span>slide-runtime.js</span>
-                <span>state path</span>
-              </figcaption>
-              <div class="ls-code-diff__body" role="list" aria-label="Runtime state diff excerpt">
-                <div class="ls-code-diff__line" role="listitem">
-                  <span class="ls-code-diff__number">91</span>
-                  <span class="ls-code-diff__code"
-                    ><span class="ls-code-diff__marker"> </span>const state = clampState(next,
-                    slides);</span
-                  >
-                </div>
-                <div class="ls-code-diff__line" data-ls-diff="add" role="listitem">
-                  <span class="ls-code-diff__number">92</span>
-                  <span class="ls-code-diff__code"
-                    ><span class="ls-code-diff__marker">+</span>setSlideState(slides, state.index,
-                    state.step);</span
-                  >
-                </div>
-                <div class="ls-code-diff__line" data-ls-diff="focus" role="listitem">
-                  <span class="ls-code-diff__number">93</span>
-                  <span class="ls-code-diff__code"
-                    ><span class="ls-code-diff__marker"> </span>updateHash(state.index,
-                    state.step);</span
-                  >
-                </div>
-              </div>
-            </figure>
-          </div>
-        </div>
-      </section>
-      <section
-        class="ls-slide"
-        data-ls-density="compact"
-        aria-label="API and file tree stress slide"
-        data-ls-slide-kind="content"
-      >
-        <div class="ls-slide__inner">
-          <header class="ls-slide__header">
-            <p class="ls-eyebrow">Architecture primitives</p>
-            <h2 class="ls-title">File trees and API exchanges should stay compact.</h2>
-          </header>
-          <div class="ls-grid ls-grid--2">
-            <ul class="ls-file-tree" data-ls-density="compact" aria-label="Project structure">
-              <li class="ls-file-tree__item" data-ls-kind="folder">
-                <span class="ls-file-tree__name">slidesls/</span>
-                <ul>
-                  <li class="ls-file-tree__item" data-ls-state="active">
-                    <span class="ls-file-tree__name">index.html</span>
-                    <span class="ls-file-tree__meta">entry</span>
-                  </li>
-                  <li class="ls-file-tree__item" data-ls-kind="folder">
-                    <span class="ls-file-tree__name">registry/</span>
-                    <span class="ls-file-tree__meta">copyable</span>
-                  </li>
-                  <li class="ls-file-tree__item">
-                    <span class="ls-file-tree__name">manifest.json</span>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-            <div class="ls-http-exchange" data-ls-density="compact">
-              <figure class="ls-http-exchange__block">
-                <figcaption class="ls-http-exchange__header">
-                  <span class="ls-http-exchange__method">GET</span>
-                  <span class="ls-http-exchange__url">/registry.json</span>
-                </figcaption>
-                <pre><code>{ "items": ["core/base", "components/card"] }</code></pre>
-              </figure>
-              <figure class="ls-http-exchange__block">
-                <figcaption class="ls-http-exchange__header">
-                  <span class="ls-http-exchange__status" data-ls-tone="success">200 OK</span>
-                  <span class="ls-http-exchange__url">application/json</span>
-                </figcaption>
-                <pre><code>{ "source": "bundled", "count": 40 }</code></pre>
-              </figure>
             </div>
           </div>
+          <footer class="ls-slide__footer">
+            <span>Stress gallery</span>
+            <span data-ls-page-number></span>
+          </footer>
         </div>
       </section>
+
+      <!-- 2. Dense table under compact density -->
       <section
         class="ls-slide"
-        data-ls-density="compact"
-        aria-label="Component stress slide"
         data-ls-slide-kind="content"
+        data-ls-density="compact"
+        aria-label="Dense table"
       >
         <div class="ls-slide__inner">
           <header class="ls-slide__header">
-            <p class="ls-eyebrow">Components</p>
-            <h2 class="ls-title">Timeline, progress, table, and citation on one reviewed slide.</h2>
+            <p class="ls-eyebrow">Stress: density</p>
+            <h2 class="ls-title">Nine rows of real data, compact density.</h2>
           </header>
-          <div class="ls-grid ls-grid--2">
-            <ol class="ls-timeline" data-ls-progress="true" data-ls-density="compact">
-              <li class="ls-timeline__item">
-                <span class="ls-timeline__marker">1</span>
-                <div class="ls-timeline__body">
-                  <strong class="ls-timeline__title">Audit</strong>
-                  <span class="ls-timeline__text">Read source snippets and examples.</span>
-                </div>
-              </li>
-              <li class="ls-timeline__item">
-                <span class="ls-timeline__marker">2</span>
-                <div class="ls-timeline__body">
-                  <strong class="ls-timeline__title">Harden</strong>
-                  <span class="ls-timeline__text">Add targeted static validators.</span>
-                </div>
-              </li>
-            </ol>
-            <div class="ls-stack">
-              <div
-                class="ls-progress"
-                data-ls-density="compact"
-                style="--ls-progress-value: 76%"
-                role="progressbar"
-                aria-label="Fix coverage"
-                aria-valuenow="76"
-                aria-valuemin="0"
-                aria-valuemax="100"
-              >
-                <div class="ls-progress__label">
-                  <span>Fix coverage</span>
-                  <span class="ls-progress__value">76%</span>
-                </div>
-                <div class="ls-progress__track"><div class="ls-progress__bar"></div></div>
-              </div>
+          <div class="ls-slide__body">
+            <div class="ls-table-frame" data-ls-overflow="clip">
               <table class="ls-table" data-ls-density="compact" data-ls-variant="striped">
                 <thead>
                   <tr>
-                    <th>Check</th>
-                    <th>Status</th>
+                    <th>Service</th>
+                    <th>p50</th>
+                    <th>p95</th>
+                    <th>Error rate</th>
+                    <th>Owner</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Snippets</td>
-                    <td class="ls-table__value">Canonical</td>
+                    <td>gateway</td>
+                    <td>12ms</td>
+                    <td>48ms</td>
+                    <td>0.02%</td>
+                    <td>platform</td>
                   </tr>
                   <tr>
-                    <td>Examples</td>
-                    <td class="ls-table__value">Recursive</td>
+                    <td>orders</td>
+                    <td>31ms</td>
+                    <td>140ms</td>
+                    <td>0.11%</td>
+                    <td>commerce</td>
+                  </tr>
+                  <tr>
+                    <td>payments</td>
+                    <td>55ms</td>
+                    <td>218ms</td>
+                    <td>0.09%</td>
+                    <td>payments</td>
+                  </tr>
+                  <tr>
+                    <td>catalog</td>
+                    <td>9ms</td>
+                    <td>27ms</td>
+                    <td>0.01%</td>
+                    <td>storefront</td>
+                  </tr>
+                  <tr>
+                    <td>search</td>
+                    <td>22ms</td>
+                    <td>96ms</td>
+                    <td>0.05%</td>
+                    <td>discovery</td>
+                  </tr>
+                  <tr>
+                    <td>identity</td>
+                    <td>18ms</td>
+                    <td>61ms</td>
+                    <td>0.03%</td>
+                    <td>platform</td>
+                  </tr>
+                  <tr>
+                    <td>notifications</td>
+                    <td>44ms</td>
+                    <td>310ms</td>
+                    <td>0.22%</td>
+                    <td>lifecycle</td>
+                  </tr>
+                  <tr>
+                    <td>ledger</td>
+                    <td>27ms</td>
+                    <td>88ms</td>
+                    <td>0.00%</td>
+                    <td>payments</td>
+                  </tr>
+                  <tr>
+                    <td>reviews</td>
+                    <td>15ms</td>
+                    <td>52ms</td>
+                    <td>0.04%</td>
+                    <td>community</td>
                   </tr>
                 </tbody>
               </table>
-              <figure class="ls-quote">
-                <blockquote class="ls-quote__text">
-                  Trustworthy snippets beat clever inference.
-                </blockquote>
-                <figcaption class="ls-quote__source"><cite>slidesls audit</cite></figcaption>
-              </figure>
             </div>
           </div>
+          <footer class="ls-slide__footer">
+            <span>Stress gallery</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 3. Deep step sequence: 6 timeline items with reveals -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Deep steps">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Stress: steps</p>
+            <h2 class="ls-title">Six reveals on one timeline.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <ul class="ls-list ls-list--timeline" data-ls-reveal-sequence>
+              <li class="ls-reveal">
+                <strong class="ls-list__title">Jan — Dual write</strong
+                ><span class="ls-list__text">New path shadows production silently.</span>
+              </li>
+              <li class="ls-reveal">
+                <strong class="ls-list__title">Feb — Verify</strong
+                ><span class="ls-list__text">Mismatch triage burns down to zero.</span>
+              </li>
+              <li class="ls-reveal">
+                <strong class="ls-list__title">Mar — Read switch</strong
+                ><span class="ls-list__text">Reads cut over region by region.</span>
+              </li>
+              <li class="ls-reveal">
+                <strong class="ls-list__title">Apr — Write switch</strong
+                ><span class="ls-list__text">Legacy path demoted to shadow.</span>
+              </li>
+              <li class="ls-reveal">
+                <strong class="ls-list__title">May — Freeze</strong
+                ><span class="ls-list__text">30 days of parity monitoring.</span>
+              </li>
+              <li class="ls-reveal">
+                <strong class="ls-list__title">Jun — Decommission</strong
+                ><span class="ls-list__text">Legacy cluster archived and deleted.</span>
+              </li>
+            </ul>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Stress gallery</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 4. Long code block: intentional scroll container -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Long code">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Stress: code length</p>
+            <h2 class="ls-title">Twenty-two lines in a bounded block.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <figure class="ls-code" data-ls-variant="block">
+              <figcaption class="ls-code__header">
+                <span>parity.ts</span><span>22 lines</span>
+              </figcaption>
+              <div class="ls-code__body">
+                <pre><span class="ls-code__line">type Mismatch = {</span>
+<span class="ls-code__line">  key: string;</span>
+<span class="ls-code__line">  legacy: unknown;</span>
+<span class="ls-code__line">  next: unknown;</span>
+<span class="ls-code__line">  verdict?: "legacy-bug" | "harness-race" | "defect";</span>
+<span class="ls-code__line">};</span>
+<span class="ls-code__line"> </span>
+<span class="ls-code__line">export async function compare(batch: Order[]) {</span>
+<span class="ls-code__line">  const mismatches: Mismatch[] = [];</span>
+<span class="ls-code__line">  for (const order of batch) {</span>
+<span class="ls-code__line">    const [legacy, next] = await Promise.all([</span>
+<span class="ls-code__line">      legacyPath.total(order),</span>
+<span class="ls-code__line">      nextPath.total(order),</span>
+<span class="ls-code__line">    ]);</span>
+<span class="ls-code__line" data-ls-line="highlight">    if (!equal(legacy, next)) {</span>
+<span class="ls-code__line" data-ls-line="highlight">      mismatches.push({ key: order.id, legacy, next });</span>
+<span class="ls-code__line" data-ls-line="highlight">    }</span>
+<span class="ls-code__line">  }</span>
+<span class="ls-code__line">  await triageQueue.push(mismatches);</span>
+<span class="ls-code__line">  return { checked: batch.length, mismatches: mismatches.length };</span>
+<span class="ls-code__line">}</span></pre>
+              </div>
+            </figure>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Stress gallery</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 5. Four columns, ragged content, free variant -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Ragged columns">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Stress: raggedness</p>
+            <h2 class="ls-title">Four surfaces, wildly uneven copy.</h2>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--columns-4 ls-layout--free">
+              <div class="ls-layout__region">
+                <div class="ls-surface">
+                  <span class="ls-surface__kicker">One</span>
+                  <p class="ls-surface__text">Four words, that's it.</p>
+                </div>
+              </div>
+              <div class="ls-layout__region">
+                <div class="ls-surface">
+                  <span class="ls-surface__kicker">Two</span>
+                  <p class="ls-surface__text">
+                    A middling amount of copy that wraps to roughly three lines at this column
+                    width.
+                  </p>
+                </div>
+              </div>
+              <div class="ls-layout__region">
+                <div class="ls-surface">
+                  <span class="ls-surface__kicker">Three</span>
+                  <p class="ls-surface__text">
+                    The long one: a full paragraph that keeps going well past its neighbors, because
+                    someone always writes a paragraph where a phrase was requested, and the layout
+                    has to survive it without stretching the others.
+                  </p>
+                </div>
+              </div>
+              <div class="ls-layout__region">
+                <div class="ls-surface">
+                  <span class="ls-surface__kicker">Four</span>
+                  <p class="ls-surface__text">Two short lines of copy here.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Stress gallery</span>
+            <span data-ls-page-number></span>
+          </footer>
+        </div>
+      </section>
+
+      <!-- 6. Statement at maximum contract length -->
+      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Max statement">
+        <div class="ls-slide__inner">
+          <header class="ls-slide__header">
+            <p class="ls-eyebrow">Stress: display type</p>
+          </header>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--statement">
+              <div class="ls-statement">
+                <p class="ls-statement__text">
+                  Fourteen words is the ceiling for a claim that still reads as one <em>breath</em>.
+                </p>
+                <p class="ls-statement__support">
+                  This support line is also at its sixteen-word maximum to prove the pairing still
+                  balances.
+                </p>
+              </div>
+            </div>
+          </div>
+          <footer class="ls-slide__footer">
+            <span>Stress gallery</span>
+            <span data-ls-page-number></span>
+          </footer>
         </div>
       </section>
     </main>

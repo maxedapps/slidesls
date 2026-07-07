@@ -77,8 +77,12 @@ export function stylesheetHrefs(html) {
 }
 
 export function moduleScriptSrcs(html) {
+  // Module scripts and classic defer scripts both count: module scripts are
+  // CORS-blocked over file://, so copied runtimes ship as classic defer.
   return startTags(html, "script")
-    .filter((attributes) => attributes.get("type")?.toLowerCase() === "module")
+    .filter(
+      (attributes) => attributes.get("type")?.toLowerCase() === "module" || attributes.has("defer"),
+    )
     .map((attributes) => attributes.get("src") || "")
     .filter(Boolean);
 }
@@ -152,9 +156,11 @@ export function slideSegments(html) {
 }
 
 export function hasModuleRuntimeScript(html) {
+  // Accepts type="module" (v1 decks) or classic defer (v2 decks — module
+  // scripts do not load over file:// in Chromium).
   return startTags(html, "script").some(
     (attributes) =>
-      attributes.get("type")?.toLowerCase() === "module" &&
+      (attributes.get("type")?.toLowerCase() === "module" || attributes.has("defer")) &&
       /slide-runtime\.js/i.test(attributes.get("src") || ""),
   );
 }

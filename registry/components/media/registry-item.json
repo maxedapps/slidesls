@@ -1,0 +1,75 @@
+{
+  "name": "components/media",
+  "type": "ls:component",
+  "description": "Screenshot and product frames: browser chrome with an address bar, a plain window, or bare shadowed media. Frames make real assets read as intentional.",
+  "files": [
+    {
+      "path": "registry/components/media/media.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/media/README.md",
+  "rootClass": "ls-media",
+  "safeAnywhere": true,
+  "snippets": [
+    {
+      "label": "Browser frame",
+      "path": "registry/components/media/snippets/basic.html"
+    }
+  ],
+  "intent": ["show-data", "prove", "teach"],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-media",
+        "elements": ["ls-media__chrome", "ls-media__dots", "ls-media__address", "ls-media__body"],
+        "modifiers": ["ls-media--window", "ls-media--bare"]
+      }
+    ],
+    "usage": [
+      "Requires a real asset: put an <img> or <video> with a descriptive alt directly inside ls-media__body; it covers the body, cropped from the top.",
+      "The chrome row holds ls-media__dots (three <i> dots) and ls-media__address (the product URL); use ls-media--window for native-app framing without the address bar.",
+      "The frame fills its grid area, so give it a sized region (a split or dashboard layout) rather than free-flowing content."
+    ]
+  },
+  "composition": {
+    "contentDensity": ["sparse", "balanced"],
+    "layoutBehavior": "fills-area",
+    "itemCountGuidance": "1 media frame per slide; two screenshots compete for legibility.",
+    "copyGuidance": "Only the address bar carries text; narration belongs next to the frame, not inside it.",
+    "useWhen": [
+      "a product screenshot should read as a browser or app window",
+      "a demo recording needs framed context",
+      "a split layout pairs UI evidence with narration"
+    ],
+    "avoidWhen": [
+      "no real screenshot or recording exists",
+      "the asset is a diagram or photo rather than product UI",
+      "the screenshot's fine detail is the content and cropping would hide it"
+    ],
+    "alternatives": [
+      {
+        "when": "no real asset exists",
+        "use": "components/figure"
+      },
+      {
+        "when": "diagrams, photos, or captioned visuals",
+        "use": "components/figure"
+      },
+      {
+        "when": "a terminal session as text",
+        "use": "components/code"
+      }
+    ]
+  },
+  "agentLevel": "recommended",
+  "tags": ["media", "screenshot", "browser", "frame", "product"],
+  "useCases": [
+    "Frame a product screenshot in browser chrome with its URL.",
+    "Show an app screen in a plain window frame.",
+    "Pair UI evidence with narration in a split layout."
+  ]
+}

@@ -1,0 +1,116 @@
+/* Low-level composition utilities (kept from v1): stacks, clusters, grids,
+ * and centering helpers used INSIDE layout regions. Prefer .ls-layout--*
+ * for the slide-body skeleton; reach for these to arrange within a region.
+ */
+@layer utilities {
+  .ls-stack {
+    display: grid;
+    /* Rows size to content and anchor to the start of the available block.
+       Stacks usually sit inside an already-sized column where top alignment
+       is correct; set --ls-stack-align-content: center for per-use centering. */
+    align-content: var(--ls-stack-align-content, start);
+    gap: var(--ls-stack-gap, var(--ls-space-4));
+    min-inline-size: 0;
+  }
+
+  .ls-stack--sm {
+    --ls-stack-gap: var(--ls-space-2);
+  }
+
+  .ls-stack--lg {
+    --ls-stack-gap: var(--ls-space-6);
+  }
+
+  .ls-cluster {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ls-cluster-gap, var(--ls-space-3));
+    align-items: var(--ls-cluster-align, center);
+    min-inline-size: 0;
+  }
+
+  .ls-grid {
+    display: grid;
+    /* Implicit rows size to content and the row block centers vertically in
+       the available area, so leftover slide height lands above/below the grid
+       instead of stretching boxes and trapping dead space inside them. When
+       content fills the area this is visually identical to stretch. */
+    align-content: var(--ls-grid-align-content, center);
+    gap: var(--ls-grid-gap, var(--ls-space-5));
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+
+  /* Modifiers set align-content directly instead of --ls-grid-align-content:
+     custom properties inherit, so a variable-based modifier would leak into
+     nested grids (a plain .ls-grid inside a --fill grid must still center). */
+  .ls-grid--start {
+    align-content: start;
+  }
+
+  .ls-grid--fill {
+    /* Restores stretch-to-fill rows for grids that intentionally fill the
+       body area: frames, diagrams, dashboards, full-slide hero layouts. */
+    align-content: stretch;
+  }
+
+  .ls-grid--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ls-grid--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ls-grid--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .ls-grid--wide-left {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  }
+
+  .ls-grid--wide-right {
+    grid-template-columns: minmax(0, 0.75fr) minmax(0, 1.25fr);
+  }
+
+  .ls-center {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    text-align: center;
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+
+  .ls-center-start {
+    display: grid;
+    place-items: center start;
+    align-content: center;
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
+
+  .ls-text-start {
+    text-align: start;
+  }
+
+  .ls-fill {
+    block-size: 100%;
+    min-block-size: 0;
+  }
+
+  .ls-slide-fill {
+    grid-row: 1 / -1;
+    block-size: 100%;
+    min-block-size: 0;
+  }
+
+  .ls-frame {
+    display: grid;
+    place-items: center;
+    min-block-size: var(--ls-frame-min-block-size, 320px);
+    border-radius: var(--ls-radius-xl);
+    overflow: hidden;
+  }
+}

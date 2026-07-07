@@ -40,8 +40,9 @@ export function tagsForWrites(writes) {
   for (const write of writes) {
     const normalized = write.targetPath.replaceAll("\\", "/");
     if (normalized.endsWith(".css")) links.push(`<link rel="stylesheet" href="./${normalized}" />`);
-    if (normalized.endsWith(".js"))
-      scripts.push(`<script type="module" src="./${normalized}"></script>`);
+    // Classic defer instead of type="module": module scripts are CORS-blocked
+    // over file://, and copied decks must work when opened directly.
+    if (normalized.endsWith(".js")) scripts.push(`<script defer src="./${normalized}"></script>`);
   }
   return { links, scripts };
 }
@@ -52,7 +53,8 @@ export async function prepareCopies({ source, targetRoot, writes, force = false 
   const prepared = [];
 
   for (const write of writes) {
-    const content = await source.readText(write.sourcePath);
+    // Byte-exact copies: registry items may carry binary assets (woff2).
+    const content = await source.readBytes(write.sourcePath);
     const destination = path.join(targetRoot, write.targetPath);
     const sha256 = sha256Text(content);
     const file = { ...write, sha256 };

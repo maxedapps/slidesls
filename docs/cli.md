@@ -1,148 +1,134 @@
 # slidesls CLI
 
-`slidesls` is an authoring CLI. It copies registry assets into a deck project, but generated decks do not need the package at runtime.
+`slidesls` is an authoring CLI. It copies registry assets into a deck project; generated decks do not need the package at runtime.
 
-## Local checkout usage
+Installed package usage: `npx -y @maxedapps/slidesls@latest <command>` (the `-y @maxedapps/...` form avoids resolving an unrelated unscoped package). Local checkout usage: `node /path/to/ls_slides/bin/slidesls.mjs <command>`.
 
-Invoke the CLI from this checkout when working in another project:
+All commands support `--help`. Agent-facing commands support `--json`; key text outputs include `For AI agents:` recipes, and JSON outputs carry additive `agentInstructions`. Registry source options are shared: `--registry-root <path>` for a local registry checkout, `--registry-url <url>` for a raw remote source; the bundled registry is the default.
 
-```sh
-node /absolute/path/to/ls_slides/bin/slidesls.mjs --help
-node /absolute/path/to/ls_slides/bin/slidesls.mjs init --template minimal --title "My Deck"
+## init
+
+```txt
+slidesls init [dir] [--template blank|minimal] [--style <style>] [--title <text>] [--registry-root <path>] [--registry-url <url>] [--force] [--json]
 ```
 
-If the package is already installed in the target project, use `npx slidesls ...`. For one-off npm execution without prior install, use `npx -y @maxedapps/slidesls@latest ...` to avoid resolving an unrelated unscoped package.
+Initializes the current directory by default, or `[dir]` if supplied. Writes `slidesls.json`, the entry HTML, and copied assets under `slidesls/` — use a dedicated deck folder inside larger projects. `--style editorial` (or `terminal`, `gallery`, `boardroom`, `pop`) copies the art direction with its vendored fonts, links everything, and sets `data-ls-style` on the generated `<html>`. `--template minimal` scaffolds starter slides; `--template blank` scaffolds an empty shell for fully custom composition.
 
-## Commands
+## add
 
-- `slidesls init [dir] --template blank|minimal --theme <theme> --title <text> [--registry-root <path> | --registry-url <url>]` — initialize a deck in the current directory, or in `[dir]` if supplied. `--theme` accepts names such as `executive-blue` or `presets/themes/executive-blue`.
-- `slidesls add <items...> --dir <project> [--base-dir <relative>] [--registry-root <path> | --registry-url <url>]` — copy registry items into a deck project or any existing project. If no `slidesls.json` exists in `--dir`, `add` uses copy mode and writes assets under `--base-dir` or `slidesls`.
-- `slidesls catalog [--starter] [--level <level>] [--recommended] [--api] [--type <type>] [--tag <tag>] [--query <text>] [--limit <n>] [--registry-root <path> | --registry-url <url>]` — list brief item summaries by default; add `--api` for public `authoring` metadata.
-- `slidesls inspect <items...> [--api] [--with-dependencies] [--readme] [--registry-root <path> | --registry-url <url>]` — show snippet HTML and aggregate load tags by default; add `--api` for public `authoring` metadata.
-- `slidesls skill info [--json]` — show bundled agent skill metadata.
-- `slidesls skill show [--reference <name>] [--all]` — print the bundled agent `SKILL.md`, a named reference such as `catalog`, or all bundled docs.
-- `slidesls skill install <dir> [--dry-run] [--force]` — copy the bundled skill to the explicit skill directory required by your agent runtime.
-- `slidesls skill link <dir> [--force]` — symlink the bundled skill to the explicit skill directory required by your agent runtime.
-- `slidesls validate [dir] [--strict]` — validate deck config, entry markup, local assets, manifest files, and targeted component/reveal structure, plus advisory design-lint composition warnings (never promoted by `--strict`; suppress per slide with `data-ls-lint="off"`). `--strict` also treats copied-file hash drift and deck-level structural warnings as errors.
-- `slidesls preview [dir] [--host <host>] [--port <port>]` — serve a local preview until the process is stopped. JSON output includes `exportUrl` and per-slide `slideLinks` deep links.
-- `slidesls visual-qa [--eval | --analyze] [--input <collected.json>]` — browser-fact visual QA: `--eval` prints the dependency-free collector script for `agent-browser eval`; `--analyze` turns collected JSON into advisory per-slide composition findings with deep links (see `docs/validation.md`).
-- `slidesls doctor [--dir <project>] [--registry-root <path> | --registry-url <url>]` — check Node/package/config/registry/project health.
-- `slidesls validate-registry [--registry-root <path> | --registry-url <url>]` — repo/package registry validation.
-- `slidesls validate-examples` — recursive repo example/template validation.
-- `slidesls generate-catalog [--registry-root <path> | --registry-url <url>] [--check]` — internal agent catalog generation/check.
-
-All commands support `--help`. Agent-facing commands support `--json` where useful. Key text outputs include `For AI agents:` command recipes, and JSON outputs for `init`, `add`, `catalog`, `inspect`, and `validate` include additive `agentInstructions` data.
-
-## Init target guidance
-
-Use a dedicated deck folder. From inside that folder:
-
-```sh
-slidesls init --template minimal --title "My Deck"
+```txt
+slidesls add <items...> [--dir <project>] [--base-dir <relative>] [--registry-root <path>] [--registry-url <url>] [--include-docs] [--dry-run] [--force] [--json]
 ```
 
-Inside a larger project, prefer an explicit path:
+Copies registry items (resolving `registryDependencies`) into an initialized deck, or into any existing project in copy mode when `--dir` has no `slidesls.json` (assets go under `--base-dir`, default `slidesls`). `add` copies files and updates the manifest; it does not edit HTML — insert the returned load tags into the entry HTML when needed. Run with `--dry-run --json` first to review planned files and load tags.
 
-```sh
-slidesls init ./slides/my-deck --template minimal --title "My Deck"
+## catalog
+
+```txt
+slidesls catalog [--recommended] [--type <type>] [--tag <tag>] [--intent <intent>] [--style <name>] [--query <text>] [--limit <n>] [--preview] [--registry-root <path>] [--registry-url <url>] [--json]
 ```
 
-`init` writes `slidesls.json`, the configured entry file, and copied registry assets into the target directory. With `--theme`, it also copies the theme preset, links its CSS, and sets `data-ls-theme` on the generated `<html>` element.
+Lists registry items. JSON output is brief by default; add `--api` for public authoring metadata. Filters:
 
-## Copy mode without init
+- `--type` — `style`, `archetype`, `component`, `layout`, `font`, `core`.
+- `--intent` — narrative intent: `open`, `close`, `prove`, `compare`, `explain-process`, `teach`, `show-data`, `show-code`, `emphasize`.
+- `--style` — keep only items compatible with one art direction (items with no style notes are compatible with all).
+- `--preview` — include preview-status items, which are hidden by default.
 
-`init` is optional for copying registry assets. Use `add` directly when you want slidesls primitives inside an existing project without scaffolding a full deck:
+`slidesls catalog --json` is the complete lightweight inventory; `--type style --json` picks the deck's art direction; `--type archetype --json` lists complete slide patterns with contracts.
 
-```sh
-slidesls add components/card utilities/layout --dir ./existing-project --base-dir vendor/slidesls
+## inspect
+
+```txt
+slidesls inspect <items...> [--brief] [--examples] [--api] [--with-dependencies] [--readme] [--registry-root <path>] [--registry-url <url>] [--json]
 ```
 
-When `--dir` has no `slidesls.json`, `add` uses copy mode, writes under the selected base directory, creates/updates that base directory's `manifest.json`, and reports `mode: "copy"` in JSON output. If `--dir` is supplied, config discovery is limited to that exact directory; ancestor configs are not inherited.
+Shows metadata, load guidance, and snippets. Default JSON is snippet-focused (`snippets[].html`, `dependencyOrder`, `load.links`, `load.scripts`). `--brief` returns the decision payload only (purpose, use/avoid, contract, motion, load tags — no snippet HTML); `--examples` returns snippets only (label + html per variant); `--api` adds authoring metadata (classes, data attributes, CSS variables); `--with-dependencies` adds dependency details; `--readme` includes the item README.
 
-## Themes
+Layout system API: `slidesls inspect layouts/core --api --json`.
 
-Themes are optional visual presets. They are copied like any other registry item, but they only take effect when the deck opts in on the `<html>` element.
+## icons
 
-```sh
-slidesls catalog --type preset --tag theme
-slidesls add presets/themes/executive-blue --dir ./my-deck
+```txt
+slidesls icons <sync|list> [--dir <deck>] [--add <name,name>] [--registry-root <path>] [--registry-url <url>] [--json]
 ```
 
-```html
-<html lang="en" data-ls-theme="executive-blue"></html>
+- `sync` — rewrites the deck's inline icon sprite to exactly the icons the entry HTML references via `<use href="#ls-i-<name>">` (plus any `--add` names), and writes the Lucide license to `slidesls/registry/icons/LICENSE`.
+- `list` — shows the curated icon set.
+
+`--add` resolves curated icons locally and falls back to the pinned `lucide-static` version on npm CDNs when online. Run `slidesls icons sync --dir <deck> --json` after adding or removing icon references.
+
+## gallery
+
+```txt
+slidesls gallery [--out <dir>] [--registry-root <path>] [--registry-url <url>] [--json]
 ```
 
-For new decks, prefer `init --theme <theme>`:
+Generates `.gallery/` HTML pages rendering every registry snippet under every style and density (repo/dev review harness). Open pages with `?export=1` for stills; `scripts/visual-gate.mjs` measures and screenshots them.
 
-```sh
-slidesls init ./my-deck --template minimal --theme technical-deep --title "Architecture Review"
+## skill
+
+```txt
+slidesls skill info [--json]
+slidesls skill show [--reference <name>] [--all]
+slidesls skill install <dir> [--dry-run] [--force] [--json]
+slidesls skill link <dir> [--force] [--json]
 ```
 
-Available initial themes:
-
-- `executive-blue` — balanced professional/product decks.
-- `clean-light` — bright product, teaching, and print-friendly decks.
-- `boardroom-navy` — formal strategy, executive, and reporting decks.
-- `technical-deep` — engineering and code-heavy decks.
-- `playful-ink` — friendlier workshop/community decks.
-
-Font presets remain separate; use `data-ls-font` only when you want a font role remap.
-
-## Agent skill workflow
-
-Runtime-neutral no-install path:
-
-```sh
-slidesls skill show
-```
-
-Full export fallback only:
-
-```sh
-slidesls skill show --all
-```
-
-For local-only development, link the skill so it always tracks the current checkout. Choose the skill directory required by your agent runtime:
-
-```sh
-slidesls skill link <your-agent-skill-dir>/create-slides-with-slidesls
-```
-
-Use a copy when symlinks are undesirable:
-
-```sh
-slidesls skill install <your-agent-skill-dir>/create-slides-with-slidesls
-```
-
-Example for Claude Code project-local skills:
+Distributes the bundled agent skill. `show` prints `SKILL.md` (the runtime-neutral no-install path); `show --reference <name>` prints one reference (`catalog`, `style-directions`, `archetypes`, `motion`, `customization`, `qa`); `show --all` is a full-export fallback only. `install` copies and `link` symlinks the skill into the skill directory required by the active agent runtime, for example Claude Code project-local skills:
 
 ```sh
 slidesls skill install ./.claude/skills/create-slides-with-slidesls
 ```
 
-After installing or linking, agents should fully read the installed `SKILL.md` and relevant files in `references/`; use `slidesls skill show` if the runtime did not auto-load it, and `slidesls skill show --all` only as a full export fallback.
+## validate
 
-Then use incremental machine-readable discovery before editing decks or copy-mode projects:
-
-```sh
-slidesls catalog --starter --json
-slidesls catalog --json
-slidesls catalog --type preset --tag theme --json
-slidesls inspect templates/split --json
-slidesls inspect components/card --json
-slidesls add utilities/layout components/panel components/card --dry-run --json
+```txt
+slidesls validate [dir] [--strict] [--report] [--registry-root <path>] [--registry-url <url>] [--use-manifest-registry] [--json]
 ```
 
-Use `catalog --api --json` or `inspect <item> --api --json` for low-level public classes, modifiers, data attributes, theme/font attributes, and CSS variables. Unless the user asks for static slides, copy/load `animations/reveal` plus one subtle variant such as `animations/slide-up` or `animations/fade` and use `.ls-reveal` with `data-step` or `data-ls-reveal-sequence`. Do not invent `ls-*` classes; validation warns for unknown `ls-*` classes and `--strict` errors. Static validation does not replace rendered review; after material slide edits, run the per-slide visual QA loop (`slidesls preview <deck>` plus `slidesls visual-qa`) documented in the bundled skill's `references/preview-validation.md`. Preview URLs can deep-link to normal-mode state with `#slide=2&step=1` (`slide` is 1-based; `step` is 0-based); `preview --json` returns them as `slideLinks`. Export mode still renders all slides/reveals and ignores the hash.
+Static deck validation (see [validation.md](./validation.md) for every code). Default validation is offline/deterministic and uses the bundled registry unless an explicit registry source is provided; `--use-manifest-registry` validates against the registry source recorded in the deck manifest. Unknown `ls-*` classes warn by default and error with `--strict`. `--report` adds the deck scorecard: per-slide archetype map, variety distribution, motion coverage, icon consistency, and the lint summary — necessary, never sufficient; rendered review still decides.
 
-## Naming
+## preview
 
-Prefer:
+```txt
+slidesls preview [dir] [--host <host>] [--port <port>] [--json]
+```
 
-- `--dir` for deck/project directory.
-- `--registry-root` for a local registry checkout.
-- `--registry-url` for a raw remote registry source.
+Starts a local server, prints the URL, and keeps running until stopped. JSON output includes `exportUrl` (`?export=1`) and per-slide `slideLinks` deep links (`#slide=N`).
 
-The default remote registry URL targets the future public repository; until the repo is public, use bundled/local registry mode. Remote registry requests have per-request timeouts, so a slow registry fails with a bounded error instead of hanging indefinitely.
+## visual-qa
 
-`snapshot` is intentionally post-MVP; browser screenshot workflows should remain optional and must not add a mandatory Playwright/Puppeteer dependency to the base package.
+```txt
+slidesls visual-qa --eval
+slidesls visual-qa --analyze [--input <collected.json>] [--json]
+```
+
+Browser-fact visual QA for a running preview. `--eval` prints a dependency-free browser collector script; `--analyze` turns its collected JSON into advisory per-slide findings with deep links. The loop:
+
+1. Keep a preview running: `slidesls preview <deck> --host 127.0.0.1 --port 4321`
+2. Open the export URL (`?export=1`) in agent-browser so every slide renders, then pipe the output of `slidesls visual-qa --eval` into an agent-browser eval call reading stdin and save the result as `collected.json`.
+3. Analyze: `slidesls visual-qa --analyze --input collected.json --json`
+4. Screenshot each slide listed in `summary.slidesToInspect` via its `deepLink`, fix, re-validate, and re-run until clean.
+
+Findings are advisory; they point at slides to inspect, not hard failures.
+
+## doctor
+
+```txt
+slidesls doctor [--dir <project>] [--registry-root <path>] [--registry-url <url>] [--json]
+```
+
+Checks CLI/project health: Node version, package metadata, config parse, entry existence, project writability, registry availability.
+
+## Repo/maintenance commands
+
+```txt
+slidesls validate-registry [--registry-root <path>] [--registry-url <url>] [--json]
+slidesls validate-examples [--dir <repo>] [--json]
+slidesls generate-catalog [--registry-root <path>] [--registry-url <url>] [--output <path>] [--check] [--json]
+```
+
+- `validate-registry` — registry metadata/files/snippets/dependency validation.
+- `validate-examples` — recursive repo example validation.
+- `generate-catalog` — generates (or `--check`s) the agent catalog reference bundled with the skill.

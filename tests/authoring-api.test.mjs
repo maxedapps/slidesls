@@ -254,10 +254,6 @@ test("registry validation catches broken official snippet structures", async () 
         elements: ["ls-progress__label", "ls-progress__track", "ls-progress__bar"],
       },
       {
-        base: "ls-timeline",
-        elements: ["ls-timeline__item", "ls-timeline__marker", "ls-timeline__body"],
-      },
-      {
         base: "ls-quote",
         elements: ["ls-quote__text", "ls-quote__source"],
       },
@@ -266,7 +262,7 @@ test("registry validation catches broken official snippet structures", async () 
   await writeFile(itemPath, JSON.stringify(metadata, null, 2));
   await writeFile(
     path.join(root, "registry", "components", "demo", "demo.css"),
-    ".ls-progress {} .ls-progress__label {} .ls-progress__track {} .ls-progress__bar {} .ls-timeline {} .ls-timeline__item {} .ls-timeline__marker {} .ls-timeline__body {} .ls-quote {} .ls-quote__text {} .ls-quote__source {}\n",
+    ".ls-progress {} .ls-progress__label {} .ls-progress__track {} .ls-progress__bar {} .ls-quote {} .ls-quote__text {} .ls-quote__source {}\n",
   );
 
   await writeFile(
@@ -276,14 +272,6 @@ test("registry validation catches broken official snippet structures", async () 
   let result = await validateRegistry({ registryRoot: root });
   assert.equal(result.valid, false);
   assert.ok(result.errors.some((error) => error.code === "invalid_progress_structure"));
-
-  await writeFile(
-    path.join(root, "registry", "components", "demo", "snippets", "basic.html"),
-    '<ol class="ls-timeline"><li class="ls-timeline__item"><span class="ls-timeline__marker">1</span></li></ol>\n',
-  );
-  result = await validateRegistry({ registryRoot: root });
-  assert.equal(result.valid, false);
-  assert.ok(result.errors.some((error) => error.code === "invalid_timeline_structure"));
 
   await writeFile(
     path.join(root, "registry", "components", "demo", "snippets", "basic.html"),
@@ -321,14 +309,24 @@ test("example validation recursively checks nested html files", async () => {
   assert.ok(result.errors.some((error) => error.code === "unknown_ls_class"));
 });
 
-test("full-slide registry templates use ls-slide-fill instead of direct ls-fill", async () => {
-  for (const relative of [
-    "registry/templates/title-hero/snippet.html",
-    "registry/templates/section-divider/snippet.html",
-    "src/deck/templates.mjs",
-  ]) {
-    const content = await readFile(path.resolve(relative), "utf8");
-    assert.doesNotMatch(content, /ls-(?:grid|center)[^"`]*\bls-fill\b/);
-    assert.match(content, /ls-slide-fill/);
+test("full-slide registry snippets and starter templates avoid direct ls-fill", async () => {
+  // Full-slide compositions must use ls-slide-fill (which spans the shell rows)
+  // instead of combining grid/center utilities with raw ls-fill.
+  const registry = JSON.parse(await readFile(path.resolve("registry.json"), "utf8"));
+  const fullSlideSnippets = [];
+  for (const itemPath of registry.items) {
+    const metadata = JSON.parse(await readFile(path.resolve(itemPath), "utf8"));
+    for (const snippet of metadata.snippets || []) {
+      const html = await readFile(path.resolve(snippet.path), "utf8");
+      if (html.includes('class="ls-slide"')) fullSlideSnippets.push([snippet.path, html]);
+    }
   }
+  assert.ok(fullSlideSnippets.length > 0, "expected full-slide snippets in the registry");
+  for (const [snippetPath, html] of fullSlideSnippets) {
+    assert.doesNotMatch(html, /ls-(?:grid|center)[^"`]*\bls-fill\b/, snippetPath);
+  }
+
+  const starterTemplates = await readFile(path.resolve("src/deck/templates.mjs"), "utf8");
+  assert.doesNotMatch(starterTemplates, /ls-(?:grid|center)[^"`]*\bls-fill\b/);
+  assert.match(starterTemplates, /ls-slide-fill/);
 });

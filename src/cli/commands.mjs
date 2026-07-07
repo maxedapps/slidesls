@@ -2,6 +2,8 @@ import { usageError } from "../shared/args.mjs";
 import { ok } from "../shared/result.mjs";
 import { agentHelpBlock } from "./agent-instructions.mjs";
 import { addCommand, catalogCommand, initCommand, inspectCommand } from "./deck-commands.mjs";
+import { galleryCommand } from "./gallery-command.mjs";
+import { iconsCommand } from "./icons-command.mjs";
 import { previewCommand } from "./preview-command.mjs";
 import { skillCommand } from "./skill-command.mjs";
 import { visualQaCommand } from "./visual-qa-command.mjs";
@@ -14,6 +16,8 @@ import {
 } from "./validation-commands.mjs";
 
 export { addCommand, catalogCommand, initCommand, inspectCommand } from "./deck-commands.mjs";
+export { galleryCommand } from "./gallery-command.mjs";
+export { iconsCommand } from "./icons-command.mjs";
 export { previewCommand } from "./preview-command.mjs";
 export { skillCommand } from "./skill-command.mjs";
 export { visualQaCommand } from "./visual-qa-command.mjs";
@@ -36,6 +40,8 @@ Commands:
   add <items...>   Copy registry items into a deck project
   catalog          List registry items, with --recommended for agent-safe items
   inspect <items>  Show metadata, load guidance, and snippets
+  icons <action>   Manage the deck's inline icon sprite (sync, list)
+  gallery          Generate the registry design-review gallery (repo/dev)
   skill            Show, install, or link the bundled agent skill
   validate [dir]           Static deck validation
   preview [dir]            Serve a deck locally
@@ -63,6 +69,10 @@ export async function runCommand(command, argv) {
       return catalogCommand(argv);
     case "inspect":
       return inspectCommand(argv);
+    case "icons":
+      return iconsCommand(argv);
+    case "gallery":
+      return galleryCommand(argv);
     case "skill":
       return skillCommand(argv);
     case "validate":

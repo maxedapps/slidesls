@@ -1,19 +1,13 @@
 # Examples
 
-Examples demonstrate the current agent-safe registry model: layout utilities, standalone components, and complete templates/snippets.
+QA and reference decks for the v2 registry.
 
-- `project-intro/` — small deck using recommended primitives.
-- `composition/` — sparse-content composition gallery: content-sized card grids, feature rows, icon grid, spacious density, intentional `ls-grid--fill`, and a metric band. Also the deck measured by `pnpm visual:gate`.
-- `template-gallery/` — examples of template-style slide compositions.
-- `theme-gallery/` — compact visual QA gallery for all theme presets.
-- `stress-gallery/` — denser content-budget examples for serif titles, four cards, timelines, tables, progress, and citations.
-- `pi-coding-agent-executive-blue/` — Pi Coding Agent deck using `executive-blue`.
-- `pi-coding-agent-boardroom-navy/` — Pi Coding Agent deck using `boardroom-navy`.
-- `pi-coding-agent-technical-deep/` — Pi Coding Agent deck using `technical-deep`.
-- `pi-coding-agent-playful-ink/` — Pi Coding Agent deck using `playful-ink`.
+- `composition/` — the calibrated composition-QA deck measured by `scripts/visual-gate.mjs` and the committed visual-QA fixtures. Every v2 layout and component appears at realistic density.
+- `stress-gallery/` — deliberately hard cases (long copy, dense tables, deep step sequences) used to probe thresholds.
 
-Serve examples from the repository root with:
+## Reference decks
 
-```sh
-pnpm serve:examples
-```
+- `benchmark-boardroom/`, `benchmark-editorial/`, `benchmark-gallery/`, `benchmark-terminal/` — canonical per-style benchmark decks: the reference head order, sprite, footers, and archetype rhythm.
+- `pop-launch/` — the flagship reference deck for the `pop` style: a nine-slide product-launch all-hands ("Loop") alternating the coral and blue accents across seven distinct archetypes.
+
+The pre-v2 examples were removed with the v1 registry; uncommitted drafts were preserved under `examples-archive/` (not validated).

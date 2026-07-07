@@ -1,0 +1,84 @@
+/* pop — playful, loud, friendly: cream ground, saturated accents, thick
+ * borders, big soft shapes, springy overshoot motion.
+ */
+@layer tokens {
+  :root[data-ls-style="pop"] {
+    color-scheme: light;
+
+    /* type: characterful grotesque display, plain body */
+    --ls-font-display: "Bricolage Grotesque Variable", "Arial Black", sans-serif;
+    --ls-font-heading: var(--ls-font-display);
+    --ls-font-body: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+    --ls-font-label: "Bricolage Grotesque Variable", ui-sans-serif, sans-serif;
+    --ls-font-code: "JetBrains Mono Variable", ui-monospace, monospace;
+    --ls-title-letter-spacing: -0.03em;
+    --ls-title-line-height: 0.98;
+
+    /* cream ground, two saturated accents, ink text */
+    --ls-page-bg: #f3e8d3;
+    --ls-page-grid-color: rgb(36 31 49 / 4%);
+    --ls-slide-bg: #fdf6e9;
+    --ls-panel-bg: #f7edda;
+    --ls-surface: #f7edda;
+    --ls-surface-strong: #f1e3c8;
+    --ls-surface-muted: rgb(36 31 49 / 5%);
+    --ls-surface-highlight: none;
+    --ls-border: rgb(36 31 49 / 60%);
+    --ls-border-strong: rgb(36 31 49 / 100%);
+    --ls-text: #241f31;
+    --ls-muted: #56506b;
+    --ls-subtle: #675f77;
+
+    --ls-accent: #f43f5e;
+    --ls-accent-2: #3a86ff;
+    --ls-accent-text: #bd1134;
+    --ls-accent-bg: rgb(244 63 94 / 10%);
+    --ls-accent-border: rgb(244 63 94 / 55%);
+
+    --ls-code-bg: #241f31;
+    --ls-code-text: #fdf6e9;
+    --ls-code-border: rgb(36 31 49 / 100%);
+    --ls-table-stripe-bg: rgb(36 31 49 / 5%);
+    --ls-progress-accent: var(--ls-accent);
+    --ls-progress-accent-2: var(--ls-accent-2);
+    --ls-status-success: #15803d;
+    --ls-status-warning: #b45309;
+    --ls-status-danger: #d81b3d;
+
+    /* shape: thick friendly borders, big radius, sticker energy */
+    --ls-radius-sm: 14px;
+    --ls-radius-md: 20px;
+    --ls-radius-lg: 26px;
+    --ls-radius-xl: 34px;
+    --ls-radius-slide: 26px;
+    --ls-border-width: 2.5px;
+    --ls-shadow-sm: 4px 4px 0 rgb(36 31 49 / 90%);
+    --ls-shadow-md: 8px 8px 0 rgb(36 31 49 / 90%);
+
+    /* texture: two big soft blobs behind everything */
+    --ls-slide-texture:
+      radial-gradient(40% 52% at 88% 8%, rgb(58 134 255 / 14%) 0%, transparent 70%),
+      radial-gradient(46% 60% at 4% 96%, rgb(244 63 94 / 13%) 0%, transparent 70%);
+
+    /* furniture: chunky sticker footer */
+    --ls-footer-rule: 2.5px solid #241f31;
+    --ls-footer-color: #241f31;
+    --ls-footer-font-size: 16px;
+    --ls-footer-letter-spacing: 0.1em;
+
+    /* abstract figure art: poster shapes */
+    --ls-abstract-art:
+      radial-gradient(38% 38% at 72% 30%, #3a86ff 0 99%, transparent 100%) no-repeat,
+      radial-gradient(56% 56% at 22% 82%, #f43f5e 0 99%, transparent 100%) no-repeat,
+      linear-gradient(0deg, #f7edda, #f7edda);
+
+    /* motion signature: springy scale-ins, bouncy staggers */
+    --ls-transition-kind: rise;
+    --ls-transition-duration: 440ms;
+    --ls-transition-ease: cubic-bezier(0.34, 1.56, 0.64, 1);
+    --ls-transition-distance: 72px;
+    --ls-enter-duration: 520ms;
+    --ls-enter-distance: 30px;
+    --ls-stagger-step: 80ms;
+  }
+}

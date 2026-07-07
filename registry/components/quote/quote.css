@@ -1,43 +1,73 @@
+/* quote — v2 retypeset: an unboxed pull-quote in display type with a drawn
+ * accent rule, attribution, and an optional evidence slot. The words carry
+ * the slide; no border, no tinted panel.
+ */
 @layer components {
   .ls-quote {
     position: relative;
     display: grid;
     gap: var(--ls-space-4);
-    padding: 34px;
-    border: 1px solid var(--ls-border);
-    border-radius: var(--ls-radius-lg);
-    background: color-mix(in srgb, var(--ls-surface) 86%, var(--ls-accent) 14%);
+    margin: 0;
+    padding-inline-start: var(--ls-quote-indent, 44px);
+    max-inline-size: 1180px;
   }
 
+  /* Accent rule instead of a box: quotation as a typographic object. */
   .ls-quote::before {
-    content: "“";
+    content: "";
     position: absolute;
-    inset-block-start: -22px;
-    inset-inline-start: 24px;
-    color: color-mix(in srgb, var(--ls-accent) 54%, transparent);
-    font-family: var(--ls-font-serif);
-    font-size: 130px;
-    line-height: 1;
+    inset-inline-start: 0;
+    inset-block: 6px;
+    inline-size: var(--ls-quote-rule-width, 5px);
+    border-radius: 999px;
+    background: var(--ls-accent);
   }
 
   .ls-quote__text {
-    position: relative;
+    color: var(--ls-text);
     font-family: var(--ls-font-display);
-    font-size: 36px;
-    font-weight: 680;
-    letter-spacing: -0.035em;
-    line-height: 1.12;
+    font-size: var(--ls-quote-size, 44px);
+    font-weight: 640;
+    letter-spacing: -0.02em;
+    line-height: 1.18;
+    text-wrap: balance;
+  }
+
+  .ls-quote__text::before {
+    content: "“";
+  }
+
+  .ls-quote__text::after {
+    content: "”";
   }
 
   .ls-quote footer,
   .ls-quote__source {
     color: var(--ls-muted);
-    font-size: 21px;
+    font-family: var(--ls-font-label);
+    font-size: var(--ls-text-sm);
     line-height: 1.3;
   }
 
   .ls-quote__source cite {
     color: var(--ls-accent-text);
     font-style: normal;
+    font-weight: 650;
+  }
+
+  /* Evidence slot: a stat or short proof line that grounds the quote. */
+  .ls-quote__evidence {
+    display: grid;
+    gap: var(--ls-space-2);
+    padding-block-start: var(--ls-space-2);
+    border-block-start: var(--ls-border-width) solid var(--ls-border);
+  }
+
+  .ls-quote--lg .ls-quote__text {
+    font-size: var(--ls-quote-size, 56px);
+  }
+
+  .ls-slide[data-ls-density="compact"] .ls-quote__text {
+    font-size: var(--ls-quote-size, 36px);
   }
 }

@@ -50,8 +50,8 @@ export function textFor(command, result) {
           const snippets = (item.snippets || [])
             .map((snippet) => `${snippet.label}: ${snippet.path}`)
             .join("\n    ");
-          const theme = item.themeAttribute
-            ? `\n  Theme: set data-ls-theme="${item.themeAttribute}" on <html>`
+          const theme = item.styleAttribute
+            ? `\n  Style: set data-ls-style="${item.styleAttribute}" on <html>`
             : "";
           const authoring = item.authoring
             ? "\n  Authoring: included"
@@ -118,8 +118,8 @@ export function textFor(command, result) {
       result.data.mode === "copy"
         ? `No ${CONFIG_FILE} found; using copy mode and writing assets under ./${result.data.baseDir}.\n`
         : "";
-    const themeNote = result.data.applyTheme
-      ? `Apply theme by setting data-ls-theme="${result.data.applyTheme.themeAttribute}" on the <html> element.\n`
+    const themeNote = result.data.applyStyle
+      ? `Apply the style by setting data-ls-style="${result.data.applyStyle.styleAttribute}" on the <html> element.\n`
       : "";
     return `${copyModeNote}${action} ${count} file(s). Add these tags if needed:\n${[...links, ...scripts].join("\n")}\n${themeNote}${agentTextBlock(
       [
@@ -140,7 +140,7 @@ export function textFor(command, result) {
           ]
         : [
             `Use \`${agentCommandRecipes.catalogStarterJson}\` for the fast-start set or \`${agentCommandRecipes.catalogJson}\` for all blocks.`,
-            "Use `slidesls inspect templates/split --json` for exact markup; use components/utilities for custom slides.",
+            "Use `slidesls inspect layouts/core --json` for slide-body skeletons; fill regions with components (surface, stat, list, figure...).",
             `Run \`slidesls validate ${result.data.root} --json\` after editing.`,
           ];
     return `Initialized ${result.data.root}${result.data.theme ? ` with theme ${result.data.theme}` : ""}\nNext steps:\n${result.data.nextSteps.map((s) => `  ${s}`).join("\n")}\n${agentTextBlock(

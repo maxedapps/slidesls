@@ -1,0 +1,30 @@
+{
+  "name": "fonts/bricolage-grotesque",
+  "type": "ls:font",
+  "title": "Bricolage Grotesque",
+  "description": "Bricolage Grotesque variable webfont (latin, wght axis), vendored from @fontsource-variable/bricolage-grotesque@5.2.10 under the SIL Open Font License 1.1.",
+  "files": [
+    {
+      "path": "registry/fonts/bricolage-grotesque/bricolage-grotesque-latin-wght-normal.woff2",
+      "type": "registry:font"
+    },
+    {
+      "path": "registry/fonts/bricolage-grotesque/font.css",
+      "type": "registry:style"
+    },
+    {
+      "path": "registry/fonts/bricolage-grotesque/OFL.txt",
+      "type": "registry:license"
+    }
+  ],
+  "registryDependencies": [],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/fonts/bricolage-grotesque/README.md",
+  "agentLevel": "advanced",
+  "authoring": {
+    "usage": [
+      "Loaded via the family @font-face in font.css; reference it through style tokens, not directly. The registered font-family name is \"Bricolage Grotesque Variable\"."
+    ]
+  }
+}

@@ -1,5 +1,0 @@
-@layer tokens {
-  [data-ls-font="technical-mono"] {
-    --ls-font-label: var(--ls-font-mono);
-  }
-}

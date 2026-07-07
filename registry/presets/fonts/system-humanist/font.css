@@ -1,8 +1,0 @@
-@layer tokens {
-  [data-ls-font="system-humanist"] {
-    --ls-font-body: "Avenir Next", Avenir, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-    --ls-font-heading: "Avenir Next", Avenir, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-    --ls-font-display: var(--ls-font-heading);
-    --ls-font-label: "Avenir Next", Avenir, "Segoe UI", ui-sans-serif, system-ui, sans-serif;
-  }
-}

@@ -1,0 +1,30 @@
+{
+  "name": "fonts/newsreader",
+  "type": "ls:font",
+  "title": "Newsreader",
+  "description": "Newsreader variable webfont (latin, wght axis), vendored from @fontsource-variable/newsreader@5.2.10 under the SIL Open Font License 1.1.",
+  "files": [
+    {
+      "path": "registry/fonts/newsreader/newsreader-latin-wght-normal.woff2",
+      "type": "registry:font"
+    },
+    {
+      "path": "registry/fonts/newsreader/font.css",
+      "type": "registry:style"
+    },
+    {
+      "path": "registry/fonts/newsreader/OFL.txt",
+      "type": "registry:license"
+    }
+  ],
+  "registryDependencies": [],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/fonts/newsreader/README.md",
+  "agentLevel": "advanced",
+  "authoring": {
+    "usage": [
+      "Loaded via the family @font-face in font.css; reference it through style tokens, not directly. The registered font-family name is \"Newsreader Variable\"."
+    ]
+  }
+}

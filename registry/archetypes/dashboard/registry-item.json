@@ -1,0 +1,68 @@
+{
+  "name": "archetypes/dashboard",
+  "type": "ls:archetype",
+  "title": "Dashboard",
+  "description": "An operational read-out: 3–5 tiles mixing surfaces, bare stats, and a chart in the filling dashboard grid. Density with a headline, not a wall of equal boxes.",
+  "intent": ["show-data"],
+  "tags": ["archetype", "dashboard", "metrics"],
+  "useCases": [
+    "the operational health picture of a system or launch",
+    "a status read-out where several metrics matter at once"
+  ],
+  "files": [],
+  "registryDependencies": [
+    "core/base",
+    "layouts/core",
+    "components/surface",
+    "components/stat",
+    "components/chart"
+  ],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/archetypes/dashboard/README.md",
+  "agentLevel": "recommended",
+  "contract": {
+    "tiles": {
+      "min": 3,
+      "max": 5,
+      "description": "Surface, stat, and chart tiles; nesting a stat inside a surface counts both, so keep tiles flat."
+    },
+    "tileTitle": { "maxWords": 8 }
+  },
+  "motion": {
+    "default": "stagger",
+    "notes": "Tiles enter with the core stagger; a dashboard never needs data-step."
+  },
+  "icons": { "guidance": "At most one sprite icon per surface kicker; never icons on bare stats." },
+  "composition": {
+    "layoutBehavior": "fills-area",
+    "useWhen": [
+      "several metrics form one operational picture",
+      "the audience needs the state of the system at a glance"
+    ],
+    "avoidWhen": [
+      "one number carries the story — use archetypes/big-stat and let it breathe",
+      "every tile would be the same boxed surface; vary boxed and unboxed tiles or use components/table"
+    ],
+    "alternatives": [
+      { "when": "one to three headline numbers", "use": "archetypes/big-stat" },
+      { "when": "many like values that should scan as rows", "use": "components/table" }
+    ]
+  },
+  "authoring": {
+    "attributes": [
+      {
+        "name": "data-ls-archetype",
+        "scope": "section.ls-slide",
+        "value": "dashboard",
+        "description": "Marks the slide for contract linting and deck scorecards."
+      }
+    ],
+    "usage": [
+      "Mix tile weights: boxed surfaces for narrated metrics, bare stats for numbers that speak alone.",
+      "Reserve ls-surface--accent or ls-surface--warning for the one tile that is the headline.",
+      "The slide title makes the call (\"holding\", \"degrading\"); the tiles are the evidence."
+    ]
+  },
+  "snippets": [{ "label": "Basic", "path": "registry/archetypes/dashboard/snippets/basic.html" }]
+}

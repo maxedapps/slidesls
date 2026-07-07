@@ -17,7 +17,7 @@ test("root and key command help include AI-agent guidance", async () => {
   assert.match(root, /slidesls skill show --all/);
   assert.match(root, /slidesls skill install <your-agent-skill-dir>\/create-slides-with-slidesls/);
   assert.match(root, /Example for Claude Code project-local skills:/);
-  assert.match(root, /slidesls catalog --starter --json/);
+  assert.match(root, /slidesls catalog --type style --json/);
   assert.match(root, /slidesls catalog --json/);
   assert.match(root, /slidesls inspect <item> --json/);
   assert.match(root, /agent-browser open http:\/\/127\.0\.0\.1:4321\/\?export=1/);
@@ -27,7 +27,8 @@ test("root and key command help include AI-agent guidance", async () => {
 
   const catalog = (await run([bin, "catalog", "--help"])).stdout;
   assert.match(catalog, /For AI agents:/);
-  assert.match(catalog, /catalog --type preset --tag theme --json/);
+  assert.match(catalog, /catalog --type style --json/);
+  assert.match(catalog, /catalog --type component --json/);
 
   const add = (await run([bin, "add", "--help"])).stdout;
   assert.match(add, /does not edit HTML/);
@@ -40,17 +41,18 @@ test("add --dry-run text output reports planned copies", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-cli-"));
   await run([bin, "init", root, "--template", "minimal"]);
 
-  const { stdout } = await run([bin, "add", "components/card", "--dir", root, "--dry-run"]);
+  const { stdout } = await run([bin, "add", "components/surface", "--dir", root, "--dry-run"]);
   assert.match(stdout, /Would copy \d+ file\(s\)/);
   assert.doesNotMatch(stdout, /undefined/);
 });
 
 test("catalog --json returns an agent-friendly result envelope", async () => {
   const { stdout } = await run([bin, "catalog", "--json"]);
-  // Budget: ~43 items with brief fields, decision-critical avoidWhen, group labels,
-  // and structured useCases. Keep the brief catalog under a small agent context page.
+  // Budget: 38 items with brief fields, decision-critical useWhen/avoidWhen,
+  // and archetype content contracts (contracts ARE the brief payload agents
+  // write copy against). Keep the brief catalog inside one agent context page.
   assert.ok(
-    Buffer.byteLength(stdout) < 16_000,
+    Buffer.byteLength(stdout) < 40_000,
     `brief catalog is ${Buffer.byteLength(stdout)} bytes`,
   );
   const result = JSON.parse(stdout);
@@ -58,50 +60,64 @@ test("catalog --json returns an agent-friendly result envelope", async () => {
   assert.equal(typeof result.data.count, "number");
   assert.ok(Array.isArray(result.data.agentInstructions.nextCommands));
   assert.ok(result.data.items.some((item) => item.name === "core/base"));
-  const layout = result.data.items.find((item) => item.name === "utilities/layout");
+  const layout = result.data.items.find((item) => item.name === "layouts/core");
   assert.ok(layout);
   assert.equal(layout.authoring, undefined);
-  const utilityGroup = result.data.groups.find((group) => group.type === "ls:utility");
-  assert.ok(utilityGroup);
-  assert.equal(utilityGroup.label, "Utilities");
-  assert.match(utilityGroup.purpose, /compose anywhere/);
+  const layoutGroup = result.data.groups.find((group) => group.type === "ls:layout");
+  assert.ok(layoutGroup);
+  assert.equal(layoutGroup.label, "Layouts");
+  assert.match(layoutGroup.purpose, /alignment guarantees/);
   assert.equal(
     result.data.groups.reduce((sum, group) => sum + group.count, 0),
     result.data.count,
   );
 
   const rich = JSON.parse((await run([bin, "catalog", "--api", "--json"])).stdout);
-  const richLayout = rich.data.items.find((item) => item.name === "utilities/layout");
+  const richLayout = rich.data.items.find((item) => item.name === "layouts/core");
   assert.ok(
     richLayout.authoring.classGroups.some((group) => group.modifiers?.includes("ls-grid--4")),
   );
   assert.equal(richLayout.agentLevel, "recommended");
+  const validTypes = new Set([
+    "ls:core",
+    "ls:layout",
+    "ls:component",
+    "ls:style",
+    "ls:font",
+    "ls:archetype",
+    "ls:motion",
+  ]);
   assert.equal(
-    result.data.items.some((item) => item.name.startsWith("layouts/")),
-    false,
+    result.data.items.every((item) => validTypes.has(item.type)),
+    true,
+    "catalog must only expose the v2 vocabulary types",
   );
 });
 
 test("catalog --query searches structured intent fields without prose noise", async () => {
   const kpi = JSON.parse((await run([bin, "catalog", "--query", "kpi", "--json"])).stdout);
-  assert.ok(kpi.data.items.some((item) => item.name === "components/metric"));
-  assert.ok(kpi.data.items.some((item) => item.name === "templates/metric-dashboard"));
+  assert.ok(kpi.data.items.some((item) => item.name === "components/stat"));
 
-  const oneLiner = JSON.parse(
-    (await run([bin, "catalog", "--query", "one-liner", "--json"])).stdout,
+  const timeline = JSON.parse(
+    (await run([bin, "catalog", "--query", "timeline", "--json"])).stdout,
   );
-  assert.ok(oneLiner.data.items.some((item) => item.name === "components/icon-item"));
-  assert.ok(oneLiner.data.items.some((item) => item.name === "templates/feature-rows"));
+  assert.ok(timeline.data.items.some((item) => item.name === "components/list"));
 
-  const api = JSON.parse((await run([bin, "catalog", "--query", "api", "--json"])).stdout);
-  assert.ok(api.data.items.some((item) => item.name === "components/http-exchange"));
-  assert.ok(api.data.items.some((item) => item.name === "templates/api-flow"));
+  const diff = JSON.parse((await run([bin, "catalog", "--query", "diff", "--json"])).stdout);
+  assert.ok(diff.data.items.some((item) => item.name === "components/code"));
 
-  const narrative = JSON.parse(
-    (await run([bin, "catalog", "--query", "narrative", "--json"])).stdout,
+  const screenshot = JSON.parse(
+    (await run([bin, "catalog", "--query", "screenshot", "--json"])).stdout,
+  );
+  assert.ok(screenshot.data.items.some((item) => item.name === "components/media"));
+  assert.ok(screenshot.data.items.some((item) => item.name === "components/figure"));
+
+  // "restating" appears only in components/figure avoidWhen prose.
+  const restating = JSON.parse(
+    (await run([bin, "catalog", "--query", "restating", "--json"])).stdout,
   );
   assert.equal(
-    narrative.data.items.some((item) => item.name === "components/metric"),
+    restating.data.items.some((item) => item.name === "components/figure"),
     false,
     "query should not search composition.avoidWhen prose",
   );
@@ -116,56 +132,57 @@ test("catalog --recommended returns only recommended items", async () => {
     result.data.items.every((item) => ["starter", "recommended"].includes(item.agentLevel)),
     true,
   );
-  assert.ok(result.data.items.some((item) => item.name === "utilities/layout"));
-  assert.ok(result.data.items.some((item) => item.name === "components/panel"));
-  assert.ok(result.data.items.some((item) => item.name === "templates/split"));
+  assert.ok(result.data.items.some((item) => item.name === "layouts/core"));
+  assert.ok(result.data.items.some((item) => item.name === "components/surface"));
+  assert.ok(result.data.items.some((item) => item.name === "components/statement"));
 });
 
-test("inspect returns snippet HTML for requested templates and components", async () => {
-  const template = JSON.parse((await run([bin, "inspect", "templates/split", "--json"])).stdout);
-  const requested = template.data.items.find((item) => item.name === "templates/split");
+test("inspect returns snippet HTML for requested layouts and components", async () => {
+  const layout = JSON.parse((await run([bin, "inspect", "layouts/core", "--json"])).stdout);
+  const requested = layout.data.items.find((item) => item.name === "layouts/core");
   assert.match(requested.snippets[0].html, /<section class="ls-slide"/);
   assert.ok(requested.dependencyOrder.includes("core/base"));
   assert.ok(requested.load.links.some((link) => /core\/base\/slide\.css/.test(link)));
   assert.equal(requested.dependencies, undefined);
 
   const withDependencies = JSON.parse(
-    (await run([bin, "inspect", "templates/split", "--with-dependencies", "--json"])).stdout,
+    (await run([bin, "inspect", "layouts/core", "--with-dependencies", "--json"])).stdout,
   );
   assert.ok(withDependencies.data.items[0].dependencies.some((item) => item.name === "core/base"));
   assert.equal(withDependencies.data.items[0].dependencies[0].authoring, undefined);
 
   const withDependencyApi = JSON.parse(
-    (await run([bin, "inspect", "templates/split", "--with-dependencies", "--api", "--json"]))
-      .stdout,
+    (await run([bin, "inspect", "layouts/core", "--with-dependencies", "--api", "--json"])).stdout,
   );
   assert.ok(withDependencyApi.data.items[0].dependencies[0].authoring);
 
   const readme = JSON.parse(
-    (await run([bin, "inspect", "templates/split", "--readme", "--json"])).stdout,
+    (await run([bin, "inspect", "layouts/core", "--readme", "--json"])).stdout,
   );
-  assert.match(readme.data.items[0].readme, /split/i);
+  assert.match(readme.data.items[0].readme, /layout/i);
 
   const multi = JSON.parse(
-    (await run([bin, "inspect", "templates/split", "components/card", "--json"])).stdout,
+    (await run([bin, "inspect", "layouts/core", "components/surface", "--json"])).stdout,
   );
   assert.equal(multi.data.items.length, 2);
   assert.notDeepEqual(multi.data.items[0].dependencyOrder, multi.data.items[1].dependencyOrder);
 
-  const component = JSON.parse((await run([bin, "inspect", "components/card", "--json"])).stdout);
-  assert.ok(Array.isArray(template.data.agentInstructions.nextCommands));
-  assert.match(component.data.items.at(-1).snippets[0].html, /class="ls-card"/);
+  const component = JSON.parse(
+    (await run([bin, "inspect", "components/surface", "--json"])).stdout,
+  );
+  assert.ok(Array.isArray(layout.data.agentInstructions.nextCommands));
+  assert.match(component.data.items.at(-1).snippets[0].html, /class="ls-surface"/);
   assert.equal(
-    component.data.items.find((item) => item.name === "components/card").authoring,
+    component.data.items.find((item) => item.name === "components/surface").authoring,
     undefined,
   );
   const componentApi = JSON.parse(
-    (await run([bin, "inspect", "components/card", "--api", "--json"])).stdout,
+    (await run([bin, "inspect", "components/surface", "--api", "--json"])).stdout,
   );
   assert.ok(
     componentApi.data.items
-      .find((item) => item.name === "components/card")
-      .authoring.classGroups.some((group) => group.base === "ls-card"),
+      .find((item) => item.name === "components/surface")
+      .authoring.classGroups.some((group) => group.base === "ls-surface"),
   );
 });
 
@@ -227,11 +244,11 @@ test("catalog --type uses exact normalized type matching", async () => {
 
 test("add collisions do not partially copy earlier files", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-add-collision-"));
-  const collision = path.join(root, "slidesls", "registry", "components", "card", "card.css");
+  const collision = path.join(root, "slidesls", "registry", "components", "surface", "surface.css");
   await mkdir(path.dirname(collision), { recursive: true });
   await writeFile(collision, "modified");
 
-  await assert.rejects(run([bin, "add", "components/card", "--dir", root]), (error) => {
+  await assert.rejects(run([bin, "add", "components/surface", "--dir", root]), (error) => {
     assert.equal(error.code, 1);
     assert.match(error.stderr, /Refusing to overwrite/);
     return true;
@@ -265,16 +282,17 @@ test("add accepts existing identical files", async () => {
   assert.equal(result.ok, true);
 });
 
-test("template add plans dependencies but not snippet files", async () => {
-  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-template-"));
-  await run([bin, "init", root, "--template", "minimal"]);
+test("layout add plans dependencies but not snippet files", async () => {
+  const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-layout-add-"));
+  await run([bin, "init", root, "--template", "blank"]);
   const result = JSON.parse(
-    (await run([bin, "add", "templates/split", "--dir", root, "--dry-run", "--json"])).stdout,
+    (await run([bin, "add", "layouts/core", "--dir", root, "--dry-run", "--json"])).stdout,
   );
   assert.equal(result.ok, true);
-  assert.ok(result.data.dependencyOrder.includes("templates/split"));
+  assert.ok(result.data.dependencyOrder.includes("layouts/core"));
+  assert.ok(result.data.dependencyOrder.includes("core/base"));
   assert.equal(
-    result.data.files.some((file) => file.targetPath?.endsWith("snippet.html")),
+    result.data.files.some((file) => /snippets\//.test(file.targetPath ?? "")),
     false,
   );
 });
@@ -290,7 +308,7 @@ test("init and validate JSON include context-aware agentInstructions without rem
   );
   assert.ok(
     init.data.agentInstructions.nextCommands.includes(
-      "slidesls inspect utilities/layout components/card components/panel --json",
+      "slidesls inspect layouts/core components/surface components/list --json",
     ),
   );
   assert.ok(Array.isArray(init.data.agentInstructions.longRunningCommands));
@@ -299,11 +317,11 @@ test("init and validate JSON include context-aware agentInstructions without rem
   const minimal = JSON.parse(
     (await run([bin, "init", minimalRoot, "--template", "minimal", "--json"])).stdout,
   );
+  assert.ok(minimal.data.agentInstructions.nextCommands.includes("slidesls catalog --json"));
   assert.ok(
-    minimal.data.agentInstructions.nextCommands.includes("slidesls catalog --type template --json"),
-  );
-  assert.ok(
-    minimal.data.agentInstructions.nextCommands.includes("slidesls inspect templates/split --json"),
+    minimal.data.agentInstructions.nextCommands.includes(
+      "slidesls inspect layouts/core components/surface components/list --json",
+    ),
   );
 
   const validation = JSON.parse((await run([bin, "validate", root, "--json"])).stdout);
@@ -315,7 +333,7 @@ test("init and validate JSON include context-aware agentInstructions without rem
   assert.ok(Array.isArray(validation.data.agentInstructions.longRunningCommands));
 });
 
-test("blank deck can be composed from primitive utilities and components", async () => {
+test("blank deck can be composed from layout and component primitives", async () => {
   const root = await mkdtemp(path.join(os.tmpdir(), "slidesls-primitive-workflow-"));
   await run([bin, "init", root, "--template", "blank", "--title", "Primitive Test", "--json"]);
   const add = JSON.parse(
@@ -323,9 +341,9 @@ test("blank deck can be composed from primitive utilities and components", async
       await run([
         bin,
         "add",
-        "utilities/layout",
-        "components/card",
-        "components/panel",
+        "layouts/core",
+        "components/surface",
+        "components/stat",
         "--dir",
         root,
         "--json",
@@ -339,24 +357,30 @@ test("blank deck can be composed from primitive utilities and components", async
   for (const tag of [...add.data.links, ...add.data.scripts]) {
     if (html.includes(tag)) continue;
     html = tag.startsWith("<link")
-      ? html.replace('    <script type="module"', `    ${tag}\n    <script type="module"`)
+      ? html.replace("    <script defer", `    ${tag}\n    <script defer`)
       : html.replace("  </head>", `    ${tag}\n  </head>`);
   }
   const primitiveSlide = `      <section class="ls-slide" data-ls-slide-kind="content" aria-label="Custom primitive slide">
         <div class="ls-slide__inner">
           <header class="ls-slide__header">
             <p class="ls-eyebrow">Primitive composition</p>
-            <h2 class="ls-title">Compose from layout utilities and components.</h2>
+            <h2 class="ls-title">Compose from the layout system and components.</h2>
           </header>
-          <div class="ls-grid ls-grid--2">
-            <article class="ls-card">
-              <div class="ls-card__body">
-                <h3 class="ls-card__title">Layout stays explicit</h3>
-                <p class="ls-card__text">Use utilities for structure and components for content.</p>
+          <div class="ls-slide__body">
+            <div class="ls-layout ls-layout--split">
+              <div class="ls-layout__region">
+                <div class="ls-surface">
+                  <p class="ls-surface__kicker">Structure</p>
+                  <h3 class="ls-surface__title">Layout stays explicit</h3>
+                  <p class="ls-surface__text">Use layouts/core for structure and components for content.</p>
+                </div>
               </div>
-            </article>
-            <div class="ls-panel ls-panel--frame ls-panel--center">
-              <p class="ls-panel__text">Diagram or visual anchor</p>
+              <div class="ls-layout__region">
+                <div class="ls-stat">
+                  <p class="ls-stat__value">3<em>items</em></p>
+                  <p class="ls-stat__label">registry primitives composed on this slide</p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -368,10 +392,13 @@ test("blank deck can be composed from primitive utilities and components", async
   assert.equal(validation.ok, true);
   assert.equal(validation.data.valid, true);
   assert.deepEqual(validation.data.errors, []);
-  assert.deepEqual(validation.data.warnings, []);
-  assert.match(html, /registry\/utilities\/layout\/layout\.css/);
-  assert.match(html, /registry\/components\/card\/card\.css/);
-  assert.match(html, /registry\/components\/panel\/panel\.css/);
+  assert.deepEqual(
+    validation.data.warnings.map((warning) => warning.code),
+    ["style_missing"],
+  );
+  assert.match(html, /registry\/layouts\/core\/layout\.css/);
+  assert.match(html, /registry\/components\/surface\/surface\.css/);
+  assert.match(html, /registry\/components\/stat\/stat\.css/);
 });
 
 test("validate text shows no-warning guidance on a valid minimal deck", async () => {
@@ -386,11 +413,11 @@ test("validate text shows no-warning guidance on a valid minimal deck", async ()
 test("catalog and inspect text include grouped AI-agent guidance", async () => {
   const catalog = (await run([bin, "catalog", "--recommended"])).stdout;
   assert.match(catalog, /Components \(\d+\) — Standalone/);
-  assert.match(catalog, /Utilities \(\d+\) — Layout/);
+  assert.match(catalog, /Layouts \(\d+\) — Slide-body/);
   assert.match(catalog, /For AI agents:/);
   assert.match(catalog, /Do not invent ls-\*/);
 
-  const inspect = (await run([bin, "inspect", "utilities/layout"])).stdout;
+  const inspect = (await run([bin, "inspect", "layouts/core"])).stdout;
   assert.match(inspect, /Authoring: add --api for details/);
   assert.match(inspect, /For AI agents:/);
 });
@@ -408,8 +435,8 @@ test("documented agent command recipes execute with placeholder substitutions", 
     }),
   );
   const substitutions = {
-    "<item>": "templates/split",
-    "<items...>": "utilities/layout",
+    "<item>": "layouts/core",
+    "<items...>": "components/surface",
     "<deck-or-project>": root,
     "<deck>": root,
     "<collected.json>": collected,
@@ -418,7 +445,7 @@ test("documented agent command recipes execute with placeholder substitutions", 
     ...Object.values(agentCommandRecipes),
     ...JSON.parse((await run([bin, "catalog", "--json"])).stdout).data.agentInstructions
       .nextCommands,
-    ...JSON.parse((await run([bin, "inspect", "templates/split", "--json"])).stdout).data
+    ...JSON.parse((await run([bin, "inspect", "layouts/core", "--json"])).stdout).data
       .agentInstructions.nextCommands,
     ...JSON.parse((await run([bin, "validate", root, "--json"])).stdout).data.agentInstructions
       .nextCommands,
@@ -571,18 +598,6 @@ test("command flag sweep detects undeclared flags", () => {
   );
   assert.equal(violations.length, 1);
   assert.equal(violations[0].flag, "bogus-flag");
-});
-
-test("SKILL.md lists every bundled theme", async () => {
-  const skill = await readFile(path.resolve("skills/create-slides-with-slidesls/SKILL.md"), "utf8");
-  const registry = JSON.parse(await readFile(path.resolve("registry.json"), "utf8"));
-  const themes = registry.items
-    .filter((item) => item.startsWith("registry/presets/themes/"))
-    .map((item) => item.split("/")[3]);
-  assert.ok(themes.length >= 5);
-  for (const theme of themes) {
-    assert.ok(skill.includes(`\`${theme}\``), `SKILL.md must mention theme ${theme}`);
-  }
 });
 
 test("agent guidance avoids stale primary commands", async () => {

@@ -22,8 +22,11 @@ const MEDIAN_TOLERANCE = 24;
 const CARD_LOW_FILL_MIN_HEIGHT = 340;
 const CARD_LOW_FILL_RATIO = 0.45;
 // Body copy below ~20px on the 1600x900 canvas reads as fine print from the
-// back of a room (tokens.css --ls-text-xs is 20px).
+// back of a room (tokens.css --ls-text-xs is 20px). Slides that deliberately
+// opt into compact density trade two points of size for fit; below 18px is
+// fine print in any density.
 const BODY_TEXT_MIN_PX = 20;
+const BODY_TEXT_MIN_PX_COMPACT = 18;
 // "Sparse" means roughly a title plus one short sentence. Height floor is
 // calibrated against real geometry: the rebuilt eve slides measure 262px
 // (6 wrapped cards) and 557px (3 cards) tall at 12-29% fill under 0.3 CSS,
@@ -95,6 +98,7 @@ export function analyzeVisualQa(payload, options = {}) {
     analyzeContainers(slide, warnings);
     analyzeGrids(slide, warnings);
     analyzeBodyText(slide, warnings);
+    analyzeContrast(slide, warnings);
   }
 
   // Uncollected slides carry no measurements, so their absence must be loud:
@@ -135,8 +139,79 @@ export function analyzeVisualQa(payload, options = {}) {
       warningCount: warnings.length,
       slidesToInspect: perSlide.filter((slide) => slide.inspect).map((slide) => slide.index),
       collectedInExportMode: payload.deck?.export === "true",
+      variety: varietyStats(slides),
+      motion: {
+        deckTransition: payload.deck?.transition ?? null,
+        deckMotion: payload.deck?.motion ?? null,
+        slidesWithSteps: slides.filter((slide) => (slide.stepCount || 0) > 0).length,
+      },
+      icons: {
+        slidesWithIcons: slides.filter((slide) => (slide.iconCount || 0) > 0).length,
+        totalIconReferences: slides.reduce((sum, slide) => sum + (slide.iconCount || 0), 0),
+      },
     },
   };
+}
+
+// Deck-level variety facts for the scorecard: archetype distribution and the
+// longest consecutive run of one archetype.
+function varietyStats(slides) {
+  const archetypes = slides.map((slide) => slide.archetype ?? null);
+  const marked = archetypes.filter(Boolean);
+  const distribution = {};
+  for (const name of marked) distribution[name] = (distribution[name] || 0) + 1;
+  let longestRun = 0;
+  let run = 0;
+  for (let index = 0; index < archetypes.length; index += 1) {
+    run = archetypes[index] && archetypes[index] === archetypes[index - 1] ? run + 1 : 1;
+    if (archetypes[index] && run > longestRun) longestRun = run;
+  }
+  return {
+    markedSlides: marked.length,
+    distinctArchetypes: Object.keys(distribution).length,
+    distribution,
+    longestRun,
+  };
+}
+
+// WCAG contrast over the collector's composited color pairs. Display-size
+// text (>= 32px, or >= 24px bold) uses the 3:1 large-text floor; body copy
+// uses 4.5:1. Essential with five independent style color systems.
+const CONTRAST_BODY_MIN = 4.5;
+const CONTRAST_DISPLAY_MIN = 3;
+
+function channel(value) {
+  const scaled = value / 255;
+  return scaled <= 0.03928 ? scaled / 12.92 : ((scaled + 0.055) / 1.055) ** 2.4;
+}
+
+function luminance([r, g, b]) {
+  return 0.2126 * channel(r) + 0.7152 * channel(g) + 0.0722 * channel(b);
+}
+
+export function contrastRatio(foreground, background) {
+  const lighter = Math.max(luminance(foreground), luminance(background));
+  const darker = Math.min(luminance(foreground), luminance(background));
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+function analyzeContrast(slide, warnings) {
+  const flagged = new Set();
+  for (const pair of slide.colorPairs || []) {
+    if (!Array.isArray(pair.color) || !Array.isArray(pair.background)) continue;
+    const bold = Number(pair.fontWeight) >= 600;
+    const isDisplay = pair.fontSize >= 32 || (bold && pair.fontSize >= 24);
+    const floor = isDisplay ? CONTRAST_DISPLAY_MIN : CONTRAST_BODY_MIN;
+    const ratio = contrastRatio(pair.color, pair.background);
+    if (ratio >= floor || flagged.has(pair.selector)) continue;
+    flagged.add(pair.selector);
+    warnings.push({
+      code: "low_contrast",
+      slide: slide.index,
+      message: `Slide ${slide.index} ${pair.selector} renders at ${ratio.toFixed(2)}:1 contrast; the ${isDisplay ? "display" : "body"}-text floor is ${floor}:1.`,
+      hint: "Adjust the style tokens (text/background/accent) rather than the slide; contrast failures usually repeat everywhere the pair appears.",
+    });
+  }
 }
 
 // Back-compat name: the 0.4.x analyzer only measured header rhythm.
@@ -155,7 +230,7 @@ function analyzeContainers(slide, warnings) {
       code: "card_low_fill",
       slide: slide.index,
       message: `Slide ${slide.index} has ${lowFill.length} tall container(s) with content filling under ${Math.round(CARD_LOW_FILL_RATIO * 100)}% of their height (${lowFill.map((container) => container.selector).join(", ")}).`,
-      hint: "Dead space is trapped inside the box. Remove ls-grid--fill, add ls-card--center, or restructure with templates/icon-grid / templates/feature-rows.",
+      hint: "Dead space is trapped inside the box. Remove the fill behavior, or restructure with unboxed content: components/list for short items, components/stat for numbers.",
     });
 }
 
@@ -174,17 +249,18 @@ function analyzeGrids(slide, warnings) {
         code: "equal_cards_sparse",
         slide: slide.index,
         message: `Slide ${slide.index} grid (${grid.selector}) holds ${children.length} sparse boxes averaging ${Math.round(averageHeight)}px tall — equal boxes with one short line each read as filler.`,
-        hint: "Use templates/icon-grid (4-6 short items), templates/feature-rows (one-liner rows), or give each box real copy/visuals.",
+        hint: "Use components/list (short items) or give each box real copy/visuals; boxes are for content that needs a frame.",
       });
   }
 }
 
 function analyzeBodyText(slide, warnings) {
-  if (number(slide.minBodyFontSize) && slide.minBodyFontSize < BODY_TEXT_MIN_PX)
+  const floor = slide.density === "compact" ? BODY_TEXT_MIN_PX_COMPACT : BODY_TEXT_MIN_PX;
+  if (number(slide.minBodyFontSize) && slide.minBodyFontSize < floor)
     warnings.push({
       code: "body_text_small",
       slide: slide.index,
-      message: `Slide ${slide.index} body copy renders at ${slide.minBodyFontSize}px; below the ${BODY_TEXT_MIN_PX}px legibility floor for the 1600x900 canvas.`,
+      message: `Slide ${slide.index} body copy renders at ${slide.minBodyFontSize}px; below the ${floor}px legibility floor for the 1600x900 canvas.`,
       hint: 'Raise the type (data-ls-density="spacious" for sparse slides) or shorten the copy instead of shrinking it.',
     });
 }

@@ -22,7 +22,89 @@
     },
     "type": {
       "type": "string",
-      "enum": ["ls:core", "ls:utility", "ls:component", "ls:animation", "ls:preset", "ls:template"]
+      "enum": [
+        "ls:core",
+        "ls:utility",
+        "ls:component",
+        "ls:animation",
+        "ls:preset",
+        "ls:template",
+        "ls:style",
+        "ls:layout",
+        "ls:archetype",
+        "ls:motion",
+        "ls:font",
+        "ls:icons"
+      ]
+    },
+    "status": {
+      "type": "string",
+      "description": "Lifecycle marker. preview items are hidden from default catalog output; absent means stable.",
+      "enum": ["stable", "preview", "deprecated"]
+    },
+    "intent": {
+      "type": "array",
+      "description": "Narrative intents this item serves; drives catalog --intent discovery.",
+      "items": {
+        "type": "string",
+        "enum": [
+          "open",
+          "close",
+          "prove",
+          "compare",
+          "explain-process",
+          "teach",
+          "show-data",
+          "show-code",
+          "emphasize"
+        ]
+      }
+    },
+    "styles": {
+      "type": "object",
+      "description": "Per-style compatibility notes, keyed by style name (e.g. styles/editorial).",
+      "additionalProperties": { "type": "string" }
+    },
+    "contract": {
+      "type": "object",
+      "description": "Content contract: slot name to count/word constraints (archetypes).",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "min": { "type": "integer", "minimum": 0 },
+          "max": { "type": "integer", "minimum": 0 },
+          "minWords": { "type": "integer", "minimum": 0 },
+          "maxWords": { "type": "integer", "minimum": 0 },
+          "maxChars": { "type": "integer", "minimum": 0 },
+          "description": { "type": "string" }
+        }
+      }
+    },
+    "motion": {
+      "type": "object",
+      "description": "Recommended motion for this item.",
+      "additionalProperties": false,
+      "properties": {
+        "default": { "type": "string" },
+        "notes": { "type": "string" }
+      }
+    },
+    "icons": {
+      "type": "object",
+      "description": "Icon guidance for this item.",
+      "additionalProperties": false,
+      "properties": {
+        "guidance": { "type": "string" },
+        "suggested": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "styleAttribute": {
+      "type": "string",
+      "description": "For ls:style items: the data-ls-style value the style responds to."
     },
     "title": {
       "type": "string"
@@ -111,6 +193,13 @@
           "items": {
             "type": "string",
             "enum": ["sparse", "balanced", "dense"]
+          }
+        },
+        "useWhen": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
           }
         },
         "layoutBehavior": {

@@ -1,37 +1,21 @@
 import { slideSegments, startTagRecords, stripNonRenderedCode } from "../shared/html.mjs";
+import { validateLegacyDesignComposition } from "./legacy/design-lint-v1.mjs";
 
-// Advisory structural composition lint. These codes are warnings by design and
-// are never promoted to errors, even under --strict: they detect statistical
-// signatures of weak composition (wrapping card rows, stretched sparse grids),
-// not provable defects. Measured checks (fill ratios, computed type sizes)
-// live in the browser-fact path (slidesls visual-qa), not here — a flat tag
-// scanner cannot aggregate per-subtree content reliably.
+// Advisory structural composition lint for the v2 vocabulary. These codes are
+// warnings by design and are never promoted to errors, even under --strict:
+// they detect statistical signatures of weak composition, not provable
+// defects. Measured checks (fill ratios, computed type sizes, contrast) live
+// in the browser-fact path (slidesls visual-qa), not here.
 //
-// Thresholds. The 1600x900 canvas gives a content body of roughly
-// 900 - 2*92 (slide padding) - ~120 (header) - 48 (gap) ≈ 550px. Three-column
-// grids fit one row of substantial cards; more than 4 cards/panels in a
-// column-limited grid forces a second wrapped row of equal boxes, the eve-deck
-// failure signature. Three text cards without a visual anchor is the smallest
-// grid where sparse copy reads as filler, so that is where the advisory
-// density pointer starts.
-const MAX_CARDS_IN_GRID = 4;
-const STRETCHED_GRID_MIN_CARDS = 3;
-// The density pointer starts at 4 cards for decks with content-sized grids:
-// canonical 3-card layouts (three-cards, split's panel+2 cards) compose fine
-// under 0.5 CSS, and flagging them would train agents to ignore the code.
-// Legacy decks keep the 3-card floor because their copied CSS still
-// stretches every grid.
-const DENSITY_POINTER_MIN_CARDS = 4;
-const DENSITY_POINTER_MIN_CARDS_LEGACY = 3;
-
-// Copied layout CSS got content-sized grids in this release; older copies
-// stretch plain .ls-grid rows to the full body height.
-export const GRID_CONTENT_SIZED_SINCE = "0.5.0";
+// v1 decks (manifest cliVersion < 0.6.0) are routed to the frozen legacy
+// module: their copied CSS and class vocabulary predate these rules.
+const MAX_SURFACES_IN_GRID = 4;
+const V2_VOCABULARY_SINCE = "0.6.0";
 
 const columnGridClasses = ["ls-grid--2", "ls-grid--3", "ls-grid--4"];
-const cardClasses = ["ls-card", "ls-panel"];
-const visualAnchorClasses = ["ls-metric", "ls-progress"];
-const visualAnchorTags = new Set(["svg", "img", "code"]);
+const surfaceClasses = ["ls-surface"];
+const unboxedAlternatives =
+  "components/list (short items), components/stat (numbers), components/flow (sequences)";
 
 function classList(attributes) {
   return String(attributes.get("class") || "")
@@ -46,15 +30,6 @@ function tagsWithAnyClass(tags, classNames) {
   });
 }
 
-function hasVisualAnchor(segmentHtml) {
-  const tags = startTagRecords(segmentHtml);
-  return tags.some(
-    (tag) =>
-      visualAnchorTags.has(tag.name) ||
-      visualAnchorClasses.some((className) => classList(tag.attributes).includes(className)),
-  );
-}
-
 function compareVersions(left, right) {
   const a = String(left).split(".").map(Number);
   const b = String(right).split(".").map(Number);
@@ -65,18 +40,10 @@ function compareVersions(left, right) {
   return 0;
 }
 
-export function deckAssetsPredateContentSizedGrids(manifest) {
+export function deckUsesV1Vocabulary(manifest) {
   const version = manifest?.cliVersion;
   if (typeof version !== "string" || !/^\d+\.\d+/.test(version)) return false;
-  return compareVersions(version, GRID_CONTENT_SIZED_SINCE) < 0;
-}
-
-function migrationPrefix(legacyAssets) {
-  // Hints must never reference classes the deck's own copied CSS lacks; when
-  // the manifest shows a pre-0.5 copy, remediation starts from the re-copy.
-  return legacyAssets
-    ? "Re-copy layout assets first (slidesls add utilities/layout core/base --dir <deck> --force) to get content-sized grids and density variants, then "
-    : "";
+  return compareVersions(version, V2_VOCABULARY_SINCE) < 0;
 }
 
 function slideName(segment, index) {
@@ -85,52 +52,60 @@ function slideName(segment, index) {
 }
 
 export function validateDesignComposition({ html, manifest, warnings }) {
-  const legacyAssets = deckAssetsPredateContentSizedGrids(manifest);
-  const prefix = migrationPrefix(legacyAssets);
+  if (deckUsesV1Vocabulary(manifest)) {
+    validateLegacyDesignComposition({ html, manifest, warnings });
+    warnings.push({
+      code: "legacy_deck_rules",
+      message:
+        "v1 deck (manifest cliVersion < 0.6.0) — validated with frozen legacy composition rules.",
+      hint: "Re-init with the current CLI to adopt the v2 vocabulary (styles, layouts, components).",
+    });
+    return;
+  }
 
   for (const [index, segment] of slideSegments(html).entries()) {
     if (segment.attributes.get("data-ls-lint") === "off") continue;
     const renderedSegment = stripNonRenderedCode(segment.html);
     const tags = startTagRecords(renderedSegment);
-    const cardCount = tagsWithAnyClass(tags, cardClasses).length;
-    const hasColumnGrid = tagsWithAnyClass(tags, columnGridClasses).length > 0;
-    const hasGrid = hasColumnGrid || tagsWithAnyClass(tags, ["ls-grid"]).length > 0;
-    const hasFillGrid = tagsWithAnyClass(tags, ["ls-grid--fill"]).length > 0;
+    const surfaceCount = tagsWithAnyClass(tags, surfaceClasses).length;
+    const hasColumnGrid =
+      tagsWithAnyClass(tags, columnGridClasses).length > 0 ||
+      tagsWithAnyClass(tags, ["ls-layout--columns-3", "ls-layout--columns-4"]).length > 0;
     const name = slideName(segment, index);
 
-    if (hasColumnGrid && cardCount > MAX_CARDS_IN_GRID)
+    if (hasColumnGrid && surfaceCount > MAX_SURFACES_IN_GRID)
       warnings.push({
-        code: "many_cards_in_grid",
+        code: "many_surfaces_in_grid",
         slide: index + 1,
-        message: `${name} places ${cardCount} cards/panels in a column grid; wrapped rows of equal boxes read as filler.`,
-        hint: `${prefix}restructure with templates/icon-grid (4-6 short items), templates/feature-rows (one-liner rows), or a split layout; see slidesls inspect templates/icon-grid --json.`,
+        message: `${name} places ${surfaceCount} surfaces in a column grid; wrapped rows of equal boxes read as filler.`,
+        hint: `Surfaces are for content that needs a frame — try the unboxed vocabulary instead: ${unboxedAlternatives}.`,
       });
 
-    const stretched = hasFillGrid || (legacyAssets && hasGrid);
-    if (stretched && cardCount >= STRETCHED_GRID_MIN_CARDS)
+    // The box is the exception in v2: a slide whose body is ONLY surfaces
+    // reproduces the v1 card-grid monotony.
+    if (surfaceCount >= 3 && !hasNonSurfaceContent(tags))
       warnings.push({
-        code: "stretched_grid_with_cards",
+        code: "surface_only_slide",
         slide: index + 1,
-        message: `${name} combines a stretch-to-fill grid with ${cardCount} cards/panels; sparse cards will stretch and trap dead space.`,
-        hint: legacyAssets
-          ? `${prefix}verify the rendered result with slidesls visual-qa.`
-          : "Remove ls-grid--fill for card content (content-sized grids are the default), or add ls-card--center for intentionally stretched cards; verify with slidesls visual-qa.",
-      });
-
-    const densityPointerMinCards = legacyAssets
-      ? DENSITY_POINTER_MIN_CARDS_LEGACY
-      : DENSITY_POINTER_MIN_CARDS;
-    if (
-      hasGrid &&
-      cardCount >= densityPointerMinCards &&
-      !segment.attributes.get("data-ls-density") &&
-      !hasVisualAnchor(segment.html)
-    )
-      warnings.push({
-        code: "card_grid_check_density",
-        slide: index + 1,
-        message: `${name} is a grid of ${cardCount} text cards with no density setting or visual anchor; composition needs a visual check.`,
-        hint: `${prefix}preview and run slidesls visual-qa; if the cards are sparse, use data-ls-density="spacious" or restructure with templates/feature-rows / templates/icon-grid.`,
+        message: `${name} composes its body entirely from ${surfaceCount} bordered surfaces.`,
+        hint: `Mix in unboxed content (${unboxedAlternatives}) or drop the boxes; scale contrast beats borders.`,
       });
   }
+}
+
+const nonSurfaceContentClasses = [
+  "ls-statement",
+  "ls-stat",
+  "ls-figure",
+  "ls-list",
+  "ls-quote",
+  "ls-chart",
+  "ls-flow",
+  "ls-media",
+  "ls-code",
+  "ls-table",
+];
+
+function hasNonSurfaceContent(tags) {
+  return tagsWithAnyClass(tags, nonSurfaceContentClasses).length > 0;
 }

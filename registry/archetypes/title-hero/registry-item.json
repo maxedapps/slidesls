@@ -1,0 +1,68 @@
+{
+  "name": "archetypes/title-hero",
+  "type": "ls:archetype",
+  "title": "Title hero",
+  "description": "The deck opener: badges, a display-size claim, a support line, and an optional figure slot. Ships a no-figure statement variant per the image-sourcing ladder.",
+  "intent": ["open"],
+  "tags": ["archetype", "opener", "hero"],
+  "useCases": ["the first slide of any deck", "section-opening cover pages for long decks"],
+  "files": [],
+  "registryDependencies": ["core/base", "layouts/core", "components/badge", "components/figure"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/archetypes/title-hero/README.md",
+  "agentLevel": "starter",
+  "contract": {
+    "title": {
+      "min": 1,
+      "max": 1,
+      "maxWords": 10,
+      "description": "One claim, not a label — say what the deck proves."
+    },
+    "subtitle": { "min": 0, "max": 1, "maxWords": 20 },
+    "badges": { "min": 0, "max": 3, "maxWords": 3 },
+    "figure": {
+      "min": 0,
+      "max": 1,
+      "description": "Follow the image ladder: real asset → authored diagram → figure --abstract → the statement variant."
+    }
+  },
+  "motion": {
+    "default": "stagger",
+    "notes": "The default entrance stagger carries the opener; do not add steps to a title slide."
+  },
+  "icons": { "guidance": "At most one sprite icon inside a badge; never an icon row." },
+  "composition": {
+    "layoutBehavior": "fills-area",
+    "useWhen": ["opening a deck", "restarting attention after a long section"],
+    "avoidWhen": [
+      "you have no real asset and no authored diagram and the abstract art fights the style — use the statement variant",
+      "mid-deck content slides — use archetypes/statement or archetypes/section instead"
+    ],
+    "alternatives": [
+      { "when": "a plain divider between chapters is enough", "use": "archetypes/section" },
+      { "when": "the opener is a bare claim with no meta", "use": "archetypes/statement" }
+    ]
+  },
+  "authoring": {
+    "attributes": [
+      {
+        "name": "data-ls-archetype",
+        "scope": "section.ls-slide",
+        "value": "title-hero",
+        "description": "Marks the slide for contract linting and deck scorecards."
+      }
+    ],
+    "usage": [
+      "Title is a claim (\"Latency fell while traffic doubled\"), never a label (\"Q3 update\").",
+      "Use the statement variant when no honest figure exists; never fill the figure slot with text-in-a-panel."
+    ]
+  },
+  "snippets": [
+    { "label": "With figure", "path": "registry/archetypes/title-hero/snippets/basic.html" },
+    {
+      "label": "Statement (no figure)",
+      "path": "registry/archetypes/title-hero/snippets/statement.html"
+    }
+  ]
+}

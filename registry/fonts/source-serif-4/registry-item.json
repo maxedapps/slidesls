@@ -1,0 +1,30 @@
+{
+  "name": "fonts/source-serif-4",
+  "type": "ls:font",
+  "title": "Source Serif 4",
+  "description": "Source Serif 4 variable webfont (latin, wght axis), vendored from @fontsource-variable/source-serif-4@5.2.9 under the SIL Open Font License 1.1.",
+  "files": [
+    {
+      "path": "registry/fonts/source-serif-4/source-serif-4-latin-wght-normal.woff2",
+      "type": "registry:font"
+    },
+    {
+      "path": "registry/fonts/source-serif-4/font.css",
+      "type": "registry:style"
+    },
+    {
+      "path": "registry/fonts/source-serif-4/OFL.txt",
+      "type": "registry:license"
+    }
+  ],
+  "registryDependencies": [],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/fonts/source-serif-4/README.md",
+  "agentLevel": "advanced",
+  "authoring": {
+    "usage": [
+      "Loaded via the family @font-face in font.css; reference it through style tokens, not directly. The registered font-family name is \"Source Serif 4 Variable\"."
+    ]
+  }
+}

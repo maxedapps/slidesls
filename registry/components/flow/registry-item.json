@@ -1,0 +1,92 @@
+{
+  "name": "components/flow",
+  "type": "ls:component",
+  "description": "Linear step sequences (horizontal band or vertical rail) with CSS connectors between adjacent siblings. Deliberately not a node-graph engine \u2014 arbitrary diagrams are authored SVG in a figure.",
+  "files": [
+    {
+      "path": "registry/components/flow/flow.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/components/flow/README.md",
+  "rootClass": "ls-flow",
+  "safeAnywhere": true,
+  "snippets": [
+    {
+      "label": "Horizontal flow",
+      "path": "registry/components/flow/snippets/basic.html"
+    }
+  ],
+  "intent": ["explain-process", "teach"],
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-flow",
+        "elements": ["ls-flow__step", "ls-flow__marker", "ls-flow__title", "ls-flow__text"],
+        "modifiers": ["ls-flow--vertical"]
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--ls-flow-gap",
+        "default": "56px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-flow-title-size",
+        "default": "27px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-flow-text-size",
+        "default": "21px",
+        "overrideSafe": true
+      }
+    ],
+    "usage": [
+      "Connectors are drawn between adjacent sibling steps only; branching or cyclic diagrams are out of scope \u2014 author those as SVG inside components/figure.",
+      "Put a step number or short token in ls-flow__marker; the connector aligns to the marker row.",
+      "Use ls-flow--vertical when step text is longer than a phrase or there are more than 5 steps' worth of copy."
+    ]
+  },
+  "composition": {
+    "contentDensity": ["balanced"],
+    "layoutBehavior": "content-sized",
+    "itemCountGuidance": "3-5 steps; horizontal bands get cramped past 4 steps with real copy.",
+    "copyGuidance": "Step titles up to 4 words; step text of 6-16 words.",
+    "useWhen": [
+      "a process runs through 3-5 ordered stages",
+      "a pipeline or lifecycle needs visible hand-offs",
+      "a rollout or migration plan reads as sequential phases"
+    ],
+    "avoidWhen": [
+      "the diagram branches, loops, or has more than one path",
+      "steps carry no real explanation and are just labels",
+      "there are more than 5 steps"
+    ],
+    "alternatives": [
+      {
+        "when": "branching or cyclic diagrams",
+        "use": "components/figure"
+      },
+      {
+        "when": "short ordered points without connectors",
+        "use": "components/list"
+      },
+      {
+        "when": "stages with heavy copy each",
+        "use": "components/surface"
+      }
+    ]
+  },
+  "agentLevel": "recommended",
+  "tags": ["flow", "steps", "process", "pipeline", "sequence"],
+  "useCases": [
+    "Explain a 3-5 stage process as a horizontal band.",
+    "Show a request lifecycle or CI pipeline with connectors.",
+    "Lay out a phased rollout plan on a vertical rail."
+  ]
+}

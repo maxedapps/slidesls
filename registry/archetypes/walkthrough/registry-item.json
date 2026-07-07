@@ -1,0 +1,62 @@
+{
+  "name": "archetypes/walkthrough",
+  "type": "ls:archetype",
+  "title": "Walkthrough",
+  "description": "One code excerpt beside 2–4 numbered annotations that reveal step by step, each pointing at a highlighted line. Teaching code, not displaying it.",
+  "intent": ["show-code", "teach"],
+  "tags": ["archetype", "code", "teaching"],
+  "useCases": [
+    "explaining how a mechanism works, line by line",
+    "walking reviewers through the load-bearing lines of a change"
+  ],
+  "files": [],
+  "registryDependencies": ["core/base", "layouts/core", "components/code", "components/list"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/archetypes/walkthrough/README.md",
+  "agentLevel": "recommended",
+  "contract": {
+    "code": {
+      "min": 1,
+      "max": 1,
+      "description": "One excerpt, trimmed to the lines the annotations discuss — never a full file."
+    },
+    "annotations": { "min": 2, "max": 4, "maxWords": 14 }
+  },
+  "motion": {
+    "default": "steps",
+    "notes": "Each annotation carries ls-reveal with data-step 1..N and pairs with a data-ls-line=\"highlight\" line in the excerpt, so the eye and the narration move together."
+  },
+  "icons": { "guidance": "None — line highlights, not icons, point at the code." },
+  "composition": {
+    "layoutBehavior": "fills-area",
+    "useWhen": [
+      "the audience must understand how the code works, not just that it exists",
+      "two to four lines of an excerpt deserve individual narration"
+    ],
+    "avoidWhen": [
+      "the code needs no narration — use components/code and let the excerpt speak",
+      "the excerpt would exceed roughly fifteen lines; trim it or split the slide"
+    ],
+    "alternatives": [
+      { "when": "the code is context, not the subject", "use": "components/code" },
+      { "when": "explaining the process around the code", "use": "archetypes/process-flow" }
+    ]
+  },
+  "authoring": {
+    "attributes": [
+      {
+        "name": "data-ls-archetype",
+        "scope": "section.ls-slide",
+        "value": "walkthrough",
+        "description": "Marks the slide for contract linting and deck scorecards."
+      }
+    ],
+    "usage": [
+      "Annotations run top-to-bottom in the same order as their highlighted lines.",
+      "Highlight only the lines the annotations name; highlighting half the excerpt highlights nothing.",
+      "Keep the excerpt runnable-looking and honest — elide with real code, not pseudo-code."
+    ]
+  },
+  "snippets": [{ "label": "Basic", "path": "registry/archetypes/walkthrough/snippets/basic.html" }]
+}

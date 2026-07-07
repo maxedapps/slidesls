@@ -1,0 +1,30 @@
+{
+  "name": "fonts/inter",
+  "type": "ls:font",
+  "title": "Inter",
+  "description": "Inter variable webfont (latin, wght axis), vendored from @fontsource-variable/inter@5.2.8 under the SIL Open Font License 1.1.",
+  "files": [
+    {
+      "path": "registry/fonts/inter/inter-latin-wght-normal.woff2",
+      "type": "registry:font"
+    },
+    {
+      "path": "registry/fonts/inter/font.css",
+      "type": "registry:style"
+    },
+    {
+      "path": "registry/fonts/inter/OFL.txt",
+      "type": "registry:license"
+    }
+  ],
+  "registryDependencies": [],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/fonts/inter/README.md",
+  "agentLevel": "advanced",
+  "authoring": {
+    "usage": [
+      "Loaded via the family @font-face in font.css; reference it through style tokens, not directly. The registered font-family name is \"Inter Variable\"."
+    ]
+  }
+}

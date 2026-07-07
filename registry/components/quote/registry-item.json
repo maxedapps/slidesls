@@ -24,7 +24,25 @@
     "classGroups": [
       {
         "base": "ls-quote",
-        "elements": ["ls-quote__text", "ls-quote__source"]
+        "elements": ["ls-quote__evidence", "ls-quote__source", "ls-quote__text"],
+        "modifiers": ["ls-quote--lg"]
+      }
+    ],
+    "cssVariables": [
+      {
+        "name": "--ls-quote-size",
+        "default": "44px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-quote-indent",
+        "default": "44px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-quote-rule-width",
+        "default": "5px",
+        "overrideSafe": true
       }
     ]
   },

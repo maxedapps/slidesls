@@ -5,9 +5,15 @@ import { loadRegistry, RegistrySource, summarizeItem } from "./source.mjs";
 
 export function groupName(type = "") {
   const normalized = String(type).replace(/^ls:/, "");
+  if (normalized === "archetype") return "Archetypes";
+  if (normalized === "style") return "Styles";
   if (normalized === "core") return "Core";
-  if (normalized === "utility") return "Utilities";
+  if (normalized === "layout") return "Layouts";
   if (normalized === "component") return "Components";
+  if (normalized === "motion") return "Motion";
+  if (normalized === "icons") return "Icons";
+  if (normalized === "font") return "Fonts";
+  if (normalized === "utility") return "Utilities";
   if (normalized === "animation") return "Animations";
   if (normalized.startsWith("preset")) return "Presets";
   if (normalized === "template") return "Templates";
@@ -20,15 +26,25 @@ export function defaultCatalogOutput(root = process.cwd()) {
 
 export function renderCatalog(registryData) {
   const groups = new Map();
-  for (const item of registryData.items.map(summarizeItem)) {
+  // Preview items are excluded: this document is agent-facing discovery, and
+  // preview items must stay invisible until their vocabulary ships.
+  for (const item of registryData.items
+    .filter((entry) => entry.status !== "preview")
+    .map(summarizeItem)) {
     const group = groupName(item.type);
     groups.set(group, [...(groups.get(group) || []), item]);
   }
 
   const groupOrder = [
+    "Archetypes",
+    "Styles",
     "Core",
-    "Utilities",
+    "Layouts",
     "Components",
+    "Motion",
+    "Icons",
+    "Fonts",
+    "Utilities",
     "Animations",
     "Presets",
     "Templates",
@@ -57,9 +73,18 @@ export function renderCatalog(registryData) {
       lines.push(`- Agent recommended: ${item.agentRecommended ? "yes" : "no"}`);
       if (item.rootClass) lines.push(`- Root class: ${item.rootClass}`);
       if (item.themeAttribute) lines.push(`- Theme attribute: ${item.themeAttribute}`);
+      if (item.styleAttribute) lines.push(`- Style attribute: ${item.styleAttribute}`);
       if (item.styleTone) lines.push(`- Style tone: ${item.styleTone}`);
+      if (item.intent?.length) lines.push(`- Intent: ${item.intent.join(", ")}`);
       if (item.pairsWith?.length) lines.push(`- Pairs with: ${item.pairsWith.join(", ")}`);
       lines.push(`- Safe anywhere: ${item.safeAnywhere ? "yes" : "no"}`);
+      lines.push(...contractLines(item.contract));
+      if (item.motion?.default)
+        lines.push(`- Motion default: ${markdownText(item.motion.default)}`);
+      if (item.motion?.notes) lines.push(`- Motion notes: ${markdownText(item.motion.notes)}`);
+      if (item.icons?.guidance) lines.push(`- Icon guidance: ${markdownText(item.icons.guidance)}`);
+      if (item.icons?.suggested?.length)
+        lines.push(`- Suggested icons: ${item.icons.suggested.join(", ")}`);
       lines.push(...compositionLines(item.composition));
       lines.push(...authoringLines(item.authoring));
       lines.push(
@@ -99,6 +124,25 @@ function cssVariableDoc(variable) {
   return details.length ? `${code(variable.name)} (${details.join(", ")})` : code(variable.name);
 }
 
+function contractLines(contract) {
+  if (!contract || !Object.keys(contract).length) return [];
+  const lines = ["- Content contract:"];
+  for (const [slot, constraints] of Object.entries(contract)) {
+    const parts = [
+      constraints.min !== undefined || constraints.max !== undefined
+        ? `count ${constraints.min ?? 0}–${constraints.max ?? "∞"}`
+        : null,
+      constraints.minWords !== undefined || constraints.maxWords !== undefined
+        ? `words ${constraints.minWords ?? 0}–${constraints.maxWords ?? "∞"}`
+        : null,
+      constraints.maxChars !== undefined ? `max ${constraints.maxChars} chars` : null,
+      constraints.description ? markdownText(constraints.description) : null,
+    ].filter(Boolean);
+    lines.push(`  - ${code(slot)}: ${parts.join(", ") || "unconstrained"}`);
+  }
+  return lines;
+}
+
 function compositionLines(composition) {
   if (!composition) return [];
   const lines = ["- Composition:"];
@@ -108,6 +152,10 @@ function compositionLines(composition) {
   if (composition.itemCountGuidance)
     lines.push(`  - Item count: ${markdownText(composition.itemCountGuidance)}`);
   if (composition.copyGuidance) lines.push(`  - Copy: ${markdownText(composition.copyGuidance)}`);
+  if (composition.useWhen?.length) {
+    lines.push("  - Use when:");
+    for (const entry of composition.useWhen) lines.push(`    - ${markdownText(entry)}`);
+  }
   if (composition.avoidWhen?.length) {
     lines.push("  - Avoid when:");
     for (const entry of composition.avoidWhen) lines.push(`    - ${markdownText(entry)}`);

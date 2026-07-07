@@ -1,0 +1,50 @@
+/* statement — a full-width display-type claim. No border, no box: the words
+ * are the design. The strongest single-idea slide body in the vocabulary.
+ */
+@layer components {
+  .ls-statement {
+    display: grid;
+    gap: var(--ls-space-4);
+    align-content: center;
+    max-inline-size: 1280px;
+  }
+
+  .ls-statement__text {
+    color: var(--ls-text);
+    font-family: var(--ls-font-display);
+    font-size: var(--ls-statement-size, var(--ls-text-xl));
+    font-weight: 740;
+    letter-spacing: var(--ls-title-letter-spacing);
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+
+  /* One emphasized span per claim: the accent does the pointing. */
+  .ls-statement__text em,
+  .ls-statement__text .ls-accent-text {
+    color: var(--ls-accent-text);
+    font-style: normal;
+  }
+
+  .ls-statement__support {
+    max-inline-size: 900px;
+    color: var(--ls-muted);
+    font-family: var(--ls-font-body);
+    font-size: var(--ls-text-md);
+    line-height: 1.35;
+  }
+
+  .ls-statement--hero .ls-statement__text {
+    font-size: var(--ls-statement-size, var(--ls-text-2xl));
+  }
+
+  .ls-statement--center {
+    justify-items: center;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .ls-slide[data-ls-density="compact"] .ls-statement__text {
+    font-size: var(--ls-statement-size, var(--ls-text-lg));
+  }
+}

@@ -1,0 +1,170 @@
+{
+  "name": "layouts/core",
+  "type": "ls:layout",
+  "title": "Layouts",
+  "description": "Slide-body compositions with alignment guarantees: subgrid column layouts with a heading/body/footer row skeleton, statement/band/dashboard/gallery compositions, region bleed, plus the low-level stack/cluster/grid utilities used inside regions.",
+  "tags": ["layout", "composition", "subgrid", "alignment"],
+  "useCases": [
+    "aligned multi-column slide bodies (headings and footers align by construction)",
+    "single-claim statement slides with deliberate whitespace",
+    "dense dashboards and media galleries that fill the body",
+    "figures that bleed to the slide edge"
+  ],
+  "files": [
+    {
+      "path": "registry/layouts/core/layout.css",
+      "type": "registry:style"
+    },
+    {
+      "path": "registry/layouts/core/utilities.css",
+      "type": "registry:style"
+    }
+  ],
+  "registryDependencies": ["components/figure", "components/statement", "core/base"],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/layouts/core/README.md",
+  "agentLevel": "recommended",
+  "safeAnywhere": false,
+  "composition": {
+    "layoutBehavior": "fills-area",
+    "useWhen": [
+      "the slide body has two or more columns whose headings/bodies/footers should align",
+      "one claim needs the whole body (statement) or a sequence needs a full-width band"
+    ],
+    "avoidWhen": [
+      "a single content-sized group is enough \u2014 use ls-stack or ls-grid directly",
+      "columns have genuinely irregular content \u2014 use the --free variant instead of fighting the skeleton"
+    ]
+  },
+  "authoring": {
+    "classGroups": [
+      {
+        "base": "ls-layout",
+        "elements": [
+          "ls-layout__region",
+          "ls-layout__heading",
+          "ls-layout__text",
+          "ls-layout__note"
+        ],
+        "modifiers": [
+          "ls-layout--split",
+          "ls-layout--columns-3",
+          "ls-layout--columns-4",
+          "ls-layout--wide-start",
+          "ls-layout--wide-end",
+          "ls-layout--free",
+          "ls-layout--statement",
+          "ls-layout--band",
+          "ls-layout--dashboard",
+          "ls-layout--gallery",
+          "ls-layout__region--bleed"
+        ],
+        "rule": "Always keep the base class ls-layout alongside a modifier \u2014 the runtime's auto-stagger descends one level into .ls-layout. Aligned layouts expect each region to hold up to three children in heading/body/footer order; use ls-layout--free for irregular columns."
+      },
+      {
+        "base": "ls-stack",
+        "modifiers": ["ls-stack--sm", "ls-stack--lg"]
+      },
+      {
+        "base": "ls-cluster"
+      },
+      {
+        "base": "ls-grid",
+        "modifiers": [
+          "ls-grid--start",
+          "ls-grid--fill",
+          "ls-grid--2",
+          "ls-grid--3",
+          "ls-grid--4",
+          "ls-grid--wide-left",
+          "ls-grid--wide-right"
+        ]
+      }
+    ],
+    "classes": [
+      "ls-center",
+      "ls-center-start",
+      "ls-text-start",
+      "ls-fill",
+      "ls-slide-fill",
+      "ls-frame"
+    ],
+    "cssVariables": [
+      {
+        "name": "--ls-layout-heading-size",
+        "default": "30px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-layout-text-size",
+        "default": "22px",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-layout-gap",
+        "default": "var(--ls-space-5)",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-layout-columns",
+        "default": "3",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-stack-gap",
+        "default": "var(--ls-space-4)",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-stack-align-content",
+        "default": "start",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-cluster-gap",
+        "default": "var(--ls-space-3)",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-cluster-align",
+        "default": "center",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-grid-gap",
+        "default": "var(--ls-space-5)",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-grid-align-content",
+        "default": "center",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-frame-min-block-size",
+        "default": "320px",
+        "overrideSafe": true
+      }
+    ],
+    "usage": [
+      "Place one ls-layout composition (e.g. ls-layout--split) directly inside .ls-slide__body; put content in ls-layout__region children.",
+      "Aligned layouts: region children map to the heading/body/footer rows in DOM order; surplus space lands inside the body row, footers stay anchored.",
+      "Use ls-stack/ls-cluster/ls-grid to arrange content INSIDE a region, not as the slide-body skeleton."
+    ]
+  },
+  "snippets": [
+    {
+      "label": "Aligned split",
+      "path": "registry/layouts/core/snippets/split.html"
+    },
+    {
+      "label": "Statement body",
+      "path": "registry/layouts/core/snippets/statement.html"
+    },
+    {
+      "label": "Bleed figure",
+      "path": "registry/layouts/core/snippets/bleed.html"
+    }
+  ]
+}

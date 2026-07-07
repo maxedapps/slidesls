@@ -18,9 +18,14 @@ import { readManifest } from "../deck/manifest.mjs";
 import { validateRegistry } from "../validation/registry.mjs";
 import { validateExamples } from "../validation/examples.mjs";
 import { validateDeckStructure } from "../validation/markup-structure.mjs";
-import { validateDesignComposition } from "../validation/design-lint.mjs";
+import { deckUsesV1Vocabulary, validateDesignComposition } from "../validation/design-lint.mjs";
+import { validateContracts } from "../validation/contract-lint.mjs";
+import { validateTaste } from "../validation/taste-lint.mjs";
+import { deckScorecard } from "../validation/scorecard.mjs";
 import { validateLocalAssets } from "../validation/assets.mjs";
+import { validateIcons } from "../validation/icons.mjs";
 import { validateLoadTags } from "../validation/load-tags.mjs";
+import { validateStyles } from "../validation/styles.mjs";
 import { validateAccessibility } from "../validation/accessibility.mjs";
 import {
   buildAuthoringClassIndex,
@@ -35,7 +40,9 @@ export async function validateCommand(argv) {
   const args = parseArgs(argv, commandOptionSpecs.validate);
   if (args.help)
     return ok({
-      help: `Usage: slidesls validate [dir] [--strict] [--registry-root <path>] [--registry-url <url>] [--use-manifest-registry] [--json]
+      help: `Usage: slidesls validate [dir] [--strict] [--report] [--registry-root <path>] [--registry-url <url>] [--use-manifest-registry] [--json]
+
+--report adds a deck scorecard: per-slide archetype map, variety distribution, motion coverage, icon consistency, and the lint summary. The scorecard is necessary, never sufficient — rendered review still decides.
 
 For AI agents:
   Run after every edit: slidesls validate <deck> --json
@@ -100,10 +107,12 @@ For AI agents:
     if (!hasModuleRuntimeScript(html))
       errors.push({
         code: "missing_runtime",
-        message: "slide-runtime.js must be loaded as a module script",
+        message: "slide-runtime.js must be loaded as a classic defer or module script",
         hint: "Run slidesls add core/base --dir <deck> --dry-run --json and add the returned script tag.",
       });
     await validateLocalAssets({ html, root, entryPath, errors });
+    validateIcons({ html, errors, warnings });
+    validateStyles({ html, errors, warnings, manifest, registryData: activeRegistry });
     if (usesLucideIcons(html) && !hasLucideScript(html))
       warnings.push({
         code: "lucide_missing",
@@ -115,7 +124,13 @@ For AI agents:
         message: "Reveal elements should use data-step or data-ls-reveal-sequence.",
       });
   }
-  if (html && activeRegistry) {
+  // v1 decks (manifest cliVersion < 0.6.0) predate the v2 class catalog:
+  // their copied classes (ls-card, ls-panel, ...) are valid in THEIR copied
+  // CSS, so v2 known-class checks would only produce noise (and --strict
+  // errors) against a frozen vocabulary. Legacy composition rules still run
+  // via validateDesignComposition's routing.
+  const legacyDeck = deckUsesV1Vocabulary(manifest);
+  if (html && activeRegistry && !legacyDeck) {
     const authoringIndex = buildAuthoringClassIndex(activeRegistry.items);
     validateKnownClasses({
       html,
@@ -137,10 +152,16 @@ For AI agents:
   } else if (html) {
     validateDeckStructure({ html, strict: args.strict, errors, warnings });
     validateAccessibility({ html, strict: args.strict, errors, warnings });
+    if (legacyDeck && activeRegistry)
+      await validateLoadTags({ html, manifest, registryData: null, root, warnings });
   }
-  // Advisory composition lint: warnings only, never promoted by --strict, and
-  // suppressible per slide with data-ls-lint="off".
-  if (html) validateDesignComposition({ html, manifest, warnings });
+  // Advisory composition, contract, and taste lints: warnings only, never
+  // promoted by --strict, and suppressible per slide with data-ls-lint="off".
+  if (html) {
+    validateDesignComposition({ html, manifest, warnings });
+    validateContracts({ html, registryData: activeRegistry, warnings });
+    validateTaste({ html, warnings });
+  }
   if (manifest) {
     for (const file of manifest.copiedFiles || []) {
       const target = path.join(root, file.targetPath);
@@ -179,7 +200,9 @@ For AI agents:
     }
   }
   const valid = errors.length === 0;
+  const report = args.report && html ? deckScorecard({ html, errors, warnings }) : undefined;
   return ok({
+    ...(report ? { report } : {}),
     valid,
     start,
     root,
@@ -312,14 +335,6 @@ export async function doctorCommand(argv) {
 
 function validateKnownClasses({ html, strict, knownClasses, errors, warnings }) {
   const renderedHtml = stripNonRenderedCode(html);
-  if (/\bls-layout-[\w-]+/.test(renderedHtml))
-    errors.push({
-      code: "removed_layout_class",
-      message:
-        "ls-layout-* classes are not part of the current registry; use templates and utilities instead.",
-      hint: "Run slidesls catalog --api --json to see valid public layout utilities.",
-    });
-
   for (const className of unknownLsClasses(renderedHtml, knownClasses)) {
     const entry = {
       code: "unknown_ls_class",

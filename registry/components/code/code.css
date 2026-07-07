@@ -1,0 +1,92 @@
+/* code — one component for code blocks, diffs, and terminal transcripts,
+ * switched by data-ls-variant. Line-level hooks (data-ls-line) support
+ * highlight/add/del emphasis and step-driven walkthroughs.
+ */
+@layer components {
+  .ls-code {
+    display: grid;
+    overflow: hidden;
+    grid-template-rows: auto 1fr;
+    margin: 0;
+    min-block-size: 0;
+    border: var(--ls-border-width) solid var(--ls-code-border);
+    border-radius: var(--ls-radius-md);
+    background: var(--ls-code-bg);
+    color: var(--ls-code-text);
+    font-family: var(--ls-font-code);
+    font-size: var(--ls-code-font-size, 21px);
+    line-height: 1.55;
+  }
+
+  .ls-code__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ls-space-3);
+    padding: 12px 20px;
+    border-block-end: var(--ls-border-width) solid var(--ls-code-border);
+    color: color-mix(in srgb, var(--ls-code-text) 55%, transparent);
+    font-family: var(--ls-font-label);
+    font-size: 17px;
+    letter-spacing: 0.03em;
+  }
+
+  .ls-code__body {
+    overflow: auto;
+    padding: 18px 0;
+    min-block-size: 0;
+  }
+
+  .ls-code__body pre {
+    /* Grid suppresses the whitespace-only text nodes between __line spans,
+       so authors can keep one line per source line without phantom rows. */
+    display: grid;
+    margin: 0;
+    font: inherit;
+  }
+
+  .ls-code__line {
+    display: block;
+    padding-inline: 20px;
+    white-space: pre;
+  }
+
+  .ls-code__line[data-ls-line="highlight"] {
+    background: color-mix(in srgb, var(--ls-accent) 16%, transparent);
+    box-shadow: inset 3px 0 0 var(--ls-accent);
+  }
+
+  .ls-code__line[data-ls-line="add"] {
+    background: color-mix(in srgb, var(--ls-status-success) 13%, transparent);
+  }
+
+  .ls-code__line[data-ls-line="add"]::before {
+    content: "+ ";
+    color: var(--ls-status-success);
+  }
+
+  .ls-code__line[data-ls-line="del"] {
+    background: color-mix(in srgb, var(--ls-status-danger) 13%, transparent);
+    opacity: 0.85;
+  }
+
+  .ls-code__line[data-ls-line="del"]::before {
+    content: "- ";
+    color: var(--ls-status-danger);
+  }
+
+  /* Terminal transcript: prompt lines get a drawn prompt, output dims. */
+  .ls-code[data-ls-variant="terminal"] .ls-code__line[data-ls-line="prompt"]::before {
+    content: "$ ";
+    color: var(--ls-accent-text);
+    font-weight: 700;
+  }
+
+  .ls-code[data-ls-variant="terminal"] .ls-code__line[data-ls-line="output"] {
+    color: color-mix(in srgb, var(--ls-code-text) 66%, transparent);
+  }
+
+  .ls-slide[data-ls-density="compact"] .ls-code {
+    --ls-code-font-size: 18px;
+  }
+}

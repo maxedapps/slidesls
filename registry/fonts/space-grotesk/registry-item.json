@@ -1,0 +1,30 @@
+{
+  "name": "fonts/space-grotesk",
+  "type": "ls:font",
+  "title": "Space Grotesk",
+  "description": "Space Grotesk variable webfont (latin, wght axis), vendored from @fontsource-variable/space-grotesk@5.2.10 under the SIL Open Font License 1.1.",
+  "files": [
+    {
+      "path": "registry/fonts/space-grotesk/space-grotesk-latin-wght-normal.woff2",
+      "type": "registry:font"
+    },
+    {
+      "path": "registry/fonts/space-grotesk/font.css",
+      "type": "registry:style"
+    },
+    {
+      "path": "registry/fonts/space-grotesk/OFL.txt",
+      "type": "registry:license"
+    }
+  ],
+  "registryDependencies": [],
+  "dependencies": [],
+  "devDependencies": [],
+  "docs": "registry/fonts/space-grotesk/README.md",
+  "agentLevel": "advanced",
+  "authoring": {
+    "usage": [
+      "Loaded via the family @font-face in font.css; reference it through style tokens, not directly. The registered font-family name is \"Space Grotesk Variable\"."
+    ]
+  }
+}

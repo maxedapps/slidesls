@@ -8,7 +8,7 @@ const EXAMPLE_TARGETS = [
 ];
 const POST_INSTALL_INSTRUCTIONS = [
   "Fully read the installed SKILL.md before authoring slides.",
-  "Read relevant bundled references, especially deck-authoring.md and preview-validation.md.",
+  "Read relevant bundled references, especially style-directions.md, archetypes.md, and qa.md.",
   "If your runtime does not auto-load this skill, run slidesls skill show and read SKILL.md; use slidesls skill show --all only as a full export fallback.",
 ];
 
@@ -68,10 +68,11 @@ export async function skillInfo() {
 
 export const skillReferenceFiles = {
   catalog: "references/catalog.md",
-  "deck-authoring": "references/deck-authoring.md",
-  "copy-workflow": "references/copy-workflow.md",
-  "preview-validation": "references/preview-validation.md",
-  "registry-contract": "references/registry-contract.md",
+  "style-directions": "references/style-directions.md",
+  archetypes: "references/archetypes.md",
+  motion: "references/motion.md",
+  customization: "references/customization.md",
+  qa: "references/qa.md",
 };
 
 export async function readSkillMarkdown() {

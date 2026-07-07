@@ -1,95 +1,78 @@
-# Registry contract
+# Registry contract (v2)
 
-Registry items are copyable primitives indexed by `registry.json`.
+Registry items are copyable directories indexed by the root `registry.json`. Each item has a `registry-item.json` described by `schemas/registry-item.schema.json` (documentation schema; runtime enforcement lives in `src/validation/registry.mjs` and runs via `slidesls validate-registry`).
 
-## Item metadata
+## Core fields
 
-Each item has `registry-item.json` with:
+- `name` — stable item id, e.g. `components/stat`, `styles/editorial`, `archetypes/big-stat`.
+- `type` — one of `ls:core`, `ls:layout`, `ls:component`, `ls:archetype`, `ls:style`, `ls:font`, `ls:icons`, `ls:motion` (plus the pre-v2 values `ls:utility`, `ls:animation`, `ls:preset`, `ls:template`, kept in the enum for legacy decks).
+- `status` — lifecycle marker: `stable` (default when absent), `preview` (hidden from catalog output unless `--preview` is passed), or `deprecated`.
+- `description`, `title`, `tags`, `useCases` — discovery metadata; `useCases` is what the brief catalog surfaces.
+- `agentLevel` — `starter`, `recommended`, `advanced`, or `experimental`; drives `catalog --recommended` inclusion (`starter|recommended`).
+- `registryDependencies` — other item names copied first (e.g. styles depend on their `fonts/*` families, archetypes on the components they compose).
+- `files` — repo-relative implementation files copied by `slidesls add`; `dependencies`/`devDependencies` — npm deps (always empty for copied items).
+- `docs` — item README path; `snippets` — `{ label, path }` paste-ready HTML examples returned by `inspect --json`.
+- `rootClass`, `safeAnywhere` — primary class and placement safety for layout/component items.
 
-- `name` — stable item id, e.g. `components/card`.
-- `type` — one of `ls:core`, `ls:utility`, `ls:component`, `ls:animation`, `ls:preset`, or `ls:template`.
-- `description`, `tags`, and optional `useCases`.
-- Theme presets may also use `styleTone`, `pairsWith`, and `themeAttribute` metadata.
-- `registryDependencies` — other registry item names that must be copied first.
-- `files` — repo-relative implementation files copied by `slidesls add`.
-- `docs` — item README path.
-- `rootClass` — primary class for utilities/components when applicable.
-- `safeAnywhere` — whether the item can be used without a specific parent structure.
-- `agentLevel` — `starter`, `recommended`, `advanced`, or `experimental`; `catalog --recommended` computes inclusion from `starter|recommended`.
-- `snippets` — paste-ready HTML examples loaded by `inspect --json`.
-- `authoring` — public, agent-facing authoring API surfaced by `catalog --api --json` and `inspect --api --json`.
-- `composition` — optional advisory density/composition guidance (see below).
+## v2 metadata
 
-Templates must use `files: []` and expose HTML only through `snippets` so `add templates/x` does not copy snippet files into deck assets.
+- `intent` — narrative intents the item serves (`open`, `close`, `prove`, `compare`, `explain-process`, `teach`, `show-data`, `show-code`, `emphasize`); drives `catalog --intent` discovery.
+- `contract` — archetypes only: the content contract, a map of slot name to constraints `{ min, max, minWords, maxWords, maxChars, description }`. Enforced against `data-ls-archetype` slides by the contract lint (`contract_slot_count`, `contract_copy_length`).
+- `motion` — `{ default, notes }`: the item's recommended motion (e.g. a style's signature, or an archetype's `stagger`/`steps`/`transition` default and where `data-step` belongs).
+- `icons` — `{ guidance, suggested[] }`: icon stance for the item (styles say how sparse and in which tones).
+- `styleAttribute` — styles only: the `data-ls-style` value the style responds to.
+- `styleTone` — short tone description surfaced by the catalog.
+- `styles` — per-style compatibility notes, keyed by style name; items without style notes are compatible with every style (`catalog --style` filters on this).
 
-## Authoring metadata
+Example (`registry/styles/editorial/registry-item.json`, abridged):
 
-`authoring` is the source of truth for public classes, data attributes, CSS variables, and usage rules. Agents should use classes/data attributes listed in `authoring` or copied from snippets; do not invent new `ls-*` classes.
-
-Supported fields:
-
-- `classGroups` — base classes plus related BEM elements/modifiers, e.g. `ls-grid` with `ls-grid--2`.
-- `classes` — standalone public classes.
-- `dataAttributes` — public `data-*` attributes and allowed values when enumerable.
-- `cssVariables` — intended local customization knobs. Entries are bare `--name` strings (legacy) or `{ name, default, overrideSafe }` objects; prefer the object form so agents can discover safe override points and their defaults from `catalog`/`inspect` output.
-- `attributes` — important deck-level attributes such as `data-ls-theme` or `data-ls-font`.
-- `usage` — short authoring rules for agents.
-- `classMetadata` — optional per-class scope/safety metadata keyed by declared public class token.
-
-Registry validation checks authoring shape and, for local CSS-backed items, verifies listed classes exist in item CSS. It also checks snippet dependency closure, targeted canonical snippet structures, and `@container` usage without a query-container contract. Example validation recursively fails on unsupported real `ls-*` class attributes.
-
-## Composition metadata
-
-`composition` carries advisory density/composition guidance so `catalog`/`inspect` surface it at decision time:
-
-- `contentDensity` — array of `sparse` / `balanced` / `dense` the item suits.
-- `layoutBehavior` — `content-sized`, `fills-area`, or `fixed`.
-- `itemCountGuidance` / `copyGuidance` — short prose rules.
-- `avoidWhen` — conditions under which the item composes badly; surfaced in the brief catalog.
-- `alternatives` — `{ when, use }` pointers to better-fitting registry items.
-
-Integrity checks in `validate-registry`: every `alternatives[].use` must name an existing item; any `category/name` token inside composition strings or `authoring.usage` must resolve to an existing item (or item-name prefix), so guidance cannot silently rot when items are renamed; and an item that declares `avoidWhen` must have a `## When not to use` section in its README so metadata and docs stay paired.
-
-## Theme presets
-
-Theme presets live under `registry/presets/themes/<theme-name>/` and use type `ls:preset`. A theme should list exactly one copied stylesheet:
-
-```txt
-registry/presets/themes/<theme-name>/theme.css
-```
-
-Theme CSS belongs in `@layer tokens` and must scope overrides to the deck root:
-
-```css
-@layer tokens {
-  :root[data-ls-theme="executive-blue"] {
-    --ls-page-bg: #07111f;
-    --ls-slide-bg: #0d1b2d;
-  }
+```json
+{
+  "name": "styles/editorial",
+  "type": "ls:style",
+  "styleAttribute": "editorial",
+  "styleTone": "warm, humane, literary; light backgrounds",
+  "registryDependencies": [
+    "core/base",
+    "fonts/fraunces",
+    "fonts/newsreader",
+    "fonts/jetbrains-mono"
+  ],
+  "motion": { "default": "fade", "notes": "Slow crossfades; children settle in like paragraphs." },
+  "icons": { "guidance": "Sparse, hairline sprite icons in ink or oxblood." }
 }
 ```
 
-Apply themes deck-wide on `<html>`:
+## Composition metadata
 
-```html
-<html lang="en" data-ls-theme="executive-blue"></html>
-```
+`composition` carries decision-time guidance surfaced by `catalog` and `inspect`:
 
-Themes control visual language: colors, surfaces, backgrounds, borders, radii, shadows, code colors, table striping, status colors, and progress accents. They must not encode slide structure or force font families. Font presets remain separate and may be recommended with `pairsWith` metadata.
+- `useWhen` / `avoidWhen` — conditions under which the item composes well or badly. Agents check `avoidWhen` before committing to an item.
+- `alternatives` — `{ when, use }` pointers to better-fitting items.
+- `contentDensity` (`sparse`/`balanced`/`dense`), `layoutBehavior` (`content-sized`/`fills-area`/`fixed`), `itemCountGuidance`, `copyGuidance`.
 
-Theme CSS should prefer solid colors, subtle borders, restrained shadows, and minimal texture. Avoid overriding `--ls-slide-bg-image` or adding large gradient blobs, neon fog, glow stacks, and decorative backgrounds that compete with content unless explicitly requested. Themes are not density systems; use slide-scoped density attributes or component variables for dense content.
+Integrity checks in `validate-registry`: every `alternatives[].use` must name an existing item; any `category/name` token inside composition strings or `authoring.usage` must resolve to an existing item, so guidance cannot silently rot; an item that declares `avoidWhen` must have a `## When not to use` section in its README.
 
-## Copy/load order
+## Authoring metadata
 
-Use `slidesls add`; it resolves dependencies, copies files, and updates the manifest. Manual copies should load `core/base` first, then presets/components/animations/utilities as needed. Utilities intentionally load late so layout helpers can be applied anywhere.
+`authoring` is the source of truth for the public API, surfaced by `catalog --api --json` and `inspect <item> --api --json`. Agents use classes and attributes listed here or copied from snippets; inventing `ls-*` classes fails validation (`unknown_ls_class`).
 
-## Snippets
+- `classGroups` — base class plus BEM `elements`/`modifiers` and an optional `rule` (e.g. `ls-list` with `ls-list--numbered`, `ls-list--timeline`).
+- `classes` — standalone public classes.
+- `classMetadata` — per-class `{ scopeType, safeAnywhere, description }` placement metadata.
+- `dataAttributes` — public `data-*` attributes with `values`, `scope`, and `description` (e.g. `data-ls-variant` on code, `data-ls-density` on slides).
+- `cssVariables` — customization knobs as `{ name, default, overrideSafe }` objects (bare `--name` strings are legacy). `overrideSafe: true` marks variables intended for deck-level `@layer tokens` overrides.
+- `attributes` — deck-level attributes such as `data-ls-style` with `scope` and `value`.
+- `usage` — short authoring rules.
 
-Snippets are source-of-truth markup examples and must declare/copy all registry dependencies for any `ls-*` classes they contain. Agents should prefer:
+Registry validation verifies authoring shape and, for CSS-backed items, that listed classes exist in the item's CSS and that public CSS classes carry authoring metadata.
 
-```sh
-slidesls inspect templates/split --json
-slidesls inspect components/card --json
-```
+## Registry groups
 
-and paste/edit returned snippet HTML instead of guessing structure.
+See [registry/README.md](../registry/README.md) for the group overview (core, layouts, components, archetypes, styles, fonts, icons, motion) and each group's own README for conventions.
+
+Changed in v2: the v1 groups `utilities/`, `templates/`, `presets/` (themes and fonts), and `animations/` — and v1 components such as `card`, `panel`, `callout`, and `metric` — no longer exist. Styles replace theme presets (activation moved from `data-ls-theme` to `data-ls-style`), `layouts/core` replaces `utilities/layout`, archetypes replace templates, core motion replaces the animation items, and the bordered-box components collapsed into `components/surface`. Decks copied before 0.6.0 keep working and are validated with frozen legacy rules (`legacy_deck_rules`).
+
+## Copy model
+
+`slidesls add` resolves `registryDependencies`, copies files under the deck's base directory, updates the manifest, and returns the load tags to insert. Load order is core first, then fonts, style, layouts, components — `add`/`init` compute it from the dependency graph; a family shared by several styles is copied exactly once. Snippets are source-of-truth markup: prefer `slidesls inspect <item> --json` and paste the returned HTML instead of guessing structure.

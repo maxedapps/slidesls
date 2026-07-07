@@ -1,72 +1,68 @@
-# slidesls Project Vision
+# slidesls — contributor guide
 
-`slidesls` is an agent-primary authoring CLI, agent skill, and copyable registry for building slide decks as plain editable HTML/CSS/JS.
+slidesls is a skill-guided slide design system for AI agents: an authoring CLI, a copyable registry (styles, layouts, components, archetypes, fonts, icons), and a bundled agent skill. Generated decks are plain editable HTML/CSS/JS with no runtime dependency on the package.
 
-The CLI is **not** a runtime dependency for generated decks. It initializes deck folders, copies registry assets, validates markup/assets, and serves previews. Generated decks remain dependency-free by default and can be edited directly.
+This document is for people working on this repository. User-facing docs live in [README.md](./README.md) and [docs/](./docs/README.md); the authoring workflow itself lives in the bundled skill (`skills/create-slides-with-slidesls/`).
 
-## Core goals
+## Repo layout
 
-- Make slide authoring work through `slidesls init`, brief `slidesls catalog`, snippet-focused `slidesls inspect`, `slidesls add`, `slidesls validate`, and `slidesls preview`.
-- Keep every generated deck vanilla HTML/CSS/JS: no mandatory framework, bundler, Tailwind, or runtime package.
-- Preserve a shadcn-style copyable registry: assets are copied into downstream projects and can be modified.
-- Optimize for AI agents with deterministic JSON output, snippets, manifests, validation, and clear docs.
-- Keep browser/snapshot workflows optional so the base authoring tool stays lightweight.
+- `bin/slidesls.mjs` — CLI entry point.
+- `src/` — implementation modules:
+  - `cli/` — command implementations and `option-specs.mjs`, the single source of truth for every command's flags (tests sweep help text and docs against it).
+  - `deck/` — init/add/copy logic, config, manifest.
+  - `registry/` — registry source loading (bundled, `--registry-root`, `--registry-url`) and catalog-doc generation.
+  - `icons/` — inline sprite parsing/rewriting and curated icon resolution.
+  - `validation/` — deck validation modules (see [docs/validation.md](./docs/validation.md)); `validation/legacy/` holds the frozen v1 lint rules applied to decks whose manifest `cliVersion` predates 0.6.0.
+  - `server/`, `skill/`, `shared/` — preview server, skill distribution, shared helpers.
+- `registry/` — the copyable design system: `core/`, `layouts/`, `components/`, `archetypes/`, `styles/`, `fonts/`, `icons/`, `motion/` (see [registry/README.md](./registry/README.md)).
+- `skills/create-slides-with-slidesls/` — the bundled agent skill (`SKILL.md` + `references/`). The skill is the canonical authoring workflow; docs must not contradict it.
+- `schemas/` — JSON schemas for `slidesls.json`, the deck manifest, and `registry-item.json`.
+- `scripts/` — repo automation:
+  - `fonts-sync.mjs` — regenerates `registry/fonts/*` from pinned `@fontsource-variable/*` devDependencies (never hand-edit vendored font files).
+  - `icons-sync.mjs` — regenerates the curated `registry/icons/*` symbols from the pinned `lucide-static` devDependency.
+  - `visual-gate.mjs` — release-path rendered composition + motion gate (see below).
+  - `check-pack-size.mjs` — asserts the unpacked npm tarball stays under the 5 MB budget (fonts and icons must never balloon the package).
+  - `test-cli-smoke.mjs`, `validate-registry.mjs`, `validate-examples.mjs`, `visual-qa-report.mjs`, `serve-examples.mjs`.
+- `tests/` — `node --test` suites, including the docs sweeps (documented flags must exist in `option-specs.mjs`; stale command recipes fail).
+- `examples/` — validated example decks (benchmark decks in four styles, composition and stress-gallery QA decks).
+- `benchmarks/` — the shared deck brief used by the benchmark decks.
 
-## Product model
+## Gallery review workflow
 
-- CLI binary: `slidesls`.
-- Project config: `slidesls.json`.
-- Copied asset directory: `slidesls/` by default.
-- Registry source: bundled/local by default during development; remote registry support is available through CLI options.
-- Schema files ship in `schemas/` until stable hosted schema URLs exist.
-- External icon CDNs are not used by default; icon libraries such as Lucide remain opt-in.
+`slidesls gallery` generates `.gallery/` — HTML pages rendering every registry snippet under every style and density. `scripts/visual-gate.mjs` renders those pages, measures them with the visual-qa payload, and captures a still per style/density combo into `.gallery-review/<combo>.png`. Humans record rubric verdicts (composition and motion, per style) in `.gallery-review/REVIEW.md`; the motion checklist is [docs/motion-review.md](./docs/motion-review.md). Registry CSS changes are reviewed gallery-first: the gallery shows every snippet in every art direction, so a regression cannot hide in the one deck you happened to test.
 
-## Registry model
+## Checks and release flow
 
-Copyable registry items live under `registry/`:
+```sh
+pnpm check        # lint + fmt:check + tests + validate-registry + validate-skills + validate-examples + cli:smoke
+pnpm visual:gate  # rendered gate; skips with a notice when no browser driver is available
+pnpm pack:check   # pnpm check + SLIDESLS_RELEASE=1 visual gate + pack-size budget + npm pack --dry-run
+```
 
-- `registry/core/` — mandatory base assets: reset, tokens, shared slide CSS, icon helpers, and runtime behavior.
-- `registry/utilities/` — hierarchy-light layout utilities such as stacks, clusters, grids, centering, and fill behavior.
-- `registry/components/` — standalone visual/content primitives such as badges, cards, panels, metrics, tables, timelines, code blocks, quotes, and callouts.
-- `registry/templates/` — paste-ready slide skeleton snippets composed from utilities and components.
-- `registry/presets/` — optional token remaps and style presets, including fonts and deck-wide themes.
-- `registry/animations/` — optional animation and transition recipes that compose with the base reveal contract.
+The visual gate needs `agent-browser` on PATH (or a `playwright-core` resolution; override the driver with `SLIDESLS_VISUAL_GATE_BROWSER`). Outside release mode a missing driver skips the gate with a visible notice; with `SLIDESLS_RELEASE=1` (set by `pack:check`) a missing browser fails, so the taste/motion gate can never silently no-op on a release. It fails on measured composition defects on default-density pages and on any motion-check failure (entrance opacity ramp, stagger paint-in distinctness, key-spam interrupt run).
 
-Registry items are directories with `registry-item.json`, `README.md`, implementation files when needed, and optional `snippets/*.html`. The root `registry.json` indexes available item metadata.
+Release: bump the version, update `CHANGELOG.md`, run `pnpm pack:check`, smoke-test the tarball, `npm publish --access public` — details in [docs/publishing.md](./docs/publishing.md).
 
-## Design principle
+## Design principles
 
-A class should be one of:
+- **Fix physics in the defaults.** Alignment, content-sized grids, motion choreography (transition and stagger never both translate), export/print/reduced-motion kill switches, and honest chart geometry are built into copied CSS and the runtime — not left as guidance an author can miss.
+- **Encode taste in lints.** Every hard rule in the skill maps to a lint code with a precise hint. Errors are provable defects; taste signatures stay advisory and per-slide suppressible (`data-ls-lint="off"`), so deviations are deliberate rather than forbidden.
+- **Gallery-first review.** Registry visual changes are judged against every snippet × style × density in the generated gallery, with screenshots and a human rubric, before they ship.
+- **Contracts over prose.** Archetypes constrain content with machine-checked slot counts and word limits instead of paragraphs of advice; agents write to a visible spec.
 
-- **Utility** — works anywhere, e.g. `.ls-grid`, `.ls-stack`.
-- **Component** — owns its own internals, e.g. `.ls-card`, `.ls-panel`.
-- **Runtime/deck shell class** — part of the required deck shell, e.g. `.ls-slide`, `.ls-deck`.
+Constraints that still hold from v1: generated decks never depend on the npm package at runtime; no mandatory framework, bundler, or build step; the copyable registry model stays central; CLI output stays deterministic and JSON-friendly; browser workflows stay optional for the base toolchain.
 
-Templates are HTML snippets, not CSS layout contracts. Agent-primary authoring supports both template-first and primitive-first composition: themes are optional token presets, while utilities/components are first-class building blocks for custom slides. Avoid hidden ancestor-dependent APIs.
+## Post-1.0 backlog
 
-## Implemented tooling
-
-- `bin/slidesls.mjs` — package-ready CLI entry point.
-- `src/` — CLI, registry, deck, validation, server, skill, and shared modules.
-- `slidesls init` — creates a plain deck project with `slidesls.json`, copied assets, starter HTML, manifest, and optional `--theme` support.
-- `slidesls add` — copies registry items and prints load tags without mutating HTML by default.
-- `slidesls catalog` / `slidesls inspect` — brief registry discovery and snippet/load-tag inspection for humans and agents; `--api` exposes rich authoring metadata.
-- `slidesls skill info/show/install/link` — agent skill distribution for local and future package usage.
-- `slidesls validate` — static deck validation for config, manifest, copied files, local assets, shell markup, and common missing registry item usage.
-- `slidesls preview` — dependency-free local preview server.
+- GSAP motion recipes (opt-in, license-safe).
+- View-Transitions shared-element recipes.
+- More styles and archetypes (`timeline`, `checkpoint`, `case-study`, `decision-matrix`).
+- Image-generation integration for figure slots.
+- Remote-registry hardening.
+- PDF export helper.
 
 ## Technical direction
 
-- Package manager: `pnpm`.
-- Node engine: `>=22.18.0`.
-- Runtime/build philosophy: vanilla HTML, modern CSS, and vanilla JavaScript.
-- CSS philosophy: semantic classes, CSS custom properties, cascade layers, reusable theme tokens, progressive enhancement.
-- Documentation direction: root README for quickstart; registry and skill docs serve as agent-readable API.
-- Validation direction: static validation first; optional browser validation and snapshots later.
-
-## Important constraints
-
-- Do not make generated decks depend on the npm package at runtime.
-- Do not add mandatory framework or build-system dependencies.
-- Keep the copyable registry model central.
-- Prefer snippets/templates and positive validation over fragile layout macros.
+- Package manager: `pnpm`. Node engine: `>=22.18.0`.
+- Vanilla HTML, modern CSS (cascade layers, container queries, subgrid, `@starting-style`), vanilla JS (Web Animations API in the runtime).
+- Formatting/linting: `oxfmt` / `oxlint`.
