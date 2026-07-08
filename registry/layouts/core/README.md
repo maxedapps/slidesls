@@ -1,6 +1,6 @@
 # Layouts
 
-Slide-body compositions with alignment guarantees, plus the low-level utilities used inside them.
+Slide-body compositions with alignment guarantees, a generic cover/media composition, plus the low-level utilities used inside them.
 
 ## The alignment contract
 
@@ -11,6 +11,7 @@ The tradeoff is explicit: region markup must follow the skeleton (up to three ch
 ## Compositions
 
 - `ls-layout--split` / `--columns-3` / `--columns-4` — aligned columns; `--wide-start`/`--wide-end` skew a split.
+- `ls-hero-media` + `ls-hero-copy` — one grouped copy block beside one media/figure block for cover-style slides; use this instead of aligned subgrid layouts when eyebrow/title/subtitle must stay together.
 - `ls-layout--statement` — one claim at the optical center; the whitespace is the design.
 - `ls-layout--band` — a full-width horizontal sequence crossing the middle of the body.
 - `ls-layout--dashboard` / `--gallery` — filling grids for dense data or media (`--ls-layout-columns` sets the count).
@@ -20,9 +21,10 @@ Region typography (`ls-layout__heading`, `ls-layout__text`, `ls-layout__note`) c
 
 ## Utilities
 
-`ls-stack`, `ls-cluster`, `ls-grid` (+ column modifiers), `ls-center`, `ls-center-start`, `ls-fill`, `ls-slide-fill`, `ls-frame` — arrange content _inside_ a region. Prefer `ls-layout--*` for the slide-body skeleton itself.
+`ls-stack`, `ls-cluster`, `ls-grid` (+ column modifiers), `ls-center`, `ls-center-start`, `ls-hero-copy`, `ls-hero-media`, `ls-fill`, `ls-slide-fill`, `ls-frame` — arrange content _inside_ a region or as a deliberate cover-style body. Prefer archetype snippets first, then `ls-layout--*` for normal slide-body skeletons.
 
 ## When not to use
 
 - A single content-sized group is enough — use `ls-stack` or `ls-grid` directly in the body.
+- You need grouped cover copy with media — use `ls-hero-media`/`ls-hero-copy`, not an aligned subgrid layout.
 - Columns have genuinely irregular content — use `ls-layout--free` instead of fighting the skeleton.

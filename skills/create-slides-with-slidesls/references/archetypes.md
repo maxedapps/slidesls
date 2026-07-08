@@ -47,7 +47,7 @@ Self-check (the `archetype_monotony` lint enforces the same thresholds):
 For any figure slot, in order:
 
 1. **Real asset** from the user (ask in the style brief).
-2. **Authored diagram** — `flow`, `chart`, or hand-written inline SVG in a `figure`.
+2. **Authored diagram** — `flow`, `chart`, or hand-written inline SVG in a `figure`; add `ls-figure--contain` when the whole illustration/diagram/logo must remain visible.
 3. **`ls-figure--abstract`** — the style's intentional generative art.
 4. **Drop the slot** — every figure archetype ships a no-figure variant.
 
@@ -55,6 +55,6 @@ Text in a panel pretending to be a visual is never sanctioned (`placeholder_echo
 
 ## When no archetype fits
 
-Compose directly: one `ls-layout--*` in the slide body, regions filled with components (`slidesls inspect layouts/core --api --json`). Keep the furniture footer, keep the contract spirit (short titles, bounded copy). Composed slides simply go unmarked (no `data-ls-archetype`) — that is expected and does not weaken the deck's scorecard; only marked slides feed monotony and contract checks.
+Compose directly: one `ls-layout--*` in the slide body, regions filled with components (`slidesls inspect layouts/core --api --json`). For cover-style copy beside media, use `ls-hero-media` + `ls-hero-copy` instead of aligned subgrid layouts; aligned regions are for heading/body/footer skeletons, not grouped title/subtitle copy. Keep the furniture footer, keep the contract spirit (short titles, bounded copy). Composed slides simply go unmarked (no `data-ls-archetype`) — that is expected and does not weaken the deck's scorecard; only marked slides feed monotony and contract checks.
 
 Footers: content slides carry the furniture footer; `title-hero` and `section` slides may omit it (the snippets show the convention).

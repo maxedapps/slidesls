@@ -30,12 +30,12 @@ Deep reference for per-item lookup only; it is large, so do not read it end-to-e
     - restarting attention after a long section
   - Avoid when:
     - you have no real asset and no authored diagram and the abstract art fights the style — use the statement variant
-    - mid-deck content slides — use archetypes/statement or archetypes/section instead
+    - mid-deck content slides — use archetypes/statement, archetypes/section, or a content archetype instead
   - Alternatives:
     - a plain divider between chapters is enough: `archetypes/section`
     - the opener is a bare claim with no meta: `archetypes/statement`
 - Attributes: `data-ls-archetype="title-hero"`
-- Usage: Title is a claim ("Latency fell while traffic doubled"), never a label ("Q3 update"). Use the statement variant when no honest figure exists; never fill the figure slot with text-in-a-panel.
+- Usage: Title is a claim ("Latency fell while traffic doubled"), never a label ("Q3 update"). Use the statement variant when no honest figure exists; never fill the figure slot with text-in-a-panel. Use ls-hero-media + ls-hero-copy for the figure variant; do not place grouped hero copy directly in aligned subgrid regions.
 - Registry dependencies: core/base, layouts/core, components/badge, components/figure
 - Files: none
 - Snippets: With figure (registry/archetypes/title-hero/snippets/basic.html), Statement (no figure) (registry/archetypes/title-hero/snippets/statement.html)
@@ -443,7 +443,7 @@ Deep reference for per-item lookup only; it is large, so do not read it end-to-e
 
 - Label: Layouts
 - Type: ls:layout
-- Description: Slide-body compositions with alignment guarantees: subgrid column layouts with a heading/body/footer row skeleton, statement/band/dashboard/gallery compositions, region bleed, plus the low-level stack/cluster/grid utilities used inside regions.
+- Description: Slide-body compositions with alignment guarantees: subgrid column layouts with a heading/body/footer row skeleton, generic hero/media composition, statement/band/dashboard/gallery compositions, region bleed, plus low-level stack/cluster/grid utilities.
 - Agent level: recommended
 - Agent recommended: yes
 - Safe anywhere: no
@@ -461,9 +461,11 @@ Deep reference for per-item lookup only; it is large, so do not read it end-to-e
   - `ls-stack`: `ls-stack--sm`, `ls-stack--lg`
   - `ls-cluster`: base only
   - `ls-grid`: `ls-grid--start`, `ls-grid--fill`, `ls-grid--2`, `ls-grid--3`, `ls-grid--4`, `ls-grid--wide-left`, `ls-grid--wide-right`
-- Classes: `ls-center`, `ls-center-start`, `ls-text-start`, `ls-fill`, `ls-slide-fill`, `ls-frame`
-- CSS variables: `--ls-layout-heading-size` (default 30px, override-safe), `--ls-layout-text-size` (default 22px, override-safe), `--ls-layout-gap` (default var(--ls-space-5), override-safe), `--ls-layout-columns` (default 3, override-safe), `--ls-stack-gap` (default var(--ls-space-4), override-safe), `--ls-stack-align-content` (default start, override-safe), `--ls-cluster-gap` (default var(--ls-space-3), override-safe), `--ls-cluster-align` (default center, override-safe), `--ls-grid-gap` (default var(--ls-space-5), override-safe), `--ls-grid-align-content` (default center, override-safe), `--ls-frame-min-block-size` (default 320px, override-safe)
-- Usage: Place one ls-layout composition (e.g. ls-layout--split) directly inside .ls-slide\_\_body; put content in ls-layout\_\_region children. Aligned layouts: region children map to the heading/body/footer rows in DOM order; surplus space lands inside the body row, footers stay anchored. Use ls-stack/ls-cluster/ls-grid to arrange content INSIDE a region, not as the slide-body skeleton.
+  - `ls-hero-media`: base only
+    - Rule: Use for cover-style copy + media compositions. Put one ls-hero-copy and one media/figure element inside it; do not use aligned subgrid layouts for grouped hero copy.
+- Classes: `ls-center`, `ls-center-start`, `ls-text-start`, `ls-fill`, `ls-slide-fill`, `ls-frame`, `ls-hero-copy`
+- CSS variables: `--ls-layout-heading-size` (default 30px, override-safe), `--ls-layout-text-size` (default 22px, override-safe), `--ls-layout-gap` (default var(--ls-space-5), override-safe), `--ls-layout-columns` (default 3, override-safe), `--ls-stack-gap` (default var(--ls-space-4), override-safe), `--ls-stack-align-content` (default start, override-safe), `--ls-cluster-gap` (default var(--ls-space-3), override-safe), `--ls-cluster-align` (default center, override-safe), `--ls-grid-gap` (default var(--ls-space-5), override-safe), `--ls-grid-align-content` (default center, override-safe), `--ls-frame-min-block-size` (default 320px, override-safe), `--ls-hero-gap` (default var(--ls-space-6), override-safe), `--ls-hero-copy-gap` (default var(--ls-space-4), override-safe), `--ls-hero-copy-fr` (default 1.15fr, override-safe), `--ls-hero-media-fr` (default 0.85fr, override-safe), `--ls-hero-copy-max-inline-size` (default 920px, override-safe)
+- Usage: Place one ls-layout composition (e.g. ls-layout--split) directly inside .ls-slide\_\_body; put content in ls-layout\_\_region children. Aligned layouts: region children map to the heading/body/footer rows in DOM order; surplus space lands inside the body row, footers stay anchored. Use ls-stack/ls-cluster/ls-grid to arrange content INSIDE a region, not as the slide-body skeleton. For cover-style slides, use ls-hero-media with ls-hero-copy so eyebrow/title/subtitle stay grouped; aligned subgrid layouts are for heading/body/footer rows, not hero copy.
 - Registry dependencies: components/figure, components/statement, core/base
 - Files: registry/layouts/core/layout.css, registry/layouts/core/utilities.css
 - Snippets: Aligned split (registry/layouts/core/snippets/split.html), Statement body (registry/layouts/core/snippets/statement.html), Bleed figure (registry/layouts/core/snippets/bleed.html)
@@ -698,9 +700,9 @@ Deep reference for per-item lookup only; it is large, so do not read it end-to-e
     - proportional values: `components/chart`
     - screenshots that should read as product UI: `components/media`
 - Class groups:
-  - `ls-figure`: `ls-figure__media`, `ls-figure__caption`, `ls-figure--frame`, `ls-figure--edge`, `ls-figure--fill`, `ls-figure--abstract`
+  - `ls-figure`: `ls-figure__media`, `ls-figure__caption`, `ls-figure--frame`, `ls-figure--edge`, `ls-figure--fill`, `ls-figure--contain`, `ls-figure--abstract`
 - CSS variables: `--ls-abstract-art` (override-safe)
-- Usage: Follow the image-sourcing ladder: real asset, then an authored diagram (components/flow, components/chart, or hand-written SVG), then ls-figure--abstract, then the archetype's no-figure variant. Text in a panel pretending to be a visual is never sanctioned. Author as a <figure> element with the caption in a <figcaption class="ls-figure\_\_caption">. For ls-figure--abstract leave the media element empty and mark it aria-hidden="true"; the art is CSS and styles override --ls-abstract-art with their own compositions. SVG figures need role="img" and an aria-label describing the diagram.
+- Usage: Follow the image-sourcing ladder: real asset, then an authored diagram (components/flow, components/chart, or hand-written SVG), then ls-figure--abstract, then the archetype's no-figure variant. Text in a panel pretending to be a visual is never sanctioned. Author as a <figure> element with the caption in a <figcaption class="ls-figure\_\_caption">. For ls-figure--abstract leave the media element empty and mark it aria-hidden="true"; the art is CSS and styles override --ls-abstract-art with their own compositions. SVG figures need role="img" and an aria-label describing the diagram. Use ls-figure--contain for illustrations, diagrams, logos, or other assets that must not be cropped; leave the default cover behavior for photos and screenshots.
 - Registry dependencies: core/base
 - Files: registry/components/figure/figure.css
 - Snippets: Abstract figure with caption (registry/components/figure/snippets/basic.html)

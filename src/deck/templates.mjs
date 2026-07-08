@@ -59,7 +59,7 @@ function minimalSlides(title) {
   // interest) plus one content slide whose copy is real guidance.
   return `      <section class="ls-slide" data-ls-slide-kind="hero" aria-label="Opening">
         <div class="ls-slide__inner">
-          <div class="ls-stack ls-center-start ls-text-start ls-slide-fill">
+          <div class="ls-hero-copy ls-slide-fill">
             <div class="ls-cluster">
               <span class="ls-badge">slidesls</span>
               <span class="ls-badge">Plain HTML</span>

@@ -92,7 +92,7 @@ Per slide: `slidesls inspect archetypes/<name> --json` and paste the snippet. Th
 
 Then **write the copy to the contract**: every archetype's slot counts and word limits are in its catalog entry, and the `contract_slot_count` / `contract_copy_length` lints check them. Contracts are why columns align and boxes stay balanced — cut copy to fit, never shrink type.
 
-Customize only through documented tokens and variants (`references/customization.md`): override token variables in a deck-level `@layer tokens` block, use component modifiers, or drop to `layouts/core` + components for structures no archetype covers.
+Customize only through documented tokens and variants (`references/customization.md`): override token variables in a deck-level `@layer tokens` block, use component modifiers, or drop to `layouts/core` + components for structures no archetype covers. For cover-style copy beside media, use `ls-hero-media` + `ls-hero-copy`; do not put grouped title/subtitle copy into aligned subgrid regions.
 
 ### 4. Motion pass
 
@@ -124,7 +124,7 @@ A deck is done when the scorecard (`validate --report`) is clean — or every re
 
 - One style per deck, activated on `<html>` — `style_missing`, `style_conflict`, `style_fonts_missing`.
 - Sprite icons or nothing; no emoji in icon slots, no CDN icon scripts, no glyph soup — `unknown_icon`, `emoji_icon`, `icon_mix`. After changing icon references: `slidesls icons sync --dir <deck> --json`.
-- No fake visuals: text-in-a-panel pretending to be an image is never sanctioned — `placeholder_echo`. Follow the image ladder: real asset → authored diagram (`flow`, `chart`, inline SVG in a `figure`) → `ls-figure--abstract` → the archetype's no-figure variant.
+- No fake visuals: text-in-a-panel pretending to be an image is never sanctioned — `placeholder_echo`. Follow the image ladder: real asset → authored diagram (`flow`, `chart`, inline SVG in a `figure`; use `ls-figure--contain` when the full asset must remain visible) → `ls-figure--abstract` → the archetype's no-figure variant.
 - No card-grid monotony: the box (`ls-surface`) is for content that needs a frame — `many_surfaces_in_grid`, `surface_only_slide`. Short items are a `list`, numbers are a `stat`, sequences are a `flow`.
 - No repeated-shape decks — `archetype_monotony`.
 - Write to the contract, don't shrink type — `contract_copy_length`, `body_text_small`.

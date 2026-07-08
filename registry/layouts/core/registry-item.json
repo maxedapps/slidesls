@@ -2,10 +2,11 @@
   "name": "layouts/core",
   "type": "ls:layout",
   "title": "Layouts",
-  "description": "Slide-body compositions with alignment guarantees: subgrid column layouts with a heading/body/footer row skeleton, statement/band/dashboard/gallery compositions, region bleed, plus the low-level stack/cluster/grid utilities used inside regions.",
+  "description": "Slide-body compositions with alignment guarantees: subgrid column layouts with a heading/body/footer row skeleton, generic hero/media composition, statement/band/dashboard/gallery compositions, region bleed, plus low-level stack/cluster/grid utilities.",
   "tags": ["layout", "composition", "subgrid", "alignment"],
   "useCases": [
     "aligned multi-column slide bodies (headings and footers align by construction)",
+    "cover-style slides with one grouped copy block beside one media block",
     "single-claim statement slides with deliberate whitespace",
     "dense dashboards and media galleries that fill the body",
     "figures that bleed to the slide edge"
@@ -33,8 +34,8 @@
       "one claim needs the whole body (statement) or a sequence needs a full-width band"
     ],
     "avoidWhen": [
-      "a single content-sized group is enough \u2014 use ls-stack or ls-grid directly",
-      "columns have genuinely irregular content \u2014 use the --free variant instead of fighting the skeleton"
+      "a single content-sized group is enough — use ls-stack or ls-grid directly",
+      "columns have genuinely irregular content — use the --free variant instead of fighting the skeleton"
     ]
   },
   "authoring": {
@@ -60,7 +61,7 @@
           "ls-layout--gallery",
           "ls-layout__region--bleed"
         ],
-        "rule": "Always keep the base class ls-layout alongside a modifier \u2014 the runtime's auto-stagger descends one level into .ls-layout. Aligned layouts expect each region to hold up to three children in heading/body/footer order; use ls-layout--free for irregular columns."
+        "rule": "Always keep the base class ls-layout alongside a modifier — the runtime's auto-stagger descends one level into .ls-layout. Aligned layouts expect each region to hold up to three children in heading/body/footer order; use ls-layout--free for irregular columns."
       },
       {
         "base": "ls-stack",
@@ -80,6 +81,10 @@
           "ls-grid--wide-left",
           "ls-grid--wide-right"
         ]
+      },
+      {
+        "base": "ls-hero-media",
+        "rule": "Use for cover-style copy + media compositions. Put one ls-hero-copy and one media/figure element inside it; do not use aligned subgrid layouts for grouped hero copy."
       }
     ],
     "classes": [
@@ -88,7 +93,8 @@
       "ls-text-start",
       "ls-fill",
       "ls-slide-fill",
-      "ls-frame"
+      "ls-frame",
+      "ls-hero-copy"
     ],
     "cssVariables": [
       {
@@ -145,12 +151,38 @@
         "name": "--ls-frame-min-block-size",
         "default": "320px",
         "overrideSafe": true
+      },
+      {
+        "name": "--ls-hero-gap",
+        "default": "var(--ls-space-6)",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-hero-copy-gap",
+        "default": "var(--ls-space-4)",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-hero-copy-fr",
+        "default": "1.15fr",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-hero-media-fr",
+        "default": "0.85fr",
+        "overrideSafe": true
+      },
+      {
+        "name": "--ls-hero-copy-max-inline-size",
+        "default": "920px",
+        "overrideSafe": true
       }
     ],
     "usage": [
       "Place one ls-layout composition (e.g. ls-layout--split) directly inside .ls-slide__body; put content in ls-layout__region children.",
       "Aligned layouts: region children map to the heading/body/footer rows in DOM order; surplus space lands inside the body row, footers stay anchored.",
-      "Use ls-stack/ls-cluster/ls-grid to arrange content INSIDE a region, not as the slide-body skeleton."
+      "Use ls-stack/ls-cluster/ls-grid to arrange content INSIDE a region, not as the slide-body skeleton.",
+      "For cover-style slides, use ls-hero-media with ls-hero-copy so eyebrow/title/subtitle stay grouped; aligned subgrid layouts are for heading/body/footer rows, not hero copy."
     ]
   },
   "snippets": [

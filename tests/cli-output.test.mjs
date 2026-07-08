@@ -77,6 +77,14 @@ test("catalog --json returns an agent-friendly result envelope", async () => {
   assert.ok(
     richLayout.authoring.classGroups.some((group) => group.modifiers?.includes("ls-grid--4")),
   );
+  assert.ok(richLayout.authoring.classGroups.some((group) => group.base === "ls-hero-media"));
+  assert.ok(richLayout.authoring.classes.includes("ls-hero-copy"));
+  const richFigure = rich.data.items.find((item) => item.name === "components/figure");
+  assert.ok(
+    richFigure.authoring.classGroups.some((group) =>
+      group.modifiers?.includes("ls-figure--contain"),
+    ),
+  );
   assert.equal(richLayout.agentLevel, "recommended");
   const validTypes = new Set([
     "ls:core",

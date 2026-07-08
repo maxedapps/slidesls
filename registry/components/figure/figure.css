@@ -27,6 +27,13 @@
     object-fit: cover;
   }
 
+  /* Contain: preserve the full asset (illustrations, diagrams, logos) instead
+     of cropping it like photographic/screenshot media. */
+  .ls-figure--contain .ls-figure__media > img,
+  .ls-figure--contain .ls-figure__media > video {
+    object-fit: contain;
+  }
+
   .ls-figure__media > svg {
     inline-size: 100%;
     block-size: auto;

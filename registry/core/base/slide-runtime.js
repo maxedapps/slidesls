@@ -2,7 +2,8 @@ const deck = document.querySelector("[data-ls-deck]");
 
 const interactiveSelector = "input, textarea, select, button, a, [contenteditable='true']";
 const transitionKinds = new Set(["fade", "rise", "slide", "none"]);
-const staggerContainerSelector = ".ls-grid, .ls-stack, .ls-cluster, .ls-layout, [data-ls-stagger]";
+const staggerContainerSelector =
+  ".ls-grid, .ls-stack, .ls-cluster, .ls-layout, .ls-hero-media, .ls-hero-copy, [data-ls-stagger]";
 const maxStaggerUnits = 12;
 
 function isExportMode() {

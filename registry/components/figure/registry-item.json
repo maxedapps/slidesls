@@ -30,6 +30,7 @@
           "ls-figure--frame",
           "ls-figure--edge",
           "ls-figure--fill",
+          "ls-figure--contain",
           "ls-figure--abstract"
         ]
       }
@@ -44,7 +45,8 @@
       "Follow the image-sourcing ladder: real asset, then an authored diagram (components/flow, components/chart, or hand-written SVG), then ls-figure--abstract, then the archetype's no-figure variant. Text in a panel pretending to be a visual is never sanctioned.",
       "Author as a <figure> element with the caption in a <figcaption class=\"ls-figure__caption\">.",
       "For ls-figure--abstract leave the media element empty and mark it aria-hidden=\"true\"; the art is CSS and styles override --ls-abstract-art with their own compositions.",
-      "SVG figures need role=\"img\" and an aria-label describing the diagram."
+      "SVG figures need role=\"img\" and an aria-label describing the diagram.",
+      "Use ls-figure--contain for illustrations, diagrams, logos, or other assets that must not be cropped; leave the default cover behavior for photos and screenshots."
     ]
   },
   "composition": {
@@ -82,6 +84,7 @@
   "useCases": [
     "Frame a screenshot or photo with a caption.",
     "Host an authored SVG diagram in a split layout.",
-    "Fill a figure slot with sanctioned abstract art when no asset exists."
+    "Fill a figure slot with sanctioned abstract art when no asset exists.",
+    "Show full illustrations or diagrams without cropping."
   ]
 }

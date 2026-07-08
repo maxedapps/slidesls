@@ -7,7 +7,7 @@ The image and diagram frame — and the sanctioned abstract-art fallback. A figu
 Author as a `<figure>` element:
 
 - `.ls-figure` — the frame; content-sized by default.
-- `.ls-figure__media` — the media well. Direct `img`/`video` children cover it; direct `svg` children scale to full width.
+- `.ls-figure__media` — the media well. Direct `img`/`video` children cover it by default; direct `svg` children scale to full width.
 - `.ls-figure__caption` — subtle label-font caption; use a `<figcaption>`.
 
 Modifiers:
@@ -15,6 +15,7 @@ Modifiers:
 - `.ls-figure--frame` — hairline border for screenshots that would bleed into the background.
 - `.ls-figure--edge` — square, unrounded media for diagrams and technical plots.
 - `.ls-figure--fill` — the figure stretches to its grid area (split layouts).
+- `.ls-figure--contain` — preserve the full asset without cropping; use for illustrations, diagrams, logos, and other artwork where losing edges is wrong.
 - `.ls-figure--abstract` — intentional token-colored art. Leave the media element empty and add `aria-hidden="true"`; styles override `--ls-abstract-art` with their own generative layers.
 
 The image-sourcing ladder, in order: real asset → authored diagram (`components/flow`, `components/chart`, hand-written SVG) → `--abstract` → the archetype's no-figure variant. SVG diagrams need `role="img"` and an `aria-label`.
