@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.1
+
+### Added
+
+- Generic `ls-hero-media` and `ls-hero-copy` primitives for cover-style slides that need grouped copy beside media without abusing aligned subgrid rows.
+- `ls-figure--contain` for illustrations, diagrams, logos, and other assets that must remain fully visible instead of being cropped.
+
+### Changed
+
+- `title-hero` snippets and the minimal starter template now use grouped hero-copy primitives for tighter, more predictable title/subtitle spacing.
+- Bundled skill guidance, registry docs, and generated catalog now steer agents toward the generic hero/media path and documented figure fit variants.
+
 ## 1.0.0
 
 The v2 system is complete: discovery polish and the final sweep.

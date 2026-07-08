@@ -1,6 +1,6 @@
 {
   "name": "@maxedapps/slidesls",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Skill-guided slide design system for AI agents: art directions, slide archetypes with content contracts, motion by default, and taste-encoding lints — all as copyable vanilla HTML/CSS/JS.",
   "keywords": [
     "agents",
